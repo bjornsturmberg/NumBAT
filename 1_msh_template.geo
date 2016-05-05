@@ -1,6 +1,5 @@
-// Template mesh geometry file for a single inclusion.
-// By default it will be circular, can also be made to be
-// elliptical or rectangular.
+// Template mesh geometry file for a single suspended inclusion.
+// Inclusion can be circular, elliptical square, or rectangular.
 
 d = 1; // grating period
 ff = 0;
