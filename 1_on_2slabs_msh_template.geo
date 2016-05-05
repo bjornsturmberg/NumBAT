@@ -13,7 +13,7 @@ radius1y = (a1y/(2*d_in_nm))*d;
 
 rect = 1;
 
-slab_width = 100;
+slab_width = 80;
 slab_height = 5;
 slab_w = slab_width/d_in_nm;
 slab_h = slab_height/d_in_nm;
@@ -245,7 +245,6 @@ If(rect == 1)
             Physical Surface(4) = {76, 78};
             Physical Surface(5) = {80, 82};
         EndIf
-
     EndIf
 
     If(slab_w_full == 0)
@@ -265,11 +264,70 @@ If(rect == 1)
         Line(23) = {153, 7};
         Line(24) = {7, 151};
         Line(26) = {153, 250};
-        Line(27) = {12, 252};
-        Line(28) = {12, 253};
         Line(30) = {251, 152};
 
+        If(slab2_w_full == 1)
+            Line(31) = {11, 352};
+            Line(32) = {352, 250};
+            Line(33) = {352, 350};
+            Line(34) = {350, 356};
+            Line(35) = {350, 2};
+            Line(36) = {2, 12};
+            Line(37) = {12, 3};
+            Line(38) = {3, 351};
+            Line(39) = {351, 353};
+            Line(40) = {353, 13};
+            Line(41) = {353, 251};
+            Line(42) = {251, 357};
+            Line(43) = {357, 351};
+            Line(44) = {357, 38};
+            Line(45) = {38, 356};
+            Line(46) = {250, 356};
+            Line(47) = {38, 12};
+            Line(48) = {8, 38};
+            
+            Line Loop(49) = {5, 9, 24, 17, -13, -1};
+            Plane Surface(50) = {49};
+            Line Loop(51) = {13, 18, 19, 12, -7, -2};
+            Plane Surface(52) = {51};
+            Line Loop(53) = {12, -40, 41, 30, -20};
+            Plane Surface(54) = {53};
+            Line Loop(55) = {23, -9, 31, 32, -26};
+            Plane Surface(56) = {55};
+            Line Loop(57) = {17, 14, -10, 24};
+            Plane Surface(58) = {57};
+            Line Loop(59) = {18, 19, -11, -14};
+            Line Loop(60) = {23, 10, 15, 22};
+            Plane Surface(61) = {60};
+            Line Loop(62) = {15, -21, -20, -11};
+            Plane Surface(63) = {62};
+            Plane Surface(64) = {59};
+            Line Loop(65) = {30, 21, 48, -44, -42};
+            Plane Surface(66) = {65};
+            Line Loop(67) = {48, 45, -46, -26, -22};
+            Plane Surface(68) = {67};
+            Line Loop(69) = {41, 42, 43, 39};
+            Plane Surface(70) = {69};
+            Line Loop(71) = {46, -34, -33, 32};
+            Plane Surface(72) = {71};
+            Line Loop(73) = {34, -45, 47, -36, -35};
+            Plane Surface(74) = {73};
+            Line Loop(75) = {47, 37, 38, -43, 44};
+            Plane Surface(76) = {75};
+
+            Physical Line(77) = {5, 31, 33, 35};
+            Physical Line(78) = {36, 37};
+            Physical Line(79) = {7, 40, 39, 38};
+            Physical Line(80) = {2, 1};
+
+            Physical Surface(1) = {50, 52, 54, 56};
+            Physical Surface(2) = {58, 64, 63, 61};
+            Physical Surface(3) = {66, 68};
+            Physical Surface(4) = {72, 70};
+            Physical Surface(5) = {76, 74};
+        EndIf
     EndIf
 EndIf
+
 
 
