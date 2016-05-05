@@ -1,5 +1,5 @@
 // Template mesh geometry file for a single inclusion on a slab.
-// Inclusion can be circular, elliptical square, or rectangular.
+// Inclusion can be circular/elliptical (default), or square/rectangular.
 
 d = 1; // grating period
 ff = 0;
