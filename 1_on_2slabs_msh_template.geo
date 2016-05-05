@@ -13,7 +13,7 @@ radius1y = (a1y/(2*d_in_nm))*d;
 
 rect = 1;
 
-slab_width = 10;
+slab_width = 20;
 slab_height = 5;
 slab_w = slab_width/d_in_nm;
 slab_h = slab_height/d_in_nm;
@@ -22,7 +22,7 @@ If(slab_w == 1)
     slab_w_full = 1;
 EndIf
 
-slab2_width = 10;
+slab2_width = 100;
 slab2_height = 10;
 slab2_w = slab2_width/d_in_nm;
 slab2_h = slab2_height/d_in_nm;
@@ -769,7 +769,7 @@ If(rect == 1)
                     Line(62) = {351, 251};
                     Line(63) = {250, 350};
                     Line(64) = {350, 354};
-                    
+
                     Line Loop(65) = {5, 9, 24, 17, -13, -1};
                     Plane Surface(66) = {65};
                     Line Loop(67) = {13, 18, 19, 12, -7, -2};
@@ -819,24 +819,300 @@ If(rect == 1)
         EndIf
 
         If(2*radius1 == slab_w)
+            Point(358) = {d/2-slab_w/2, -hy, 0, lc5};
+            Point(359) = {d/2+slab_w/2, -hy, 0, lc5};
+            Point(362) = {0, -hy+slab_h+slab2_h, 0, lc5};
+            Point(363) = {d, -hy+slab_h+slab2_h, 0, lc5};
+
+            Line(31) = {11, 362};
+            Line(34) = {13, 363};
+
             If(slab2_w > slab_w)
                 If(slab2_w_full == 1)
-                    //TODO
+                    Line(35) = {362, 350};
+                    Line(36) = {350, 2};
+                    Line(37) = {2, 358};
+                    Line(38) = {358, 12};
+                    Line(39) = {12, 359};
+                    Line(40) = {359, 3};
+                    Line(41) = {3, 351};
+                    Line(42) = {363, 351};
+                    Line(43) = {152, 363};
+                    Line(44) = {357, 351};
+                    Line(45) = {152, 357};
+                    Line(46) = {8, 38};
+                    Line(47) = {38, 357};
+                    Line(48) = {356, 38};
+                    Line(49) = {153, 356};
+                    Line(50) = {153, 8};
+                    Line(51) = {8, 152};
+                    Line(52) = {362, 153};
+                    Line(53) = {350, 356};
+
+                    Line Loop(54) = {5, 9, 24, 17, -13, -1};
+                    Plane Surface(55) = {54};
+                    Line Loop(56) = {13, 18, 19, 12, -7, -2};
+                    Plane Surface(57) = {56};
+                    Line Loop(58) = {12, 34, -43, -20};
+                    Plane Surface(59) = {58};
+                    Line Loop(60) = {20, -51, -15, 11};
+                    Plane Surface(61) = {60};
+                    Line Loop(62) = {18, 19, -11, -14};
+                    Plane Surface(63) = {62};
+                    Line Loop(64) = {17, 14, -10, 24};
+                    Plane Surface(65) = {64};
+                    Line Loop(66) = {10, 15, -50, 23};
+                    Plane Surface(67) = {66};
+                    Line Loop(68) = {23, -9, 31, 52};
+                    Plane Surface(69) = {68};
+                    Line Loop(70) = {52, 49, -53, -35};
+                    Plane Surface(71) = {70};
+                    Line Loop(72) = {49, 48, -46, -50};
+                    Plane Surface(73) = {72};
+                    Line Loop(74) = {51, 45, -47, -46};
+                    Plane Surface(75) = {74};
+                    Line Loop(76) = {43, 42, -44, -45};
+                    Plane Surface(77) = {76};
+                    Line Loop(78) = {44, -41, -40, -39, -38, -37, -36, 53, 48, 47};
+                    Plane Surface(79) = {78};
+
+                    Physical Line(80) = {5, 31, 35, 36};
+                    Physical Line(81) = {37, 38, 39, 40};
+                    Physical Line(82) = {1, 2};
+                    Physical Line(83) = {7, 34, 42, 41};
+
+                    Physical Surface(1) = {55, 57, 59, 69};
+                    Physical Surface(2) = {65, 63, 61, 67};
+                    Physical Surface(3) = {73, 75};
+                    Physical Surface(4) = {77, 71};
+                    Physical Surface(5) = {79};
                 EndIf
+
                 If(slab2_w_full == 0)
-                    //TODO
+                    Point(360) = {0, -hy+slab2_h, 0, lc5};
+                    Point(361) = {d, -hy+slab2_h, 0, lc5};
+                    Line(32) = {362, 360};
+                    Line(33) = {360, 2};
+                    Line(35) = {363, 361};
+                    Line(36) = {361, 3};
+                    Line(37) = {2, 354};
+                    Line(38) = {354, 358};
+                    Line(39) = {358, 12};
+                    Line(40) = {12, 359};
+                    Line(41) = {359, 355};
+                    Line(42) = {355, 3};
+                    Line(43) = {361, 351};
+                    Line(44) = {351, 355};
+                    Line(45) = {363, 152};
+                    Line(46) = {152, 357};
+                    Line(47) = {357, 351};
+                    Line(49) = {8, 38};
+                    Line(50) = {38, 12};
+                    Line(51) = {153, 356};
+                    Line(53) = {356, 38};
+                    Line(54) = {153, 8};
+                    Line(55) = {8, 152};
+                    Line(56) = {38, 357};
+                    Line(57) = {350, 356};
+                    Line(58) = {360, 350};
+                    Line(59) = {362, 153};
+                    Line(60) = {350, 354};
+
+                    Line Loop(61) = {5, 9, 24, 17, -13, -1};
+                    Plane Surface(62) = {61};
+                    Line Loop(63) = {13, 18, 19, 12, -7, -2};
+                    Plane Surface(64) = {63};
+                    Line Loop(65) = {12, 34, 45, -20};
+                    Plane Surface(66) = {65};
+                    Line Loop(67) = {20, -55, -15, 11};
+                    Plane Surface(68) = {67};
+                    Line Loop(69) = {18, 19, -11, -14};
+                    Plane Surface(70) = {69};
+                    Line Loop(71) = {14, -10, 24, 17};
+                    Plane Surface(72) = {71};
+                    Line Loop(73) = {10, 15, -54, 23};
+                    Plane Surface(74) = {73};
+                    Line Loop(75) = {23, -9, 31, 59};
+                    Plane Surface(76) = {75};
+                    Line Loop(77) = {59, 51, -57, -58, -32};
+                    Plane Surface(78) = {77};
+                    Line Loop(79) = {51, 53, -49, -54};
+                    Plane Surface(80) = {79};
+                    Line Loop(81) = {49, 56, -46, -55};
+                    Plane Surface(82) = {81};
+                    Line Loop(83) = {45, 46, 47, -43, -35};
+                    Plane Surface(84) = {83};
+                    Line Loop(85) = {43, 44, 42, -36};
+                    Plane Surface(86) = {85};
+                    Line Loop(87) = {58, 60, -37, -33};
+                    Plane Surface(88) = {87};
+                    Line Loop(89) = {57, 53, 50, -39, -38, -60};
+                    Plane Surface(90) = {89};
+                    Line Loop(91) = {56, 47, 44, -41, -40, -50};
+                    Plane Surface(92) = {91};
+
+                    Physical Line(93) = {37, 38, 39, 40, 41, 42};
+                    Physical Line(94) = {36, 35, 34, 7};
+                    Physical Line(95) = {2, 1};
+                    Physical Line(96) = {5, 31, 32, 33};
+
+                    Physical Surface(1) = {62, 64, 66, 76};
+                    Physical Surface(2) = {72, 70, 68, 74};
+                    Physical Surface(3) = {82, 80};
+                    Physical Surface(4) = {84, 78};
+                    Physical Surface(5) = {90, 92};
+                    Physical Surface(6) = {88, 86};
                 EndIf
             EndIf
 
             If(slab2_w < slab_w)
-                //TODO
+                Point(360) = {0, -hy+slab2_h, 0, lc5};
+                Point(361) = {d, -hy+slab2_h, 0, lc5};
+                Line(32) = {362, 360};
+                Line(33) = {360, 2};
+                Line(35) = {363, 361};
+                Line(36) = {361, 3};
+                Line(37) = {362, 153};
+                Line(38) = {153, 8};
+                Line(39) = {8, 152};
+                Line(40) = {152, 363};
+                Line(41) = {361, 357};
+                Line(42) = {152, 357};
+                Line(43) = {357, 351};
+                Line(44) = {351, 355};
+                Line(45) = {359, 355};
+                Line(46) = {359, 3};
+                Line(47) = {351, 38};
+                Line(48) = {8, 38};
+                Line(49) = {38, 12};
+                Line(50) = {350, 354};
+                Line(51) = {354, 12};
+                Line(52) = {12, 355};
+                Line(53) = {38, 350};
+                Line(54) = {356, 350};
+                Line(55) = {358, 354};
+                Line(56) = {358, 2};
+                Line(57) = {360, 356};
+                Line(58) = {153, 356};
+
+                Line Loop(59) = {5, 9, 24, 17, -13, -1};
+                Plane Surface(60) = {59};
+                Line Loop(61) = {13, 18, 19, 12, -7, -2};
+                Plane Surface(62) = {61};
+                Line Loop(63) = {12, 34, -40, -20};
+                Plane Surface(64) = {63};
+                Line Loop(65) = {20, -39, -15, 11};
+                Plane Surface(66) = {65};
+                Line Loop(67) = {11, -19, -18, 14};
+                Plane Surface(68) = {67};
+                Line Loop(69) = {17, 14, -10, 24};
+                Plane Surface(70) = {69};
+                Line Loop(71) = {10, 15, -38, 23};
+                Plane Surface(72) = {71};
+                Line Loop(73) = {23, -9, 31, 37};
+                Plane Surface(74) = {73};
+                Line Loop(75) = {37, 58, -57, -32};
+                Plane Surface(76) = {75};
+                Line Loop(77) = {58, 54, -53, -48, -38};
+                Plane Surface(78) = {77};
+                Line Loop(79) = {48, -47, -43, -42, -39};
+                Plane Surface(80) = {79};
+                Line Loop(81) = {42, -41, -35, -40};
+                Plane Surface(82) = {81};
+                Line Loop(83) = {41, 43, 44, -45, 46, -36};
+                Plane Surface(84) = {83};
+                Line Loop(85) = {44, -52, -49, -47};
+                Plane Surface(86) = {85};
+                Line Loop(87) = {49, -51, -50, -53};
+                Plane Surface(88) = {87};
+                Line Loop(89) = {50, -55, 56, -33, 57, 54};
+                Plane Surface(90) = {89};
+
+                Physical Line(91) = {1, 2};
+                Physical Line(92) = {7, 34, 35, 36};
+                Physical Line(93) = {46, 45, 52, 51, 55, 56};
+                Physical Line(94) = {33, 32, 31, 5};
+
+                Physical Surface(1) = {60, 62, 64, 74};
+                Physical Surface(2) = {70, 68, 66, 72};
+                Physical Surface(3) = {78, 80};
+                Physical Surface(4) = {76, 82};
+                Physical Surface(5) = {86, 88};
+                Physical Surface(6) = {90, 84};
             EndIf
 
             If(slab2_w == slab_w)
-                //TODO
+                Point(360) = {0, -hy+slab2_h, 0, lc5};
+                Point(361) = {d, -hy+slab2_h, 0, lc5};
+                Line(32) = {362, 360};
+                Line(33) = {360, 2};
+                Line(35) = {363, 361};
+                Line(36) = {361, 3};
+                Line(37) = {152, 351};
+                Line(38) = {152, 363};
+                Line(39) = {152, 8};
+                Line(40) = {8, 153};
+                Line(41) = {362, 153};
+                Line(42) = {153, 350};
+                Line(43) = {8, 38};
+                Line(44) = {38, 12};
+                Line(45) = {351, 355};
+                Line(46) = {350, 354};
+
+                Line(47) = {360, 350};
+                Line(48) = {2, 354};
+                Line(49) = {354, 12};
+                Line(50) = {12, 355};
+                Line(51) = {351, 38};
+                Line(52) = {350, 38};
+                Line(53) = {351, 361};
+                Line(54) = {355, 3};
+
+                Line Loop(55) = {5, 9, 24, 17, -13, -1};
+                Plane Surface(56) = {55};
+                Line Loop(57) = {13, 18, 19, 12, -7, -2};
+                Plane Surface(58) = {57};
+                Line Loop(59) = {19, -11, -14, 18};
+                Plane Surface(60) = {59};
+                Line Loop(61) = {14, -10, 24, 17};
+                Plane Surface(62) = {61};
+                Line Loop(63) = {23, -9, 31, 41};
+                Plane Surface(64) = {63};
+                Line Loop(65) = {23, 10, 15, 40};
+                Plane Surface(66) = {65};
+                Line Loop(67) = {15, -39, -20, -11};
+                Plane Surface(68) = {67};
+                Line Loop(69) = {20, 38, -34, -12};
+                Plane Surface(70) = {69};
+                Line Loop(71) = {38, 35, -53, -37};
+                Plane Surface(72) = {71};
+                Line Loop(73) = {37, 51, -43, -39};
+                Plane Surface(74) = {73};
+                Line Loop(75) = {43, -52, -42, -40};
+                Plane Surface(76) = {75};
+                Line Loop(77) = {42, -47, -32, 41};
+                Plane Surface(78) = {77};
+                Line Loop(79) = {47, 46, -48, -33};
+                Plane Surface(80) = {79};
+                Line Loop(81) = {46, 49, -44, -52};
+                Plane Surface(82) = {81};
+                Line Loop(83) = {44, 50, -45, 51};
+                Plane Surface(84) = {83};
+                Line Loop(85) = {45, 54, -36, -53};
+                Plane Surface(86) = {85};
+
+                Physical Line(87) = {1, 2};
+                Physical Line(88) = {5, 31, 32, 33};
+                Physical Line(89) = {48, 49, 50, 54};
+                Physical Line(90) = {7, 34, 35, 36};
+
+                Physical Surface(1) = {56, 58, 70, 64};
+                Physical Surface(2) = {62, 60, 68, 66};
+                Physical Surface(3) = {76, 74};
+                Physical Surface(4) = {72, 78};
+                Physical Surface(5) = {82, 84};
+                Physical Surface(6) = {80, 86};
             EndIf
         EndIf
     EndIf
 EndIf
-
-
