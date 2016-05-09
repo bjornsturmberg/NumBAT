@@ -17,12 +17,11 @@ radius2 = (a2/(2*d_in_nm))*d;
 radius2y = (a2y/(2*d_in_nm))*d;
 sep = 10;
 b = sep/(2*d_in_nm);
-yoffset = -5/d_in_nm;
 
 rect = 0;
 
 slab_width = 100;
-slab_height = 10;
+slab_height = 1;
 slab_w = slab_width/d_in_nm;
 slab_h = slab_height/d_in_nm;
 slab_w_full = 0;
@@ -50,22 +49,22 @@ Point(252) = {0, -hy+slab_h, 0, lc5};
 Point(253) = {d, -hy+slab_h, 0, lc5};
 
 // Inclusion
-Point(5) = {-radius1-b-hx+d/2, -hy/2, 0, lc3};
-Point(6) = {-radius1-b-hx+d/2, -hy/2+radius1y, 0, lc2};
-Point(7) = {-radius1-b-hx+d/2-radius1, -hy/2, 0, lc2};
-Point(8) = {-radius1-b-hx+d/2, -hy/2-radius1y, 0, lc2};
-Point(9) = {-radius1-b-hx+d/2+radius1, -hy/2, 0, lc2};
+Point(5) = {-radius1-b-hx+d/2, -hy+slab_h+radius1y, 0, lc3};
+Point(6) = {-radius1-b-hx+d/2, -hy+slab_h+2*radius1y, 0, lc2};
+Point(7) = {-radius1-b-hx+d/2-radius1, -hy+slab_h+radius1y, 0, lc2};
+Point(8) = {-radius1-b-hx+d/2, -hy+slab_h, 0, lc2};
+Point(9) = {-radius1-b-hx+d/2+radius1, -hy+slab_h+radius1y, 0, lc2};
 
 Point(10) = {-2*radius1-b-hx+d/2, 0, 0, lc4};
 Point(11) = {-b-hx+d/2, 0, 0, lc4};
 Point(12) = {b-hx+d/2, 0, 0, lc4};
 Point(13) = {2*radius2+b-hx+d/2, 0, 0, lc4};
 
-Point(18) = {radius2+b-hx+d/2, -hy/2+yoffset, 0, lc3};
-Point(19) = {radius2+b-hx+d/2, -hy/2+radius2y+yoffset, 0, lc2};
-Point(20) = {radius2+b-hx+d/2-radius2, -hy/2+yoffset, 0, lc2};
-Point(21) = {radius2+b-hx+d/2, -hy/2-radius2y+yoffset, 0, lc2};
-Point(22) = {radius2+b-hx+d/2+radius2, -hy/2+yoffset, 0, lc2};
+Point(18) = {radius2+b-hx+d/2, -hy+slab_h+radius2y, 0, lc3};
+Point(19) = {radius2+b-hx+d/2, -hy+slab_h+2*radius2y, 0, lc2};
+Point(20) = {radius2+b-hx+d/2-radius2, -hy+slab_h+radius2y, 0, lc2};
+Point(21) = {radius2+b-hx+d/2, -hy+slab_h, 0, lc2};
+Point(22) = {radius2+b-hx+d/2+radius2, -hy+slab_h+radius2y, 0, lc2};
 
 Line(1) = {1, 10};
 Line(2) = {10, 11};
@@ -195,10 +194,10 @@ If(rect == 1)
     Point(152) = {-radius1-b-hx+d/2+radius1, -hy/2-radius1y, 0,lc3};
     Point(153) = {-radius1-b-hx+d/2-radius1, -hy/2-radius1y, 0,lc3};
 
-    Point(154) = {radius2+b-hx+d/2+radius2, -hy/2+radius2y+yoffset, 0,lc3};
-    Point(155) = {radius2+b-hx+d/2-radius2, -hy/2+radius2y+yoffset, 0,lc3};
-    Point(156) = {radius2+b-hx+d/2+radius2, -hy/2-radius2y+yoffset, 0,lc3};
-    Point(157) = {radius2+b-hx+d/2-radius2, -hy/2-radius2y+yoffset, 0,lc3};
+    Point(154) = {radius2+b-hx+d/2+radius2, -hy/2+radius2y, 0,lc3};
+    Point(155) = {radius2+b-hx+d/2-radius2, -hy/2+radius2y, 0,lc3};
+    Point(156) = {radius2+b-hx+d/2+radius2, -hy/2-radius2y, 0,lc3};
+    Point(157) = {radius2+b-hx+d/2-radius2, -hy/2-radius2y, 0,lc3};
 
     Line(48) = {10, 151};
     Line(26) = {151, 6};

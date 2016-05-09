@@ -77,7 +77,6 @@ Line(14) = {6,5};
 Line(15) = {5,8};
 
 
-//TODO
 If(rect == 0)
     Ellipsis(17) = {9,5,6,6};
     Ellipsis(18) = {6,5,7,7};
