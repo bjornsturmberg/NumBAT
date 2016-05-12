@@ -7,4 +7,4 @@ NumBAT, the Numerical Brillouin Analysis Tool, integrates electromagnetic and ac
 ORIGIN
 ------
 
-NumBAT was developed by Bjorn Sturmberg, Christian Wolfe, Chris Poulton and Michael Steel in a collaboration between Macquarie University and the University of Technology Sydney, as part of the Australian Research Council Discovery Project xxx.
+NumBAT was developed by Bjorn Sturmberg, Christian Wolff, Chris Poulton and Michael Steel in a collaboration between Macquarie University and the University of Technology Sydney, as part of the Australian Research Council Discovery Project xxx.
