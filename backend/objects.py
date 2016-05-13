@@ -8,6 +8,8 @@
 
 import os
 import numpy as np
+# import sys
+# sys.path.append("../backend/")
 from fortran import NumBAT
 
 msh_location = '../backend/fortran/msh/'
@@ -118,14 +120,14 @@ class Struct(object):
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
                  coating_y=None, inc_b_x=None, inc_b_y=None,
                  two_inc_sep=None, incs_y_offset=None,
-                 bkg_material=materials.Material(1.0 + 0.0j),
-                 inc_a_material=materials.Material(1.0 + 0.0j),
-                 inc_b_material=materials.Material(1.0 + 0.0j),
-                 slab_a_material=materials.Material(1.0 + 0.0j),
-                 slab_a_bkg_material=materials.Material(1.0 + 0.0j),
-                 slab_b_material=materials.Material(1.0 + 0.0j),
-                 slab_b_bkg_material=materials.Material(1.0 + 0.0j),
-                 coating_material=materials.Material(1.0 + 0.0j),
+                 bkg_material=None,
+                 inc_a_material=None,
+                 inc_b_material=None,
+                 slab_a_material=None,
+                 slab_a_bkg_material=None,
+                 slab_b_material=None,
+                 slab_b_bkg_material=None,
+                 coating_material=None,
                  loss=True,
                  make_mesh_now=True, force_mesh=True, 
                  mesh_file='NEED_FILE.mail',
@@ -142,6 +144,12 @@ class Struct(object):
             self.inc_a_y = float(inc_a_x)
         else:
             self.inc_a_y = float(inc_a_y)
+        self.inc_b_x = inc_b_x
+        if inc_b_x is not None:
+            if inc_b_y is None:
+                self.inc_b_y = float(inc_b_x)
+            else:
+                self.inc_b_y = float(inc_b_y)
         self.inc_shape = inc_shape
         self.slab_a_x = slab_a_x 
         self.slab_a_y = slab_a_y 
@@ -211,8 +219,8 @@ class Struct(object):
 
     def make_mesh(self):
         if self.inc_shape in ['circular', 'rectangular']:
-            if slab_b_x is not None:
-                if coating_y is None and inc_b_x is None:
+            if self.slab_b_x is not None:
+                if self.coating_y is None and self.inc_b_x is None:
                     msh_template = '1_on_2slabs'
                     msh_name = '1_on_2s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s_%(diasss)s_%(diassss)s' % {
                    'd': dec_float_str(self.unitcell_x),
@@ -223,7 +231,7 @@ class Struct(object):
                    'diass': dec_float_str(self.slab_a_y),
                    'diasss': dec_float_str(self.slab_b_x),
                    'diassss': dec_float_str(self.slab_b_y)}
-                elif coating_y is None and inc_b_x is not None:
+                elif self.coating_y is None and self.inc_b_x is not None:
                     msh_template = '2_on_2slabs'
                     msh_name = '2_on_2s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diab)s_%(diasb)s_%(diass)s_%(diasss)s_%(diassss)s' % {
                    'd': dec_float_str(self.unitcell_x),
@@ -236,16 +244,16 @@ class Struct(object):
                    'diass': dec_float_str(self.slab_a_y),
                    'diasss': dec_float_str(self.slab_b_x),
                    'diassss': dec_float_str(self.slab_b_y)}
-                elif coating_y is not None and inc_b_x is not None:
+                elif self.coating_y is not None and self.inc_b_x is not None:
                     raise NotImplementedError, "Have not implemented 2 coated \
                         inclusions."
-                elif coating_y is not None and inc_b_x is None:
+                elif self.coating_y is not None and self.inc_b_x is None:
                         raise NotImplementedError, "Have not implemented 1 coated \
                         inclusion."
                 else:
                     raise ValueError, "NumBAT doesn't understand you geometry."
-            elif slab_a_x is not None:
-                if coating_y is None and inc_b_x is None:
+            elif self.slab_a_x is not None:
+                if self.coating_y is None and self.inc_b_x is None:
                     msh_template = '1_on_slab'
                     msh_name = '1_on_s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s' % {
                    'd': dec_float_str(self.unitcell_x),
@@ -254,7 +262,7 @@ class Struct(object):
                    'dias': dec_float_str(self.inc_a_y),
                    'dias': dec_float_str(self.slab_a_x),
                    'diass': dec_float_str(self.slab_a_y)}
-                elif coating_y is None and inc_b_x is not None:
+                elif self.coating_y is None and self.inc_b_x is not None:
                     msh_template = '2_on_slab'
                     msh_name = '2_on_s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diab)s_%(diasb)s_%(diass)s' % {
                    'd': dec_float_str(self.unitcell_x),
@@ -265,23 +273,23 @@ class Struct(object):
                    'diasb': dec_float_str(self.inc_a_y),
                    'dias': dec_float_str(self.slab_a_x),
                    'diass': dec_float_str(self.slab_a_y)}
-                elif coating_y is not None and inc_b_x is not None:
+                elif self.coating_y is not None and self.inc_b_x is not None:
                     raise NotImplementedError, "Have not implemented 2 coated \
                         inclusions."
-                elif coating_y is not None and inc_b_x is None:
+                elif self.coating_y is not None and self.inc_b_x is None:
                         raise NotImplementedError, "Have not implemented 1 coated \
                         inclusion."
                 else:
                     raise ValueError, "NumBAT doesn't understand you geometry."
-            elif:
-                if coating_y is None and inc_b_x is None:
+            elif self.inc_a_x is not None:
+                if self.coating_y is None and self.inc_b_x is None:
                     msh_template = '1'
                     msh_name = '1_%(d)s_%(dy)s_%(dia)s' % {
                    'd': dec_float_str(self.unitcell_x),
                    'dy': dec_float_str(self.unitcell_y),
                    'dia': dec_float_str(self.inc_a_x),
                    'dias': dec_float_str(self.inc_a_y)}
-                elif coating_y is None and inc_b_x is not None:
+                elif self.coating_y is None and self.inc_b_x is not None:
                     msh_template = '2'
                     msh_name = '2_%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diab)s' % {
                    'd': dec_float_str(self.unitcell_x),
@@ -290,21 +298,21 @@ class Struct(object):
                    'dias': dec_float_str(self.inc_a_y),
                    'diab': dec_float_str(self.inc_a_x),
                    'diasb': dec_float_str(self.inc_a_y)}
-                elif coating_y is not None and inc_b_x is not None:
+                elif self.coating_y is not None and self.inc_b_x is not None:
                     raise NotImplementedError, "Have not implemented 2 coated \
                         inclusions."
-                elif coating_y is not None and inc_b_x is None:
+                elif self.coating_y is not None and self.inc_b_x is None:
                         raise NotImplementedError, "Have not implemented 1 coated \
                         inclusion."
                 else:
                     raise ValueError, "NumBAT doesn't understand you geometry."
             else:
                 raise ValueError, "must have at least one nonzero inclusion."
-            if inc_shape='circular': msh_name+='-c'
+            if self.inc_shape == 'circular': msh_name+='-c'
 
             if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                 geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
-                geo = geo.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
                 geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
                 geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
                 geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
@@ -341,3 +349,13 @@ class Struct(object):
         os.system(gmsh_cmd)
 
 
+
+
+
+
+
+def dec_float_str(dec_float):
+    """ Convert float with decimal point into string with '_' in place of '.' """
+    string = str(dec_float)
+    fmt_string = string.replace('.', '_')
+    return fmt_string
