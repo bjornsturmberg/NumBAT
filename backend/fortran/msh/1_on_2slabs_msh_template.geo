@@ -2,7 +2,6 @@
 // Inclusion can be circular/elliptical (default), or square/rectangular.
 
 d = 1; // grating period
-ff = 0;
 d_in_nm = 100;
 dy_in_nm = 50;
 dy = dy_in_nm/d_in_nm;
@@ -11,10 +10,10 @@ a1y = 10;
 radius1 = (a1/(2*d_in_nm))*d;
 radius1y = (a1y/(2*d_in_nm))*d;
 
-rect = 0;
+rect = 1;
 
-slab_width = 80;
-slab_height = 5;
+slab_width = d_in_nm;
+slab_height = 10;
 slab_w = slab_width/d_in_nm;
 slab_h = slab_height/d_in_nm;
 slab_w_full = 0;
@@ -22,8 +21,8 @@ If(slab_w == 1)
     slab_w_full = 1;
 EndIf
 
-slab2_width = 90;
-slab2_height = 10;
+slab2_width = d_in_nm;
+slab2_height = 5;
 slab2_w = slab2_width/d_in_nm;
 slab2_h = slab2_height/d_in_nm;
 slab2_w_full = 0;

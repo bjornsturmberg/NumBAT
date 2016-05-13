@@ -2,12 +2,11 @@
 // Inclusion can be circular/elliptical (default), or square/rectangular.
 
 d = 1; // grating period
-ff = 0;
 d_in_nm = 100;
 dy_in_nm = 50;
 dy = dy_in_nm/d_in_nm;
-a1 = 30;
-a1y = 30;
+a1 = 20;
+a1y = 10;
 radius1 = (a1/(2*d_in_nm))*d;
 radius1y = (a1y/(2*d_in_nm))*d;
 a2 = 10;
@@ -16,7 +15,8 @@ radius2 = (a2/(2*d_in_nm))*d;
 radius2y = (a2y/(2*d_in_nm))*d;
 sep = 10;
 b = sep/(2*d_in_nm);
-yoffset = -5/d_in_nm;
+yoff = -5;
+yoffset = yoff/d_in_nm;
 rect = 1;
 lc = 0; // 0.501 0.201 0.0701;
 lc2 = lc/1; // on cylinder surfaces

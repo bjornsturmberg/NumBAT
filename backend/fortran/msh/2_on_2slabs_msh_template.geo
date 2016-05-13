@@ -6,8 +6,8 @@ ff = 0;
 d_in_nm = 100;
 dy_in_nm = 50;
 dy = dy_in_nm/d_in_nm;
-a1 = 30;
-a1y = 30;
+a1 = 20;
+a1y = 10;
 radius1 = (a1/(2*d_in_nm))*d;
 radius1y = (a1y/(2*d_in_nm))*d;
 
@@ -30,7 +30,7 @@ If(slab_w == 1)
 EndIf
 
 slab2_width = d_in_nm;
-slab2_height = 3;
+slab2_height = 5;
 slab2_w = slab2_width/d_in_nm;
 slab2_h = slab2_height/d_in_nm;
 slab2_w_full = 0;

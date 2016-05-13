@@ -27,37 +27,52 @@ class Struct(object):
             unitcell_x  (float): The horizontal period of the unit cell \
                 in nanometers.
 
-            inc_x  (float): The horizontal diameter of the inclusion in nm.
+            inc_a_x  (float): The horizontal diameter of the inclusion in nm.
 
         Keyword Args:
             unitcell_y  (float): The vertical period of the unit cell \
                 in nanometers. If None, unitcell_y = unitcell_x.
 
-            inc_y  (float): The vertical diameter of the inclusion in nm.
+            inc_a_y  (float): The vertical diameter of the inclusion in nm.
 
             inc_shape  (str): Shape of inclusions that have template mesh, \
                 currently: 'circular', 'rectangular'. Rectangular is default.
 
-            diameter2-16  (float): The diameters of further inclusions in nm. \
-                Implemented up to diameter6 for 1D_arrays.
+            slab_a_x  (float): The horizontal diameter in nm of the slab \
+                directly below the inclusion.
 
-            inclusion_a  : A :Material: instance for first inclusion, \
-                specified as dispersive refractive index (eg. materials.Si_c) \
-                or nondispersive complex number (eg. Material(1.0 + 0.0j)).
+            slab_a_y  (float): The vertical diameter in nm of the slab \
+                directly below the inclusion.
 
-            inclusion_b  : A :Material: instance for the second \
-                inclusion medium.
+            slab_b_x  (float): The horizontal diameter in nm of the slab \
+                seperated from the inclusion by slab_a.
 
-            inclusion_c  : A :Material: instance for the third \
-                inclusion medium.
+            slab_b_y  (float): The vertical diameter in nm of the slab \
+                seperated from the inclusion by slab_a.
 
-            inclusion_d  : A :Material: instance for the fourth \
-                inclusion medium.
+            two_inc_sep  (float): Seperation between edges of inclusions in nm.
 
-            inclusion_e  : A :Material: instance for the fifth \
-                inclusion medium.
+            incs_y_offset  (float): Vertical offset between centers of \
+                inclusions in nm.
+
+            coating_y  (float): The thickness of any coating layer around \
+                the inclusion.
 
             background  : A :Material: instance for the background medium.
+
+            inc_a_material  : A :Material: instance for the 
+
+            inc_b_material  : A :Material: instance for the 
+
+            slab_a_material  : A :Material: instance for the 
+
+            slab_a_bkg_material  : A :Material: instance for the 
+
+            slab_b_material  : A :Material: instance for the 
+
+            slab_b_bkg_material  : A :Material: instance for the 
+
+            coating_material  : A :Material: instance for the 
 
             loss  (bool): If False, Im(n) = 0, if True n as in \
                 :Material: instance.
@@ -98,61 +113,78 @@ class Struct(object):
             plot_abs  (bool): Choose to plot absolute value of modal fields.
     """
 
-    def __init__(self, unitcell_x, inc_x,
-                 unitcell_y=None, inc_y=None, inc_shape='rectangular',
-                 background=materials.Material(1.0 + 0.0j),
-                 inclusion_a=materials.Material(1.0 + 0.0j),
-                 inclusion_b=materials.Material(1.0 + 0.0j),
-                 inclusion_c=materials.Material(1.0 + 0.0j),
-                 inclusion_d=materials.Material(1.0 + 0.0j),
-                 inclusion_e=materials.Material(1.0 + 0.0j),
-                 inclusion_f=materials.Material(1.0 + 0.0j),
-                 loss=True, height_nm=100.0,
-                 diameter2=0,  diameter3=0, diameter4=0, diameter5=0,
-                 diameter6=0, diameter7=0, diameter8=0, diameter9=0,
-                 diameter10=0, diameter11=0, diameter12=0, diameter13=0,
-                 diameter14=0, diameter15=0, diameter16=0,
-                 make_mesh_now=True, force_mesh=True,
+    def __init__(self, unitcell_x, inc_a_x,
+                 unitcell_y=None, inc_a_y=None, inc_shape='rectangular',
+                 slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
+                 coating_y=None, inc_b_x=None, inc_b_y=None,
+                 two_inc_sep=None, incs_y_offset=None,
+                 bkg_material=materials.Material(1.0 + 0.0j),
+                 inc_a_material=materials.Material(1.0 + 0.0j),
+                 inc_b_material=materials.Material(1.0 + 0.0j),
+                 slab_a_material=materials.Material(1.0 + 0.0j),
+                 slab_a_bkg_material=materials.Material(1.0 + 0.0j),
+                 slab_b_material=materials.Material(1.0 + 0.0j),
+                 slab_b_bkg_material=materials.Material(1.0 + 0.0j),
+                 coating_material=materials.Material(1.0 + 0.0j),
+                 loss=True,
+                 make_mesh_now=True, force_mesh=True, 
                  mesh_file='NEED_FILE.mail',
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
                  plotting_fields=False, plot_real=1, plot_imag=0, plot_abs=0,
                  plot_field_conc=False):
         self.unitcell_x = float(unitcell_x)
-        self.diameter1 = diameter1
+        self.inc_a_x = inc_a_x
         if unitcell_y is None:
             self.unitcell_y = float(unitcell_x)
         else:
             self.unitcell_y = float(unitcell_y)
-        self.inc_shape = inc_shape
-        self.background = background
-        self.inclusion_a = inclusion_a
-        self.inclusion_b = inclusion_b
-        self.inclusion_c = inclusion_c
-        self.inclusion_d = inclusion_d
-        self.inclusion_e = inclusion_e
-        self.inclusion_f = inclusion_f
-        self.loss = loss
-        self.diameter2 = diameter2
-        self.diameter3 = diameter3
-        self.diameter4 = diameter4
-        self.diameter5 = diameter5
-        self.diameter6 = diameter6
-        self.diameter7 = diameter7
-        self.diameter8 = diameter8
-        self.diameter9 = diameter9
-        self.diameter10 = diameter10
-        self.diameter11 = diameter11
-        self.diameter12 = diameter12
-        self.diameter13 = diameter13
-        self.diameter14 = diameter14
-        self.diameter15 = diameter15
-        self.diameter16 = diameter16
-        if diameter3 != 0:
-            self.nb_typ_el = 4
-        elif diameter2 != 0:
-            self.nb_typ_el = 3
+        if inc_a_y is None:
+            self.inc_a_y = float(inc_a_x)
         else:
-            self.nb_typ_el = 2
+            self.inc_a_y = float(inc_a_y)
+        self.inc_shape = inc_shape
+        self.slab_a_x = slab_a_x 
+        self.slab_a_y = slab_a_y 
+        self.slab_b_x = slab_b_x 
+        self.slab_b_y = slab_b_y 
+        self.coating_y = coating_y
+        self.two_inc_sep = two_inc_sep
+        self.bkg_material = bkg_material
+        self.inc_a_material = inc_a_material
+        self.inc_b_material = inc_b_material
+        self.slab_a_material = slab_a_material
+        self.slab_a_bkg_material = slab_a_bkg_material
+        self.slab_b_material = slab_b_material
+        self.slab_b_bkg_material = slab_b_bkg_material
+        self.coating_material = coating_material
+        self.loss = loss
+        if slab_b_x is not None:
+            if coating_y is None and inc_b_x is None:
+                self.nb_typ_el = 6
+            elif coating_y != None and inc_b_x != None:
+                self.nb_typ_el = 8
+                raise NotImplementedError, "Have not implemented 2 coated \
+                    inclusions."
+            else:
+                self.nb_typ_el = 7
+        elif slab_a_x is not None:
+            if coating_y is None and inc_b_x is None:
+                self.nb_typ_el = 4
+            elif coating_y != None and inc_b_x != None:
+                self.nb_typ_el = 7
+                raise NotImplementedError, "Have not implemented 2 coated \
+                    inclusions."
+            else:
+                self.nb_typ_el = 5
+        else:
+            if coating_y is None and inc_b_x is None:
+                self.nb_typ_el = 2
+            elif coating_y != None and inc_b_x != None:
+                self.nb_typ_el = 5
+                raise NotImplementedError, "Have not implemented 2 coated \
+                    inclusions."
+            else:
+                self.nb_typ_el = 3
         self.lc = lc_bkg
         self.lc2 = lc2
         self.lc3 = lc3
@@ -178,117 +210,134 @@ class Struct(object):
 
 
     def make_mesh(self):
-        if self.inc_shape in ['circle', 'ellipse', 'square']:
-            if self.diameter10 > 0:
-                supercell = 16
-                msh_name = '%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s_%(diasss)s_%(diassss)s' % {
-               'd': dec_float_str(self.period),
-               'dy': dec_float_str(self.period_y),
-               'dia': dec_float_str(self.diameter1),
-               'dias': dec_float_str(self.diameter2),
-               'dias': dec_float_str(self.diameter2),
-               'diass': dec_float_str(self.diameter3),
-               'diasss': dec_float_str(self.diameter4),
-               'diassss': dec_float_str(self.diameter5)}
-            elif self.diameter5 > 0:
-                supercell = 9
-                msh_name = '%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s_%(diasss)s_%(diassss)s' % {
-               'd': dec_float_str(self.period),
-               'dy': dec_float_str(self.period_y),
-               'dia': dec_float_str(self.diameter1),
-               'dias': dec_float_str(self.diameter2), 'diass': dec_float_str(self.diameter3),
-               'diasss': dec_float_str(self.diameter4), 'diassss': dec_float_str(self.diameter5)}
-            elif self.diameter4 > 0:
-                supercell = 4
-                msh_name = '%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s_%(diasss)s' % {
-               'd': dec_float_str(self.period),
-               'dy': dec_float_str(self.period_y),
-               'dia': dec_float_str(self.diameter1),
-               'dias': dec_float_str(self.diameter2), 'diass': dec_float_str(self.diameter3),
-               'diasss': dec_float_str(self.diameter4)}
-            elif self.diameter3 > 0:
-                supercell = 3
-                msh_name = '%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s' % {
-               'd': dec_float_str(self.period),
-               'dy': dec_float_str(self.period_y),
-               'dia': dec_float_str(self.diameter1),
-               'dias': dec_float_str(self.diameter2), 'diass': dec_float_str(self.diameter3)}
-            elif self.diameter2 > 0:
-                supercell = 2
-                msh_name = '%(d)s_%(dy)s_%(dia)s_%(dias)s' % {'d': dec_float_str(self.period),
-               'dy': dec_float_str(self.period_y),
-               'dia': dec_float_str(self.diameter1),
-               'diameters': dec_float_str(self.diameter2)}
-            elif self.diameter1 > 0:
-                supercell = 1
-                msh_name = '%(d)s_%(dy)s_%(dia)s' % {
-                           'd': dec_float_str(self.period),
-                           'dy': dec_float_str(self.period_y),
-                           'dia': dec_float_str(self.diameter1)}
+        if self.inc_shape in ['circular', 'rectangular']:
+            if slab_b_x is not None:
+                if coating_y is None and inc_b_x is None:
+                    msh_template = '1_on_2slabs'
+                    msh_name = '1_on_2s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s_%(diasss)s_%(diassss)s' % {
+                   'd': dec_float_str(self.unitcell_x),
+                   'dy': dec_float_str(self.unitcell_y),
+                   'dia': dec_float_str(self.inc_a_x),
+                   'dias': dec_float_str(self.inc_a_y),
+                   'dias': dec_float_str(self.slab_a_x),
+                   'diass': dec_float_str(self.slab_a_y),
+                   'diasss': dec_float_str(self.slab_b_x),
+                   'diassss': dec_float_str(self.slab_b_y)}
+                elif coating_y is None and inc_b_x is not None:
+                    msh_template = '2_on_2slabs'
+                    msh_name = '2_on_2s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diab)s_%(diasb)s_%(diass)s_%(diasss)s_%(diassss)s' % {
+                   'd': dec_float_str(self.unitcell_x),
+                   'dy': dec_float_str(self.unitcell_y),
+                   'dia': dec_float_str(self.inc_a_x),
+                   'dias': dec_float_str(self.inc_a_y),
+                   'diab': dec_float_str(self.inc_a_x),
+                   'diasb': dec_float_str(self.inc_a_y),
+                   'dias': dec_float_str(self.slab_a_x),
+                   'diass': dec_float_str(self.slab_a_y),
+                   'diasss': dec_float_str(self.slab_b_x),
+                   'diassss': dec_float_str(self.slab_b_y)}
+                elif coating_y is not None and inc_b_x is not None:
+                    raise NotImplementedError, "Have not implemented 2 coated \
+                        inclusions."
+                elif coating_y is not None and inc_b_x is None:
+                        raise NotImplementedError, "Have not implemented 1 coated \
+                        inclusion."
+                else:
+                    raise ValueError, "NumBAT doesn't understand you geometry."
+            elif slab_a_x is not None:
+                if coating_y is None and inc_b_x is None:
+                    msh_template = '1_on_slab'
+                    msh_name = '1_on_s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s' % {
+                   'd': dec_float_str(self.unitcell_x),
+                   'dy': dec_float_str(self.unitcell_y),
+                   'dia': dec_float_str(self.inc_a_x),
+                   'dias': dec_float_str(self.inc_a_y),
+                   'dias': dec_float_str(self.slab_a_x),
+                   'diass': dec_float_str(self.slab_a_y)}
+                elif coating_y is None and inc_b_x is not None:
+                    msh_template = '2_on_slab'
+                    msh_name = '2_on_s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diab)s_%(diasb)s_%(diass)s' % {
+                   'd': dec_float_str(self.unitcell_x),
+                   'dy': dec_float_str(self.unitcell_y),
+                   'dia': dec_float_str(self.inc_a_x),
+                   'dias': dec_float_str(self.inc_a_y),
+                   'diab': dec_float_str(self.inc_a_x),
+                   'diasb': dec_float_str(self.inc_a_y),
+                   'dias': dec_float_str(self.slab_a_x),
+                   'diass': dec_float_str(self.slab_a_y)}
+                elif coating_y is not None and inc_b_x is not None:
+                    raise NotImplementedError, "Have not implemented 2 coated \
+                        inclusions."
+                elif coating_y is not None and inc_b_x is None:
+                        raise NotImplementedError, "Have not implemented 1 coated \
+                        inclusion."
+                else:
+                    raise ValueError, "NumBAT doesn't understand you geometry."
+            elif:
+                if coating_y is None and inc_b_x is None:
+                    msh_template = '1'
+                    msh_name = '1_%(d)s_%(dy)s_%(dia)s' % {
+                   'd': dec_float_str(self.unitcell_x),
+                   'dy': dec_float_str(self.unitcell_y),
+                   'dia': dec_float_str(self.inc_a_x),
+                   'dias': dec_float_str(self.inc_a_y)}
+                elif coating_y is None and inc_b_x is not None:
+                    msh_template = '2'
+                    msh_name = '2_%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diab)s' % {
+                   'd': dec_float_str(self.unitcell_x),
+                   'dy': dec_float_str(self.unitcell_y),
+                   'dia': dec_float_str(self.inc_a_x),
+                   'dias': dec_float_str(self.inc_a_y),
+                   'diab': dec_float_str(self.inc_a_x),
+                   'diasb': dec_float_str(self.inc_a_y)}
+                elif coating_y is not None and inc_b_x is not None:
+                    raise NotImplementedError, "Have not implemented 2 coated \
+                        inclusions."
+                elif coating_y is not None and inc_b_x is None:
+                        raise NotImplementedError, "Have not implemented 1 coated \
+                        inclusion."
+                else:
+                    raise ValueError, "NumBAT doesn't understand you geometry."
             else:
-                raise ValueError, "must have at least one cylinder of nonzero diameter."
-
-            if self.ellipticity != 0:
-                msh_name = msh_name + '_e_%(e)s' % {'e': dec_float_str(self.ellipticity),}
-            if self.inc_shape == 'square':
-                msh_name = msh_name + '_sq'
+                raise ValueError, "must have at least one nonzero inclusion."
+            if inc_shape='circular': msh_name+='-c'
 
             if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
-                geo_tmp = open(msh_location + '%s_msh_template.geo' % supercell, "r").read()
-                geo = geo_tmp.replace('ff = 0;', "ff = %f;" % self.ff)
-                geo = geo.replace('d_in_nm = 0;', "d_in_nm = %f;" % self.period)
-                geo = geo.replace('dy_in_nm = 0;', "dy_in_nm = %f;" % self.period_y)
-                geo = geo.replace('a1 = 0;', "a1 = %f;" % self.diameter1)
-                geo = geo.replace('ellipticity = 0;', "ellipticity = %f;" % self.ellipticity)
-                if self.inc_shape == 'square': geo = geo.replace('square = 0;', "square = 1;")
+                geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                geo = geo.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
+                if self.inc_shape == 'circular': geo = geo.replace('rect = 1;', "rect = 0;")
                 geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                 geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                 geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-                if self.posx != 0:
-                    # appropriate for old definition of fraction of distance to touching
-                    geo = geo.replace('posx = 0;', "posx = %f;" % (self.posx/self.period*(self.period/(2*np.sqrt(supercell)) - self.diameter1/2.0)))
-                    # appropriate for % shift of distance of centre point to (ind) unitcell boundary (ie d/2)
-                    # geo = geo.replace('posx = 0;', "posx = %f;" % float(self.posx/supercell))
-                if self.posy != 0:
-                    geo = geo.replace('posy = 0;', "posy = %f;" % (self.posy/self.period*(self.period/(2*np.sqrt(supercell)) - self.diameter1/2.0)))
-                    # geo = geo.replace('posy = 0;', "posy = %f;" % float(self.posy/supercell))
-                if supercell > 1:
-                    geo = geo.replace('a2 = 0;', "a2 = %f;" % self.diameter2)
-                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
-                if supercell > 2:
-                    geo = geo.replace('a3 = 0;', "a3 = %f;" % self.diameter3)
-                    geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
-                if supercell > 3:
-                    geo = geo.replace('a4 = 0;', "a4 = %f;" % self.diameter4)
-                    geo = geo.replace('lc6 = lc/1;', "lc6 = lc/%f;" % self.lc6)
-                if supercell > 4:
-                    geo = geo.replace('a5 = 0;', "a5 = %f;" % self.diameter5)
-                    geo = geo.replace('a6 = 0;', "a6 = %f;" % self.diameter6)
-                    geo = geo.replace('a7 = 0;', "a7 = %f;" % self.diameter7)
-                    geo = geo.replace('a8 = 0;', "a8 = %f;" % self.diameter8)
-                    geo = geo.replace('a9 = 0;', "a9 = %f;" % self.diameter9)
-                if supercell > 9:
-                    geo = geo.replace('a10 = 0;', "a10 = %f;" % self.diameter10)
-                    geo = geo.replace('a11 = 0;', "a11 = %f;" % self.diameter11)
-                    geo = geo.replace('a12 = 0;', "a12 = %f;" % self.diameter12)
-                    geo = geo.replace('a13 = 0;', "a13 = %f;" % self.diameter13)
-                    geo = geo.replace('a14 = 0;', "a14 = %f;" % self.diameter14)
-                    geo = geo.replace('a15 = 0;', "a15 = %f;" % self.diameter15)
-                    geo = geo.replace('a16 = 0;', "a16 = %f;" % self.diameter16)
+                if msh_template == '2' or msh_template == '2_on_s' or msh_template == '2_on_2s':
+                    geo = geo.replace('a2 = 10;', "a2 = %f;" % self.inc_b_x)
+                    geo = geo.replace('a2y = 20;', "a2y = %f;" % self.inc_b_y)
+                    geo = geo.replace('sep = 10;', "sep = %f;" % self.two_inc_sep)
+                if msh_template == '2':
+                    geo = geo.replace('yoff = -5;;', "yoff = %f;" % self.incs_y_offset)
+                if msh_template == '1_on_s' or msh_template == '1_on_2s' or msh_template == '2_on_s' or msh_template == '2_on_2s':
+                    geo = geo.replace('slab_width = d_in_nm;', "slab_width = %f;" % self.slab_a_x)
+                    geo = geo.replace('slab_height = 10;', "slab_height = %f;" % self.slab_a_x)
+                if msh_template == '1_on_s' or msh_template == '2_on_s':
+                    geo = geo.replace('slab2_width = d_in_nm;', "slab2_width = %f;" % self.slab_b_x)
+                    geo = geo.replace('slab2_height = 5;', "slab2_height = %f;" % self.slab_b_x)
 
         else:
             raise NotImplementedError, "\n Selected inc_shape = '%s' \n \
             is not currently implemented. Please make a mesh with gmsh, & \n \
-            consider contributing this to NumBAT via github." % self.inc_shape
+            consider contributing this to NumBAT via gitlab." % self.inc_shape
 
         self.mesh_file = msh_name + '.mail'
         open(msh_location + msh_name + '.geo', "w").write(geo)
         NumBAT.conv_gmsh(msh_location+msh_name)
 
-        # # Automatically show created mesh in gmsh.
-        # gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.msh'
-        # os.system(gmsh_cmd)
-        # gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
-        # os.system(gmsh_cmd)
+        # Automatically show created mesh in gmsh.
+        gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.msh'
+        os.system(gmsh_cmd)
+        gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
+        os.system(gmsh_cmd)
 
 
