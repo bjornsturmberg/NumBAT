@@ -1,0 +1,131 @@
+"""
+    mode_calcs.py is a subroutine of NumBAT that contains methods to
+    calculate the EM and Acoustic modes of a structure.
+
+    Copyright (C) 2015  Bjorn Sturmberg, Kokou Dossou 
+"""
+
+import numpy as np
+import sys
+# from scipy import sqrt
+import os
+sys.path.append("../backend/")
+
+from fortran import NumBAT
+
+pi = np.pi
+
+
+class Simmo(object):
+    """ Interaction of one :Light: object with one :Struc: object.
+
+        Inherits knowledge of :Struc:, :Light: objects
+        Stores the calculated modes of :Struc: for illumination by :Light:
+    """
+    def __init__(self, structure, wl_nm, num_modes):
+        self.structure = structure
+        self.wl_nm = wl_nm
+        self.num_modes = num_modes
+        self.mode_pol = None
+        # just off normal incidence to avoid degeneracies
+        self.k_pll = np.array([1e-16, 1e-16]) 
+
+    def k_pll_norm(self):
+        return self.k_pll * self.structure.unitcell_x
+
+    def wl_norm(self):
+        """ Return normalised wavelength (wl/unitcell_x). """
+        wl = self.wl_nm / self.structure.unitcell_x
+        # Avoid Wood Anomalies
+        if self.wl_nm % self.structure.unitcell_x == 0:
+            wl += 1e-10
+        return wl
+
+    def calc_modes(self, num_modes=20):
+        """ Run a Fortran FEM calculation to find the modes of a \
+        structured layer. """
+        st = self.structure
+        wl = self.wl_nm
+        self.n_effs = np.array([st.bkg_material.n(wl), st.inc_a_material.n(wl), 
+                                st.inc_b_material.n(wl), st.slab_a_material.n(wl), 
+                                st.slab_a_bkg_material.n(wl), st.slab_b_material.n(wl), 
+                                st.slab_b_bkg_material.n(wl), st.coating_material.n(wl)]) 
+       
+        self.n_effs = self.n_effs[:self.structure.nb_typ_el]
+        if self.structure.loss is False:
+            self.n_effs = self.n_effs.real
+
+        if num_modes < 20: 
+            self.num_modes = 20
+            print "Warning: ARPACK needs >= 20 modes so set num_modes=20."
+        else: 
+            self.num_modes = num_modes
+
+        # Parameters that control how FEM routine runs
+        self.E_H_field = 1  # Selected formulation (1=E-Field, 2=H-Field)
+        i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
+        itermax = 30  # Maximum number of iterations for convergence
+        FEM_debug = 0  # Fortran routines will display & save add. info
+
+        # Calculate where to center the Eigenmode solver around.
+        # (Shift and invert FEM method)
+        max_n = np.real(self.n_effs).max()
+        # Take real part so that complex conjugate pair Eigenvalues are
+        # equal distance from shift and invert point and therefore both found.
+        k_0 = 2 * pi / self.wl_norm()
+        shift = 1.1*max_n**2 * k_0**2  \
+            - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
+
+        if FEM_debug == 1:
+            print 'shift', shift
+            if not os.path.exists("Normed"):
+                os.mkdir("Normed")
+            if not os.path.exists("Matrices"):
+                os.mkdir("Matrices")
+            if not os.path.exists("Output"):
+                os.mkdir("Output")
+
+
+        with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
+            self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
+
+        # Size of Fortran's complex superarray (scales with mesh)
+        # In theory could do some python-based preprocessing
+        # on the mesh file to work out RAM requirements
+        cmplx_max = 2**27  # 30
+        real_max = 2**23
+        int_max = 2**22
+
+        try:
+            resm = NumBAT.calc_modes_2d(
+                self.wl_norm(), self.num_modes,
+                FEM_debug, self.structure.mesh_file, self.n_msh_pts,
+                self.n_msh_el, self.structure.nb_typ_el, self.n_effs,
+                self.k_pll_norm(), shift, self.E_H_field, i_cond, itermax,
+                self.structure.plotting_fields, self.structure.plot_real,
+                self.structure.plot_imag, self.structure.plot_abs,
+                cmplx_max, real_max, int_max)
+
+            self.k_z, self.sol1, self.mode_pol, \
+            self.table_nod, self.type_el, self.x_arr = resm
+
+            area = self.structure.unitcell_x * self.structure.unitcell_y
+            area_norm = area/self.structure.unitcell_x**2
+
+        except KeyboardInterrupt:
+            print "\n\n FEM routine calc_modes_2d",\
+            "interrupted by keyboard.\n\n"
+
+        # if not self.structure.plot_field_conc:
+        #     self.mode_pol = None
+
+        # if self.structure.plotting_fields != 1:
+        #     self.sol1 = None
+        #     self.n_effs = None
+        #     self.E_H_field = None
+        #     if self.structure.unitcell_xicity == '2D_array':
+        #         self.table_nod = None
+        #         self.type_el = None
+        #         self.x_arr = None
+        #         self.n_msh_pts = None
+        #         self.n_msh_el = None

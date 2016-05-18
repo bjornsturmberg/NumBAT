@@ -8,8 +8,8 @@
 
 import os
 import numpy as np
-# import sys
-# sys.path.append("../backend/")
+import materials
+from mode_calcs import Simmo
 from fortran import NumBAT
 
 msh_location = '../backend/fortran/msh/'
@@ -120,14 +120,14 @@ class Struct(object):
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
                  coating_y=None, inc_b_x=None, inc_b_y=None,
                  two_inc_sep=None, incs_y_offset=None,
-                 bkg_material=None,
-                 inc_a_material=None,
-                 inc_b_material=None,
-                 slab_a_material=None,
-                 slab_a_bkg_material=None,
-                 slab_b_material=None,
-                 slab_b_bkg_material=None,
-                 coating_material=None,
+                 bkg_material=materials.Material(1.0 + 0.0j),
+                 inc_a_material=materials.Material(1.0 + 0.0j),
+                 inc_b_material=materials.Material(1.0 + 0.0j),
+                 slab_a_material=materials.Material(1.0 + 0.0j),
+                 slab_a_bkg_material=materials.Material(1.0 + 0.0j),
+                 slab_b_material=materials.Material(1.0 + 0.0j),
+                 slab_b_bkg_material=materials.Material(1.0 + 0.0j),
+                 coating_material=materials.Material(1.0 + 0.0j),
                  loss=True,
                  make_mesh_now=True, force_mesh=True, 
                  mesh_file='NEED_FILE.mail',
@@ -342,16 +342,28 @@ class Struct(object):
         open(msh_location + msh_name + '.geo', "w").write(geo)
         NumBAT.conv_gmsh(msh_location+msh_name)
 
-        # Automatically show created mesh in gmsh.
-        gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.msh'
-        os.system(gmsh_cmd)
-        gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
-        os.system(gmsh_cmd)
+        # # Automatically show created mesh in gmsh.
+        # gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.msh'
+        # os.system(gmsh_cmd)
+        # gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
+        # os.system(gmsh_cmd)
 
 
+    def calc_modes(self, wl_nm, num_modes, **args):
+        """ Run a simulation to find the Struct's modes.
 
+            Args:
+                light  (Light instance): Represents incident light.
 
+                args  (dict): Options to pass to :Simmo.calc_modes:.
 
+            Returns:
+                :Simmo: object
+        """
+        simmo = Simmo(self, wl_nm, num_modes)
+
+        simmo.calc_modes(**args)
+        return simmo
 
 
 def dec_float_str(dec_float):
