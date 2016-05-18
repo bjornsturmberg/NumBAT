@@ -26,3 +26,6 @@ wl_nm = 900
 num_modes = 30
 
 sim_wguide = wguide.calc_modes(wl_nm, num_modes)
+
+betas = sim_wguide.k_z
+print 'k_z of EM wave \n', betas
