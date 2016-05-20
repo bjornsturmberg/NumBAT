@@ -123,9 +123,8 @@ class Simmo(object):
         #     self.sol1 = None
         #     self.n_effs = None
         #     self.E_H_field = None
-        #     if self.structure.unitcell_xicity == '2D_array':
-        #         self.table_nod = None
-        #         self.type_el = None
-        #         self.x_arr = None
-        #         self.n_msh_pts = None
-        #         self.n_msh_el = None
+    #         self.table_nod = None
+    #         self.type_el = None
+    #         self.x_arr = None
+    #         self.n_msh_pts = None
+    #         self.n_msh_el = None

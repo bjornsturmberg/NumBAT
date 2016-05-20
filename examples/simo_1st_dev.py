@@ -8,6 +8,7 @@ sys.path.append("../backend/")
 import materials
 import objects
 import mode_calcs
+import plotting
 
 
 unitcell_x = 200
@@ -28,4 +29,6 @@ num_modes = 30
 sim_wguide = wguide.calc_modes(wl_nm, num_modes)
 
 betas = sim_wguide.k_z
-print 'k_z of EM wave \n', betas
+# print 'k_z of EM wave \n', betas
+
+plotting.plot_EM_modes(sim_wguide)
