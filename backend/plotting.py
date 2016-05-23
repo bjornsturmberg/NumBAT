@@ -82,8 +82,8 @@ def plot_EM_modes(sim_wguide, n_points=500):
     table_nod = sim_wguide.table_nod.T
     x_arr = sim_wguide.x_arr.T
 
-    # for ival in [0]:
-    for ival in range(len(sim_wguide.k_z)):
+    for ival in [0]:
+    # for ival in range(len(sim_wguide.k_z)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
@@ -175,12 +175,18 @@ def plot_EM_modes(sim_wguide, n_points=500):
             cbar.ax.tick_params(labelsize=title_font-10) 
         # plt.tight_layout(1)
 
+        n_eff = sim_wguide.k_z[ival] * sim_wguide.wl_norm() / (2*np.pi)
         if np.imag(sim_wguide.k_z[ival]) < 0:
             k_str = r'k$_z = %(re_k)f6.4 %(im_k)f6.4 i$'% \
-            {'re_k' : np.real(sim_wguide.k_z[ival]), 'im_k' : np.imag(sim_wguide.k_z[ival])}
+                {'re_k' : np.real(sim_wguide.k_z[ival]), 'im_k' : np.imag(sim_wguide.k_z[ival])}
+            n_str = r'n$_{eff} = %(re_k)f6.4 %(im_k)f6.4 i$'% \
+                {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
         else:
             k_str = r'k$_z = %(re_k)f6.4 + %(im_k)f6.4 i$'% \
-            {'re_k' : np.real(sim_wguide.k_z[ival]), 'im_k' : np.imag(sim_wguide.k_z[ival])}
+                {'re_k' : np.real(sim_wguide.k_z[ival]), 'im_k' : np.imag(sim_wguide.k_z[ival])}
+            n_str = r'n$_{eff} = %(re_k)f6.4 + %(im_k)f6.4 i$'% \
+                {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
         plt.text(10, 0.5, k_str, fontsize=title_font)
+        plt.text(10, 0.3, n_str, fontsize=title_font)
 
         plt.savefig('E_field_%i.png' % ival, bbox_inches='tight')

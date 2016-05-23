@@ -130,7 +130,7 @@ class Struct(object):
                  coating_material=materials.Material(1.0 + 0.0j),
                  loss=True,
                  make_mesh_now=True, force_mesh=True, 
-                 mesh_file='NEED_FILE.mail',
+                 mesh_file='NEED_FILE.mail', check_msh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
                  plotting_fields=False, plot_real=1, plot_imag=0, plot_abs=0,
                  plot_field_conc=False):
@@ -193,6 +193,7 @@ class Struct(object):
                     inclusions."
             else:
                 self.nb_typ_el = 3
+        self.check_msh = check_msh
         self.lc = lc_bkg
         self.lc2 = lc2
         self.lc3 = lc3
@@ -342,11 +343,12 @@ class Struct(object):
         open(msh_location + msh_name + '.geo', "w").write(geo)
         NumBAT.conv_gmsh(msh_location+msh_name)
 
-        # # Automatically show created mesh in gmsh.
-        # gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.msh'
-        # os.system(gmsh_cmd)
-        # gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
-        # os.system(gmsh_cmd)
+        if self.check_msh is True:
+            # Automatically show created mesh in gmsh.
+            gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.msh'
+            os.system(gmsh_cmd)
+            gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
+            os.system(gmsh_cmd)
 
 
     def calc_modes(self, wl_nm, num_modes, **args):
