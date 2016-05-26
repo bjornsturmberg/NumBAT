@@ -55,40 +55,52 @@ sim_wguide = npzfile['sim_wguide'].tolist()
 # print 'k_z of EM wave \n', betas
 # plotting.plot_EM_modes(sim_wguide)
 
-# Test overlap
-nel = sim_wguide.n_msh_el
+# # Test overlap
+# nel = sim_wguide.n_msh_el
+# type_el = sim_wguide.type_el
+# table_nod = sim_wguide.table_nod
+x_arr = sim_wguide.x_arr
+# nnodes = 6
+# xel = np.zeros((2,nnodes))
+# nod_el_p = np.zeros(nnodes)
+# xx = [0,0]
+# nquad = 16
+# [wq, xq, yq] = integration.quad_triangle(nquad)
+
+# integrand = 0.0
+# print np.shape(sim_wguide.sol1)
+
+# for ival in [0]:
+# # for ival in range(len(sim_wguide.k_z)):
+#     NumBAT.EM_mode_energy_int()
+
+n_msh_el = sim_wguide.n_msh_el
 type_el = sim_wguide.type_el
 table_nod = sim_wguide.table_nod
-x_arr = sim_wguide.x_arr
-nnodes = 6
-xel = np.zeros((2,nnodes))
-nod_el_p = np.zeros(nnodes)
-xx = [0,0]
-nquad = 16
-[wq, xq, yq] = integration.quad_triangle(nquad)
+n_msh_pts = sim_wguide.n_msh_pts
+print 'n_msh_el', n_msh_el
+print 'n_msh_pts', sim_wguide.n_msh_pts
+print 'table_nod', np.shape(table_nod)
+# print table_nod[0]
+print 'x_arr', np.shape(x_arr)
+print 'type_el', np.shape(type_el)
 
-integrand = 0.0
-print np.shape(sim_wguide.sol1)
+# find triangles associated with point
+# find triangles type
+# if types not all equal -> point on interface
+# for point in range(1,sim_wguide.n_msh_pts+1):
+#     print np
 
-for ival in [0]:
-# for ival in range(len(sim_wguide.k_z)):
-    # loop over all elements 
-    for iel in range(nel):
-        typ_e = type_el[iel]
-        for inode in range(nnodes):
-            tmp_1 = table_nod[inode,iel] - 1 # adjust for python index from 0
-            nod_el_p[inode] = tmp_1
-            xel[0,inode] = x_arr[0,tmp_1]
-            xel[1,inode] = x_arr[1,tmp_1]
+interface_list = []
+point_array = -1*np.ones(n_msh_pts)
+for el in range(n_msh_el):
+    el_type = type_el[el]
+    for i in range(6):
+        point = table_nod[i][el] -1 # adjust to python indexing
+        if point_array[point] == -1: # first time seen this point
+            point_array[point] = el_type
+        else:
+            if point_array[point] != el_type:
+                interface_list.append(point)
 
-        for iq in range(nquad):
-            xx[0] = xq[iq]
-            xx[1] = yq[iq]
-            ww = wq[iq]
-
-            x_g, det_jacobian = NumBAT.jacobian_p1_2d(xx, xel, nnodes)
-            coeff_1 = ww * abs(det_jacobian)
-
-            for wave_comp in [0,1,2]:
-                point_value = coeff_1*sim_wguide.sol1[wave_comp,inode,ival,iel]
-                integrand += point_value
+print interface_list
