@@ -6,8 +6,11 @@ c      x_g = Corresponding coordinatate in the actual tetrahedron
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
-      subroutine jacobian_p1_2d (x, xel, nnodes, 
-     *  x_g, det_jacobian, mat_B_0, mat_T)
+      subroutine jacobian_p1_2d (
+c     Explicit inputs
+     *    x, xel, nnodes,
+c     Outputs 
+     *    x_g, det_jacobian)
 c
       implicit none
       integer*8 nnodes
@@ -23,6 +26,8 @@ c     32-but integers for BLAS and LAPACK
       integer*4 IPIV_32(2), NRHS_32, N_32
 c
 c
+Cf2py intent(in) x, xel, nnodes
+Cf2py intent(out) x_g, det_jacobian
 c
 c    Compute the Affine mappings from the current Tetrahedron to the
 c     reference unit Tetrahedron N. Integration will be performed on that
@@ -98,5 +103,5 @@ c     The value determinant can be obtained from the factorization P*L*U
        endif
 
 c
-      return
-      end
+C      return
+      end subroutine jacobian_p1_2d

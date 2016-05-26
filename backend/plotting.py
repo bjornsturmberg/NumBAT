@@ -177,14 +177,14 @@ def plot_EM_modes(sim_wguide, n_points=500):
 
         n_eff = sim_wguide.k_z[ival] * sim_wguide.wl_norm() / (2*np.pi)
         if np.imag(sim_wguide.k_z[ival]) < 0:
-            k_str = r'k$_z = %(re_k)f6.4 %(im_k)f6.4 i$'% \
+            k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
                 {'re_k' : np.real(sim_wguide.k_z[ival]), 'im_k' : np.imag(sim_wguide.k_z[ival])}
-            n_str = r'n$_{eff} = %(re_k)f6.4 %(im_k)f6.4 i$'% \
+            n_str = r'n$_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
                 {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
         else:
-            k_str = r'k$_z = %(re_k)f6.4 + %(im_k)f6.4 i$'% \
+            k_str = r'k$_z = %(re_k)f6 + %(im_k)f6 i$'% \
                 {'re_k' : np.real(sim_wguide.k_z[ival]), 'im_k' : np.imag(sim_wguide.k_z[ival])}
-            n_str = r'n$_{eff} = %(re_k)f6.4 + %(im_k)f6.4 i$'% \
+            n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                 {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
         plt.text(10, 0.5, k_str, fontsize=title_font)
         plt.text(10, 0.3, n_str, fontsize=title_font)

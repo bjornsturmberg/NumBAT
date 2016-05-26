@@ -2,7 +2,7 @@
     mode_calcs.py is a subroutine of NumBAT that contains methods to
     calculate the EM and Acoustic modes of a structure.
 
-    Copyright (C) 2015  Bjorn Sturmberg, Kokou Dossou 
+    Copyright (C) 2016 Bjorn Sturmberg, Kokou Dossou 
 """
 
 import numpy as np

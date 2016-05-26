@@ -3,7 +3,7 @@
 COMPILER_VENDOR = gnu95
 #COMPILER_VENDOR = intelem
 
-SUBROUTINES_FOR_PYTHON = conv_gmsh.f py_calc_modes.f
+SUBROUTINES_FOR_PYTHON = conv_gmsh.f py_calc_modes.f jacobian_p1_2d.f
 
 LIB_LOCATION = lib
 UMFPACK_NAME = umf4_f77zwrapper64.o
@@ -22,8 +22,8 @@ NumBAT.pyf: $(SUBROUTINES_FOR_PYTHON)
 	f2py -m NumBAT -h NumBAT.pyf $(SUBROUTINES_FOR_PYTHON) --overwrite-signature
 
 purge:
-	-rm NumBAT.pyf
 	-rm NumBAT.so
 	-rm lib/umf4_f77zwrapper64.o
 clean:
+	-rm NumBAT.pyf
 	-rm NumBAT.so
