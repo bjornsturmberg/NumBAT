@@ -100,15 +100,15 @@ node_array = -1*np.ones(n_msh_pts)
 for el in range(n_msh_el):
     el_type = type_el[el]
     for i in range(6):
-        node = table_nod[i][el] 
+        node = table_nod[i][el]
         # Check if first time seen this node
         if node_array[node - 1] == -1: # adjust to python indexing
-            node_array[node - 1] = el_type 
+            node_array[node - 1] = el_type
         else:
             if node_array[node - 1] != el_type:
                 interface_nodes.append(node)
                 ## line below is redundant because elements sorted by type w type 1 first
-                # if el_type is not bkg_el_type: 
+                # if el_type is not bkg_el_type:
                 edge_el_list.append(el)
 
 interface_nodes = list(set(interface_nodes))
@@ -119,21 +119,23 @@ from collections import Counter
 edge_els_multi_nodes = [k for (k,v) in Counter(edge_el_list).iteritems() if v > 1]
 print edge_els_multi_nodes
 
-count = 0
+# count = 0
+test_orient = [1,-1]
+test1 = [0,0]
+test2 = [0,0]
+test3 = [0,0]
+# for el in [edge_els_multi_nodes[0]]:
 for el in edge_els_multi_nodes:
     # neighbouring nodes
     for [n1,n2] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
         node0 = table_nod[n1][el]
         node1 = table_nod[n2][el]
         if node0 in interface_nodes and node1 in interface_nodes:
-            count += 1
+            # count += 1
             x1 = x_arr[0,table_nod[n1][el] - 1]
             y1 = x_arr[1,table_nod[n1][el] - 1]
             x2 = x_arr[0,table_nod[n2][el] - 1]
             y2 = x_arr[1,table_nod[n2][el] - 1]
-            normal_vec = [y2-y1, -(x2-x1)]
-            normal_vec_norm = normal_vec/np.linalg.norm(normal_vec)
-            # print normal_vec
             all_el_w_node0 = np.where(table_nod[:] == node0)
             all_el_w_node1 = np.where(table_nod[:] == node1)
             all_el_w_node0 = [list(set(all_el_w_node0[0])), list(set(all_el_w_node0[1]))]
@@ -142,13 +144,62 @@ for el in edge_els_multi_nodes:
             all_el_w_node1 = [item for sublist in all_el_w_node1 for item in sublist]
             all_el_w_nodes = all_el_w_node0 + all_el_w_node1
             all_el_w_node0_and_node1 = [k for (k,v) in Counter(all_el_w_nodes).iteritems() if v > 1]
-            
-            print el
-            print all_el_w_node0_and_node1
-            out_side_el = all_el_w_node0_and_node1.remove(el)
-            print all_el_w_node0_and_node1
-
-
+            # print el
+            # print all_el_w_node0_and_node1
+            all_el_w_node0_and_node1.remove(el)
+            for i in [0, 1]:
+                t = test_orient[i]
+                normal_vec = [t*abs(y2-y1), -1*t*abs(x2-x1)]
+                # print all_el_w_node0_and_node1
+                test_point = np.array([(x1+x2+normal_vec[0])/2.,
+                              (y1+y2+normal_vec[1])/2.])
+                # print test_point
+                # print table_nod[3][all_el_w_node0_and_node1]
+                # print table_nod[4][all_el_w_node0_and_node1]
+                # print table_nod[5][all_el_w_node0_and_node1]
+                xt1 = x_arr[0,table_nod[3][all_el_w_node0_and_node1] - 1]
+                yt1 = x_arr[1,table_nod[3][all_el_w_node0_and_node1] - 1]
+                t1 = np.array([xt1,yt1])
+                xt2 = x_arr[0,table_nod[4][all_el_w_node0_and_node1] - 1]
+                yt2 = x_arr[1,table_nod[4][all_el_w_node0_and_node1] - 1]
+                t2 = np.array([xt2,yt2])
+                xt3 = x_arr[0,table_nod[5][all_el_w_node0_and_node1] - 1]
+                yt3 = x_arr[1,table_nod[5][all_el_w_node0_and_node1] - 1]
+                t3 = np.array([xt2,yt2])
+                test1[i] = np.linalg.norm(test_point-t1)
+                test2[i] = np.linalg.norm(test_point-t2)
+                test3[i] = np.linalg.norm(test_point-t3)
+            orient = 0
+            if test1[0] < test1[1]:
+                orient += 1
+            elif test1[0] > test1[1]:
+                orient -= 1
+            else:
+                print 'ahhhhhhhh 1'
+            if test2[0] < test2[1]:
+                orient += 1
+            elif test2[0] > test2[1]:
+                orient -= 1
+            else:
+                print 'ahhhhhhhh 2'
+            if test3[0] < test3[1]:
+                orient += 1
+            elif test3[0] > test3[1]:
+                orient -= 1
+            else:
+                print 'ahhhhhhhh 3'
+            if orient > 0:
+                normal_vec = [(y2-y1), -1*(x2-x1)]
+            elif orient < 0:
+                normal_vec = [-1*(y2-y1), (x2-x1)]
+            # elif test1[0] + test2[0] + test3[0] > test1[1] + test2[1] + test3[1]:
+            #     normal_vec = [-1*(y2-y1), (x2-x1)]
+            else:
+                print 'ahhhhhhhh'
+                print orient
+                print 'ahhhhhhhh'
+            normal_vec_norm = normal_vec/np.linalg.norm(normal_vec)
+            print normal_vec_norm
     # print count
 
 # import matplotlib
@@ -175,4 +226,4 @@ for el in edge_els_multi_nodes:
 
 ### Calc Q_photoelastic Eq. 33
 ### Calc Q_deformation_pol Eq. 36
-### Calc Q_moving_boundary Eq. 41 
+### Calc Q_moving_boundary Eq. 41
