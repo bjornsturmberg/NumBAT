@@ -132,10 +132,24 @@ for el in edge_els_multi_nodes:
             x2 = x_arr[0,table_nod[n2][el] - 1]
             y2 = x_arr[1,table_nod[n2][el] - 1]
             normal_vec = [y2-y1, -(x2-x1)]
-            normal_vec = normal_vec/np.linalg.norm(normal_vec)
-            print normal_vec
-    print count
+            normal_vec_norm = normal_vec/np.linalg.norm(normal_vec)
+            # print normal_vec
+            all_el_w_node0 = np.where(table_nod[:] == node0)
+            all_el_w_node1 = np.where(table_nod[:] == node1)
+            all_el_w_node0 = [list(set(all_el_w_node0[0])), list(set(all_el_w_node0[1]))]
+            all_el_w_node1 = [list(set(all_el_w_node1[0])), list(set(all_el_w_node1[1]))]
+            all_el_w_node0 = [item for sublist in all_el_w_node0 for item in sublist]
+            all_el_w_node1 = [item for sublist in all_el_w_node1 for item in sublist]
+            all_el_w_nodes = all_el_w_node0 + all_el_w_node1
+            all_el_w_node0_and_node1 = [k for (k,v) in Counter(all_el_w_nodes).iteritems() if v > 1]
+            
+            print el
+            print all_el_w_node0_and_node1
+            out_side_el = all_el_w_node0_and_node1.remove(el)
+            print all_el_w_node0_and_node1
 
+
+    # print count
 
 # import matplotlib
 # matplotlib.use('pdf')
