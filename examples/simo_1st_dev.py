@@ -43,12 +43,11 @@ eta_44 = 620  # mu Pa s
 # wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 #                         bkg_material=materials.Material(1.0 + 0.0j),
 #                         inc_a_material=materials.Material(np.sqrt(eps)),
-#                         lc_bkg=0.09, lc2=3.0, lc3=3.0, check_msh=False)
+#                         lc_bkg=0.09, lc2=1.0, lc3=1.0, check_msh=False)
 
 # sim_wguide = wguide.calc_modes(wl_nm, num_EM_modes)
 # np.savez('wguide_data', sim_wguide=sim_wguide)
-# print repr(wguide_data)
-npzfile = np.load('sim_wguide.npz')
+npzfile = np.load('wguide_data.npz')
 sim_wguide = npzfile['sim_wguide'].tolist()
 
 # betas = sim_wguide.k_z
@@ -85,22 +84,81 @@ print 'table_nod', np.shape(table_nod)
 print 'x_arr', np.shape(x_arr)
 print 'type_el', np.shape(type_el)
 
-# find triangles associated with point
+# find triangles associated with node
 # find triangles type
-# if types not all equal -> point on interface
-# for point in range(1,sim_wguide.n_msh_pts+1):
+# if types not all equal -> node on interface
+# for node in range(1,sim_wguide.n_msh_pts+1):
 #     print np
 
-interface_list = []
-point_array = -1*np.ones(n_msh_pts)
+# bkg_el_type = 1
+interface_nodes = []
+edge_el_list = []
+node_array = -1*np.ones(n_msh_pts)
+### Find nodes that are in elements of various types
+### and find elements that have multiple nodes of various types
+### ie. are not single verticies on an interface.
 for el in range(n_msh_el):
     el_type = type_el[el]
     for i in range(6):
-        point = table_nod[i][el] -1 # adjust to python indexing
-        if point_array[point] == -1: # first time seen this point
-            point_array[point] = el_type
+        node = table_nod[i][el] 
+        # Check if first time seen this node
+        if node_array[node - 1] == -1: # adjust to python indexing
+            node_array[node - 1] = el_type 
         else:
-            if point_array[point] != el_type:
-                interface_list.append(point)
+            if node_array[node - 1] != el_type:
+                interface_nodes.append(node)
+                ## line below is redundant because elements sorted by type w type 1 first
+                # if el_type is not bkg_el_type: 
+                edge_el_list.append(el)
 
-print interface_list
+interface_nodes = list(set(interface_nodes))
+print interface_nodes
+# print edge_el_list
+# edge_els_multi_nodes = list(set(edge_els_multi_nodes))
+from collections import Counter
+edge_els_multi_nodes = [k for (k,v) in Counter(edge_el_list).iteritems() if v > 1]
+print edge_els_multi_nodes
+
+count = 0
+for el in edge_els_multi_nodes:
+    # neighbouring nodes
+    for [n1,n2] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
+        node0 = table_nod[n1][el]
+        node1 = table_nod[n2][el]
+        if node0 in interface_nodes and node1 in interface_nodes:
+            count += 1
+            x1 = x_arr[0,table_nod[n1][el] - 1]
+            y1 = x_arr[1,table_nod[n1][el] - 1]
+            x2 = x_arr[0,table_nod[n2][el] - 1]
+            y2 = x_arr[1,table_nod[n2][el] - 1]
+            normal_vec = [y2-y1, -(x2-x1)]
+            normal_vec = normal_vec/np.linalg.norm(normal_vec)
+            print normal_vec
+    print count
+
+
+# import matplotlib
+# matplotlib.use('pdf')
+# import matplotlib.pyplot as plt
+# # plt.figure(figsize=(13,13))
+# # count = 0
+# interface_nodes2 = []
+# for el in [0,1,2,3,4,5,6,7,8]:#edge_els_multi_nodes:
+#     plt.clf()
+#     # below is incorrect - need to include all possible combinations of the elements nodes
+#     for i in range(0,6):
+#         print table_nod[i][el] - 1
+#         x = x_arr[0,table_nod[i][el] - 1]
+#         y = x_arr[1,table_nod[i][el] - 1]
+#         print 'x1 = ', x_arr[0,table_nod[i][el] - 1]
+#         print 'y1 = ', x_arr[1,table_nod[i][el] - 1]
+#         plt.plot(x, y, 'o')
+#         plt.text(x+0.001, y+0.001, str(i))
+#     plt.savefig('triangle_%i.png' %el)
+
+
+
+
+### Calc Q_photoelastic Eq. 33
+### Calc Q_deformation_pol Eq. 36
+### Calc Q_moving_boundary Eq. 41 

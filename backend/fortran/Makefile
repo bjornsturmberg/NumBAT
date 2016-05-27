@@ -3,7 +3,7 @@
 COMPILER_VENDOR = gnu95
 #COMPILER_VENDOR = intelem
 
-SUBROUTINES_FOR_PYTHON = conv_gmsh.f py_calc_modes.f EM_mode_energy_int.f
+SUBROUTINES_FOR_PYTHON = conv_gmsh.f py_calc_modes.f
 
 LIB_LOCATION = lib
 UMFPACK_NAME = umf4_f77zwrapper64.o

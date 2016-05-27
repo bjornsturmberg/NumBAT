@@ -159,6 +159,7 @@ def plot_EM_modes(sim_wguide, n_points=500):
         v_labels = ["ReEx","ReEy","ReEz","ImEx","ImEy","ImEz","AbsE"]
 
         # field plots
+        plt.clf()
         plt.figure(figsize=(13,13))
         for i_p,plot in enumerate(v_plots):
             ax = plt.subplot(3,3,i_p+1)
