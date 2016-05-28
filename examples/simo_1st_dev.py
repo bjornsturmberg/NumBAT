@@ -43,7 +43,7 @@ eta_44 = 620  # mu Pa s
 # wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 #                         bkg_material=materials.Material(1.0 + 0.0j),
 #                         inc_a_material=materials.Material(np.sqrt(eps)),
-#                         lc_bkg=0.09, lc2=1.0, lc3=1.0, check_msh=False)
+#                         lc_bkg=0.2, lc2=1.0, lc3=1.0, check_msh=False)
 
 # sim_wguide = wguide.calc_modes(wl_nm, num_EM_modes)
 # np.savez('wguide_data', sim_wguide=sim_wguide)
@@ -112,60 +112,40 @@ for el in range(n_msh_el):
                 edge_el_list.append(el)
 
 interface_nodes = list(set(interface_nodes))
-print interface_nodes
-# print edge_el_list
-# edge_els_multi_nodes = list(set(edge_els_multi_nodes))
 from collections import Counter
 edge_els_multi_nodes = [k for (k,v) in Counter(edge_el_list).iteritems() if v > 1]
-print edge_els_multi_nodes
 
-# count = 0
 test_orient = [1,-1]
 test1 = [0,0]
 test2 = [0,0]
 test3 = [0,0]
-# for el in [edge_els_multi_nodes[0]]:
 for el in edge_els_multi_nodes:
-    # neighbouring nodes
+    # These are all possible edge line segments.
     for [n1,n2] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
         node0 = table_nod[n1][el]
         node1 = table_nod[n2][el]
         if node0 in interface_nodes and node1 in interface_nodes:
-            # count += 1
+            # coordinates of line seg. nodes
             x1 = x_arr[0,table_nod[n1][el] - 1]
             y1 = x_arr[1,table_nod[n1][el] - 1]
             x2 = x_arr[0,table_nod[n2][el] - 1]
             y2 = x_arr[1,table_nod[n2][el] - 1]
-            all_el_w_node0 = np.where(table_nod[:] == node0)
-            all_el_w_node1 = np.where(table_nod[:] == node1)
-            all_el_w_node0 = [list(set(all_el_w_node0[0])), list(set(all_el_w_node0[1]))]
-            all_el_w_node1 = [list(set(all_el_w_node1[0])), list(set(all_el_w_node1[1]))]
-            all_el_w_node0 = [item for sublist in all_el_w_node0 for item in sublist]
-            all_el_w_node1 = [item for sublist in all_el_w_node1 for item in sublist]
-            all_el_w_nodes = all_el_w_node0 + all_el_w_node1
-            all_el_w_node0_and_node1 = [k for (k,v) in Counter(all_el_w_nodes).iteritems() if v > 1]
-            # print el
-            # print all_el_w_node0_and_node1
-            all_el_w_node0_and_node1.remove(el)
+            # coordinates of non-vertex nodes, used to test orientation
+            xt1 = x_arr[0,table_nod[3][el] - 1]
+            yt1 = x_arr[1,table_nod[3][el] - 1]
+            t1 = np.array([xt1,yt1])
+            xt2 = x_arr[0,table_nod[4][el] - 1]
+            yt2 = x_arr[1,table_nod[4][el] - 1]
+            t2 = np.array([xt2,yt2])
+            xt3 = x_arr[0,table_nod[5][el] - 1]
+            yt3 = x_arr[1,table_nod[5][el] - 1]
+            t3 = np.array([xt3,yt3])
             for i in [0, 1]:
                 t = test_orient[i]
-                normal_vec = [t*abs(y2-y1), -1*t*abs(x2-x1)]
-                # print all_el_w_node0_and_node1
-                test_point = np.array([(x1+x2+normal_vec[0])/2.,
-                              (y1+y2+normal_vec[1])/2.])
-                # print test_point
-                # print table_nod[3][all_el_w_node0_and_node1]
-                # print table_nod[4][all_el_w_node0_and_node1]
-                # print table_nod[5][all_el_w_node0_and_node1]
-                xt1 = x_arr[0,table_nod[3][all_el_w_node0_and_node1] - 1]
-                yt1 = x_arr[1,table_nod[3][all_el_w_node0_and_node1] - 1]
-                t1 = np.array([xt1,yt1])
-                xt2 = x_arr[0,table_nod[4][all_el_w_node0_and_node1] - 1]
-                yt2 = x_arr[1,table_nod[4][all_el_w_node0_and_node1] - 1]
-                t2 = np.array([xt2,yt2])
-                xt3 = x_arr[0,table_nod[5][all_el_w_node0_and_node1] - 1]
-                yt3 = x_arr[1,table_nod[5][all_el_w_node0_and_node1] - 1]
-                t3 = np.array([xt2,yt2])
+                normal_vec = [t*(y2-y1), -1*t*(x2-x1)]
+                # start half way along line seg. out along n vector
+                test_point = np.array([x1+(x2-x1+normal_vec[0])/2.,
+                              y1+(y2-y1+normal_vec[1])/2.])
                 test1[i] = np.linalg.norm(test_point-t1)
                 test2[i] = np.linalg.norm(test_point-t2)
                 test3[i] = np.linalg.norm(test_point-t3)
@@ -174,33 +154,28 @@ for el in edge_els_multi_nodes:
                 orient += 1
             elif test1[0] > test1[1]:
                 orient -= 1
-            else:
-                print 'ahhhhhhhh 1'
             if test2[0] < test2[1]:
                 orient += 1
             elif test2[0] > test2[1]:
                 orient -= 1
-            else:
-                print 'ahhhhhhhh 2'
             if test3[0] < test3[1]:
                 orient += 1
             elif test3[0] > test3[1]:
                 orient -= 1
-            else:
-                print 'ahhhhhhhh 3'
             if orient > 0:
-                normal_vec = [(y2-y1), -1*(x2-x1)]
-            elif orient < 0:
                 normal_vec = [-1*(y2-y1), (x2-x1)]
-            # elif test1[0] + test2[0] + test3[0] > test1[1] + test2[1] + test3[1]:
-            #     normal_vec = [-1*(y2-y1), (x2-x1)]
+            elif orient < 0:
+                normal_vec = [(y2-y1), -1*(x2-x1)]
             else:
-                print 'ahhhhhhhh'
-                print orient
-                print 'ahhhhhhhh'
+                raise Warning, \
+                'Cannot find orientation of normal vector'
             normal_vec_norm = normal_vec/np.linalg.norm(normal_vec)
-            print normal_vec_norm
-    # print count
+            # print normal_vec_norm
+            # print x1
+            # print y1
+            # print x2
+            # print y2
+
 
 # import matplotlib
 # matplotlib.use('pdf')
