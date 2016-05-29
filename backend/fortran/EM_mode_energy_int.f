@@ -1,10 +1,8 @@
 C   Calculate the Overlap integral of an EM mode with itself.
 C
-      subroutine EM_mode_energy_int (nval, nel, npt, 
-     *  nnodes, nb_typ_el, pp, table_nod, 
-     *  type_el, x, beta1,
-     *  soln_k1, soln_k2, overlap, overlap_file, PrintAll,
-     *  pair_warning, k_0)
+      subroutine EM_mode_energy_int (nval, nel, npt,
+     *  nnodes, nb_typ_el, pp, table_nod,
+     *  type_el, x, beta1, soln_k1, overlap, k_0)
 c
       implicit none
       integer*8 nval, nel, npt, nnodes, nb_typ_el
@@ -12,22 +10,19 @@ c
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
       complex*16 soln_k1(3,nnodes+7,nval,nel)
-      complex*16 soln_k2(3,nnodes+7,nval,nel)
       complex*16 pp(nb_typ_el)
       complex*16 beta1
-C      complex*16 overlap(nval,nval)
-      complex*16, dimension(nval,nval) :: overlap
-      character overlap_file*100
+      complex*16, dimension(nval) :: overlap
       double precision k_0
 c     Local variables
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
       integer*8 nod_el_p(nnodes_0)
-      complex*16 sol_el_1(2*nnodes_0+10), sol_el_2(2*nnodes_0)
+      complex*16 sol_el_1(2*nnodes_0+10)
       complex*16 vec_1(2*nnodes_0)
       complex*16 basis_overlap
       integer*8 i, j, j1, typ_e
-      integer*8 iel, ival, jval
+      integer*8 iel, ival
       integer*8 jtest, ind_jp, j_eq
       integer*8 itrial, ind_ip, i_eq
       integer*8 info_curved, n_curved, debug, ui
@@ -48,22 +43,12 @@ c     NQUAD: The number of quadrature points used in each element.
       double precision xq(nquad_max), yq(nquad_max)
       double precision xx(2), xx_g(2), ww, det
       double precision mat_B(2,2), mat_T(2,2)
-      double precision pi
-C     Mode ordering
-      integer*8 skip, PrintAll, pair_warning
-      complex*16 betatmp1(1), betatmp2(1)
-      complex*16 soltmp1(3,nnodes+7,nel,1)
-      complex*16 soltmp2(3,nnodes+7,nel,1)
-      integer*8 compcount, elcount, nodecount, j2
-      double precision val_max_diag, val_max_off
 C
 C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
       debug = 0
-c
-      pi = 3.141592653589793d0
 C
       if ( nnodes .ne. 6 ) then
         write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes
@@ -74,7 +59,7 @@ C
 c
       call quad_triangle (nquad, nquad_max, wq, xq, yq)
       if (debug .eq. 1) then
-        write(ui,*) "EM_mode_energy_int: nquad, nquad_max = ", 
+        write(ui,*) "EM_mode_energy_int: nquad, nquad_max = ",
      *              nquad, nquad_max
       endif
 C
@@ -107,10 +92,10 @@ c          grad2_mat0 = gradient on the reference triangle (P2 element)
            call phi2_2d_mat(xx, phi2_list, grad2_mat0)
 c          grad3_mat0 = gradient on the reference triangle (P3 element)
            call phi3_2d_mat(xx, phi3_list, grad3_mat0)
-c         
+c
           if (info_curved .eq. 0) then
 c           Rectilinear element
-            call jacobian_p1_2d(xx, xel, nnodes, 
+            call jacobian_p1_2d(xx, xel, nnodes,
      *               xx_g, det, mat_B, mat_T)
 c            if (det .le. 0) then
             if (det .le. 0 .and. debug .eq. 1 .and. iq .eq. 1) then
@@ -119,7 +104,7 @@ c            if (det .le. 0) then
             endif
           else
 c           Isoparametric element
-            call jacobian_p2_2d(xx, xel, nnodes, phi2_list, 
+            call jacobian_p2_2d(xx, xel, nnodes, phi2_list,
      *               grad2_mat0, xx_g, det, mat_B, mat_T)
           endif
            if(abs(det) .lt. 1.0d-10) then
@@ -154,7 +139,7 @@ c                 Determine the basis vector
                   enddo
                   vec_phi_j(j_eq) = phi2_list(jtest)
 c                  z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
-                  z_tmp1 = vec_phi_i(1)*vec_phi_j(1) + 
+                  z_tmp1 = vec_phi_i(1)*vec_phi_j(1) +
      *                        vec_phi_i(2)*vec_phi_j(2)
                   z_tmp1 = coeff_1 * z_tmp1
                   z_tmp1 = z_tmp1/k_0
@@ -169,7 +154,7 @@ c               Determine the basis vector
                   vec_phi_j(i) = -grad3_mat(i,jtest)
                 enddo
 C                z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
-                z_tmp1 = vec_phi_i(1)*vec_phi_j(1) + 
+                z_tmp1 = vec_phi_i(1)*vec_phi_j(1) +
      *                        vec_phi_i(2)*vec_phi_j(2)
                 z_tmp1 = coeff_1 * z_tmp1
                 z_tmp1 = z_tmp1/k_0
@@ -179,53 +164,46 @@ C                z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
           enddo
         enddo
 cccccccccc
-        do i=1,nnodes
-          do j=1,2
-c           The 2 transverse components of the mode ival
-            ind_ip = j + 2*(i-1)
-            z_tmp1 = soln_k2(j,i,ival,iel)
-            sol_el_2(ind_ip) = z_tmp1
-          enddo
-        enddo
-cccccccccc
-        do i=1,nnodes
-          do j=1,2
+        do ival=1,nval
+          do i=1,nnodes
+            do j=1,2
 c           The 2 transverse components of the mode jval
-            ind_jp = j + 2*(i-1)
-            z_tmp1 = soln_k1(j,i,jval,iel)
+              ind_jp = j + 2*(i-1)
+              z_tmp1 = soln_k1(j,i,ival,iel)
+              sol_el_1(ind_jp) = z_tmp1 * beta1
+            enddo
+          enddo
+cccccccccccc
+          do i=1,3
+c         The longitudinal component at the vertices (P3 elements)
+            ind_jp = i + 2*nnodes
+            z_tmp1 = soln_k1(3,i,ival,iel)
             sol_el_1(ind_jp) = z_tmp1 * beta1
           enddo
-        enddo
-cccccccccccc
-        do i=1,3
-c         The longitudinal component at the vertices (P3 elements)
-          ind_jp = i + 2*nnodes
-          z_tmp1 = soln_k1(3,i,jval,iel)
-          sol_el_1(ind_jp) = z_tmp1 * beta1
-        enddo
-        do i=nnodes+1,13
+          do i=nnodes+1,13
 c         The longitudinal component at the edge nodes and interior node (P3 elements)
-          ind_jp = i + 2*nnodes - nnodes + 3
-          z_tmp1 = soln_k1(3,i,jval,iel)
-          sol_el_1(ind_jp) = z_tmp1 * beta1
-        enddo
+            ind_jp = i + 2*nnodes - nnodes + 3
+            z_tmp1 = soln_k1(3,i,ival,iel)
+            sol_el_1(ind_jp) = z_tmp1 * beta1
+          enddo
 cccccccccccc
 c       Matrix-Vector product
-        do i=1,2*nnodes
-          vec_1(i) = 0.0d0
-          do j=1,2*nnodes+10
-            z_tmp1 = sol_el_1(j)
-            z_tmp2 = basis_overlap
-            vec_1(i) = vec_1(i) + z_tmp1 * z_tmp2
+          do i=1,2*nnodes
+            vec_1(i) = 0.0d0
+            do j=1,2*nnodes+10
+              z_tmp1 = sol_el_1(j)
+              z_tmp2 = basis_overlap
+              vec_1(i) = vec_1(i) + z_tmp1 * z_tmp2
+            enddo
           enddo
-        enddo
 cccccccccccc
 c       Scalar product
-        z_tmp1 = 0.0d0
-        do i=1,2*nnodes
-          z_tmp1 = vec_1(i) * sol_el_2(i)
-          overlap(ival,jval) = overlap(ival,jval)
+          z_tmp1 = 0.0d0
+          do i=1,2*nnodes
+            z_tmp1 = vec_1(i) * sol_el_1(i)
+            overlap(ival) = overlap(ival)
      *          + z_tmp1
+          enddo
         enddo
       enddo
 C
