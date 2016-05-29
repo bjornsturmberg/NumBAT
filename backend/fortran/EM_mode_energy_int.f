@@ -2,7 +2,7 @@ C   Calculate the Overlap integral of an EM mode with itself.
 C
       subroutine EM_mode_energy_int (nval, nel, npt,
      *  nnodes, nb_typ_el, pp, table_nod,
-     *  type_el, x, beta1, soln_k1, overlap, k_0)
+     *  type_el, x, beta1, soln_k1, k_0, overlap)
 c
       implicit none
       integer*8 nval, nel, npt, nnodes, nb_typ_el
@@ -43,6 +43,15 @@ c     NQUAD: The number of quadrature points used in each element.
       double precision xq(nquad_max), yq(nquad_max)
       double precision xx(2), xx_g(2), ww, det
       double precision mat_B(2,2), mat_T(2,2)
+C
+C
+Cf2py intent(in) nval, nel, npt,
+Cf2py intent(in) nnodes, nb_typ_el, pp, table_nod
+Cf2py intent(in) type_el, x, beta1, soln_k1, k_0
+C
+Cf2py depend(overlap) nval
+C
+Cf2py intent(out) overlap
 C
 C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
