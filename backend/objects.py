@@ -62,19 +62,19 @@ class Struct(object):
 
             background  : A :Material: instance for the background medium.
 
-            inc_a_material  : A :Material: instance for the 
+            inc_a_material  : A :Material: instance for the
 
-            inc_b_material  : A :Material: instance for the 
+            inc_b_material  : A :Material: instance for the
 
-            slab_a_material  : A :Material: instance for the 
+            slab_a_material  : A :Material: instance for the
 
-            slab_a_bkg_material  : A :Material: instance for the 
+            slab_a_bkg_material  : A :Material: instance for the
 
-            slab_b_material  : A :Material: instance for the 
+            slab_b_material  : A :Material: instance for the
 
-            slab_b_bkg_material  : A :Material: instance for the 
+            slab_b_bkg_material  : A :Material: instance for the
 
-            coating_material  : A :Material: instance for the 
+            coating_material  : A :Material: instance for the
 
             loss  (bool): If False, Im(n) = 0, if True n as in \
                 :Material: instance.
@@ -129,7 +129,7 @@ class Struct(object):
                  slab_b_bkg_material=materials.Material(1.0 + 0.0j),
                  coating_material=materials.Material(1.0 + 0.0j),
                  loss=True,
-                 make_mesh_now=True, force_mesh=True, 
+                 make_mesh_now=True, force_mesh=True,
                  mesh_file='NEED_FILE.mail', check_msh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
                  plotting_fields=False, plot_real=1, plot_imag=0, plot_abs=0,
@@ -151,10 +151,10 @@ class Struct(object):
             else:
                 self.inc_b_y = float(inc_b_y)
         self.inc_shape = inc_shape
-        self.slab_a_x = slab_a_x 
-        self.slab_a_y = slab_a_y 
-        self.slab_b_x = slab_b_x 
-        self.slab_b_y = slab_b_y 
+        self.slab_a_x = slab_a_x
+        self.slab_a_y = slab_a_y
+        self.slab_b_x = slab_b_x
+        self.slab_b_y = slab_b_y
         self.coating_y = coating_y
         self.two_inc_sep = two_inc_sep
         self.bkg_material = bkg_material

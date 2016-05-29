@@ -13,6 +13,8 @@ import plotting
 from fortran import NumBAT
 
 
+### Geometric parameters
+wl_nm = 1550
 unitcell_x = 2.5*1550
 inc_a_x = 314.7
 unitcell_y = unitcell_x
@@ -21,21 +23,16 @@ inc_shape = 'rectangular'
 
 ### Optical parameters
 eps = 12.25
-
-wl_nm = 1550
 num_EM_modes = 30
 
 ### Acoustic parameters
 s = 2330  # kg/m3
-
 c_11 = 165.7  # GPa
 c_12 = 63.9  # GPa
 c_44 = 79.6  # GPa
-
 p_11 = -0.044
 p_12 = 0.017
 p_44 = -0.051
-
 eta_11 = 5.9  # m Pa s
 eta_12 = 5.16  # m Pa s
 eta_44 = 620  # mu Pa s
@@ -43,7 +40,19 @@ eta_44 = 620  # mu Pa s
 # wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 #                         bkg_material=materials.Material(1.0 + 0.0j),
 #                         inc_a_material=materials.Material(np.sqrt(eps)),
-#                         lc_bkg=0.2, lc2=1.0, lc3=1.0, check_msh=False)
+#                         loss=False, lc_bkg=0.2, lc2=1.0, lc3=1.0,
+#                         check_msh=False)
+
+
+######## SIMULATION GAME PLAN ########
+### Calc EM Modes
+### Calc Acoustic Modes
+### Calc unnormalised power in EM modes Eq. 8 (or Kokou equiv.)
+### Calc Q_photoelastic Eq. 33
+### Calc Q_deformation_pol Eq. 36
+### Calc Q_moving_boundary Eq. 41
+
+
 
 ### Calc EM Modes
 # sim_wguide = wguide.calc_modes(wl_nm, num_EM_modes)
@@ -56,48 +65,23 @@ sim_wguide = npzfile['sim_wguide'].tolist()
 # plotting.plot_EM_modes(sim_wguide)
 
 
-# # Test overlap
-# nel = sim_wguide.n_msh_el
-# type_el = sim_wguide.type_el
-# table_nod = sim_wguide.table_nod
-# x_arr = sim_wguide.x_arr
-# nnodes = 6
-# xel = np.zeros((2,nnodes))
-# nod_el_p = np.zeros(nnodes)
-# xx = [0,0]
-# nquad = 16
-# [wq, xq, yq] = integration.quad_triangle(nquad)
-# integrand = 0.0
-# for ival in [0]:
-# # for ival in range(len(sim_wguide.k_z)):
-#     NumBAT.EM_mode_energy_int()
-
-x_arr = sim_wguide.x_arr
-n_msh_el = sim_wguide.n_msh_el
-type_el = sim_wguide.type_el
-table_nod = sim_wguide.table_nod
-n_msh_pts = sim_wguide.n_msh_pts
-print 'n_msh_el', n_msh_el
-print 'n_msh_pts', sim_wguide.n_msh_pts
-print 'table_nod', np.shape(table_nod)
-# print table_nod[0]
-print 'x_arr', np.shape(x_arr)
-print 'type_el', np.shape(type_el)
 
 
 ### Calc Q_moving_boundary Eq. 41
 from collections import Counter
 
-EM_ival_1 = 0
-EM_ival_2 = 0
-Ac_ival = 0
+n_msh_el = sim_wguide.n_msh_el
+type_el = sim_wguide.type_el
+table_nod = sim_wguide.table_nod
+n_msh_pts = sim_wguide.n_msh_pts
+x_arr = sim_wguide.x_arr
 
-interface_nodes = []
-edge_el_list = []
-node_array = -1*np.ones(n_msh_pts)
 ### Find nodes that are in elements of various types
 ### and find elements that have multiple nodes of various types
 ### ie. are not single vertices on an interface.
+node_array = -1*np.ones(n_msh_pts)
+interface_nodes = []
+edge_el_list = []
 for el in range(n_msh_el):
     el_type = type_el[el]
     for i in range(6):
@@ -111,9 +95,18 @@ for el in range(n_msh_el):
                 ## line below is redundant because elements sorted by type w type 1 first
                 # if el_type is not bkg_el_type:
                 edge_el_list.append(el)
-
 interface_nodes = list(set(interface_nodes))
 edge_els_multi_nodes = [k for (k,v) in Counter(edge_el_list).iteritems() if v > 1]
+
+Q_MB = 0
+EM_ival_1 = 0
+EM_ival_2 = 0
+Ac_ival = 0
+eps_0 = 1.0 # ToDo: update this value
+eps_list = [sim_wguide.structure.bkg_material.n(sim_wguide.wl_nm), sim_wguide.structure.inc_a_material.n(sim_wguide.wl_nm), sim_wguide.structure.inc_b_material.n(sim_wguide.wl_nm), sim_wguide.structure.slab_a_material.n(sim_wguide.wl_nm), sim_wguide.structure.slab_a_bkg_material.n(sim_wguide.wl_nm), sim_wguide.structure.slab_b_material.n(sim_wguide.wl_nm),sim_wguide.structure.slab_b_bkg_material.n(sim_wguide.wl_nm), sim_wguide.structure.coating_material.n(sim_wguide.wl_nm)]
+# Line below may be overkill?
+if sim_wguide.structure.loss is False:
+    eps_list = np.real(eps_list)
 
 test_orient = [1,-1]
 test1 = [0,0]
@@ -122,15 +115,15 @@ test3 = [0,0]
 # for el in edge_els_multi_nodes:
 for el in [edge_els_multi_nodes[0]]:
     # These are all possible edge line segments.
-    for [n1,n2] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
-        node0 = table_nod[n1][el]
-        node1 = table_nod[n2][el]
+    for [n0,n1] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
+        node0 = table_nod[n0][el]
+        node1 = table_nod[n1][el]
         if node0 in interface_nodes and node1 in interface_nodes:
             # coordinates of line seg. nodes
-            x1 = x_arr[0,table_nod[n1][el] - 1]
-            y1 = x_arr[1,table_nod[n1][el] - 1]
-            x2 = x_arr[0,table_nod[n2][el] - 1]
-            y2 = x_arr[1,table_nod[n2][el] - 1]
+            x1 = x_arr[0,table_nod[n0][el] - 1]
+            y1 = x_arr[1,table_nod[n0][el] - 1]
+            x2 = x_arr[0,table_nod[n1][el] - 1]
+            y2 = x_arr[1,table_nod[n1][el] - 1]
             # coordinates of non-vertex nodes, used to test orientation
             xt1 = x_arr[0,table_nod[3][el] - 1]
             yt1 = x_arr[1,table_nod[3][el] - 1]
@@ -170,40 +163,77 @@ for el in [edge_els_multi_nodes[0]]:
             else:
                 raise Warning, \
                 'Cannot find orientation of normal vector'
-            normal_vec_norm = normal_vec/np.linalg.norm(normal_vec)
-            # print normal_vec_norm
-            # print x1
-            # print y1
-            # print x2
-            # print y2
+            n_vec_norm = normal_vec/np.linalg.norm(normal_vec)
 
-            # find other epsilons
+            # Find el on other side of interface and its epsilon
+            all_el_w_node0 = np.where(table_nod[:] == node0)
+            all_el_w_node1 = np.where(table_nod[:] == node1)
+            all_el_w_node0 = [list(set(all_el_w_node0[0])), list(set(all_el_w_node0[1]))]
+            all_el_w_node1 = [list(set(all_el_w_node1[0])), list(set(all_el_w_node1[1]))]
+            all_el_w_node0 = [item for sublist in all_el_w_node0 for item in sublist]
+            all_el_w_node1 = [item for sublist in all_el_w_node1 for item in sublist]
+            all_el_w_node0 = [list(set(all_el_w_node0))][0]
+            all_el_w_node1 = [list(set(all_el_w_node1))][0]
+            all_el_w_nodes = all_el_w_node0 + all_el_w_node1
+            all_el_w_node0_and_node1 = [k for (k,v) in Counter(all_el_w_nodes).iteritems() if v > 1]
+            all_el_w_node0_and_node1.remove(el)
+            out_side_el = all_el_w_node0_and_node1[0]
+            # Now finally find actual epsilons
+            type_el_a = type_el[el]
+            type_el_b = type_el[out_side_el]
+            eps_a = eps_list[type_el_a-1] # adjust for fortran indexing
+            eps_b = eps_list[type_el_b-1] # adjust for fortran indexing
 
             ### Calc integrand on line segment
-            # E-fields
-            e = sim_wguide.sol1
-            e_1_x = e[0,0:6,EM_ival_1,el]
-            e_1_y = e[1,0:6,EM_ival_1,el]
-            e_1_z = e[2,0:6,EM_ival_1,el]
-            e_2_x = e[0,0:6,EM_ival_2,el]
-            e_2_y = e[1,0:6,EM_ival_2,el]
-            e_2_z = e[2,0:6,EM_ival_2,el]
-            print np.shape(e)
-            print np.shape(e_1_x)
-            # Displacement fields
-            u = sim_wguide.sol1 #ToDo: replace with actual u field
-            u_x = u[0,0:6,Ac_ival,el]
-            u_y = u[1,0:6,Ac_ival,el]
-            u_z = u[2,0:6,Ac_ival,el]
+            for n in [n0, n1]:
+                # E-fields
+                e1_x = sim_wguide.sol1[0,n,EM_ival_1,el]
+                e1_y = sim_wguide.sol1[1,n,EM_ival_1,el]
+                e1_z = sim_wguide.sol1[2,n,EM_ival_1,el]
+                e2_x = sim_wguide.sol1[0,n,EM_ival_2,el]
+                e2_y = sim_wguide.sol1[1,n,EM_ival_2,el]
+                e2_z = sim_wguide.sol1[2,n,EM_ival_2,el]
+                # Displacement fields
+                u = sim_wguide.sol1 #ToDo: replace with actual u field
+                u_x = u[0,n,Ac_ival,el]
+                u_y = u[1,n,Ac_ival,el]
+                u_z = u[2,n,Ac_ival,el]
+
+                u_n = u_x*n_vec_norm[0] + u_y*n_vec_norm[1]
+                # n_vec_norm[2] = 0 # z-comp!
+                # n_cross_e1 = np.array([n_vec_norm[1]*e1_z - n_vec_norm[2]*e1_y],
+                #     [-n_vec_norm[0]*e1_z + n_vec_norm[2]*e1_x],
+                #     [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x])
+                n_cross_e1 = np.array([[n_vec_norm[1]*e1_z],
+                    [-n_vec_norm[0]*e1_z],
+                    [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x]])
+                n_cross_e2 = np.array([[n_vec_norm[1]*e2_z],
+                    [-n_vec_norm[0]*e2_z],
+                    [n_vec_norm[0]*e2_y - n_vec_norm[1]*e2_x]])
+                inter_term1 = (eps_a - eps_b)*eps_0*np.conj(n_cross_e1)*n_cross_e2
+                # ToDo: what is d field?
+                n_cross_d_1 = n_cross_e1
+                n_cross_d_2 = n_cross_e2
+                inter_term2 = (1./eps_a - 1./eps_b)*(1./eps_0)*np.conj(n_cross_d_1)*n_cross_d_2
+                integrand = u_n*(inter_term1 - inter_term2)
+                Q_MB += integrand
 
 
 
+# # Test overlap
+# nel = sim_wguide.n_msh_el
+# type_el = sim_wguide.type_el
+# table_nod = sim_wguide.table_nod
+# x_arr = sim_wguide.x_arr
+# nnodes = 6
+# xel = np.zeros((2,nnodes))
+# nod_el_p = np.zeros(nnodes)
+# xx = [0,0]
+# nquad = 16
+# [wq, xq, yq] = integration.quad_triangle(nquad)
+# integrand = 0.0
+# for ival in [0]:
+# # for ival in range(len(sim_wguide.k_z)):
+#     NumBAT.EM_mode_energy_int()
 
 
-
-### Calc EM Modes
-### Calc Acoustic Modes
-### Calc unnormalised power in EM modes Eq. 8 (or Kokou equiv.)
-### Calc Q_photoelastic Eq. 33
-### Calc Q_deformation_pol Eq. 36
-### Calc Q_moving_boundary Eq. 41
