@@ -173,7 +173,7 @@ def plot_EM_modes(sim_wguide, n_points=500):
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.1)
             cbar = plt.colorbar(im, cax=cax)
-            cbar.ax.tick_params(labelsize=title_font-10) 
+            cbar.ax.tick_params(labelsize=title_font-10)
         # plt.tight_layout(1)
 
         n_eff = sim_wguide.k_z[ival] * sim_wguide.wl_norm() / (2*np.pi)
@@ -191,3 +191,19 @@ def plot_EM_modes(sim_wguide, n_points=500):
         plt.text(10, 0.3, n_str, fontsize=title_font)
 
         plt.savefig('E_field_%i.png' % ival, bbox_inches='tight')
+
+
+
+### Plot nodal arrangement on mesh triangle.
+# plt.figure(figsize=(13,13))
+# el = 1
+# plt.clf()
+# for i in range(0,6):
+#     print table_nod[i][el] - 1
+#     x = x_arr[0,table_nod[i][el] - 1]
+#     y = x_arr[1,table_nod[i][el] - 1]
+#     print 'x1 = ', x_arr[0,table_nod[i][el] - 1]
+#     print 'y1 = ', x_arr[1,table_nod[i][el] - 1]
+#     plt.plot(x, y, 'o')
+#     plt.text(x+0.001, y+0.001, str(i))
+# plt.savefig('triangle_%i.png' %el)

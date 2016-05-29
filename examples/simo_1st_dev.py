@@ -45,6 +45,7 @@ eta_44 = 620  # mu Pa s
 #                         inc_a_material=materials.Material(np.sqrt(eps)),
 #                         lc_bkg=0.2, lc2=1.0, lc3=1.0, check_msh=False)
 
+### Calc EM Modes
 # sim_wguide = wguide.calc_modes(wl_nm, num_EM_modes)
 # np.savez('wguide_data', sim_wguide=sim_wguide)
 npzfile = np.load('wguide_data.npz')
@@ -54,25 +55,24 @@ sim_wguide = npzfile['sim_wguide'].tolist()
 # print 'k_z of EM wave \n', betas
 # plotting.plot_EM_modes(sim_wguide)
 
+
 # # Test overlap
 # nel = sim_wguide.n_msh_el
 # type_el = sim_wguide.type_el
 # table_nod = sim_wguide.table_nod
-x_arr = sim_wguide.x_arr
+# x_arr = sim_wguide.x_arr
 # nnodes = 6
 # xel = np.zeros((2,nnodes))
 # nod_el_p = np.zeros(nnodes)
 # xx = [0,0]
 # nquad = 16
 # [wq, xq, yq] = integration.quad_triangle(nquad)
-
 # integrand = 0.0
-# print np.shape(sim_wguide.sol1)
-
 # for ival in [0]:
 # # for ival in range(len(sim_wguide.k_z)):
 #     NumBAT.EM_mode_energy_int()
 
+x_arr = sim_wguide.x_arr
 n_msh_el = sim_wguide.n_msh_el
 type_el = sim_wguide.type_el
 table_nod = sim_wguide.table_nod
@@ -84,19 +84,20 @@ print 'table_nod', np.shape(table_nod)
 print 'x_arr', np.shape(x_arr)
 print 'type_el', np.shape(type_el)
 
-# find triangles associated with node
-# find triangles type
-# if types not all equal -> node on interface
-# for node in range(1,sim_wguide.n_msh_pts+1):
-#     print np
 
-# bkg_el_type = 1
+### Calc Q_moving_boundary Eq. 41
+from collections import Counter
+
+EM_ival_1 = 0
+EM_ival_2 = 0
+Ac_ival = 0
+
 interface_nodes = []
 edge_el_list = []
 node_array = -1*np.ones(n_msh_pts)
 ### Find nodes that are in elements of various types
 ### and find elements that have multiple nodes of various types
-### ie. are not single verticies on an interface.
+### ie. are not single vertices on an interface.
 for el in range(n_msh_el):
     el_type = type_el[el]
     for i in range(6):
@@ -112,14 +113,14 @@ for el in range(n_msh_el):
                 edge_el_list.append(el)
 
 interface_nodes = list(set(interface_nodes))
-from collections import Counter
 edge_els_multi_nodes = [k for (k,v) in Counter(edge_el_list).iteritems() if v > 1]
 
 test_orient = [1,-1]
 test1 = [0,0]
 test2 = [0,0]
 test3 = [0,0]
-for el in edge_els_multi_nodes:
+# for el in edge_els_multi_nodes:
+for el in [edge_els_multi_nodes[0]]:
     # These are all possible edge line segments.
     for [n1,n2] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
         node0 = table_nod[n1][el]
@@ -176,29 +177,33 @@ for el in edge_els_multi_nodes:
             # print x2
             # print y2
 
+            # find other epsilons
 
-# import matplotlib
-# matplotlib.use('pdf')
-# import matplotlib.pyplot as plt
-# # plt.figure(figsize=(13,13))
-# # count = 0
-# interface_nodes2 = []
-# for el in [0,1,2,3,4,5,6,7,8]:#edge_els_multi_nodes:
-#     plt.clf()
-#     # below is incorrect - need to include all possible combinations of the elements nodes
-#     for i in range(0,6):
-#         print table_nod[i][el] - 1
-#         x = x_arr[0,table_nod[i][el] - 1]
-#         y = x_arr[1,table_nod[i][el] - 1]
-#         print 'x1 = ', x_arr[0,table_nod[i][el] - 1]
-#         print 'y1 = ', x_arr[1,table_nod[i][el] - 1]
-#         plt.plot(x, y, 'o')
-#         plt.text(x+0.001, y+0.001, str(i))
-#     plt.savefig('triangle_%i.png' %el)
-
+            ### Calc integrand on line segment
+            # E-fields
+            e = sim_wguide.sol1
+            e_1_x = e[0,0:6,EM_ival_1,el]
+            e_1_y = e[1,0:6,EM_ival_1,el]
+            e_1_z = e[2,0:6,EM_ival_1,el]
+            e_2_x = e[0,0:6,EM_ival_2,el]
+            e_2_y = e[1,0:6,EM_ival_2,el]
+            e_2_z = e[2,0:6,EM_ival_2,el]
+            print np.shape(e)
+            print np.shape(e_1_x)
+            # Displacement fields
+            u = sim_wguide.sol1 #ToDo: replace with actual u field
+            u_x = u[0,0:6,Ac_ival,el]
+            u_y = u[1,0:6,Ac_ival,el]
+            u_z = u[2,0:6,Ac_ival,el]
 
 
 
+
+
+
+### Calc EM Modes
+### Calc Acoustic Modes
+### Calc unnormalised power in EM modes Eq. 8 (or Kokou equiv.)
 ### Calc Q_photoelastic Eq. 33
 ### Calc Q_deformation_pol Eq. 36
 ### Calc Q_moving_boundary Eq. 41
