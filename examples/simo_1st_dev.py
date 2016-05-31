@@ -185,6 +185,7 @@ for el in [edge_els_multi_nodes[0]]:
             eps_b = eps_list[type_el_b-1] # adjust for fortran indexing
 
             ### Calc integrand on line segment
+            dr = np.array([x2-x1, y2-y1, 0.0])
             for n in [n0, n1]:
                 # E-fields
                 e1_x = sim_wguide.sol1[0,n,EM_ival_1,el]
@@ -216,7 +217,8 @@ for el in [edge_els_multi_nodes[0]]:
                 n_cross_d_2 = n_cross_e2
                 inter_term2 = (1./eps_a - 1./eps_b)*(1./eps_0)*np.conj(n_cross_d_1)*n_cross_d_2
                 integrand = u_n*(inter_term1 - inter_term2)
-                Q_MB += integrand
+                Q_MB += integrand/2.0
+                print Q_MB
 
 
 
