@@ -37,11 +37,11 @@ eta_11 = 5.9  # m Pa s
 eta_12 = 5.16  # m Pa s
 eta_44 = 620  # mu Pa s
 
-# wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-#                         bkg_material=materials.Material(1.0 + 0.0j),
-#                         inc_a_material=materials.Material(np.sqrt(eps)),
-#                         loss=False, lc_bkg=0.2, lc2=1.0, lc3=1.0,
-#                         check_msh=False)
+wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
+                        bkg_material=materials.Material(1.0 + 0.0j),
+                        inc_a_material=materials.Material(np.sqrt(eps)),
+                        loss=False, lc_bkg=0.2, lc2=1.0, lc3=1.0,
+                        check_msh=False)
 
 
 ######## SIMULATION GAME PLAN ########
@@ -55,10 +55,10 @@ eta_44 = 620  # mu Pa s
 
 
 ### Calc EM Modes
-# sim_wguide = wguide.calc_modes(wl_nm, num_EM_modes)
-# np.savez('wguide_data', sim_wguide=sim_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_wguide = npzfile['sim_wguide'].tolist()
+sim_wguide = wguide.calc_modes(wl_nm, num_EM_modes)
+np.savez('wguide_data', sim_wguide=sim_wguide)
+# npzfile = np.load('wguide_data.npz')
+# sim_wguide = npzfile['sim_wguide'].tolist()
 
 # betas = sim_wguide.k_z
 # print 'k_z of EM wave \n', betas
