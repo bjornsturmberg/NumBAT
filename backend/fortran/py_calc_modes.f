@@ -1,4 +1,4 @@
-      subroutine calc_modes_2d(
+      subroutine calc_EM_modes(
 c     Explicit inputs
      *    lambda, nval,
      *    debug, mesh_file, npt, nel,
@@ -13,11 +13,8 @@ c     Outputs
 C************************************************************************
 C
 C  Program:
-C    FEM component of EMUstack package. This was formerly main.f.
-C     Now this file is compiled by f2py and called as a subroutine from mode_calcs.py
-C     All other Fortran files are subroutines of this routine.
-C     This part of EMUstack is mostly a Finite Element Method routine to calculate the
-C     modes of a nanostructured layer, and their overlap integrals with plane waves.
+C     FEM solver of Electromagnetic waveguide problems.
+C     This subroutine is compiled by f2py & called in mode_calcs.py
 C
 C  Authors:
 C    Bjorn Sturmberg & Kokou B. Dossou
@@ -28,7 +25,7 @@ C
 
 C  Local parameters:
       integer*8 int_max, cmplx_max, int_used, cmplx_used
-      integer*8 real_max, real_used, n_64
+      integer*8 real_max, real_used!, n_64
 C      parameter (int_max=2**22, cmplx_max=2**26)
 C      parameter (real_max=2**21)
 C     !   a(int_max)
@@ -146,7 +143,7 @@ Cf2py intent(out) beta1
 Cf2py intent(out) sol1, mode_pol, table_nod, type_el, x_arr
 
 
-      n_64 = 2
+C      n_64 = 2
 C     !n_64**28 on Vayu, **27 before
 C      cmplx_max=n_64**25
 C      real_max = n_64**23
@@ -166,7 +163,7 @@ C      Checks = 0 ! check completeness, energy conservation
       ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell.
 
       if (debug .eq. 1) then
-        write(*,*) "WELCOME TO DEBUG MODE"
+        write(*,*) "WELCOME TO DEBUG MODE, py_calc_modes.f"
       endif
 
       allocate(b(cmplx_max), STAT=allocate_status)

@@ -55,7 +55,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calc EM Modes
-sim_wguide = wguide.calc_modes(wl_nm, num_EM_modes)
+sim_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 np.savez('wguide_data', sim_wguide=sim_wguide)
 # npzfile = np.load('wguide_data.npz')
 # sim_wguide = npzfile['sim_wguide'].tolist()
@@ -63,6 +63,32 @@ np.savez('wguide_data', sim_wguide=sim_wguide)
 # betas = sim_wguide.k_z
 # print 'k_z of EM wave \n', betas
 # plotting.plot_EM_modes(sim_wguide)
+
+s    = 2330    # kg/m3
+c_11 = 165.7e9 # Pa
+c_12 = 63.9e9  # Pa
+c_44 = 79.6e9  # Pa
+
+### Is there some way of getting nb_typ_el w/o running EM simo?
+nb_typ_el = wguide.nb_typ_el
+rho = np.zeros(nb_typ_el)
+c_tensor = np.zeros((6,6,nb_typ_el))
+for k_typ in range(nb_typ_el):
+    rho[k_typ] = s
+    c_tensor[1,1,k_typ] = c_11
+    c_tensor[2,2,k_typ] = c_11
+    c_tensor[3,3,k_typ] = c_11
+    c_tensor[4,4,k_typ] = c_44
+    c_tensor[5,5,k_typ] = c_44
+    c_tensor[6,6,k_typ] = c_44
+    c_tensor[1,2,k_typ] = c_12
+    c_tensor[1,3,k_typ] = c_12
+    c_tensor[2,1,k_typ] = c_12
+    c_tensor[2,3,k_typ] = c_12
+    c_tensor[3,1,k_typ] = c_12
+    c_tensor[3,2,k_typ] = c_12
+
+
 
 
 

@@ -2,7 +2,7 @@
     mode_calcs.py is a subroutine of NumBAT that contains methods to
     calculate the EM and Acoustic modes of a structure.
 
-    Copyright (C) 2016 Bjorn Sturmberg, Kokou Dossou 
+    Copyright (C) 2016 Bjorn Sturmberg, Kokou Dossou
 """
 
 import numpy as np
@@ -28,7 +28,7 @@ class Simmo(object):
         self.num_modes = num_modes
         self.mode_pol = None
         # just off normal incidence to avoid degeneracies
-        self.k_pll = np.array([1e-16, 1e-16]) 
+        self.k_pll = np.array([1e-16, 1e-16])
 
     def k_pll_norm(self):
         return self.k_pll * self.structure.unitcell_x
@@ -41,31 +41,31 @@ class Simmo(object):
             wl += 1e-10
         return wl
 
-    def calc_modes(self, num_modes=20):
-        """ Run a Fortran FEM calculation to find the modes of a \
-        structured layer. """
+    def calc_EM_modes(self, num_modes=20):
+        """ Run a Fortran FEM calculation to find the EM modes \
+        of a structure. """
         st = self.structure
         wl = self.wl_nm
-        self.n_effs = np.array([st.bkg_material.n(wl), st.inc_a_material.n(wl), 
-                                st.inc_b_material.n(wl), st.slab_a_material.n(wl), 
-                                st.slab_a_bkg_material.n(wl), st.slab_b_material.n(wl), 
-                                st.slab_b_bkg_material.n(wl), st.coating_material.n(wl)]) 
-       
+        self.n_effs = np.array([st.bkg_material.n(wl), st.inc_a_material.n(wl),
+                                st.inc_b_material.n(wl), st.slab_a_material.n(wl),
+                                st.slab_a_bkg_material.n(wl), st.slab_b_material.n(wl),
+                                st.slab_b_bkg_material.n(wl), st.coating_material.n(wl)])
+
         self.n_effs = self.n_effs[:self.structure.nb_typ_el]
         if self.structure.loss is False:
             self.n_effs = self.n_effs.real
 
-        if num_modes < 20: 
+        if num_modes < 20:
             self.num_modes = 20
             print "Warning: ARPACK needs >= 20 modes so set num_modes=20."
-        else: 
+        else:
             self.num_modes = num_modes
 
         # Parameters that control how FEM routine runs
         self.E_H_field = 1  # Selected formulation (1=E-Field, 2=H-Field)
         i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        FEM_debug = 0  # Fortran routines will display & save add. info
+        EM_FEM_debug = 0  # Fortran routines will display & save add. info
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -76,7 +76,7 @@ class Simmo(object):
         shift = 1.1*max_n**2 * k_0**2  \
             - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
 
-        if FEM_debug == 1:
+        if EM_FEM_debug == 1:
             print 'shift', shift
             if not os.path.exists("Normed"):
                 os.mkdir("Normed")
@@ -97,9 +97,9 @@ class Simmo(object):
         int_max = 2**22
 
         try:
-            resm = NumBAT.calc_modes_2d(
+            resm = NumBAT.calc_EM_modes(
                 self.wl_norm(), self.num_modes,
-                FEM_debug, self.structure.mesh_file, self.n_msh_pts,
+                EM_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el, self.n_effs,
                 self.k_pll_norm(), shift, self.E_H_field, i_cond, itermax,
                 self.structure.plotting_fields, self.structure.plot_real,
