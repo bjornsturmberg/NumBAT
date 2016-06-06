@@ -213,9 +213,9 @@ C
       endif
       ip_type_nod = 1
       ip_type_el = ip_type_nod + npt
-      ip_table_nod = ip_type_el + nel ! pointer to FEM connectivity table
-
-      ip_visite = ip_table_nod + nnodes*nel
+C      ip_table_nod = ip_type_el + nel ! pointer to FEM connectivity table
+C      ip_visite = ip_table_nod + nnodes*nel
+      ip_visite = ip_type_el + nel
       ip_eq = ip_visite + npt
 
       jp_x = 1
@@ -254,9 +254,8 @@ c
       ip_col_ptr = ip_eq + 3*npt
 c       ip_col_ptr = ip_index_pw_inv + neq_PW
 
-C      ToDo: is this the same as in EM prob?
-      call csr_max_length (nel, npt, neq, nnodes,
-     *  a(ip_table_nod), a(ip_eq), a(ip_col_ptr), nonz_max)
+      call csr_max_length_AC (nel, npt, neq, nnodes,
+     *  table_nod, a(ip_eq), a(ip_col_ptr), nonz_max)
 
       ip = ip_col_ptr + neq + 1
       if (ip .gt. int_max) then
@@ -270,7 +269,7 @@ C      ToDo: is this the same as in EM prob?
 c
       ip_row = ip_col_ptr + neq + 1
 
-      call csr_length (nel, npt, neq, nnodes, a(ip_table_nod),
+      call csr_length_AC (nel, npt, neq, nnodes, table_nod,
      *  a(ip_eq), a(ip_row), a(ip_col_ptr), nonz_max,
      *  nonz, max_row_len, ip, int_max, debug)
 
@@ -376,13 +375,13 @@ cc        beta = 28.9d0 / d_in_n
 C        beta = 1.49175d7
 C
       if (debug .eq. 1) then
-        write(ui,*) "py_calc_modes_AC: Asmbly: call to asmbly"
+        write(ui,*) "py_calc_modes_AC: call to asmbly"
       endif
 C     Assemble the coefficient matrix K and M of the finite element equations
       call asmbly_AC (i_base, nel, npt, neq, nnodes,
      *  shift, beta_in, nb_typ_el, rho, c_tensor,
-     *  a(ip_table_nod), type_el, a(ip_eq),
-     *  b(jp_x), nonz, a(ip_row), a(ip_col_ptr),
+     *  table_nod, type_el, a(ip_eq),
+     *  x_arr, nonz, a(ip_row), a(ip_col_ptr),
      *  c(kp_mat1_re), c(kp_mat1_im), b(jp_mat2), a(ip_work))
 C
       if (debug .eq. 1) then
@@ -475,8 +474,8 @@ C    *       mesh_file, n_conv, dir_name)
         open (unit=34,file=tchar)
           do i=1,nval
             call gmsh_post_process (i, nval, nel, npt,
-     *         nnodes, a(ip_table_nod), a(ip_type_el),
-     *         b(jp_x), beta1, b(jp_sol),
+     *         nnodes, table_nod, a(ip_type_el),
+     *         x_arr, beta1, b(jp_sol),
      *         b(jp_rhs), a(ip_visite), gmsh_file_pos, dir_name)
           enddo
         close (unit=34)

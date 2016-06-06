@@ -66,7 +66,7 @@ class Simmo(object):
         self.E_H_field = 1  # Selected formulation (1=E-Field, 2=H-Field)
         i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        EM_FEM_debug = 0  # Fortran routines will display & save add. info
+        EM_FEM_debug = 1  # Fortran routines will display & save add. info
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
