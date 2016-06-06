@@ -2,16 +2,15 @@
 c     Explicit inputs
      *    lambda, beta_in, nval, c_tensor, rho,
      *    debug, mesh_file, npt, nel,
-     *    nb_typ_el, d_in_nm, shift,
+     *    nb_typ_el, d_in_n, shift,
      *    i_cond, itermax,
      *    plot_modes,
-     *    cmplx_max, real_max, int_max, int_max_32,
+     *    cmplx_max, real_max, int_max,
 c     Outputs
      *    beta1, sol1)
 
-C        beta_in = 1.49175d7
 
-C************************************************************************
+C***********************************************************************
 C
 C  Program:
 C     FEM solver of Acoustic waveguide problems.
@@ -20,18 +19,14 @@ C
 C  Authors:
 C    Bjorn Sturmberg & Kokou B. Dossou
 C
-C************************************************************************
+C***********************************************************************
 C
       implicit none
 C  Local parameters:
       complex*16 beta_in ! Propagation constant
       integer*8 int_max, cmplx_max, int_used, cmplx_used
-      integer*8 real_max, real_used!, n_64
+      integer*8 real_max, real_used, plot_modes !, n_64
       integer :: alloc_stat=0
-
-c     32-bit integer supervector for UMFPACK and ARPACK
-      integer*4 int_max_32, int_used_32
-      integer*4, dimension(:), allocatable :: a_32  !  (int_max_32)
 
       integer*8, dimension(:), allocatable :: a   !  (int_max)
       complex*16, dimension(:), allocatable :: b   !  (cmplx_max)
@@ -39,7 +34,7 @@ c     32-bit integer supervector for UMFPACK and ARPACK
 
 
 C  Declare the pointers of the integer super-vector
-C      integer*8 ip_type_nod, ip_type_el, ip_table_nod
+      integer*8 ip_type_nod, ip_type_el, ip_table_nod
       integer*8 ip_eq
       integer*8 ip_visite
 
@@ -67,7 +62,8 @@ C     complex*16 rho(max_typ_el)
 
       integer*8 nb_typ_el
       complex*16 pp(nb_typ_el),  qq(nb_typ_el)
-      complex*16 c_tensor(6,6,nb_typ_el)
+C      complex*16 c_tensor(6,6,nb_typ_el)
+      complex*16 c_tensor(nb_typ_el)
 c     rho: density
       complex*16 rho(nb_typ_el)
 
@@ -83,36 +79,30 @@ C     ! Number of nodes per element
       double precision pi!, theta, phi
       double precision lambda!, lambda_1, lambda_2, d_lambda
       double precision d_freq, freq, lat_vecs(2,2)
-      double precision lx, ly, d_in_nm
+      double precision lx, ly, d_in_n
 
       complex*16 shift
-
-C     integer*8 n_lambda_1, Loss
-C      parameter (n_lambda_1 = 101)
-      complex*16 Complex_refract1(2,n_lambda_1)
-      complex*16 Complex_refract_sub(2,n_lambda_1)
-
-
       integer*8  i_base
 
 C  Variable used by valpr
       integer*8 ltrav, n_conv
       double precision ls_data(10)
       complex*16 z_beta, z_tmp, z_tmp0
-      integer*8 index(1000)
+C      integer*8 index(1000)
+      integer*8, dimension(:), allocatable :: index
 c     variable used by UMFPACK
       double precision control (20), info_umf (90)
       integer*8 numeric, symbolic, status, sys, filenum
 
-      integer*4 ip_col_ptr_32, ip_row_32
-
-c     32-but integer variables used by UMFPACK
-      integer*4 numeric_32, symbolic_32, status_32
-      integer*4 sys_32, filenum_32
-c     32-but integer variables used by UMFPACK and ARPACK
-      integer*4 neq_32, nonz_32, debug_32
-      integer*4 nval_32, nvect_32, itermax_32, ltrav_32
-      integer*4 n_conv_32, i_base_32
+C      integer*4 ip_col_ptr_32, ip_row_32
+C
+Cc     32-but integer variables used by UMFPACK
+C      integer*4 numeric_32, symbolic_32, status_32
+C      integer*4 sys_32, filenum_32
+Cc     32-but integer variables used by UMFPACK and ARPACK
+C      integer*4 neq_32, nonz_32, debug_32
+C      integer*4 nval_32, nvect_32, itermax_32, ltrav_32
+C      integer*4 n_conv_32, i_base_32
 
       double precision time1, time2
       character*(8) start_date, end_date
@@ -136,10 +126,10 @@ C      complex*16 mode_pol(4,nval)
 
 Cf2py intent(in) lambda, beta_in, nval
 Cf2py intent(in) debug, mesh_file, npt, nel
-Cf2py intent(in) d_in_nm, shift
+Cf2py intent(in) d_in_n, shift
 Cf2py intent(in) i_cond, itermax
-Cf2py intent(in) plot_modes
-Cf2py intent(in) cmplx_max, real_max, int_max, int_max_32
+Cf2py intent(in) plot_modes, c_tensor, rho
+Cf2py intent(in) cmplx_max, real_max, int_max
 Cf2py intent(in) nb_typ_el
 
 Cf2py depend(c_tensor) nb_typ_el
@@ -149,12 +139,12 @@ Cf2py intent(out) beta1
 Cf2py intent(out) sol1
 
 C
-CCCCCCCCCCCCCCCCCCCC  Start Program - get parameters  CCCCCCCCCCCCCCCCCCC
+CCCCCCCCCCCCCCCCCCCC  Start Program - get parameters  CCCCCCCCCCCCCCCCCC
 C
 C     Set parameter for the super-vectors of integer and real numbers
 C
       ui = 6     !ui = Unite dImpression
-      nnodes = 6 ! Number of nodes per element
+C      nnodes = 6 ! Number of nodes per element
       pi = 3.141592653589793d0
 
       nvect = 2*nval + nval/2 +3
@@ -207,16 +197,15 @@ c
         stop
       endif
 
-      allocate(a_32(int_max_32), STAT=alloc_stat)
+      allocate(index(nval), STAT=alloc_stat)
       if (alloc_stat /= 0) then
-        write(*,*) "The allocation is unseccesfull"
+        write(*,*) "The allocation is unsuccessful"
         write(*,*) "alloc_stat = ", alloc_stat
-        write(*,*) "Not enough memory for the integer array a_32"
-        write(*,*) "int_max_32 = ", int_max_32
+        write(*,*) "Not enough memory for index"
+        write(*,*) "nval = ", nval
         write(*,*) "Aborting..."
         stop
       endif
-
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
@@ -236,17 +225,19 @@ c
 C
       tol = 0.0 ! ARPACK accuracy (0.0 for machine precision)
 C      lx=1.0 ! Diameter of unit cell. Default, lx = 1.0.
-C      ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell.
+C      ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell
 C     ToDo: sort out what's going on here - in EM lx=ly=1
-      lx = d_in_nm
-      ly = d_in_nm
+      lx = d_in_n
+      ly = d_in_n
 C      call get_param(n_lambda, lambda_1, lambda_2,
 C     *      npt, nel, i_cond, nval, nvect, itermax, tol,
 C     *      shift_0, lx, ly, mesh_file, gmsh_file,
-C     *      gmsh_file_pos, log_file, d_in_nm, debug)
+C     *      gmsh_file_pos, log_file, d_in_n, debug)
 C
-C####################  Start FEM PRE-PROCESSING  ########################
+C####################  Start FEM PRE-PROCESSING  #######################
 C
+      write(ui,*) nb_typ_el
+
       if (debug .eq. 1) then
         write(ui,*)
         write(ui,*) "lx,ly = ", lx, ly
@@ -256,7 +247,8 @@ C
       endif
 C
       if ((3*npt+nel+nnodes*nel) .gt. int_max) then
-         write(ui,*) "py_calc_modes_AC: (3*npt+nel+nnodes*nel) + npt > int_max : ",
+         write(ui,*) "py_calc_modes_AC: "
+         write(ui,*) "(3*npt+nel+nnodes*nel) + npt > int_max : ",
      *    (3*npt+nel+nnodes*nel), int_max
          write(ui,*) "py_calc_modes_AC: increase the size of int_max"
          write(ui,*) "py_calc_modes_AC: Aborting..."
@@ -278,8 +270,8 @@ C      ip_table_nod = ip_type_el + nel ! pointer to FEM connectivity table
 
       jp_x = 1
 C
-C      lx = d_in_nm
-C      ly = d_in_nm
+C      lx = d_in_n
+C      ly = d_in_n
 C      call geometry (nel, npt, nnodes, nb_typ_el,
 C     *     lx, ly, a(ip_type_nod), a(ip_type_el), a(ip_table_nod),
 C     *     b(jp_x), mesh_file)
@@ -421,33 +413,9 @@ c
         stop
       endif
 
-      nvect_32 = nvect
-      nval_32 = nval
-      neq_32 = neq
-      itermax_32 = itermax
-      ltrav_32 = ltrav
-      nonz_32 = nonz
-      debug_32 = debug
-
 c
 c###############################################
 c
-c     SOME 32 bit integers for UMFPACK AND ARPACK
-      ip_col_ptr_32 = 1
-      ip_row_32 = ip_col_ptr_32 + neq + 1
-      int_used_32 = ip_row_32 + nonz
-
-      if (int_max_32 .lt. int_used_32) then
-        write(ui,*)
-        write(ui,*) "The size of the integer_32 supervector ",
-     *              "is too small"
-        write(ui,*) "integer super-vec: int_max_32  = ", int_max_32
-        write(ui,*) "integer super-vec: int_used_32 = ", int_used_32
-        write(ui,*) "int_used_32/int_max_32 = ",
-     *                dble(int_used_32)/dble(int_max_32)
-        write(ui,*) "Aborting..."
-        stop
-      endif
 c       ----------------------------------------------------------------
 c       convert from 1-based to 0-based
 c       ----------------------------------------------------------------
@@ -463,28 +431,12 @@ c
 c     The CSC indexing, i.e., ip_col_ptr, is 1-based
 c       (but valpr.f will change the CSC indexing to 0-based indexing)
       i_base = 0
-c
-c     SOME 32 bit integers for UMFPACK AND ARPACK
-      i_base_32 = i_base
 
-      do i=1,neq+1
-        a_32(ip_col_ptr_32+i-1) = a(ip_col_ptr+i-1)
-      enddo
-
-      do i=1,nonz
-          a_32(ip_row_32+i-1) = a(ip_row+i-1)
-      enddo
-
-cc      do i=1,nb_typ_el
-cc        rho(i) = rho(i) * d_in_nm**3
-cc      enddo
-
-C
 C#####################  End FEM PRE-PROCESSING  #########################
 C
 c       Propagation constant: beta = k_z
-cc        beta = 28.9d0 * d_in_nm
-cc        beta = 28.9d0 / d_in_nm
+cc        beta = 28.9d0 * d_in_n
+cc        beta = 28.9d0 / d_in_n
 
 C        beta = 1.49175d7
 C
@@ -501,19 +453,16 @@ C
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: call to valpr"
       endif
-      call valpr_32 ( i_base_32, nvect_32, nval_32, neq_32,
-     *  itermax_32, ltrav_32, tol, nonz_32,
-     *  a_32(ip_row_32), a_32(ip_col_ptr_32), c(kp_mat1_re),
+      call valpr_64_AC (i_base, nvect, nval, neq, itermax, ltrav,
+     *  tol, nonz, a(ip_row), a(ip_col_ptr), c(kp_mat1_re),
      *  c(kp_mat1_im), b(jp_mat2), b(jp_vect1), b(jp_vect2),
      *  b(jp_workd), b(jp_resid), b(jp_vschur), beta1,
      *  b(jp_trav), b(jp_vp), c(kp_rhs_re), c(kp_rhs_im),
-     *  c(kp_lhs_re), c(kp_lhs_im), n_conv_32, ls_data,
-     *  numeric_32, filenum_32, status_32, control,
-     *  info_umf, debug_32)
-      n_conv = n_conv_32
+     *  c(kp_lhs_re), c(kp_lhs_im), n_conv, ls_data,
+     *  numeric, filenum, status, control, info_umf, debug)
 
       if (n_conv .ne. nval) then
-         write(ui,*) "py_calc_modes_AC: convergence problem with valpr_64"
+         write(ui,*) "py_calc_modes_AC: convergence problem in valpr_64"
          write(ui,*) "py_calc_modes_AC: n_conv != nval : ",
      *    n_conv, nval
          write(ui,*) "py_calc_modes_AC: Aborting..."
@@ -536,7 +485,7 @@ C         im(z_beta) > 0 for forward decaying evanescent mode
         beta1(i) = z_beta
       enddo
 c
-      call z_indexx (nval, beta1, index)
+      call z_indexx_AC (nval, beta1, index)
 C
 C       The eigenvectors will be stored in the array b(jp_sol)
 C       The eigenvalues and eigenvectors will be renumbered
@@ -580,17 +529,13 @@ C          close(343)
 C      endif
 
 C    Save Original solution
-C      if (PrintSolution .eq. 1) then
-C        dir_name = "Output/Fields"
-C        call write_sol (nval, nel, nnodes, lambda,
-C     *       b(jp_eigenval), b(jp_sol), mesh_file, dir_name)
-C        call write_param (lambda, npt, nel, i_cond,
-C     *       nval, nvect, itermax, tol, shift, lx, ly,
-C     *       mesh_file, n_conv,
-C     *       dir_name)
-cc  nb_typ_el, eps_eff, mesh_format,
       if (plot_modes .eq. 1) then
         dir_name = "AC_fields"
+C        call write_sol_AC (nval, nel, nnodes, lambda,
+C    *       b(jp_eigenval), b(jp_sol), mesh_file, dir_name)
+C        call write_param (lambda, npt, nel, i_cond,
+C    *       nval, nvect, itermax, tol, shift, lx, ly,
+C    *       mesh_file, n_conv, dir_name)
         tchar = "AC_fields/All_plots_png_abs2_eE.geo"
         open (unit=34,file=tchar)
           do i=1,nval
@@ -636,8 +581,9 @@ C
 C
       write(ui,*) "   .      .      ."
       write(ui,*) "   .      .      ."
-      write(ui,*) "   .      . (d=",d_in_nm,")"
+      write(ui,*) "   .      . (d=",d_in_n,")"
       write(ui,*) "  and   we're   done!"
 C
-      stop
-      end
+      deallocate(a,b,c,index)
+
+      end subroutine calc_AC_modes

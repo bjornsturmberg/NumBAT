@@ -872,4 +872,4 @@ C
 C
       deallocate(a,b,c,index,overlap_L)
 
-      end subroutine calc_modes_2d
+      end subroutine calc_EM_modes

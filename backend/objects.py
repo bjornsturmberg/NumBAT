@@ -128,7 +128,7 @@ class Struct(object):
                  slab_b_material=materials.Material(1.0 + 0.0j),
                  slab_b_bkg_material=materials.Material(1.0 + 0.0j),
                  coating_material=materials.Material(1.0 + 0.0j),
-                 loss=True,
+                 loss=True, acoustic_props=None,
                  make_mesh_now=True, force_mesh=True,
                  mesh_file='NEED_FILE.mail', check_msh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
@@ -216,6 +216,25 @@ class Struct(object):
         self.plot_imag = plot_imag
         self.plot_abs = plot_abs
         self.plot_field_conc = plot_field_conc
+        rho = np.zeros(self.nb_typ_el)
+        c_tensor = np.zeros((6,6,self.nb_typ_el))
+        if acoustic_props:
+            for k_typ in range(self.nb_typ_el):
+                rho[k_typ] = acoustic_props[0]
+                c_tensor[0,0,k_typ] = acoustic_props[1]
+                c_tensor[1,1,k_typ] = acoustic_props[1]
+                c_tensor[2,2,k_typ] = acoustic_props[1]
+                c_tensor[3,3,k_typ] = acoustic_props[3]
+                c_tensor[4,4,k_typ] = acoustic_props[3]
+                c_tensor[5,5,k_typ] = acoustic_props[3]
+                c_tensor[0,1,k_typ] = acoustic_props[2]
+                c_tensor[0,2,k_typ] = acoustic_props[2]
+                c_tensor[1,0,k_typ] = acoustic_props[2]
+                c_tensor[1,2,k_typ] = acoustic_props[2]
+                c_tensor[2,0,k_typ] = acoustic_props[2]
+                c_tensor[2,1,k_typ] = acoustic_props[2]
+        self.rho = rho
+        self.c_tensor = c_tensor
 
 
     def make_mesh(self):
@@ -351,8 +370,8 @@ class Struct(object):
             os.system(gmsh_cmd)
 
 
-    def calc_modes(self, wl_nm, num_modes, **args):
-        """ Run a simulation to find the Struct's modes.
+    def calc_EM_modes(self, wl_nm, num_modes, **args):
+        """ Run a simulation to find the Struct's EM modes.
 
             Args:
                 light  (Light instance): Represents incident light.
@@ -362,10 +381,28 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo = Simmo(self, wl_nm, num_modes)
+        simmo = Simmo(self, wl_nm, num_modes=num_modes)
 
-        simmo.calc_modes(**args)
+        simmo.calc_EM_modes(**args)
         return simmo
+
+
+    def calc_AC_modes(self, wl_nm, q_acoustic, num_modes, **args):
+        """ Run a simulation to find the Struct's acoustic modes.
+
+            Args:
+                light  (Light instance): Represents incident light.
+
+                args  (dict): Options to pass to :Simmo.calc_modes:.
+
+            Returns:
+                :Simmo: object
+        """
+        simmo_AC = Simmo(self, wl_nm, q_acoustic=q_acoustic, 
+                         num_modes=num_modes)
+
+        simmo_AC.calc_AC_modes(**args)
+        return simmo_AC
 
 
 def dec_float_str(dec_float):

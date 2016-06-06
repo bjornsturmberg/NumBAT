@@ -22,9 +22,10 @@ class Simmo(object):
         Inherits knowledge of :Struc:, :Light: objects
         Stores the calculated modes of :Struc: for illumination by :Light:
     """
-    def __init__(self, structure, wl_nm, num_modes):
+    def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20):
         self.structure = structure
         self.wl_nm = wl_nm
+        self.q_acoustic = q_acoustic
         self.num_modes = num_modes
         self.mode_pol = None
         # just off normal incidence to avoid degeneracies
@@ -85,7 +86,6 @@ class Simmo(object):
             if not os.path.exists("Output"):
                 os.mkdir("Output")
 
-
         with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
             self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
 
@@ -97,7 +97,7 @@ class Simmo(object):
         int_max = 2**22
 
         try:
-            resm = NumBAT.calc_EM_modes(
+            resm = NumBAT.calc_em_modes(
                 self.wl_norm(), self.num_modes,
                 EM_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el, self.n_effs,
@@ -113,7 +113,7 @@ class Simmo(object):
             area_norm = area/self.structure.unitcell_x**2
 
         except KeyboardInterrupt:
-            print "\n\n FEM routine calc_modes_2d",\
+            print "\n\n FEM routine calc_EM_modes",\
             "interrupted by keyboard.\n\n"
 
         # if not self.structure.plot_field_conc:
@@ -123,8 +123,67 @@ class Simmo(object):
         #     self.sol1 = None
         #     self.n_effs = None
         #     self.E_H_field = None
-    #         self.table_nod = None
-    #         self.type_el = None
-    #         self.x_arr = None
-    #         self.n_msh_pts = None
-    #         self.n_msh_el = None
+        #     self.table_nod = None
+        #     self.type_el = None
+        #     self.x_arr = None
+        #     self.n_msh_pts = None
+        #     self.n_msh_el = None
+
+
+    def calc_AC_modes(self, num_modes=20):
+        """ Run a Fortran FEM calculation to find the EM modes \
+        of a structure. """
+        st = self.structure
+        wl = self.wl_nm
+        q_acoustic = self.q_acoustic
+        self.d_in_m = self.structure.unitcell_x*1e-9
+
+        if num_modes < 20:
+            self.num_modes = 20
+            print "Warning: ARPACK needs >= 20 modes so set num_modes=20."
+        else:
+            self.num_modes = num_modes
+
+        # Parameters that control how FEM routine runs
+        i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
+        itermax = 30  # Maximum number of iterations for convergence
+        AC_FEM_debug = 0  # Fortran routines will display & save add. info
+
+        # Calculate where to center the Eigenmode solver around.
+        # (Shift and invert FEM method)
+        # shift = 1.1*max_n**2 * k_0**2  \
+        #     - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
+        shift = 13.0e9
+
+        if AC_FEM_debug == 1:
+            print 'shift', shift
+            if not os.path.exists("Output"):
+                os.mkdir("Output")
+
+        with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
+            self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
+
+        # Size of Fortran's complex superarray (scales with mesh)
+        # In theory could do some python-based preprocessing
+        # on the mesh file to work out RAM requirements
+        cmplx_max = 2**27  # 30
+        real_max = 2**23
+        int_max = 2**22
+        print np.shape(self.structure.c_tensor)
+        print self.structure.nb_typ_el
+
+        try:
+            resm = NumBAT.calc_ac_modes(
+                self.wl_norm(), self.q_acoustic, self.num_modes,
+                self.structure.c_tensor, self.structure.rho,
+                AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
+                self.n_msh_el, self.structure.nb_typ_el, 
+                self.d_in_m, shift, i_cond, itermax,
+                self.structure.plotting_fields,
+                cmplx_max, real_max, int_max)
+
+            self.k_z, self.sol1 = resm
+
+        except KeyboardInterrupt:
+            print "\n\n FEM routine calc_AC_modes",\
+            "interrupted by keyboard.\n\n"
