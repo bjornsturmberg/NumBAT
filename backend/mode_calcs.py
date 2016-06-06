@@ -145,9 +145,9 @@ class Simmo(object):
             self.num_modes = num_modes
 
         # Parameters that control how FEM routine runs
-        i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
+        i_cond = 1  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        AC_FEM_debug = 0  # Fortran routines will display & save add. info
+        AC_FEM_debug = 1  # Fortran routines will display & save add. info
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -169,19 +169,16 @@ class Simmo(object):
         cmplx_max = 2**27  # 30
         real_max = 2**23
         int_max = 2**22
-        print np.shape(self.structure.c_tensor)
-        print self.structure.nb_typ_el
 
         try:
             resm = NumBAT.calc_ac_modes(
                 self.wl_norm(), self.q_acoustic, self.num_modes,
-                self.structure.c_tensor, self.structure.rho,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el, 
+                self.structure.c_tensor, self.structure.rho,
                 self.d_in_m, shift, i_cond, itermax,
                 self.structure.plotting_fields,
                 cmplx_max, real_max, int_max)
-
             self.k_z, self.sol1 = resm
 
         except KeyboardInterrupt:

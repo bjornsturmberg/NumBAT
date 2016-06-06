@@ -1,14 +1,13 @@
       subroutine calc_AC_modes(
 c     Explicit inputs
-     *    lambda, beta_in, nval, c_tensor, rho,
+     *    lambda, beta_in, nval,
      *    debug, mesh_file, npt, nel,
-     *    nb_typ_el, d_in_n, shift,
+     *    nb_typ_el,  c_tensor, rho, d_in_n, shift,
      *    i_cond, itermax,
      *    plot_modes,
      *    cmplx_max, real_max, int_max,
 c     Outputs
      *    beta1, sol1)
-
 
 C***********************************************************************
 C
@@ -27,11 +26,9 @@ C  Local parameters:
       integer*8 int_max, cmplx_max, int_used, cmplx_used
       integer*8 real_max, real_used, plot_modes !, n_64
       integer :: alloc_stat=0
-
       integer*8, dimension(:), allocatable :: a   !  (int_max)
       complex*16, dimension(:), allocatable :: b   !  (cmplx_max)
       double precision, dimension(:), allocatable :: c   !  (real_max)
-
 
 C  Declare the pointers of the integer super-vector
       integer*8 ip_type_nod, ip_type_el, ip_table_nod
@@ -53,23 +50,14 @@ c     Declare the pointers of for sparse matrix storage
       integer*8 ip_work, ip_work_sort, ip_work_sort2
       integer*8 nonz, nonz_max, max_row_len
 
-C     integer*8 max_typ_el, nb_typ_el
-C     parameter (max_typ_el=10)
-C     complex*16 pp(max_typ_el),  qq(max_typ_el)
-C     complex*16 c_tensor(6,6,max_typ_el)
-C     rho: density
-C     complex*16 rho(max_typ_el)
-
       integer*8 nb_typ_el
       complex*16 pp(nb_typ_el),  qq(nb_typ_el)
-C      complex*16 c_tensor(6,6,nb_typ_el)
-      complex*16 c_tensor(nb_typ_el)
+      complex*16 c_tensor(6,6,nb_typ_el)
 c     rho: density
       complex*16 rho(nb_typ_el)
 
       integer*8 i, j, k, ip!, Lambda_count
       integer*8 nnodes, ui, debug!, PrintSolution
-C      integer*8 i_lambda, n_lambda
       integer*8 nel, npt, i_cond, neq
 
 C     ! Number of nodes per element
@@ -94,16 +82,6 @@ c     variable used by UMFPACK
       double precision control (20), info_umf (90)
       integer*8 numeric, symbolic, status, sys, filenum
 
-C      integer*4 ip_col_ptr_32, ip_row_32
-C
-Cc     32-but integer variables used by UMFPACK
-C      integer*4 numeric_32, symbolic_32, status_32
-C      integer*4 sys_32, filenum_32
-Cc     32-but integer variables used by UMFPACK and ARPACK
-C      integer*4 neq_32, nonz_32, debug_32
-C      integer*4 nval_32, nvect_32, itermax_32, ltrav_32
-C      integer*4 n_conv_32, i_base_32
-
       double precision time1, time2
       character*(8) start_date, end_date
       character*(10) start_time, end_time
@@ -116,7 +94,6 @@ C  Names and Controls
       character mesh_file*100, gmsh_file*100, log_file*100
       character gmsh_file_pos*100, dir_name*100
       character*100 tchar
-
 
 c     new breed of variables to prise out of a, b and c
       double precision x_arr(2,npt)
@@ -132,6 +109,8 @@ Cf2py intent(in) plot_modes, c_tensor, rho
 Cf2py intent(in) cmplx_max, real_max, int_max
 Cf2py intent(in) nb_typ_el
 
+C  Note: the dependent variables must be listed AFTER the 
+C  independent variables that they depend on in the function call!
 Cf2py depend(c_tensor) nb_typ_el
 Cf2py depend(rho) nb_typ_el
 
@@ -148,22 +127,6 @@ C      nnodes = 6 ! Number of nodes per element
       pi = 3.141592653589793d0
 
       nvect = 2*nval + nval/2 +3
-c
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-
-C      alloc_stat = 0
-
-C      n_64 = 2
-C      cmplx_max=n_64**24 * 2
-C      real_max=n_64**20 * 2
-C      int_max=n_64**20 * 2
-C      int_max_32=n_64**20
-
-C     write(*,*) "cmplx_max = ", cmplx_max
-C     write(*,*) "real_max = ", real_max
-C     write(*,*) "int_max = ", int_max
-C     write(*,*) "int_max_32 = ", int_max_32
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
@@ -209,17 +172,6 @@ c
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
-C
-C      open(3,file="Parameters/controls.txt",status="old")
-C        read(3,*) debug
-C        read(3,*) PrintSolution
-C      close(3)
-C
-C     open(4,file="Parameters/angles.txt",status="old")
-C       read(4,*) theta
-C       read(4,*) phi
-C     close(4)
-c
       call cpu_time(time1)  ! initial time  in unit = sec.
       call date_and_time ( start_date, start_time )
 C
@@ -236,8 +188,6 @@ C     *      gmsh_file_pos, log_file, d_in_n, debug)
 C
 C####################  Start FEM PRE-PROCESSING  #######################
 C
-      write(ui,*) nb_typ_el
-
       if (debug .eq. 1) then
         write(ui,*)
         write(ui,*) "lx,ly = ", lx, ly
@@ -262,8 +212,8 @@ C
          stop
       endif
       ip_type_nod = 1
-C      ip_type_el = ip_type_nod + npt
-C      ip_table_nod = ip_type_el + nel ! pointer to FEM connectivity table
+      ip_type_el = ip_type_nod + npt
+      ip_table_nod = ip_type_el + nel ! pointer to FEM connectivity table
 
       ip_visite = ip_table_nod + nnodes*nel
       ip_eq = ip_visite + npt
@@ -280,25 +230,11 @@ C     *     b(jp_x), mesh_file)
      *     x_arr, mesh_file)
 
 C      call lattice_vec (npt, b(jp_x), lat_vecs)
-      call lattice_vec (npt, x_arr, lat_vecs)
+      call lattice_vec (npt, x_arr, lat_vecs, debug)
 
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: npt, nel = ", npt, nel
       endif
-
-C      call get_tensor (nb_typ_el, c_tensor, rho)
-
-C      if (debug .eq. 1) then
-C        open(4,file="Output/c_tensor.txt",status="unknown")
-C        do k=1,nb_typ_el
-C          do j=1,6
-C            do i=1,6
-C              write(4,"(3(I6),2(f20.10))") i,j,k, c_tensor(i,j,k)
-C            enddo
-C          enddo
-C        enddo
-C        close(4)
-C      endif
 C
 C      if (PrintSolution .ge. 1) then
 C  Export the mesh to gmsh format
@@ -309,7 +245,6 @@ C      endif
 
         call bound_cond_AC (i_cond, npt, neq, a(ip_type_nod),
      *       a(ip_eq), debug)
-
 C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
