@@ -17,6 +17,7 @@ from fortran import NumBAT
 wl_nm = 1550
 unitcell_x = 2.5*1550
 inc_a_x = 314.7
+unitcell_x = inc_a_x
 unitcell_y = unitcell_x
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'

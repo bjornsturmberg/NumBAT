@@ -31,14 +31,14 @@ C  Local parameters:
       double precision, dimension(:), allocatable :: c   !  (real_max)
 
 C  Declare the pointers of the integer super-vector
-      integer*8 ip_type_nod, ip_type_el, ip_table_nod
+      integer*8 ip_type_nod, ip_type_el
       integer*8 ip_eq
       integer*8 ip_visite
 
 C  Declare the pointers of the real super-vector
       integer*8 jp_x, jp_mat2
       integer*8 jp_vect1, jp_vect2, jp_workd, jp_resid, jp_vschur
-      integer*8 jp_eigenval, jp_sol, jp_trav, jp_vp, jp_rhs
+      integer*8 jp_sol, jp_trav, jp_vp, jp_rhs
       integer*8 jp_eigenval_tmp, jp_eigen_pol
 
 c     Declare the pointers of the real super-vector
@@ -211,9 +211,7 @@ C
       endif
       ip_type_nod = 1
       ip_type_el = ip_type_nod + npt
-C      ip_table_nod = ip_type_el + nel ! pointer to FEM connectivity table
-C      ip_visite = ip_table_nod + nnodes*nel
-      ip_visite = ip_type_el + nel
+      ip_visite = ip_type_el + nel ! pointer to FEM connectivity table
       ip_eq = ip_visite + npt
 
       jp_x = 1
@@ -227,15 +225,8 @@ C
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: npt, nel = ", npt, nel
       endif
-C
-C      if (PrintSolution .ge. 1) then
-C  Export the mesh to gmsh format
-C        call mail_to_gmsh (nel, npt, nnodes, a(ip_type_el),
-C     *    a(ip_type_nod), a(ip_table_nod),
-C     *    nb_typ_el, b(jp_x), gmsh_file)
-C      endif
 
-        call bound_cond_AC (i_cond, npt, neq, a(ip_type_nod),
+      call bound_cond_AC (i_cond, npt, neq, a(ip_type_nod),
      *       a(ip_eq), debug)
 C
 C
@@ -300,8 +291,7 @@ c     jp_rhs will also be used (in gmsh_post_process) to store a solution
       jp_workd = jp_vect2 + neq
       jp_resid = jp_workd + 3*neq
       jp_sol = jp_resid + neq
-      jp_eigenval = jp_sol + 3*nnodes*nval*nel
-      jp_eigenval_tmp = jp_eigenval + nval + 1
+      jp_eigenval_tmp = jp_sol + 3*nnodes*nval*nel
       jp_vschur = jp_eigenval_tmp + nval + 1     ! Eigenvectors
       jp_eigen_pol = jp_vschur + neq*nvect
       jp_trav = jp_eigen_pol + nval*4
@@ -414,9 +404,7 @@ C                 using the permutation vector index
         write(ui,*) "py_calc_modes_AC: call to array_sol"
       endif
         call array_sol_AC (i_cond, nval, nel, npt, neq, nnodes,
-     *   index, table_nod,
-     *   type_el, a(ip_eq),
-     *   x_arr, b(jp_eigenval),
+     *   index, table_nod, type_el, a(ip_eq), x_arr, beta1,
      *   b(jp_eigenval_tmp), mode_pol, b(jp_vp), sol1)
 
       if (debug .eq. 1) then
@@ -436,22 +424,11 @@ C
         enddo
       endif
 
-C      if (debug .eq. 1) then
-C          open (unit=343, file='Matrices/evals.txt',
-C     *         status='unknown')
-C          write(343,*) "sqrt(shift) = ", sqrt(shift)
-C          do i=1,nval
-C            write(343,"(i4,2(g22.14))") i,
-C     *       beta1(i)
-C          enddo
-C          close(343)
-C      endif
-
 C    Save Original solution
       if (plot_modes .eq. 1) then
         dir_name = "AC_fields"
 C        call write_sol_AC (nval, nel, nnodes, lambda,
-C    *       b(jp_eigenval), b(jp_sol), mesh_file, dir_name)
+C    *       beta1, b(jp_sol), mesh_file, dir_name)
 C        call write_param (lambda, npt, nel, i_cond,
 C    *       nval, nvect, itermax, tol, shift, lx, ly,
 C    *       mesh_file, n_conv, dir_name)

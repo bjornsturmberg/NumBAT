@@ -151,8 +151,10 @@ class Simmo(object):
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
-        # shift = 1.1*max_n**2 * k_0**2  \
-        #     - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
+        shift = np.sqrt(self.structure.c_tensor[0,0]/self.structure.rho)
+        print shift
+        shift = np.sqrt(self.structure.c_tensor[3,3]/self.structure.rho)
+        print shift
         shift = 13.0e9
 
         if AC_FEM_debug == 1:
