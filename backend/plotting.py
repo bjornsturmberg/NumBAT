@@ -122,9 +122,9 @@ def plot_EM_modes(sim_wguide, n_points=500):
         v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
                         np.abs(v_Ey6p)**2 +
                         np.abs(v_Ez6p)**2)
-        print v_Ex6p
-        # print np.max(v_Ex6p)
-        # print np.max(v_E6p)
+        print np.shape(v_x6p)
+        print np.shape(v_Ex6p)
+        # print v_triang6p
 
         # dense triangulation with unique points
         v_triang1p = []
@@ -140,6 +140,9 @@ def plot_EM_modes(sim_wguide, n_points=500):
         # triangulations
         triang6p = matplotlib.tri.Triangulation(v_x6p,v_y6p,v_triang6p)
         triang1p = matplotlib.tri.Triangulation(x_arr[:,0],x_arr[:,1],v_triang1p)
+
+        # print v_x6p,v_y6p,v_triang6p
+        # print x_arr[:,0],x_arr[:,1],v_triang1p
 
         # building interpolators: triang1p for the finder, triang6p for the values
         finder = matplotlib.tri.TrapezoidMapTriFinder(triang1p)
@@ -163,8 +166,6 @@ def plot_EM_modes(sim_wguide, n_points=500):
         v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
         v_labels = ["ReEx","ReEy","ReEz","ImEx","ImEy","ImEz","AbsE"]
         print m_ReEx
-        # print np.max(m_ReEx)
-        # print np.max(m_AbsE)
 
         # field plots
         plt.clf()

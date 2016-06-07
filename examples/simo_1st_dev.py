@@ -58,22 +58,22 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 ### Calc Q_moving_boundary Eq. 41
 
 
-# ### Calc EM Modes
-# # sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# # # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-# # betas = sim_EM_wguide.k_z
-# # print 'k_z of EM wave \n', betas
-# plotting.plot_EM_modes(sim_EM_wguide)
+### Calc EM Modes
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# betas = sim_EM_wguide.k_z
+# print 'k_z of EM wave \n', betas
+plotting.plot_EM_modes(sim_EM_wguide, n_points=10)
 
 # Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
 # q_acoustic = 2*sim_EM_wguide.k_z[0]/(unitcell_x*1e-9)
 q_acoustic = 1.49175e7
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes)
-np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes)
+# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+npzfile = np.load('wguide_data_AC.npz')
+sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # betas = sim_AC_wguide.k_z
 # print 'k_z of AC wave \n', betas
 plotting.plot_EM_modes(sim_AC_wguide, n_points=10)
