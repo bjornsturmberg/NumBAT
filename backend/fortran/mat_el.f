@@ -5,8 +5,7 @@ c
 c***********************************************************************
 c
       subroutine mat_el (xel, beta, c_tensor_el, rho_el,
-     *  mat_K, mat_M)
-c     *  mat_M, mat_K)
+     *  mat_K, mat_M, debug)
 c
 c***********************************************************************
 c
@@ -33,7 +32,6 @@ c
 c
 ccccccccccccccccccccccccccccccccccccccc
 c
-      debug = 1
 
 c  ii = sqrt(-1)
       ii = dcmplx(0.0d0, 1.0d0)

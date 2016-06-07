@@ -63,6 +63,8 @@ def plot_EM_modes(sim_wguide, n_points=500):
     """
 
     EM_mode_fields = sim_wguide.sol1
+    print np.shape(EM_mode_fields)
+    print EM_mode_fields[-1,-1,-1,-1]
 
     # field mapping
     v_x=np.zeros(n_points**2)
@@ -120,6 +122,9 @@ def plot_EM_modes(sim_wguide, n_points=500):
         v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
                         np.abs(v_Ey6p)**2 +
                         np.abs(v_Ez6p)**2)
+        print v_Ex6p
+        # print np.max(v_Ex6p)
+        # print np.max(v_E6p)
 
         # dense triangulation with unique points
         v_triang1p = []
@@ -157,6 +162,9 @@ def plot_EM_modes(sim_wguide, n_points=500):
         m_AbsE = AbsE(v_x,v_y).reshape(n_points,n_points)
         v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
         v_labels = ["ReEx","ReEy","ReEz","ImEx","ImEy","ImEz","AbsE"]
+        print m_ReEx
+        # print np.max(m_ReEx)
+        # print np.max(m_AbsE)
 
         # field plots
         plt.clf()

@@ -219,6 +219,7 @@ class Struct(object):
         rho = np.zeros(self.nb_typ_el)
         c_tensor = np.zeros((6,6,self.nb_typ_el))
         if acoustic_props:
+        # ToDo: This is applying same ac_props to all el types?!
             for k_typ in range(self.nb_typ_el):
                 rho[k_typ] = acoustic_props[0]
                 c_tensor[0,0,k_typ] = acoustic_props[1]

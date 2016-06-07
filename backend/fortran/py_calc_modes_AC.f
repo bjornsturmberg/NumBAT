@@ -7,7 +7,8 @@ c     Explicit inputs
      *    plot_modes,
      *    cmplx_max, real_max, int_max,
 c     Outputs
-     *    beta1, sol1, mode_pol)
+     *    beta1, sol1, mode_pol,
+     *    table_nod, type_el, x_arr)
 
 C***********************************************************************
 C
@@ -57,7 +58,7 @@ c     rho: density
       complex*16 rho(nb_typ_el)
 
       integer*8 i, j, k, ip!, Lambda_count
-      integer*8 nnodes, ui, debug!, PrintSolution
+      integer*8 nnodes, ui, debug, namelength !, PrintSolution
       integer*8 nel, npt, i_cond, neq
 
 C     ! Number of nodes per element
@@ -97,7 +98,8 @@ C  Names and Controls
 
 c     new breed of variables to prise out of a, b and c
       double precision x_arr(2,npt)
-      complex*16, target :: sol1(3,nnodes+7,nval,nel)
+C       complex*16, target :: sol1(3,nnodes+7,nval,nel)
+      complex*16, target :: sol1(3,nnodes,nval,nel)
       complex*16, target :: beta1(nval)
       complex*16 mode_pol(4,nval)
 
@@ -115,7 +117,7 @@ Cf2py depend(c_tensor) nb_typ_el
 Cf2py depend(rho) nb_typ_el
 
 Cf2py intent(out) beta1
-Cf2py intent(out) sol1, mode_pol
+Cf2py intent(out) sol1, mode_pol, table_nod, type_el, x_arr
 
 C
 CCCCCCCCCCCCCCCCCCCC  Start Program - get parameters  CCCCCCCCCCCCCCCCCC
@@ -173,6 +175,16 @@ c
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
+C     clean mesh_format
+      namelength = len_trim(mesh_file)
+      gmsh_file = mesh_file(1:namelength-5)//'.msh'
+      gmsh_file_pos = mesh_file(1:namelength)
+      log_file = mesh_file(1:namelength-5)//'-AC.log'
+      if (debug .eq. 1) then
+        write(*,*) "mesh_file = ", mesh_file
+        write(*,*) "gmsh_file = ", gmsh_file
+      endif
+
       call cpu_time(time1)  ! initial time  in unit = sec.
       call date_and_time ( start_date, start_time )
 C
@@ -350,6 +362,14 @@ c       (but valpr.f will change the CSC indexing to 0-based indexing)
 
 C#####################  End FEM PRE-PROCESSING  #########################
 C
+      write(ui,*)
+      write(ui,*) "---------------------------------------",
+     *     "-------"
+      write(ui,*) " AC FEM, wavelength : ", lambda, " (d)"
+      write(ui,*) "---------------------------------------",
+     *     "-------"
+      write(ui,*)
+
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: call to asmbly"
       endif
@@ -358,7 +378,7 @@ C     Assemble the coefficient matrix K and M of the finite element equations
      *  shift, beta_in, nb_typ_el, rho, c_tensor,
      *  table_nod, type_el, a(ip_eq),
      *  x_arr, nonz, a(ip_row), a(ip_col_ptr),
-     *  c(kp_mat1_re), c(kp_mat1_im), b(jp_mat2), a(ip_work))
+     *  c(kp_mat1_re), c(kp_mat1_im), b(jp_mat2), a(ip_work), debug)
 C
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: call to valpr"
@@ -449,10 +469,11 @@ C
       call date_and_time ( end_date, end_time )
       call cpu_time(time2)
 C
+      if (debug .eq. 1) then
         write(ui,*)
         write(ui,*) 'Total CPU time (sec.)  = ', (time2-time1)
 C
-      open (unit=26,file=log_file)
+        open (unit=26,file=log_file)
         write(26,*)
         write(26,*) "Date and time formats = ccyymmdd ; hhmmss.sss"
         write(26,*) "Start date and time   = ", start_date,
@@ -472,13 +493,14 @@ C
         write(26,*) "mesh_file = ", mesh_file
         write(26,*) "gmsh_file = ", gmsh_file
         write(26,*) "log_file  = ", log_file
-      close(26)
+        close(26)
 
 C
-      write(ui,*) "   .      .      ."
-      write(ui,*) "   .      .      ."
-      write(ui,*) "   .      . (d=",d_in_m,")"
-      write(ui,*) "  and   we're   done!"
+        write(ui,*) "   .      .      ."
+        write(ui,*) "   .      .      ."
+        write(ui,*) "   .      . (d=",d_in_m,")"
+        write(ui,*) "  and   we're   done!"
+      endif
 C
       deallocate(a,b,c,index)
 

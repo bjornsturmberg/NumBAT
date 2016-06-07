@@ -518,7 +518,7 @@ C
       write(ui,*)
       write(ui,*) "---------------------------------------",
      *     "-------"
-      write(ui,*) " Wavelength : ", lambda, " (d)"
+      write(ui,*) " EM FEM, wavelength : ", lambda, " (d)"
       write(ui,*) "---------------------------------------",
      *     "-------"
       write(ui,*)

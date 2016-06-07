@@ -66,7 +66,7 @@ class Simmo(object):
         self.E_H_field = 1  # Selected formulation (1=E-Field, 2=H-Field)
         i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        EM_FEM_debug = 1  # Fortran routines will display & save add. info
+        EM_FEM_debug = 0  # Fortran routines will display & save add. info
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -147,15 +147,25 @@ class Simmo(object):
         # Parameters that control how FEM routine runs
         i_cond = 1  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        AC_FEM_debug = 1  # Fortran routines will display & save add. info
+        AC_FEM_debug = 0  # Fortran routines will display & save add. info
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
-        shift = np.sqrt(self.structure.c_tensor[0,0]/self.structure.rho)
-        print shift
-        shift = np.sqrt(self.structure.c_tensor[3,3]/self.structure.rho)
-        print shift
+        # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
+        shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][-1]/self.structure.rho[-1]))
+        # normalise to unitcell and factor 2 from q_acoustic being twice beta.
+        shift1 = 0.5*shift1#/self.d_in_m
+        print repr(shift1)
+        # Using acoustic velocity of shear mode  pg 215 Auld vol 1.
+        shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][-1]/self.structure.rho[-1]))
+        shift2 = 0.5*shift2#/self.d_in_m
+        print repr(shift2)
         shift = 13.0e9
+        print repr(shift)
+        # shift = (shift1 + shift2)/2.
+        # shift = (shift1)
+        print shift1/shift
+        print shift2/shift
 
         if AC_FEM_debug == 1:
             print 'shift', shift
@@ -181,7 +191,8 @@ class Simmo(object):
                 self.d_in_m, shift, i_cond, itermax,
                 self.structure.plotting_fields,
                 cmplx_max, real_max, int_max)
-            self.k_z, self.sol1, self.mode_pol= resm
+            self.k_z, self.sol1, self.mode_pol, \
+            self.table_nod, self.type_el, self.x_arr = resm
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\

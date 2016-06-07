@@ -4,7 +4,7 @@
      *  shift, beta, nb_typ_el, rho, c_tensor, 
      *  table_nod, type_el, ineq, 
      *  x, nonz, row_ind, col_ptr, 
-     *  mat1_re, mat1_im, mat2, i_work)
+     *  mat1_re, mat1_im, mat2, i_work, debug)
 
 
       implicit none
@@ -51,7 +51,6 @@ c      write(*,*) "i_base, nel, npt, neq, nnodes = ",
 c     *  i_base, nel, npt, neq, nnodes
 
       ui = 6
-      debug = 1
 
       if (debug .eq. 1) then
         write(ui,*) "asmbly_AC: beta = ", beta
@@ -102,7 +101,7 @@ cc        write(ui,*) "asmbly_AC: iel, nel", iel, nel
             c_tensor_el(i,j) = c_tensor(i,j,typ_e)
           enddo
         enddo
-        call mat_el (xel, beta, c_tensor_el, rho_el, mat_K, mat_M)
+        call mat_el (xel, beta, c_tensor_el, rho_el, mat_K, mat_M,debug)
         do jtest=1,nnodes
           jp = table_nod(jtest,iel)
           do j_eq=1,3
