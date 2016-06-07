@@ -16,7 +16,8 @@ c
       integer*8 n_core(2), type_el(nel)
       integer*8 ineq(3,npt), index(*)
       integer*8 table_nod(nnodes,nel)
-      complex*16 x(2,npt), sol_0(neq,nval)
+      complex*16 sol_0(neq,nval)
+      double precision x(2,npt)
 c     sol(3, 1..nnodes,nval, nel)          contains the values of the 3 components at P2 interpolation nodes
       complex*16 sol(3,nnodes,nval,nel)
       complex*16 v_cmplx(nval), v_tmp(nval), mode_pol(4,nval)

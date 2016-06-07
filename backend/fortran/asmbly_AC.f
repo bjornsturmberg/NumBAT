@@ -14,7 +14,8 @@
       integer*8 type_el(nel)
       integer*8 table_nod(nnodes,nel), ineq(3,npt)
       integer*8 i_work(3*npt)
-      complex*16 x(2,npt), shift, beta
+      complex*16 shift, beta
+      double precision x(2,npt)
 c     rho: density
       complex*16 rho(nb_typ_el), c_tensor(6,6,nb_typ_el)
       complex*16 mat2(nonz)

@@ -24,19 +24,19 @@ inc_shape = 'rectangular'
 ### Optical parameters
 eps = 12.25
 num_EM_modes = 30
-num_AC_modes = 30
+num_AC_modes = 10
 
 ### Acoustic parameters
 s = 2330  # kg/m3
-c_11 = 165.7  # GPa
-c_12 = 63.9  # GPa
-c_44 = 79.6  # GPa
+c_11 = 165.7e9  # Pa
+c_12 = 63.9e9   # Pa
+c_44 = 79.6e9   # Pa
 p_11 = -0.044
 p_12 = 0.017
 p_44 = -0.051
-eta_11 = 5.9  # m Pa s
+eta_11 = 5.9   # m Pa s
 eta_12 = 5.16  # m Pa s
-eta_44 = 620  # mu Pa s
+eta_44 = 620   # mu Pa s
 acoustic_props = [s, c_11, c_12, c_44, p_11, p_12, p_44, eta_11, eta_12, eta_44]
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
@@ -55,7 +55,6 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 ### Calc Q_photoelastic Eq. 33
 ### Calc Q_deformation_pol Eq. 36
 ### Calc Q_moving_boundary Eq. 41
-
 
 
 ### Calc EM Modes

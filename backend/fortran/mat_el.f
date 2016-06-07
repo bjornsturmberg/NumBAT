@@ -444,7 +444,7 @@ cc
         open(4,file="Output/mat_K.txt",status='unknown')
         do i=1,18
           do j=1,18
-            write(4,"(2(I6),6(f20.10))") i,j, mat_K(j,i),
+            write(4,"(2(I6),6(e20.10))") i,j, mat_K(j,i),
      *                mat_K(i,j), mat_K(i,j) - conjg(mat_K(j,i))
           enddo
         enddo
@@ -455,18 +455,34 @@ cc
         open(4,file="Output/mat_M.txt",status='unknown')
         do i=1,18
           do j=1,18
-            write(4,"(2(I6),6(f20.10))") i,j, mat_M(j,i),
+            write(4,"(2(I6),6(e20.10))") i,j, mat_M(j,i),
      *                mat_M(i,j), mat_M(i,j) - conjg(mat_M(j,i))
           enddo
         enddo
         close(4)
       endif
 cc
-cc            do j_xyz=1,3
-cc              j_p = 3*(j-1) + j_xyz
-cc            enddo
-
-
+      if (debug .eq. 1) then
+        open(4,file="Output/rho_el.txt",status="unknown")
+          write(4,"(2(e20.10))") rho_el
+        close(4)
+        open(4,file="Output/c_tensor_el.txt",status="unknown")
+          do j=1,6
+            do i=1,6
+              write(4,"(2(I6),2(e20.10))") i,j, c_tensor_el(i,j)
+            enddo
+          enddo
+        close(4)
+      endif
+cc
+cc
+      if (debug .eq. 1) then
+        open(4,file="Output/xel.txt",status='unknown')
+        do i=1,6
+          write(4,"(I6,2(e20.10))") i, xel(1,i), xel(2,i)
+        enddo
+        close(4)
+      endif
 c
       return
       end

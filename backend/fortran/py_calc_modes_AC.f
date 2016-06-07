@@ -2,12 +2,12 @@
 c     Explicit inputs
      *    lambda, beta_in, nval,
      *    debug, mesh_file, npt, nel,
-     *    nb_typ_el,  c_tensor, rho, d_in_n, shift,
+     *    nb_typ_el,  c_tensor, rho, d_in_m, shift,
      *    i_cond, itermax,
      *    plot_modes,
      *    cmplx_max, real_max, int_max,
 c     Outputs
-     *    beta1, sol1)
+     *    beta1, sol1, mode_pol)
 
 C***********************************************************************
 C
@@ -67,7 +67,7 @@ C     ! Number of nodes per element
       double precision pi!, theta, phi
       double precision lambda!, lambda_1, lambda_2, d_lambda
       double precision d_freq, freq, lat_vecs(2,2)
-      double precision lx, ly, d_in_n
+      double precision lx, ly, d_in_m
 
       complex*16 shift
       integer*8  i_base
@@ -99,11 +99,11 @@ c     new breed of variables to prise out of a, b and c
       double precision x_arr(2,npt)
       complex*16, target :: sol1(3,nnodes+7,nval,nel)
       complex*16, target :: beta1(nval)
-C      complex*16 mode_pol(4,nval)
+      complex*16 mode_pol(4,nval)
 
 Cf2py intent(in) lambda, beta_in, nval
 Cf2py intent(in) debug, mesh_file, npt, nel
-Cf2py intent(in) d_in_n, shift
+Cf2py intent(in) d_in_m, shift
 Cf2py intent(in) i_cond, itermax
 Cf2py intent(in) plot_modes, c_tensor, rho
 Cf2py intent(in) cmplx_max, real_max, int_max
@@ -115,7 +115,7 @@ Cf2py depend(c_tensor) nb_typ_el
 Cf2py depend(rho) nb_typ_el
 
 Cf2py intent(out) beta1
-Cf2py intent(out) sol1
+Cf2py intent(out) sol1, mode_pol
 
 C
 CCCCCCCCCCCCCCCCCCCC  Start Program - get parameters  CCCCCCCCCCCCCCCCCC
@@ -126,7 +126,8 @@ C
 C      nnodes = 6 ! Number of nodes per element
       pi = 3.141592653589793d0
 
-      nvect = 2*nval + nval/2 +3
+C       nvect = 2*nval + nval/2 +3
+      nvect = 3*nval + 3
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
@@ -179,12 +180,9 @@ C
 C      lx=1.0 ! Diameter of unit cell. Default, lx = 1.0.
 C      ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell
 C     ToDo: sort out what's going on here - in EM lx=ly=1
-      lx = d_in_n
-      ly = d_in_n
-C      call get_param(n_lambda, lambda_1, lambda_2,
-C     *      npt, nel, i_cond, nval, nvect, itermax, tol,
-C     *      shift_0, lx, ly, mesh_file, gmsh_file,
-C     *      gmsh_file_pos, log_file, d_in_n, debug)
+      lx = d_in_m
+      ly = d_in_m
+      shift = (2*pi*shift)**2
 C
 C####################  Start FEM PRE-PROCESSING  #######################
 C
@@ -220,16 +218,10 @@ C      ip_visite = ip_table_nod + nnodes*nel
 
       jp_x = 1
 C
-C      lx = d_in_n
-C      ly = d_in_n
-C      call geometry (nel, npt, nnodes, nb_typ_el,
-C     *     lx, ly, a(ip_type_nod), a(ip_type_el), a(ip_table_nod),
-C     *     b(jp_x), mesh_file)
       call geometry (nel, npt, nnodes, nb_typ_el,
      *     lx, ly, type_nod, type_el, table_nod,
      *     x_arr, mesh_file)
 
-C      call lattice_vec (npt, b(jp_x), lat_vecs)
       call lattice_vec (npt, x_arr, lat_vecs, debug)
 
       if (debug .eq. 1) then
@@ -368,12 +360,6 @@ c       (but valpr.f will change the CSC indexing to 0-based indexing)
 
 C#####################  End FEM PRE-PROCESSING  #########################
 C
-c       Propagation constant: beta = k_z
-cc        beta = 28.9d0 * d_in_n
-cc        beta = 28.9d0 / d_in_n
-
-C        beta = 1.49175d7
-C
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: call to asmbly"
       endif
@@ -431,8 +417,7 @@ C                 using the permutation vector index
      *   index, table_nod,
      *   type_el, a(ip_eq),
      *   x_arr, b(jp_eigenval),
-     *   b(jp_eigenval_tmp), beta1, b(jp_vp), sol1)
-
+     *   b(jp_eigenval_tmp), mode_pol, b(jp_vp), sol1)
 
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: array_sol returns call"
@@ -515,7 +500,7 @@ C
 C
       write(ui,*) "   .      .      ."
       write(ui,*) "   .      .      ."
-      write(ui,*) "   .      . (d=",d_in_n,")"
+      write(ui,*) "   .      . (d=",d_in_m,")"
       write(ui,*) "  and   we're   done!"
 C
       deallocate(a,b,c,index)

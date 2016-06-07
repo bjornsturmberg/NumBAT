@@ -91,8 +91,8 @@ c
       character bmat*1, which*2
 
 c      data bmat/'G'/
-c      data which/'SR'/
-      data which/'SM'/
+      data which/'SR'/
+c      data which/'SM'/
       data bmat/'I'/
 C      data which/'LM'/
 c

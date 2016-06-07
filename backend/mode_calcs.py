@@ -179,7 +179,7 @@ class Simmo(object):
                 self.d_in_m, shift, i_cond, itermax,
                 self.structure.plotting_fields,
                 cmplx_max, real_max, int_max)
-            self.k_z, self.sol1 = resm
+            self.k_z, self.sol1, self.mode_pol= resm
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\
