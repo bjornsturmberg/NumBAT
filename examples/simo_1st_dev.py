@@ -17,7 +17,7 @@ from fortran import NumBAT
 wl_nm = 1550
 unitcell_x = 2.5*1550
 inc_a_x = 314.7
-# unitcell_x = inc_a_x
+unitcell_x = inc_a_x
 unitcell_y = unitcell_x
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
@@ -45,7 +45,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, acoustic_props=acoustic_props,
                         lc_bkg=0.2, lc2=1.0, lc3=1.0,
-                        make_mesh_now=False,
+                        make_mesh_now=False, plotting_fields = False,
                         mesh_file='rect_acoustic_3.mail')
 
 
@@ -59,23 +59,21 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calc EM Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-# betas = sim_EM_wguide.k_z
-# print 'k_z of EM wave \n', betas
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 plotting.plot_EM_modes(sim_EM_wguide, n_points=10)
 
 # Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
-# q_acoustic = 2*sim_EM_wguide.k_z[0]/(unitcell_x*1e-9)
+# q_acoustic = 2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9)
 q_acoustic = 1.49175e7
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes)
-# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-npzfile = np.load('wguide_data_AC.npz')
-sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# betas = sim_AC_wguide.k_z
-# print 'k_z of AC wave \n', betas
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes)
+# # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+print 'Omega of AC wave \n', sim_AC_wguide.Eig_value
 plotting.plot_EM_modes(sim_AC_wguide, n_points=10)
 
 

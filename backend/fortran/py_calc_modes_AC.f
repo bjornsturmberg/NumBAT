@@ -3,7 +3,7 @@ c     Explicit inputs
      *    lambda, beta_in, nval,
      *    debug, mesh_file, npt, nel,
      *    nb_typ_el,  c_tensor, rho, d_in_m, shift,
-     *    i_cond, itermax,
+     *    i_cond, itermax, tol, 
      *    plot_modes,
      *    cmplx_max, real_max, int_max,
 c     Outputs
@@ -39,7 +39,7 @@ C  Declare the pointers of the integer super-vector
 C  Declare the pointers of the real super-vector
       integer*8 jp_x, jp_mat2
       integer*8 jp_vect1, jp_vect2, jp_workd, jp_resid, jp_vschur
-      integer*8 jp_sol, jp_trav, jp_vp, jp_rhs
+      integer*8 jp_trav, jp_vp, jp_rhs
       integer*8 jp_eigenval_tmp, jp_eigen_pol
 
 c     Declare the pointers of the real super-vector
@@ -77,7 +77,6 @@ C  Variable used by valpr
       integer*8 ltrav, n_conv
       double precision ls_data(10)
       complex*16 z_beta, z_tmp, z_tmp0
-C      integer*8 index(1000)
       integer*8, dimension(:), allocatable :: index
 c     variable used by UMFPACK
       double precision control (20), info_umf (90)
@@ -106,7 +105,7 @@ C       complex*16, target :: sol1(3,nnodes+7,nval,nel)
 Cf2py intent(in) lambda, beta_in, nval
 Cf2py intent(in) debug, mesh_file, npt, nel
 Cf2py intent(in) d_in_m, shift
-Cf2py intent(in) i_cond, itermax
+Cf2py intent(in) i_cond, itermax, tol
 Cf2py intent(in) plot_modes, c_tensor, rho
 Cf2py intent(in) cmplx_max, real_max, int_max
 Cf2py intent(in) nb_typ_el
@@ -188,7 +187,7 @@ C     clean mesh_format
       call cpu_time(time1)  ! initial time  in unit = sec.
       call date_and_time ( start_date, start_time )
 C
-      tol = 0.0 ! ARPACK accuracy (0.0 for machine precision)
+C      tol = 0.0 ! ARPACK accuracy (0.0 for machine precision)
 C      lx=1.0 ! Diameter of unit cell. Default, lx = 1.0.
 C      ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell
 C     ToDo: sort out what's going on here - in EM lx=ly=1
@@ -302,8 +301,7 @@ c     jp_rhs will also be used (in gmsh_post_process) to store a solution
       jp_vect2 = jp_vect1 + neq
       jp_workd = jp_vect2 + neq
       jp_resid = jp_workd + 3*neq
-      jp_sol = jp_resid + neq
-      jp_eigenval_tmp = jp_sol + 3*nnodes*nval*nel
+      jp_eigenval_tmp = jp_resid + 3*nnodes*nval*nel
       jp_vschur = jp_eigenval_tmp + nval + 1     ! Eigenvectors
       jp_eigen_pol = jp_vschur + neq*nvect
       jp_trav = jp_eigen_pol + nval*4
@@ -417,7 +415,7 @@ C         im(z_beta) > 0 for forward decaying evanescent mode
 c
       call z_indexx_AC (nval, beta1, index)
 C
-C       The eigenvectors will be stored in the array b(jp_sol)
+C       The eigenvectors will be stored in the array sol1
 C       The eigenvalues and eigenvectors will be renumbered
 C                 using the permutation vector index
       if (debug .eq. 1) then
@@ -448,17 +446,17 @@ C    Save Original solution
       if (plot_modes .eq. 1) then
         dir_name = "AC_fields"
 C        call write_sol_AC (nval, nel, nnodes, lambda,
-C    *       beta1, b(jp_sol), mesh_file, dir_name)
+C      *       beta1, sol1, mesh_file, dir_name)
 C        call write_param (lambda, npt, nel, i_cond,
 C    *       nval, nvect, itermax, tol, shift, lx, ly,
 C    *       mesh_file, n_conv, dir_name)
         tchar = "AC_fields/All_plots_png_abs2_eE.geo"
         open (unit=34,file=tchar)
           do i=1,nval
-            call gmsh_post_process (i, nval, nel, npt,
-     *         nnodes, table_nod, a(ip_type_el),
-     *         x_arr, beta1, b(jp_sol),
-     *         b(jp_rhs), a(ip_visite), gmsh_file_pos, dir_name)
+            call gmsh_post_process_AC (i, nval, nel, npt,
+     *         nnodes, table_nod, type_el,
+     *         x_arr, beta1, sol1, b(jp_rhs), a(ip_visite),
+     *         gmsh_file_pos, dir_name, d_in_m, debug)
           enddo
         close (unit=34)
       endif

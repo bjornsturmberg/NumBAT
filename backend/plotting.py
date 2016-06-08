@@ -64,7 +64,7 @@ def plot_EM_modes(sim_wguide, n_points=500):
 
     EM_mode_fields = sim_wguide.sol1
     print np.shape(EM_mode_fields)
-    print EM_mode_fields[-1,-1,-1,-1]
+    print repr(EM_mode_fields[-1,-1,-1,-1])
 
     # field mapping
     v_x=np.zeros(n_points**2)
@@ -83,9 +83,11 @@ def plot_EM_modes(sim_wguide, n_points=500):
     # unrolling data for the interpolators
     table_nod = sim_wguide.table_nod.T
     x_arr = sim_wguide.x_arr.T
+    # print repr(table_nod)
+    # print repr(x_arr)
 
     for ival in [0]:
-    # for ival in range(len(sim_wguide.k_z)):
+    # for ival in range(len(sim_wguide.Eig_value)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
@@ -122,9 +124,14 @@ def plot_EM_modes(sim_wguide, n_points=500):
         v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
                         np.abs(v_Ey6p)**2 +
                         np.abs(v_Ez6p)**2)
-        print np.shape(v_x6p)
-        print np.shape(v_Ex6p)
-        # print v_triang6p
+        # print np.shape(v_x6p)
+        # print np.shape(v_Ex6p)
+        # print triangles
+        # print v_x6p[-1] 
+        # print v_y6p[-1] 
+        # print v_Ex6p[-1]
+        # print v_Ey6p[-1]
+        # print v_Ez6p[-1]
 
         # dense triangulation with unique points
         v_triang1p = []
@@ -184,16 +191,16 @@ def plot_EM_modes(sim_wguide, n_points=500):
             cbar = plt.colorbar(im, cax=cax)
             cbar.ax.tick_params(labelsize=title_font-10)
         # plt.tight_layout(1)
-
-        n_eff = sim_wguide.k_z[ival] * sim_wguide.wl_norm() / (2*np.pi)
-        if np.imag(sim_wguide.k_z[ival]) < 0:
+        
+        n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_norm() / (2*np.pi)
+        if np.imag(sim_wguide.Eig_value[ival]) < 0:
             k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
-                {'re_k' : np.real(sim_wguide.k_z[ival]), 'im_k' : np.imag(sim_wguide.k_z[ival])}
+                {'re_k' : np.real(sim_wguide.Eig_value[ival]), 'im_k' : np.imag(sim_wguide.Eig_value[ival])}
             n_str = r'n$_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
                 {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
         else:
             k_str = r'k$_z = %(re_k)f6 + %(im_k)f6 i$'% \
-                {'re_k' : np.real(sim_wguide.k_z[ival]), 'im_k' : np.imag(sim_wguide.k_z[ival])}
+                {'re_k' : np.real(sim_wguide.Eig_value[ival]), 'im_k' : np.imag(sim_wguide.Eig_value[ival])}
             n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                 {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
         plt.text(10, 0.5, k_str, fontsize=title_font)

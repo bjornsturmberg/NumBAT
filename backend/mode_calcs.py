@@ -42,7 +42,7 @@ class Simmo(object):
             wl += 1e-10
         return wl
 
-    def calc_EM_modes(self, num_modes=20):
+    def calc_EM_modes(self):
         """ Run a Fortran FEM calculation to find the EM modes \
         of a structure. """
         st = self.structure
@@ -56,11 +56,9 @@ class Simmo(object):
         if self.structure.loss is False:
             self.n_effs = self.n_effs.real
 
-        if num_modes < 20:
+        if self.num_modes < 20:
             self.num_modes = 20
             print "Warning: ARPACK needs >= 20 modes so set num_modes=20."
-        else:
-            self.num_modes = num_modes
 
         # Parameters that control how FEM routine runs
         self.E_H_field = 1  # Selected formulation (1=E-Field, 2=H-Field)
@@ -106,7 +104,7 @@ class Simmo(object):
                 self.structure.plot_imag, self.structure.plot_abs,
                 cmplx_max, real_max, int_max)
 
-            self.k_z, self.sol1, self.mode_pol, \
+            self.Eig_value, self.sol1, self.mode_pol, \
             self.table_nod, self.type_el, self.x_arr = resm
 
             area = self.structure.unitcell_x * self.structure.unitcell_y
@@ -130,7 +128,7 @@ class Simmo(object):
         #     self.n_msh_el = None
 
 
-    def calc_AC_modes(self, num_modes=20):
+    def calc_AC_modes(self):
         """ Run a Fortran FEM calculation to find the EM modes \
         of a structure. """
         st = self.structure
@@ -138,39 +136,39 @@ class Simmo(object):
         q_acoustic = self.q_acoustic
         self.d_in_m = self.structure.unitcell_x*1e-9
 
-        if num_modes < 20:
+        if self.num_modes < 20:
             self.num_modes = 20
             print "Warning: ARPACK needs >= 20 modes so set num_modes=20."
-        else:
-            self.num_modes = num_modes
 
         # Parameters that control how FEM routine runs
         i_cond = 1  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
         AC_FEM_debug = 0  # Fortran routines will display & save add. info
+        ARPACK_tol = 1e-10  # ARPACK accuracy (0.0 for machine precision)
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
+        # For AC problem shift is a frequency - [shift] = s^-1.
         # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
         shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][-1]/self.structure.rho[-1]))
-        # normalise to unitcell and factor 2 from q_acoustic being twice beta.
-        shift1 = 0.5*shift1#/self.d_in_m
-        print repr(shift1)
-        # Using acoustic velocity of shear mode  pg 215 Auld vol 1.
+        # Factor 2 from q_acoustic being twice beta.
+        shift1 = 0.5*self.q_acoustic*shift1
+        # Using acoustic velocity of shear mode pg 215 Auld vol 1.
         shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][-1]/self.structure.rho[-1]))
-        shift2 = 0.5*shift2#/self.d_in_m
-        print repr(shift2)
-        shift = 13.0e9
-        print repr(shift)
-        # shift = (shift1 + shift2)/2.
-        # shift = (shift1)
-        print shift1/shift
-        print shift2/shift
+        shift2 = 0.5*self.q_acoustic*shift2
+        shift = 13.0e9  # used for original test case
+        # print repr(shift)
+        shift = (shift1 + shift2)/8.
+        print 'shift', shift
 
         if AC_FEM_debug == 1:
             print 'shift', shift
+            if not os.path.exists("Normed"):
+                os.mkdir("Normed")
             if not os.path.exists("Output"):
                 os.mkdir("Output")
+            if not os.path.exists("Matrices"):
+                os.mkdir("Matrices")
 
         with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
             self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
@@ -188,10 +186,10 @@ class Simmo(object):
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el, 
                 self.structure.c_tensor, self.structure.rho,
-                self.d_in_m, shift, i_cond, itermax,
+                self.d_in_m, shift, i_cond, itermax, ARPACK_tol,
                 self.structure.plotting_fields,
                 cmplx_max, real_max, int_max)
-            self.k_z, self.sol1, self.mode_pol, \
+            self.Eig_value, self.sol1, self.mode_pol, \
             self.table_nod, self.type_el, self.x_arr = resm
 
         except KeyboardInterrupt:
