@@ -51,7 +51,7 @@ def zeros_int_str(zero_int):
 
 
 #### Standard plotting of spectra #############################################
-def plot_EM_modes(sim_wguide, n_points=500):
+def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
     """ Plot EM mode fields.
 
         Args:
@@ -191,22 +191,37 @@ def plot_EM_modes(sim_wguide, n_points=500):
             cbar = plt.colorbar(im, cax=cax)
             cbar.ax.tick_params(labelsize=title_font-10)
         # plt.tight_layout(1)
-        
-        n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_norm() / (2*np.pi)
-        if np.imag(sim_wguide.Eig_value[ival]) < 0:
-            k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
-                {'re_k' : np.real(sim_wguide.Eig_value[ival]), 'im_k' : np.imag(sim_wguide.Eig_value[ival])}
-            n_str = r'n$_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
-                {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
-        else:
-            k_str = r'k$_z = %(re_k)f6 + %(im_k)f6 i$'% \
-                {'re_k' : np.real(sim_wguide.Eig_value[ival]), 'im_k' : np.imag(sim_wguide.Eig_value[ival])}
-            n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
-                {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
-        plt.text(10, 0.5, k_str, fontsize=title_font)
-        plt.text(10, 0.3, n_str, fontsize=title_font)
 
-        plt.savefig('E_field_%i.png' % ival, bbox_inches='tight')
+        if EM_AC=='EM':
+            n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_norm() / (2*np.pi)
+            if np.imag(sim_wguide.Eig_value[ival]) < 0:
+                k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]), 
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival])}
+                n_str = r'n$_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
+                    {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
+            else:
+                k_str = r'k$_z = %(re_k)f6 + %(im_k)f6 i$'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]), 
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival])}
+                n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
+                    {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
+            plt.text(10, 0.3, n_str, fontsize=title_font)
+        elif EM_AC=='AC':
+            if np.imag(sim_wguide.Eig_value[ival]) < 0:
+                k_str = r'$\Omega = %(re_k)f6 %(im_k)f6 i$'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]), 
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival])}
+            else:
+                k_str = r'$\Omega = %(re_k)f6 + %(im_k)f6 i$'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]), 
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival])}
+        else:
+            raise ValueError, "EM_AC must be either 'AC' or 'EM'."
+        plt.text(10, 0.5, k_str, fontsize=title_font)
+        
+        plt.savefig('E_field_%(i)i%(add)s.png' % 
+            {'i' : ival, 'add' : add_name}, bbox_inches='tight')
 
 
 

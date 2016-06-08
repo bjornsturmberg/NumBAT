@@ -128,7 +128,8 @@ class Struct(object):
                  slab_b_material=materials.Material(1.0 + 0.0j),
                  slab_b_bkg_material=materials.Material(1.0 + 0.0j),
                  coating_material=materials.Material(1.0 + 0.0j),
-                 loss=True, acoustic_props=None,
+                 loss=True, bkg_AC=None, inc_a_AC=None, slab_a_AC=None,
+                 slab_a_bkg_AC=None, slab_b_AC=None, slab_b_bkg_AC=None, 
                  make_mesh_now=True, force_mesh=True,
                  mesh_file='NEED_FILE.mail', check_msh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
@@ -216,24 +217,29 @@ class Struct(object):
         self.plot_imag = plot_imag
         self.plot_abs = plot_abs
         self.plot_field_conc = plot_field_conc
-        rho = np.zeros(self.nb_typ_el)
-        c_tensor = np.zeros((6,6,self.nb_typ_el))
-        if acoustic_props:
-        # ToDo: This is applying same ac_props to all el types?!
-            for k_typ in range(self.nb_typ_el):
-                rho[k_typ] = acoustic_props[0]
-                c_tensor[0,0,k_typ] = acoustic_props[1]
-                c_tensor[1,1,k_typ] = acoustic_props[1]
-                c_tensor[2,2,k_typ] = acoustic_props[1]
-                c_tensor[3,3,k_typ] = acoustic_props[3]
-                c_tensor[4,4,k_typ] = acoustic_props[3]
-                c_tensor[5,5,k_typ] = acoustic_props[3]
-                c_tensor[0,1,k_typ] = acoustic_props[2]
-                c_tensor[0,2,k_typ] = acoustic_props[2]
-                c_tensor[1,0,k_typ] = acoustic_props[2]
-                c_tensor[1,2,k_typ] = acoustic_props[2]
-                c_tensor[2,0,k_typ] = acoustic_props[2]
-                c_tensor[2,1,k_typ] = acoustic_props[2]
+        # Order must match msh templates!
+        acoustic_props = [bkg_AC, inc_a_AC, slab_a_AC,
+                          slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC] 
+        rm_els = len(acoustic_props)
+        acoustic_props = [x for x in acoustic_props if x is not None]
+        rm_els = rm_els - len(acoustic_props)
+        # Any material not given accoustic props assumed to be vacuum.
+        rho = np.zeros(len(acoustic_props))
+        c_tensor = np.zeros((6,6,len(acoustic_props)))
+        for k_typ in range(len(acoustic_props)):
+            rho[k_typ] = acoustic_props[k_typ][0]
+            c_tensor[0,0,k_typ] = acoustic_props[k_typ][1]
+            c_tensor[1,1,k_typ] = acoustic_props[k_typ][1]
+            c_tensor[2,2,k_typ] = acoustic_props[k_typ][1]
+            c_tensor[3,3,k_typ] = acoustic_props[k_typ][3]
+            c_tensor[4,4,k_typ] = acoustic_props[k_typ][3]
+            c_tensor[5,5,k_typ] = acoustic_props[k_typ][3]
+            c_tensor[0,1,k_typ] = acoustic_props[k_typ][2]
+            c_tensor[0,2,k_typ] = acoustic_props[k_typ][2]
+            c_tensor[1,0,k_typ] = acoustic_props[k_typ][2]
+            c_tensor[1,2,k_typ] = acoustic_props[k_typ][2]
+            c_tensor[2,0,k_typ] = acoustic_props[k_typ][2]
+            c_tensor[2,1,k_typ] = acoustic_props[k_typ][2]
         self.rho = rho
         self.c_tensor = c_tensor
 
