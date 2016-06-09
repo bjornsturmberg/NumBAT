@@ -31,8 +31,10 @@ class Simmo(object):
         # just off normal incidence to avoid degeneracies
         self.k_pll = np.array([1e-16, 1e-16])
 
+
     def k_pll_norm(self):
         return self.k_pll * self.structure.unitcell_x
+
 
     def wl_norm(self):
         """ Return normalised wavelength (wl/unitcell_x). """
@@ -41,6 +43,7 @@ class Simmo(object):
         if self.wl_nm % self.structure.unitcell_x == 0:
             wl += 1e-10
         return wl
+
 
     def calc_EM_modes(self):
         """ Run a Fortran FEM calculation to find the EM modes \

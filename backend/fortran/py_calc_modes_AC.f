@@ -52,12 +52,11 @@ c     Declare the pointers of for sparse matrix storage
       integer*8 nonz, nonz_max, max_row_len
 
       integer*8 nb_typ_el
-      complex*16 pp(nb_typ_el),  qq(nb_typ_el)
       complex*16 c_tensor(6,6,nb_typ_el)
 c     rho: density
       complex*16 rho(nb_typ_el)
 
-      integer*8 i, j, k, ip!, Lambda_count
+      integer*8 i, j, ip!, Lambda_count
       integer*8 nnodes, ui, debug, namelength !, PrintSolution
       integer*8 nel, npt, i_cond, neq
 
@@ -67,7 +66,7 @@ C     ! Number of nodes per element
 
       double precision pi!, theta, phi
       double precision lambda!, lambda_1, lambda_2, d_lambda
-      double precision d_freq, freq, lat_vecs(2,2)
+      double precision lat_vecs(2,2)
       double precision lx, ly, d_in_m
 
       complex*16 shift
@@ -80,7 +79,7 @@ C  Variable used by valpr
       integer*8, dimension(:), allocatable :: index
 c     variable used by UMFPACK
       double precision control (20), info_umf (90)
-      integer*8 numeric, symbolic, status, sys, filenum
+      integer*8 numeric, status, filenum
 
       double precision time1, time2
       character*(8) start_date, end_date
