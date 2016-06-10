@@ -4,11 +4,12 @@ c     Explicit inputs
      *    debug, mesh_file, npt, nel,
      *    nb_typ_el,  c_tensor, rho, d_in_m, shift,
      *    i_cond, itermax, tol, 
-     *    plot_modes,
-     *    cmplx_max, real_max, int_max,
+     *    plot_modes, cmplx_max, real_max,
+     *    int_max, supplied_geo_flag, type_nod,
+c     Inputs and outputs
+     *    table_nod, type_el, x_arr,
 c     Outputs
-     *    beta1, sol1, mode_pol,
-     *    table_nod, type_el, x_arr)
+     *    beta1, sol1, mode_pol)
 
 C***********************************************************************
 C
@@ -30,9 +31,9 @@ C  Local parameters:
       integer*8, dimension(:), allocatable :: a   !  (int_max)
       complex*16, dimension(:), allocatable :: b   !  (cmplx_max)
       double precision, dimension(:), allocatable :: c   !  (real_max)
+      integer*8 supplied_geo_flag
 
 C  Declare the pointers of the integer super-vector
-      integer*8 ip_type_nod, ip_type_el
       integer*8 ip_eq
       integer*8 ip_visite
 
@@ -107,12 +108,17 @@ Cf2py intent(in) d_in_m, shift
 Cf2py intent(in) i_cond, itermax, tol
 Cf2py intent(in) plot_modes, c_tensor, rho
 Cf2py intent(in) cmplx_max, real_max, int_max
-Cf2py intent(in) nb_typ_el
+Cf2py intent(in) nb_typ_el, supplied_geo_flag,
+Cf2py intent(in) type_nod, table_nod, type_el, x_arr,
 
 C  Note: the dependent variables must be listed AFTER the 
 C  independent variables that they depend on in the function call!
 Cf2py depend(c_tensor) nb_typ_el
 Cf2py depend(rho) nb_typ_el
+Cf2py depend(type_nod) npt
+Cf2py depend(table_nod) nnodes, nel
+Cf2py depend(type_el) npt
+Cf2py depend(x_arr) npt
 
 Cf2py intent(out) beta1
 Cf2py intent(out) sol1, mode_pol, table_nod, type_el, x_arr
@@ -219,16 +225,16 @@ C
          write(ui,*) "py_calc_modes_AC: Aborting..."
          stop
       endif
-      ip_type_nod = 1
-      ip_type_el = ip_type_nod + npt
-      ip_visite = ip_type_el + nel ! pointer to FEM connectivity table
+      ip_visite = 1 ! pointer to FEM connectivity table
       ip_eq = ip_visite + npt
 
       jp_x = 1
 C
-      call geometry (nel, npt, nnodes, nb_typ_el,
+      if (supplied_geo_flag .eq. 0) then
+        call geometry (nel, npt, nnodes, nb_typ_el,
      *     lx, ly, type_nod, type_el, table_nod,
      *     x_arr, mesh_file)
+      endif
 
       call lattice_vec (npt, x_arr, lat_vecs, debug)
 
@@ -236,7 +242,7 @@ C
         write(ui,*) "py_calc_modes_AC: npt, nel = ", npt, nel
       endif
 
-      call bound_cond_AC (i_cond, npt, neq, a(ip_type_nod),
+      call bound_cond_AC (i_cond, npt, neq, type_nod,
      *       a(ip_eq), debug)
 C
 C

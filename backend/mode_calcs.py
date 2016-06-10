@@ -22,10 +22,11 @@ class Simmo(object):
         Inherits knowledge of :Struc:, :Light: objects
         Stores the calculated modes of :Struc: for illumination by :Light:
     """
-    def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20):
+    def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20, EM_sim=None):
         self.structure = structure
         self.wl_nm = wl_nm
         self.q_acoustic = q_acoustic
+        self.EM_sim = EM_sim
         self.num_modes = num_modes
         self.mode_pol = None
         # just off normal incidence to avoid degeneracies
@@ -68,6 +69,12 @@ class Simmo(object):
         i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
         EM_FEM_debug = 0  # Fortran routines will display & save add. info
+        # Size of Fortran's complex superarray (scales with mesh)
+        # In theory could do some python-based preprocessing
+        # on the mesh file to work out RAM requirements
+        cmplx_max = 2**27  # 30
+        real_max = 2**23
+        int_max = 2**22
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -90,13 +97,6 @@ class Simmo(object):
         with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
             self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
 
-        # Size of Fortran's complex superarray (scales with mesh)
-        # In theory could do some python-based preprocessing
-        # on the mesh file to work out RAM requirements
-        cmplx_max = 2**27  # 30
-        real_max = 2**23
-        int_max = 2**22
-
         try:
             resm = NumBAT.calc_em_modes(
                 self.wl_norm(), self.num_modes,
@@ -108,7 +108,7 @@ class Simmo(object):
                 cmplx_max, real_max, int_max)
 
             self.Eig_value, self.sol1, self.mode_pol, \
-            self.table_nod, self.type_el, self.x_arr = resm
+            self.table_nod, self.type_el, self.type_nod, self.x_arr = resm
 
             area = self.structure.unitcell_x * self.structure.unitcell_y
             area_norm = area/self.structure.unitcell_x**2
@@ -137,6 +137,7 @@ class Simmo(object):
         st = self.structure
         wl = self.wl_nm
         q_acoustic = self.q_acoustic
+        EM_sim = self.EM_sim
         self.d_in_m = self.structure.unitcell_x*1e-9
 
         if self.num_modes < 20:
@@ -148,21 +149,107 @@ class Simmo(object):
         itermax = 30  # Maximum number of iterations for convergence
         AC_FEM_debug = 0  # Fortran routines will display & save add. info
         ARPACK_tol = 1e-10  # ARPACK accuracy (0.0 for machine precision)
+        # Size of Fortran's complex superarray (scales with mesh)
+        # In theory could do some python-based preprocessing
+        # on the mesh file to work out RAM requirements
+        cmplx_max = 2**27  # 30
+        real_max = 2**23
+        int_max = 2**22
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
         # For AC problem shift is a frequency - [shift] = s^-1.
+        relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
         # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
-        shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][-1]/self.structure.rho[-1]))
+        shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
         # Factor 2 from q_acoustic being twice beta.
         shift1 = 0.5*self.q_acoustic*shift1
         # Using acoustic velocity of shear mode pg 215 Auld vol 1.
-        shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][-1]/self.structure.rho[-1]))
+        shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][relevant_el]/self.structure.rho[relevant_el]))
         shift2 = 0.5*self.q_acoustic*shift2
         shift = 13.0e9  # used for original test case
         # print repr(shift)
         shift = (shift1 + shift2)/8.
         print 'shift', shift
+
+        # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
+        if EM_sim:
+            suplied_geo_flag = 1 
+            n_msh_el = EM_sim.n_msh_el
+            n_msh_pts = EM_sim.n_msh_pts
+            type_el = EM_sim.type_el
+            type_nod = EM_sim.type_nod
+            table_nod = EM_sim.table_nod
+            x_arr = EM_sim.x_arr
+            keep_el_lst = [2] # ToDo: populate this automagically
+            n_el_kept = 0
+            n_msh_pts_AC = 0
+            type_el_AC = []
+            table_nod_AC_tmp = np.zeros(np.shape(table_nod))
+            el_convert_tbl = {}
+            node_convert_tbl = {}
+
+            for el in range(n_msh_el):
+                if type_el[el] in keep_el_lst:
+                    type_el_AC.append(type_el[el])
+                    el_convert_tbl[n_el_kept] = el
+                    for i in range(6):
+                        # leaves node numbering untouched
+                        table_nod_AC_tmp[i][n_el_kept] = table_nod[i][el] 
+                    n_el_kept += 1
+            n_msh_el_AC = n_el_kept
+            # Find unique nodes
+            node_lst_tmp = []
+            for el in range(n_msh_el_AC):
+                for i in range(6):
+                    node_lst_tmp.append(table_nod_AC_tmp[i][el])
+            unique_nodes = list(set(node_lst_tmp))
+            n_msh_pts_AC = len(unique_nodes)
+            unique_nodes = [int(j) for j in unique_nodes]
+            # Mapping unique nodes to start from zero
+            for i in range(n_msh_pts_AC):
+                # node_convert_tbl[i] = unique_nodes[i]
+                node_convert_tbl[unique_nodes[i]] = i
+            # Creating finalised table_nod.
+            table_nod_AC = []
+            for i in range(6):
+                el_tbl = []
+                for el in range(n_msh_el_AC):
+                    el_tbl.append(node_convert_tbl[table_nod_AC_tmp[i][el]])
+                table_nod_AC.append(el_tbl)
+            # Find the coordinates of chosen nodes.
+            x_arr_AC = np.zeros((2,n_msh_pts_AC))
+            for node in unique_nodes:
+                x_arr_AC[0,node_convert_tbl[node]] = x_arr[0,node]
+                x_arr_AC[1,node_convert_tbl[node]] = x_arr[1,node]
+            # Find nodes on boundaries of materials
+            node_array = -1*np.ones(n_msh_pts)
+            interface_nodes = []
+            for el in range(n_msh_el):
+                for i in range(6):
+                    node = table_nod[i][el]
+                    # Check if first time seen this node
+                    if node_array[node - 1] == -1: # adjust to python indexing
+                        node_array[node - 1] = type_el[el]
+                    else:
+                        if node_array[node - 1] != type_el[el]:
+                            interface_nodes.append(node)
+            interface_nodes = list(set(interface_nodes))
+            type_nod_AC = np.zeros(n_msh_pts_AC)
+            for node in unique_nodes:
+                if node in interface_nodes:
+                    type_nod_AC[node_convert_tbl[node]] = i_cond 
+            self.n_msh_pts = n_msh_pts_AC
+            self.n_msh_el = n_msh_el_AC
+        # Default, indicates to use geometry subroutine in FEM routine.
+        else:
+            suplied_geo_flag = 0
+            with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
+                self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
+            table_nod_AC = np.zeros((6, self.n_msh_el))
+            type_el_AC = np.zeros(self.n_msh_el)
+            x_arr_AC = np.zeros((2,self.n_msh_pts))
+            type_nod_AC = np.zeros(self.n_msh_pts)
 
         if AC_FEM_debug == 1:
             print 'shift', shift
@@ -173,16 +260,6 @@ class Simmo(object):
             if not os.path.exists("Matrices"):
                 os.mkdir("Matrices")
 
-        with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
-            self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
-
-        # Size of Fortran's complex superarray (scales with mesh)
-        # In theory could do some python-based preprocessing
-        # on the mesh file to work out RAM requirements
-        cmplx_max = 2**27  # 30
-        real_max = 2**23
-        int_max = 2**22
-
         try:
             resm = NumBAT.calc_ac_modes(
                 self.wl_norm(), self.q_acoustic, self.num_modes,
@@ -191,10 +268,23 @@ class Simmo(object):
                 self.structure.c_tensor, self.structure.rho,
                 self.d_in_m, shift, i_cond, itermax, ARPACK_tol,
                 self.structure.plotting_fields,
-                cmplx_max, real_max, int_max)
-            self.Eig_value, self.sol1, self.mode_pol, \
-            self.table_nod, self.type_el, self.x_arr = resm
+                cmplx_max, real_max, int_max, suplied_geo_flag, type_nod_AC,
+                table_nod_AC, type_el_AC, x_arr_AC)
+            table_nod_out, type_el_out, x_arr_out, \
+            self.Eig_value, self.sol1, self.mode_pol = resm
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\
             "interrupted by keyboard.\n\n"
+
+        if EM_sim is None:
+            table_nod_out = None
+            type_el_out = None
+            x_arr_out = None
+            self.table_nod = table_nod_AC
+            self.type_el = type_el_AC
+            self.x_arr = x_arr_AC
+        else:
+            self.table_nod = table_nod_out
+            self.type_el = type_el_out
+            self.x_arr = x_arr_out

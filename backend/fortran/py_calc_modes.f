@@ -8,7 +8,7 @@ c     Explicit inputs
      *    cmplx_max, real_max, int_max,
 c     Outputs
      *    beta1, sol1, mode_pol,
-     *    table_nod, type_el, x_arr)
+     *    table_nod, type_el, type_nod, x_arr)
 
 C************************************************************************
 C
@@ -139,7 +139,7 @@ Cf2py intent(in) cmplx_max, real_max, int_max, nb_typ_el
 
 Cf2py depend(n_eff) nb_typ_el
 
-Cf2py intent(out) beta1
+Cf2py intent(out) beta1, type_nod
 Cf2py intent(out) sol1, mode_pol, table_nod, type_el, x_arr
 
 
