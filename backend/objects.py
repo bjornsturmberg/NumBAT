@@ -218,29 +218,30 @@ class Struct(object):
         self.plot_abs = plot_abs
         self.plot_field_conc = plot_field_conc
         # Order must match msh templates!
-        acoustic_props = [bkg_AC, inc_a_AC, slab_a_AC,
-                          slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC] 
-        rm_els = len(acoustic_props)
-        acoustic_props = [x for x in acoustic_props if x is not None]
-        rm_els = rm_els - len(acoustic_props)
+        # acoustic_props = [inc_a_AC]
+        acoustic_props = [bkg_AC, inc_a_AC]#, slab_a_AC,
+                          # slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC] 
+        # rm_els = len(acoustic_props)
+        # acoustic_props = [x for x in acoustic_props if x is not None]
+        # rm_els = rm_els - len(acoustic_props)
         # Any material not given accoustic props assumed to be vacuum.
         rho = np.zeros(len(acoustic_props))
         c_tensor = np.zeros((6,6,len(acoustic_props)))
         for k_typ in range(len(acoustic_props)):
-            # if acoustic_props[k_typ]:
-            rho[k_typ] = acoustic_props[k_typ][0]
-            c_tensor[0,0,k_typ] = acoustic_props[k_typ][1]
-            c_tensor[1,1,k_typ] = acoustic_props[k_typ][1]
-            c_tensor[2,2,k_typ] = acoustic_props[k_typ][1]
-            c_tensor[3,3,k_typ] = acoustic_props[k_typ][3]
-            c_tensor[4,4,k_typ] = acoustic_props[k_typ][3]
-            c_tensor[5,5,k_typ] = acoustic_props[k_typ][3]
-            c_tensor[0,1,k_typ] = acoustic_props[k_typ][2]
-            c_tensor[0,2,k_typ] = acoustic_props[k_typ][2]
-            c_tensor[1,0,k_typ] = acoustic_props[k_typ][2]
-            c_tensor[1,2,k_typ] = acoustic_props[k_typ][2]
-            c_tensor[2,0,k_typ] = acoustic_props[k_typ][2]
-            c_tensor[2,1,k_typ] = acoustic_props[k_typ][2]
+            if acoustic_props[k_typ]:
+                rho[k_typ] = acoustic_props[k_typ][0]
+                c_tensor[0,0,k_typ] = acoustic_props[k_typ][1]
+                c_tensor[1,1,k_typ] = acoustic_props[k_typ][1]
+                c_tensor[2,2,k_typ] = acoustic_props[k_typ][1]
+                c_tensor[3,3,k_typ] = acoustic_props[k_typ][3]
+                c_tensor[4,4,k_typ] = acoustic_props[k_typ][3]
+                c_tensor[5,5,k_typ] = acoustic_props[k_typ][3]
+                c_tensor[0,1,k_typ] = acoustic_props[k_typ][2]
+                c_tensor[0,2,k_typ] = acoustic_props[k_typ][2]
+                c_tensor[1,0,k_typ] = acoustic_props[k_typ][2]
+                c_tensor[1,2,k_typ] = acoustic_props[k_typ][2]
+                c_tensor[2,0,k_typ] = acoustic_props[k_typ][2]
+                c_tensor[2,1,k_typ] = acoustic_props[k_typ][2]
         self.rho = rho
         self.c_tensor = c_tensor
 

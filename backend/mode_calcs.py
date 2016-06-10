@@ -147,7 +147,7 @@ class Simmo(object):
         # Parameters that control how FEM routine runs
         i_cond = 1  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        AC_FEM_debug = 0  # Fortran routines will display & save add. info
+        AC_FEM_debug = 1  # Fortran routines will display & save add. info
         ARPACK_tol = 1e-10  # ARPACK accuracy (0.0 for machine precision)
         # Size of Fortran's complex superarray (scales with mesh)
         # In theory could do some python-based preprocessing
@@ -159,7 +159,8 @@ class Simmo(object):
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
         # For AC problem shift is a frequency - [shift] = s^-1.
-        relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
+        relevant_el = 2 - 1 # adjust gmsh indexing el = 1,2,...
+        # relevant_el = relevant_el - 1 # fudge factor as removed 1 type!
         # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
         shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
         # Factor 2 from q_acoustic being twice beta.
@@ -219,9 +220,11 @@ class Simmo(object):
                 table_nod_AC.append(el_tbl)
             # Find the coordinates of chosen nodes.
             x_arr_AC = np.zeros((2,n_msh_pts_AC))
+            print self.d_in_m
+            print self.structure.inc_a_x
             for node in unique_nodes:
-                x_arr_AC[0,node_convert_tbl[node]] = x_arr[0,node]
-                x_arr_AC[1,node_convert_tbl[node]] = x_arr[1,node]
+                x_arr_AC[0,node_convert_tbl[node]] = x_arr[0,node]*self.structure.inc_a_x*1e-9
+                x_arr_AC[1,node_convert_tbl[node]] = x_arr[1,node]*self.structure.inc_a_x*1e-9
             # Find nodes on boundaries of materials
             node_array = -1*np.ones(n_msh_pts)
             interface_nodes = []
@@ -264,7 +267,7 @@ class Simmo(object):
             resm = NumBAT.calc_ac_modes(
                 self.wl_norm(), self.q_acoustic, self.num_modes,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
-                self.n_msh_el, self.structure.nb_typ_el, 
+                self.n_msh_el, self.structure.nb_typ_el,#-1, #fudge factor as removed one type! 
                 self.structure.c_tensor, self.structure.rho,
                 self.d_in_m, shift, i_cond, itermax, ARPACK_tol,
                 self.structure.plotting_fields,
