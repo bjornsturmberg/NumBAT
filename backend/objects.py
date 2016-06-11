@@ -129,7 +129,7 @@ class Struct(object):
                  slab_b_bkg_material=materials.Material(1.0 + 0.0j),
                  coating_material=materials.Material(1.0 + 0.0j),
                  loss=True, bkg_AC=None, inc_a_AC=None, slab_a_AC=None,
-                 slab_a_bkg_AC=None, slab_b_AC=None, slab_b_bkg_AC=None, 
+                 slab_a_bkg_AC=None, slab_b_AC=None, slab_b_bkg_AC=None,
                  make_mesh_now=True, force_mesh=True,
                  mesh_file='NEED_FILE.mail', check_msh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
@@ -218,9 +218,9 @@ class Struct(object):
         self.plot_abs = plot_abs
         self.plot_field_conc = plot_field_conc
         # Order must match msh templates!
-        # acoustic_props = [inc_a_AC]
-        acoustic_props = [bkg_AC, inc_a_AC]#, slab_a_AC,
-                          # slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC] 
+        acoustic_props = [inc_a_AC]
+        # acoustic_props = [bkg_AC, inc_a_AC]#, slab_a_AC,
+                          # slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC]
         # rm_els = len(acoustic_props)
         # acoustic_props = [x for x in acoustic_props if x is not None]
         # rm_els = rm_els - len(acoustic_props)
@@ -407,7 +407,7 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo_AC = Simmo(self, wl_nm, q_acoustic=q_acoustic, 
+        simmo_AC = Simmo(self, wl_nm, q_acoustic=q_acoustic,
                          num_modes=num_modes, EM_sim=EM_sim)
 
         simmo_AC.calc_AC_modes(**args)

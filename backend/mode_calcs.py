@@ -159,7 +159,7 @@ class Simmo(object):
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
         # For AC problem shift is a frequency - [shift] = s^-1.
-        relevant_el = 2 - 1 # adjust gmsh indexing el = 1,2,...
+        relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
         # relevant_el = relevant_el - 1 # fudge factor as removed 1 type!
         # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
         shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
@@ -175,14 +175,14 @@ class Simmo(object):
 
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
         if EM_sim:
-            suplied_geo_flag = 1 
+            suplied_geo_flag = 1
             n_msh_el = EM_sim.n_msh_el
             n_msh_pts = EM_sim.n_msh_pts
             type_el = EM_sim.type_el
             type_nod = EM_sim.type_nod
             table_nod = EM_sim.table_nod
             x_arr = EM_sim.x_arr
-            keep_el_lst = [2] # ToDo: populate this automagically
+            keep_el_lst = [1] # ToDo: populate this automagically
             n_el_kept = 0
             n_msh_pts_AC = 0
             type_el_AC = []
@@ -195,8 +195,8 @@ class Simmo(object):
                     type_el_AC.append(type_el[el])
                     el_convert_tbl[n_el_kept] = el
                     for i in range(6):
-                        # leaves node numbering untouched
-                        table_nod_AC_tmp[i][n_el_kept] = table_nod[i][el] 
+                        # Leaves node numbering untouched
+                        table_nod_AC_tmp[i][n_el_kept] = table_nod[i][el]
                     n_el_kept += 1
             n_msh_el_AC = n_el_kept
             # Find unique nodes
@@ -216,15 +216,15 @@ class Simmo(object):
             for i in range(6):
                 el_tbl = []
                 for el in range(n_msh_el_AC):
-                    el_tbl.append(node_convert_tbl[table_nod_AC_tmp[i][el]])
+                    # Note table_nod needs to be adjust back to fortran indexing
+                    el_tbl.append(node_convert_tbl[table_nod_AC_tmp[i][el]]+1)
                 table_nod_AC.append(el_tbl)
             # Find the coordinates of chosen nodes.
             x_arr_AC = np.zeros((2,n_msh_pts_AC))
-            print self.d_in_m
-            print self.structure.inc_a_x
             for node in unique_nodes:
-                x_arr_AC[0,node_convert_tbl[node]] = x_arr[0,node]*self.structure.inc_a_x*1e-9
-                x_arr_AC[1,node_convert_tbl[node]] = x_arr[1,node]*self.structure.inc_a_x*1e-9
+                # Note x_arr needs to be adjust back to fortran indexing
+                x_arr_AC[0,node_convert_tbl[node]] = x_arr[0,node-1]*self.structure.inc_a_x*1e-9
+                x_arr_AC[1,node_convert_tbl[node]] = x_arr[1,node-1]*self.structure.inc_a_x*1e-9
             # Find nodes on boundaries of materials
             node_array = -1*np.ones(n_msh_pts)
             interface_nodes = []
@@ -241,7 +241,7 @@ class Simmo(object):
             type_nod_AC = np.zeros(n_msh_pts_AC)
             for node in unique_nodes:
                 if node in interface_nodes:
-                    type_nod_AC[node_convert_tbl[node]] = i_cond 
+                    type_nod_AC[node_convert_tbl[node]] = i_cond
             self.n_msh_pts = n_msh_pts_AC
             self.n_msh_el = n_msh_el_AC
         # Default, indicates to use geometry subroutine in FEM routine.
@@ -267,7 +267,7 @@ class Simmo(object):
             resm = NumBAT.calc_ac_modes(
                 self.wl_norm(), self.q_acoustic, self.num_modes,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
-                self.n_msh_el, self.structure.nb_typ_el,#-1, #fudge factor as removed one type! 
+                self.n_msh_el, self.structure.nb_typ_el,#-1, #fudge factor as removed one type!
                 self.structure.c_tensor, self.structure.rho,
                 self.d_in_m, shift, i_cond, itermax, ARPACK_tol,
                 self.structure.plotting_fields,

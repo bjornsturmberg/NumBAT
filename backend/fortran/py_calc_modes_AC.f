@@ -3,7 +3,7 @@ c     Explicit inputs
      *    lambda, beta_in, nval,
      *    debug, mesh_file, npt, nel,
      *    nb_typ_el,  c_tensor, rho, d_in_m, shift,
-     *    i_cond, itermax, tol, 
+     *    i_cond, itermax, tol,
      *    plot_modes, cmplx_max, real_max,
      *    int_max, supplied_geo_flag, type_nod,
 c     Inputs and outputs
@@ -111,7 +111,7 @@ Cf2py intent(in) cmplx_max, real_max, int_max
 Cf2py intent(in) nb_typ_el, supplied_geo_flag,
 Cf2py intent(in) type_nod, table_nod, type_el, x_arr,
 
-C  Note: the dependent variables must be listed AFTER the 
+C  Note: the dependent variables must be listed AFTER the
 C  independent variables that they depend on in the function call!
 Cf2py depend(c_tensor) nb_typ_el
 Cf2py depend(rho) nb_typ_el
@@ -225,9 +225,9 @@ C
          write(ui,*) "py_calc_modes_AC: Aborting..."
          stop
       endif
+
       ip_visite = 1 ! pointer to FEM connectivity table
       ip_eq = ip_visite + npt
-
       jp_x = 1
 C
       if (supplied_geo_flag .eq. 0) then
@@ -235,6 +235,16 @@ C
      *     lx, ly, type_nod, type_el, table_nod,
      *     x_arr, mesh_file)
       endif
+
+      if (debug .eq. 1) then
+        do i=1,nel
+          write(ui,*) i, type_el(i)
+          do j=1,nnodes
+            write(ui,*) i, j, table_nod(j,i)
+          enddo
+        enddo
+      endif
+
 
       call lattice_vec (npt, x_arr, lat_vecs, debug)
 
@@ -249,9 +259,7 @@ C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c
 c     Sparse matrix storage
-c
       ip_col_ptr = ip_eq + 3*npt
-c       ip_col_ptr = ip_index_pw_inv + neq_PW
 
       call csr_max_length_AC (nel, npt, neq, nnodes,
      *  table_nod, a(ip_eq), a(ip_col_ptr), nonz_max)
