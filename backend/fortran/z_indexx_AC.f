@@ -5,7 +5,7 @@
       PARAMETER (M=7,NSTACK=1000)
       INTEGER*8 i,indxt,ir,itemp,j,jstack,k,l,istack(NSTACK)
       double precision a
-      double precision arr_0(NSTACK), arr_max, r_tmp, tol
+      double precision arr_0(NSTACK), r_tmp
 c
       if(n .gt. NSTACK) then
         write(*,*) "z_indexx_AC: npt > NSTACK : ",

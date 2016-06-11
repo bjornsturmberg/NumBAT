@@ -147,7 +147,7 @@ class Simmo(object):
         # Parameters that control how FEM routine runs
         i_cond = 1  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        AC_FEM_debug = 1  # Fortran routines will display & save add. info
+        AC_FEM_debug = 0  # Fortran routines will display & save add. info
         ARPACK_tol = 1e-10  # ARPACK accuracy (0.0 for machine precision)
         # Size of Fortran's complex superarray (scales with mesh)
         # In theory could do some python-based preprocessing

@@ -17,7 +17,7 @@ from fortran import NumBAT
 wl_nm = 1550
 unitcell_x = 2.5*1550
 inc_a_x = 314.7
-unitcell_x = inc_a_x
+# unitcell_x = inc_a_x
 unitcell_y = unitcell_x
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
@@ -46,9 +46,9 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.1, lc2=2.0, lc3=1.0,
-                        make_mesh_now=False, plotting_fields=False,
-                        mesh_file='rect_acoustic_3.mail')
+                        lc_bkg=0.05, lc2=2.0, lc3=1.0)#,
+                        # make_mesh_now=False, plotting_fields=False,
+                        # mesh_file='rect_acoustic_3.mail')
 
 
 ######## SIMULATION GAME PLAN ########
@@ -61,10 +61,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 # ### Calc EM Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # # plotting.plot_EM_modes(sim_EM_wguide, n_points=100, EM_AC='EM', add_name='_EM')
 
