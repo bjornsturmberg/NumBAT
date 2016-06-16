@@ -238,12 +238,26 @@ C
       call lattice_vec (npt, x_arr, lat_vecs, debug)
 
 C       if (debug .eq. 1) then
+C       open (unit=64, file="msh_check.txt",
+C      *         status="unknown")
 C         do i=1,nel
-C           write(ui,*) i, type_el(i)
+C           write(64,*) i, type_el(i)
+C         enddo
+C         write(64,*)
+C         write(64,*)
+C         write(64,*)
+C         do i=1,nel
 C           do j=1,nnodes
-C             write(ui,*) i, j, table_nod(j,i)
+C             write(64,*) i, j, table_nod(j,i)
 C           enddo
 C         enddo
+C         write(64,*)
+C         write(64,*)
+C         write(64,*)
+C         do j=1,nnodes
+C           write(64,*) j, type_nod(j)
+C         enddo
+C       close(63)
 C       endif
 
 
