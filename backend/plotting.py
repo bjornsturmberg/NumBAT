@@ -20,8 +20,6 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 # font = {'family' : 'normal',
 #         'weight' : 'bold',
 #         'size'   : 18}
-
-# font = {'size'   : 14}
 # matplotlib.rc('font', **font)
 linesstrength = 2.5
 title_font = 25
@@ -222,6 +220,28 @@ def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
         
         plt.savefig('E_field_%(i)i%(add)s.png' % 
             {'i' : ival, 'add' : add_name}, bbox_inches='tight')
+
+
+#### Plot mesh #############################################
+def plot_msh(x_arr, add_name=''):
+    """ Plot EM mode fields.
+
+        Args:
+            sim_wguide : A :Struct: instance that has had calc_modes calculated
+
+        Keyword Args:
+            n_points  (int): The number of points across unitcell to \
+                interpolate the field onto.
+    """
+
+    plt.clf()
+    plt.figure(figsize=(13,13))
+    ax = plt.subplot(1,1,1)
+    for node in range(np.shape(x_arr)[1]):
+        plt.plot(x_arr[0,node], x_arr[1,node], 'o')
+    ax.set_aspect('equal')
+    plt.savefig('msh_%(add)s.pdf' % 
+        {'add' : add_name}, bbox_inches='tight')
 
 
 

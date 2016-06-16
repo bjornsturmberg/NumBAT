@@ -11,6 +11,7 @@ import sys
 import os
 sys.path.append("../backend/")
 
+import plotting
 from fortran import NumBAT
 
 pi = np.pi
@@ -130,6 +131,16 @@ class Simmo(object):
         #     self.n_msh_pts = None
         #     self.n_msh_el = None
 
+        # try:
+        #     EM_mode_overlap = NumBAT.em_mode_energy_int(
+        #         self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts,
+        #         self.structure.nb_typ_el, self.table_nod, self.type_el,
+        #         self.x_arr, self.Eig_value, self.sol1, EM_FEM_debug)
+
+        # except KeyboardInterrupt:
+        #     print "\n\n FEM routine EM_mode_energy_int",\
+        #     "interrupted by keyboard.\n\n"
+
 
     def calc_AC_modes(self):
         """ Run a Fortran FEM calculation to find the EM modes \
@@ -138,7 +149,8 @@ class Simmo(object):
         wl = self.wl_nm
         q_acoustic = self.q_acoustic
         EM_sim = self.EM_sim
-        self.d_in_m = self.structure.unitcell_x*1e-9
+        # self.d_in_m = self.structure.unitcell_x*1e-9
+        self.d_in_m = self.structure.inc_a_x*1e-9
 
         if self.num_modes < 20:
             self.num_modes = 20
@@ -147,7 +159,7 @@ class Simmo(object):
         # Parameters that control how FEM routine runs
         i_cond = 1  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        AC_FEM_debug = 0  # Fortran routines will display & save add. info
+        AC_FEM_debug = 1  # Fortran routines will display & save add. info
         ARPACK_tol = 1e-10  # ARPACK accuracy (0.0 for machine precision)
         # Size of Fortran's complex superarray (scales with mesh)
         # In theory could do some python-based preprocessing
@@ -173,16 +185,19 @@ class Simmo(object):
         shift = (shift1 + shift2)/8.
         print 'shift', shift
 
+
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
         if EM_sim:
             suplied_geo_flag = 1
             n_msh_el = EM_sim.n_msh_el
+            print n_msh_el
             n_msh_pts = EM_sim.n_msh_pts
             type_el = EM_sim.type_el
             type_nod = EM_sim.type_nod
             table_nod = EM_sim.table_nod
             x_arr = EM_sim.x_arr
-            keep_el_lst = [1] # ToDo: populate this automagically
+            plotting.plot_msh(x_arr, 'orig')
+            keep_el_lst = [2] # ToDo: populate this automagically
             n_el_kept = 0
             n_msh_pts_AC = 0
             type_el_AC = []
@@ -223,25 +238,37 @@ class Simmo(object):
             x_arr_AC = np.zeros((2,n_msh_pts_AC))
             for node in unique_nodes:
                 # Note x_arr needs to be adjust back to fortran indexing
-                x_arr_AC[0,node_convert_tbl[node]] = x_arr[0,node-1]*self.structure.inc_a_x*1e-9
-                x_arr_AC[1,node_convert_tbl[node]] = x_arr[1,node-1]*self.structure.inc_a_x*1e-9
-            # Find nodes on boundaries of materials
-            node_array = -1*np.ones(n_msh_pts)
-            interface_nodes = []
-            for el in range(n_msh_el):
-                for i in range(6):
-                    node = table_nod[i][el]
-                    # Check if first time seen this node
-                    if node_array[node - 1] == -1: # adjust to python indexing
-                        node_array[node - 1] = type_el[el]
-                    else:
-                        if node_array[node - 1] != type_el[el]:
-                            interface_nodes.append(node)
-            interface_nodes = list(set(interface_nodes))
+                x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1]-0.5)*self.structure.unitcell_x*1e-9
+                x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1]+0.46345419354838702)*self.structure.unitcell_x*1e-9
+
+            ### AC FEM uses Neumann B.C.s so type_nod is totally irrelevant!
+            # # Find nodes on boundaries of materials
+            # node_array = -1*np.ones(n_msh_pts)
+            # interface_nodes = []
+            # for el in range(n_msh_el):
+            #     for i in range(6):
+            #         node = table_nod[i][el]
+            #         # Check if first time seen this node
+            #         if node_array[node - 1] == -1: # adjust to python indexing
+            #             node_array[node - 1] = type_el[el]
+            #         else:
+            #             if node_array[node - 1] != type_el[el]:
+            #                 interface_nodes.append(node)
+            # interface_nodes = list(set(interface_nodes))
             type_nod_AC = np.zeros(n_msh_pts_AC)
-            for node in unique_nodes:
-                if node in interface_nodes:
-                    type_nod_AC[node_convert_tbl[node]] = i_cond
+
+            # import matplotlib
+            # matplotlib.use('pdf')
+            # import matplotlib.pyplot as plt
+            # plt.clf()
+            # plt.figure(figsize=(13,13))
+            # ax = plt.subplot(1,1,1)
+            # for node in unique_nodes:
+            #     if node in interface_nodes:
+            #         type_nod_AC[node_convert_tbl[node]] = i_cond
+            #         plt.plot(x_arr_AC[0,node_convert_tbl[node]], x_arr_AC[1,node_convert_tbl[node]], 'ok')
+            # ax.set_aspect('equal')
+            # plt.savefig('boundary.pdf', bbox_inches='tight')
             self.n_msh_pts = n_msh_pts_AC
             self.n_msh_el = n_msh_el_AC
         # Default, indicates to use geometry subroutine in FEM routine.
@@ -253,6 +280,7 @@ class Simmo(object):
             type_el_AC = np.zeros(self.n_msh_el)
             x_arr_AC = np.zeros((2,self.n_msh_pts))
             type_nod_AC = np.zeros(self.n_msh_pts)
+        print self.n_msh_el
 
         if AC_FEM_debug == 1:
             print 'shift', shift
@@ -279,6 +307,9 @@ class Simmo(object):
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\
             "interrupted by keyboard.\n\n"
+
+        plotting.plot_msh(x_arr_AC, 'in')
+        plotting.plot_msh(x_arr_out, 'out')
 
         if EM_sim is None:
             table_nod_out = None

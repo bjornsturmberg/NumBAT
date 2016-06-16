@@ -26,7 +26,7 @@ C
 C  Local parameters:
       complex*16 beta_in ! Propagation constant
       integer*8 int_max, cmplx_max, int_used, cmplx_used
-      integer*8 real_max, real_used, plot_modes !, n_64
+      integer*8 real_max, real_used, plot_modes
       integer :: alloc_stat=0
       integer*8, dimension(:), allocatable :: a   !  (int_max)
       complex*16, dimension(:), allocatable :: b   !  (cmplx_max)
@@ -54,19 +54,18 @@ c     Declare the pointers of for sparse matrix storage
 
       integer*8 nb_typ_el
       complex*16 c_tensor(6,6,nb_typ_el)
-c     rho: density
       complex*16 rho(nb_typ_el)
 
-      integer*8 i, j, ip!, Lambda_count
-      integer*8 nnodes, ui, debug, namelength !, PrintSolution
+      integer*8 i, j, ip
+      integer*8 nnodes, ui, debug, namelength
       integer*8 nel, npt, i_cond, neq
 
 C     ! Number of nodes per element
       parameter(nnodes=6)
       integer*8 type_nod(npt), type_el(nel), table_nod(nnodes, nel)
 
-      double precision pi!, theta, phi
-      double precision lambda!, lambda_1, lambda_2, d_lambda
+      double precision pi
+      double precision lambda
       double precision lat_vecs(2,2)
       double precision lx, ly, d_in_m
 
@@ -236,17 +235,18 @@ C
      *     x_arr, mesh_file)
       endif
 
-      if (debug .eq. 1) then
-        do i=1,nel
-          write(ui,*) i, type_el(i)
-          do j=1,nnodes
-            write(ui,*) i, j, table_nod(j,i)
-          enddo
-        enddo
-      endif
-
-
       call lattice_vec (npt, x_arr, lat_vecs, debug)
+
+C       if (debug .eq. 1) then
+C         do i=1,nel
+C           write(ui,*) i, type_el(i)
+C           do j=1,nnodes
+C             write(ui,*) i, j, table_nod(j,i)
+C           enddo
+C         enddo
+C       endif
+
+
 
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: npt, nel = ", npt, nel
@@ -407,9 +407,8 @@ C
          write(ui,*) "py_calc_modes_AC: n_conv != nval : ",
      *    n_conv, nval
          write(ui,*) "py_calc_modes_AC: Aborting..."
-cc         stop
+c         stop
       endif
-
 C
       do i=1,nval
         z_tmp0 = beta1(i)
@@ -498,14 +497,12 @@ C
         write(26,*)
         write(26,*) "npt, nel, nnodes  = ", npt, nel, nnodes
         write(26,*) "neq, i_cond = ", neq, i_cond
-
         write(26,*) " lat_vecs:  = "
         write(26,"(2(f18.10))") lat_vecs
         write(26,*) "mesh_file = ", mesh_file
         write(26,*) "gmsh_file = ", gmsh_file
         write(26,*) "log_file  = ", log_file
         close(26)
-
 C
         write(ui,*) "   .      .      ."
         write(ui,*) "   .      .      ."

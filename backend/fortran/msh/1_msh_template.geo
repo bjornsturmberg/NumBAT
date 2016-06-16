@@ -13,7 +13,6 @@ rect = 1;
 lc = 0; // 0.501 0.201 0.0701;
 lc2 = lc/1; // on cylinder surfaces
 lc3 = lc/1; // cylinder1 centres
-lc4 = lc/1; // centres of top and bottom
 
 hy = dy; // Thickness: square profile => hy=d
 hx = 0.;
@@ -31,9 +30,9 @@ Point(7) = {-hx+d/2-radius1, -hy/2, 0, lc2};
 Point(8) = {-hx+d/2, -hy/2-radius1y, 0, lc2};
 Point(9) = {-hx+d/2+radius1, -hy/2, 0, lc2};
 
-Point(10) = {-hx+d/2, 0, 0, lc4};
+Point(10) = {-hx+d/2, 0, 0, lc};
 Point(11) = {0,-hy/2, 0, lc};
-Point(12) = {-hx+d/2, -hy, 0, lc4};
+Point(12) = {-hx+d/2, -hy, 0, lc};
 Point(13) = {d, -hy/2, 0, lc};
 Line(1) = {1,10};
 Line(2) = {10,4};
@@ -86,10 +85,10 @@ If(rect == 0)
 EndIf
 
 If(rect == 1)
-    Point(150) = {-hx+d/2+radius1, -hy/2+radius1y, 0,lc3};
-    Point(151) = {-hx+d/2-radius1, -hy/2+radius1y, 0,lc3};
-    Point(152) = {-hx+d/2+radius1, -hy/2-radius1y, 0,lc3};
-    Point(153) = {-hx+d/2-radius1, -hy/2-radius1y, 0,lc3};
+    Point(150) = {-hx+d/2+radius1, -hy/2+radius1y, 0,lc2};
+    Point(151) = {-hx+d/2-radius1, -hy/2+radius1y, 0,lc2};
+    Point(152) = {-hx+d/2+radius1, -hy/2-radius1y, 0,lc2};
+    Point(153) = {-hx+d/2-radius1, -hy/2-radius1y, 0,lc2};
 
     Line(17) = {151, 6};
     Line(18) = {6, 150};

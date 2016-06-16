@@ -1,8 +1,8 @@
 C   Calculate the Overlap integral of an EM mode with itself.
 C
-      subroutine EM_mode_energy_int (nval, nel, npt,
-     *  nnodes, nb_typ_el, pp, table_nod,
-     *  type_el, x, beta1, soln_k1, k_0, overlap)
+      subroutine EM_mode_energy_int (lambda, nval, nel, 
+     *  npt, nnodes, nb_typ_el, table_nod,
+     *  type_el, x, beta1, soln_k1, debug, overlap)
 c
       implicit none
       integer*8 nval, nel, npt, nnodes, nb_typ_el
@@ -10,10 +10,10 @@ c
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
       complex*16 soln_k1(3,nnodes+7,nval,nel)
-      complex*16 pp(nb_typ_el)
+C       complex*16 pp(nb_typ_el)
       complex*16 beta1
       complex*16, dimension(nval) :: overlap
-      double precision k_0
+      double precision k_0, pi, lambda
 c     Local variables
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
@@ -45,9 +45,9 @@ c     NQUAD: The number of quadrature points used in each element.
       double precision mat_B(2,2), mat_T(2,2)
 C
 C
-Cf2py intent(in) nval, nel, npt,
-Cf2py intent(in) nnodes, nb_typ_el, pp, table_nod
-Cf2py intent(in) type_el, x, beta1, soln_k1, k_0
+Cf2py intent(in) lambda, nval, nel, npt,
+Cf2py intent(in) nnodes, nb_typ_el, table_nod
+Cf2py intent(in) type_el, x, beta1, soln_k1, debug
 C
 Cf2py depend(overlap) nval
 C
@@ -57,7 +57,8 @@ C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
-      debug = 0
+      pi = 3.141592653589793d0
+      k_0 = 2.0d0*pi/lambda
 C
       if ( nnodes .ne. 6 ) then
         write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes
@@ -130,7 +131,7 @@ c          Calculation of the matrix-matrix product:
      *      grad2_mat0, 2, ZERO, grad2_mat, 2)
           call DGEMM('Transpose','N', 2, 10, 2, ONE, mat_T, 2,
      *      grad3_mat0, 2, ZERO, grad3_mat, 2)
-          coeff_1 = ww * abs(det) * pp(typ_e)
+          coeff_1 = ww * abs(det) ! * pp(typ_e)
           do itrial=1,nnodes_0
             do i_eq=1,2
               ind_ip = i_eq + 2*(itrial-1)
@@ -219,5 +220,4 @@ C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
 C
-      return
-      end
+      end subroutine EM_mode_energy_int
