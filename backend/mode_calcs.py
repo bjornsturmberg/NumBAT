@@ -172,7 +172,7 @@ class Simmo(object):
         # (Shift and invert FEM method)
         # For AC problem shift is a frequency - [shift] = s^-1.
         relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
-        # relevant_el = relevant_el - 1 # fudge factor as removed 1 type!
+        # relevant_el = relevant_el - 1 # ToDo: fudge factor as removed 1 type!
         # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
         shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
         # Factor 2 from q_acoustic being twice beta.
@@ -181,7 +181,6 @@ class Simmo(object):
         shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][relevant_el]/self.structure.rho[relevant_el]))
         shift2 = 0.5*self.q_acoustic*shift2
         shift = 13.0e9  # used for original test case
-        # print repr(shift)
         shift = (shift1 + shift2)/8.
         print 'shift', shift
 
@@ -224,7 +223,6 @@ class Simmo(object):
             unique_nodes = [int(j) for j in unique_nodes]
             # Mapping unique nodes to start from zero
             for i in range(n_msh_pts_AC):
-                # node_convert_tbl[i] = unique_nodes[i]
                 node_convert_tbl[unique_nodes[i]] = i
             # Creating finalised table_nod.
             table_nod_AC = []
@@ -236,19 +234,11 @@ class Simmo(object):
                 table_nod_AC.append(el_tbl)
             # Find the coordinates of chosen nodes.
             x_arr_AC = np.zeros((2,n_msh_pts_AC))
-            # x_coords = []
-            # y_coords = []
-            # for node in unique_nodes:
-            #     x_coords.append(x_arr[0,node-1])
-            #     y_coords.append(x_arr[1,node-1])
-            # x_centre = (np.max(x_coords) - np.min(x_coords))/2.0
-            # y_top = np.max(y_coords)
             for node in unique_nodes:
                 # Note x_arr needs to be adjust back to fortran indexing
                 x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1])*orig_unitcell_x
                 x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])*orig_unitcell_x
-                # x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1]-x_centre)*self.structure.unitcell_x*1e-9
-                # x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1]-y_top)*self.structure.unitcell_x*1e-9
+
 
             ### AC FEM uses Neumann B.C.s so type_nod is totally irrelevant!
             # # Find nodes on boundaries of materials
@@ -303,7 +293,7 @@ class Simmo(object):
             resm = NumBAT.calc_ac_modes(
                 self.wl_norm(), self.q_acoustic, self.num_modes,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
-                self.n_msh_el, self.structure.nb_typ_el,#-1, #fudge factor as removed one type!
+                self.n_msh_el, self.structure.nb_typ_el,#-1, # ToDo: adjust for removed types!
                 self.structure.c_tensor, self.structure.rho,
                 self.d_in_m, shift, i_cond, itermax, ARPACK_tol,
                 self.structure.plotting_fields,
