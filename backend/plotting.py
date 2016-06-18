@@ -49,7 +49,7 @@ def zeros_int_str(zero_int):
 
 
 #### Standard plotting of spectra #############################################
-def plot_EM_modes(sim_wguide, n_points=500, xlim=None, ylim=None,
+def plot_EM_modes(sim_wguide, n_points=1000, xlim=None, ylim=None,
                   EM_AC='EM', pdf_png='png', add_name=''):
     """ Plot EM mode fields.
 
@@ -65,8 +65,6 @@ def plot_EM_modes(sim_wguide, n_points=500, xlim=None, ylim=None,
     EM_mode_fields = sim_wguide.sol1
 
     # field mapping
-    v_x=np.zeros(n_points**2)
-    v_y=np.zeros(n_points**2)
     x_tmp = []
     y_tmp = []
     for i in np.arange(sim_wguide.n_msh_pts):
@@ -74,9 +72,14 @@ def plot_EM_modes(sim_wguide, n_points=500, xlim=None, ylim=None,
         y_tmp.append(sim_wguide.x_arr[1,i])
     x_min = np.min(x_tmp); x_max=np.max(x_tmp)
     y_min = np.min(y_tmp); y_max=np.max(y_tmp)
+    area = abs((x_max-x_min)*(y_max-y_min))
+    n_pts_x = int(n_points*abs(x_max-x_min)/np.sqrt(area))
+    n_pts_y = int(n_points*abs(y_max-y_min)/np.sqrt(area))
+    v_x=np.zeros(n_pts_x*n_pts_y)
+    v_y=np.zeros(n_pts_x*n_pts_y)
     i=0
-    for x in np.linspace(x_min,x_max,n_points):
-        for y in np.linspace(y_min,y_max,n_points):
+    for x in np.linspace(x_min,x_max,n_pts_x):
+        for y in np.linspace(y_min,y_max,n_pts_y):
             v_x[i] = x
             v_y[i] = y
             i+=1
@@ -153,13 +156,13 @@ def plot_EM_modes(sim_wguide, n_points=500, xlim=None, ylim=None,
 
         ### plotting
         # interpolated fields
-        m_ReEx = ReEx(v_x,v_y).reshape(n_points,n_points)
-        m_ReEy = ReEy(v_x,v_y).reshape(n_points,n_points)
-        m_ReEz = ReEz(v_x,v_y).reshape(n_points,n_points)
-        m_ImEx = ImEx(v_x,v_y).reshape(n_points,n_points)
-        m_ImEy = ImEy(v_x,v_y).reshape(n_points,n_points)
-        m_ImEz = ImEz(v_x,v_y).reshape(n_points,n_points)
-        m_AbsE = AbsE(v_x,v_y).reshape(n_points,n_points)
+        m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
         v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
         v_labels = ["ReEx","ReEy","ReEz","ImEx","ImEy","ImEz","AbsE"]
 
@@ -170,6 +173,7 @@ def plot_EM_modes(sim_wguide, n_points=500, xlim=None, ylim=None,
             ax = plt.subplot(3,3,i_p+1)
             # im = plt.imshow(plot.T,cmap='viridis');
             im = plt.imshow(plot.T,cmap='inferno');
+            # ax.set_aspect('equal')
             # no ticks
             plt.xticks([])
             plt.yticks([])
@@ -204,13 +208,13 @@ def plot_EM_modes(sim_wguide, n_points=500, xlim=None, ylim=None,
             plt.text(10, 0.3, n_str, fontsize=title_font)
         elif EM_AC=='AC':
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
-                k_str = r'$\Omega = %(re_k)f6 %(im_k)f6 i$'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival])}
+                k_str = r'$\Omega = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
             else:
-                k_str = r'$\Omega = %(re_k)f6 + %(im_k)f6 i$'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival])}
+                k_str = r'$\Omega = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
         else:
             raise ValueError, "EM_AC must be either 'AC' or 'EM'."
         plt.text(10, 0.5, k_str, fontsize=title_font)

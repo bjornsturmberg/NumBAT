@@ -17,7 +17,6 @@ from fortran import NumBAT
 wl_nm = 1550
 unitcell_x = 2.5*1550
 inc_a_x = 314.7
-# unitcell_x = inc_a_x
 unitcell_y = unitcell_x
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
@@ -51,23 +50,24 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         # mesh_file='rect_acoustic_3.mail')
 
 ### Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
-plotting.plot_EM_modes(sim_EM_wguide, n_points=500, xlim=0.4, ylim=0.4, EM_AC='EM')
+# plotting.plot_EM_modes(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 
 ### Calculate Acoustic Modes
 # Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9)
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
+keep_el_types = [2] # ToDo: populate this automagically
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide, keep_el_types)
 np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # print 'Omega of AC wave \n', sim_AC_wguide.Eig_value
-plotting.plot_EM_modes(sim_AC_wguide, n_points=500, EM_AC='AC')
+plotting.plot_EM_modes(sim_AC_wguide, EM_AC='AC')
 
 
 ######## SIMULATION GAME PLAN ########

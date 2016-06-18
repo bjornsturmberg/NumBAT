@@ -23,11 +23,13 @@ class Simmo(object):
         Inherits knowledge of :Struc:, :Light: objects
         Stores the calculated modes of :Struc: for illumination by :Light:
     """
-    def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20, EM_sim=None):
+    def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20,
+                 EM_sim=None, keep_el_types=None):
         self.structure = structure
         self.wl_nm = wl_nm
         self.q_acoustic = q_acoustic
         self.EM_sim = EM_sim
+        self.keep_el_types = keep_el_types
         self.num_modes = num_modes
         self.mode_pol = None
         # just off normal incidence to avoid degeneracies
@@ -149,6 +151,7 @@ class Simmo(object):
         wl = self.wl_nm
         q_acoustic = self.q_acoustic
         EM_sim = self.EM_sim
+        keep_el_types = self.keep_el_types
         self.d_in_m = self.structure.inc_a_x*1e-9
         orig_unitcell_x = self.structure.unitcell_x*1e-9
 
@@ -193,8 +196,7 @@ class Simmo(object):
             type_nod = EM_sim.type_nod
             table_nod = EM_sim.table_nod
             x_arr = EM_sim.x_arr
-            keep_el_lst = [2] # ToDo: populate this automagically
-            n_types_rm = 1 # ToDo: populate this automagically
+            n_types_rm = EM_sim.structure.nb_typ_el - len(keep_el_types)
             n_el_kept = 0
             n_msh_pts_AC = 0
             type_el_AC = []
@@ -205,7 +207,7 @@ class Simmo(object):
                 plotting.plot_msh(x_arr, 'orig')
 
             for el in range(n_msh_el):
-                if type_el[el] in keep_el_lst:
+                if type_el[el] in keep_el_types:
                     type_el_AC.append(type_el[el]-n_types_rm)
                     el_convert_tbl[n_el_kept] = el
                     for i in range(6):
