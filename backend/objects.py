@@ -360,12 +360,12 @@ class Struct(object):
                     geo = geo.replace('sep = 10;', "sep = %f;" % self.two_inc_sep)
                 if msh_template == '2':
                     geo = geo.replace('yoff = -5;;', "yoff = %f;" % self.incs_y_offset)
-                if msh_template == '1_on_s' or msh_template == '1_on_2s' or msh_template == '2_on_s' or msh_template == '2_on_2s':
+                if msh_template == '1_on_slab' or msh_template == '1_on_2slabs' or msh_template == '1_on_slab' or msh_template == '2_on_2slabs':
                     geo = geo.replace('slab_width = d_in_nm;', "slab_width = %f;" % self.slab_a_x)
-                    geo = geo.replace('slab_height = 10;', "slab_height = %f;" % self.slab_a_x)
-                if msh_template == '1_on_s' or msh_template == '2_on_s':
+                    geo = geo.replace('slab_height = 10;', "slab_height = %f;" % self.slab_a_y)
+                if msh_template == '1_on_2slabs' or msh_template == '2_on_2slabs':
                     geo = geo.replace('slab2_width = d_in_nm;', "slab2_width = %f;" % self.slab_b_x)
-                    geo = geo.replace('slab2_height = 5;', "slab2_height = %f;" % self.slab_b_x)
+                    geo = geo.replace('slab2_height = 5;', "slab2_height = %f;" % self.slab_b_y)
 
         else:
             raise NotImplementedError, "\n Selected inc_shape = '%s' \n " \

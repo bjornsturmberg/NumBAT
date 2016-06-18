@@ -21,6 +21,9 @@ unitcell_y = unitcell_x
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 
+slab_a_x=100
+slab_a_y=1000
+
 ### Optical parameters
 eps = 12.25
 num_EM_modes = 20
@@ -36,21 +39,33 @@ eta_44 = 620   # mu Pa s
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
+# slab_a (inside)
+s = 2330  # kg/m3
+c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
+p_11 = -0.044; p_12 = 0.017; p_44 = -0.051
+eta_11 = 5.9 ;eta_12 = 5.16  # m Pa s
+eta_44 = 620   # mu Pa s
+slab_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
+                  eta_11, eta_12, eta_44]
+
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
+                        slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
-                        loss=False, inc_a_AC=inc_a_AC_props,
+                        slab_a_material=materials.Material(2.0 + 0.0j),
+                        slab_a_bkg_material=materials.Material(1.0 + 0.0j),
+                        loss=False, inc_a_AC=inc_a_AC_props, slab_a_AC=slab_a_AC_props,
                         lc_bkg=0.2, lc2=70.0, lc3=100.0)#,
                         # make_mesh_now=False, plotting_fields=False,
                         # mesh_file='rect_acoustic_3.mail')
 
 ### Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
-# plotting.plot_EM_modes(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+plotting.plot_EM_modes(sim_EM_wguide, xlim=0.1, ylim=0.1, EM_AC='EM')
 
 
 ### Calculate Acoustic Modes
