@@ -49,7 +49,8 @@ def zeros_int_str(zero_int):
 
 
 #### Standard plotting of spectra #############################################
-def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
+def plot_EM_modes(sim_wguide, n_points=500, xlim=None, ylim=None,
+                  EM_AC='EM', pdf_png='png', add_name=''):
     """ Plot EM mode fields.
 
         Args:
@@ -60,16 +61,20 @@ def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
                 interpolate the field onto.
     """
 
+    plt.clf()
     EM_mode_fields = sim_wguide.sol1
-    print np.shape(EM_mode_fields)
-    print repr(EM_mode_fields[-1,-1,-1,-1])
 
     # field mapping
     v_x=np.zeros(n_points**2)
     v_y=np.zeros(n_points**2)
+    x_tmp = []
+    y_tmp = []
+    for i in np.arange(sim_wguide.n_msh_pts):
+        x_tmp.append(sim_wguide.x_arr[0,i])
+        y_tmp.append(sim_wguide.x_arr[1,i])
+    x_min = np.min(x_tmp); x_max=np.max(x_tmp)
+    y_min = np.min(y_tmp); y_max=np.max(y_tmp)
     i=0
-    x_min=0.0;x_max=1.0
-    y_min=-1.0;y_max=0.0
     for x in np.linspace(x_min,x_max,n_points):
         for y in np.linspace(y_min,y_max,n_points):
             v_x[i] = x
@@ -81,11 +86,9 @@ def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
     # unrolling data for the interpolators
     table_nod = sim_wguide.table_nod.T
     x_arr = sim_wguide.x_arr.T
-    # print repr(table_nod)
-    # print repr(x_arr)
 
-    for ival in [0]:
-    # for ival in range(len(sim_wguide.Eig_value)):
+    # for ival in [0]:
+    for ival in range(len(sim_wguide.Eig_value)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
@@ -122,14 +125,6 @@ def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
         v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
                         np.abs(v_Ey6p)**2 +
                         np.abs(v_Ez6p)**2)
-        # print np.shape(v_x6p)
-        # print np.shape(v_Ex6p)
-        # print triangles
-        # print v_x6p[-1] 
-        # print v_y6p[-1] 
-        # print v_Ex6p[-1]
-        # print v_Ey6p[-1]
-        # print v_Ez6p[-1]
 
         # dense triangulation with unique points
         v_triang1p = []
@@ -145,9 +140,6 @@ def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
         # triangulations
         triang6p = matplotlib.tri.Triangulation(v_x6p,v_y6p,v_triang6p)
         triang1p = matplotlib.tri.Triangulation(x_arr[:,0],x_arr[:,1],v_triang1p)
-
-        # print v_x6p,v_y6p,v_triang6p
-        # print x_arr[:,0],x_arr[:,1],v_triang1p
 
         # building interpolators: triang1p for the finder, triang6p for the values
         finder = matplotlib.tri.TrapezoidMapTriFinder(triang1p)
@@ -170,17 +162,22 @@ def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
         m_AbsE = AbsE(v_x,v_y).reshape(n_points,n_points)
         v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
         v_labels = ["ReEx","ReEy","ReEz","ImEx","ImEy","ImEz","AbsE"]
-        print m_ReEx
 
         # field plots
         plt.clf()
         plt.figure(figsize=(13,13))
         for i_p,plot in enumerate(v_plots):
             ax = plt.subplot(3,3,i_p+1)
-            im = plt.imshow(plot.T,cmap='jet');
+            # im = plt.imshow(plot.T,cmap='viridis');
+            im = plt.imshow(plot.T,cmap='inferno');
             # no ticks
             plt.xticks([])
             plt.yticks([])
+            # limits
+            if xlim:
+                ax.set_xlim(xlim*n_points,(1-xlim)*n_points)
+            if ylim:
+                ax.set_ylim(ylim*n_points,(1-ylim)*n_points)
             # titles
             plt.title(v_labels[i_p],fontsize=title_font)
             # colorbar
@@ -194,13 +191,13 @@ def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
             n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_norm() / (2*np.pi)
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
                 k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]), 
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_value[ival])}
                 n_str = r'n$_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             else:
                 k_str = r'k$_z = %(re_k)f6 + %(im_k)f6 i$'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]), 
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_value[ival])}
                 n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
@@ -208,18 +205,27 @@ def plot_EM_modes(sim_wguide, n_points=500, EM_AC='EM', add_name=''):
         elif EM_AC=='AC':
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
                 k_str = r'$\Omega = %(re_k)f6 %(im_k)f6 i$'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]), 
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_value[ival])}
             else:
                 k_str = r'$\Omega = %(re_k)f6 + %(im_k)f6 i$'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]), 
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_value[ival])}
         else:
             raise ValueError, "EM_AC must be either 'AC' or 'EM'."
         plt.text(10, 0.5, k_str, fontsize=title_font)
-        
-        plt.savefig('E_field_%(i)i%(add)s.png' % 
-            {'i' : ival, 'add' : add_name}, bbox_inches='tight')
+
+        if not os.path.exists("fields"):
+                        os.mkdir("fields")
+        if pdf_png=='png':
+            plt.savefig('fields/%(s)s_field_%(i)i%(add)s.png' %
+                {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
+        elif pdf_png=='pdf':
+            plt.savefig('fields/%(s)s_field_%(i)i%(add)s.pdf' %
+                {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
+        else:
+            raise ValueError, "pdf_png must be either 'png' or 'pdf'."
+        plt.close()
 
 
 #### Plot mesh #############################################
@@ -240,8 +246,9 @@ def plot_msh(x_arr, add_name=''):
     for node in range(np.shape(x_arr)[1]):
         plt.plot(x_arr[0,node], x_arr[1,node], 'o')
     ax.set_aspect('equal')
-    plt.savefig('msh_%(add)s.pdf' % 
+    plt.savefig('msh_%(add)s.pdf' %
         {'add' : add_name}, bbox_inches='tight')
+    plt.close()
 
 
 
@@ -258,3 +265,4 @@ def plot_msh(x_arr, add_name=''):
 #     plt.plot(x, y, 'o')
 #     plt.text(x+0.001, y+0.001, str(i))
 # plt.savefig('triangle_%i.png' %el)
+# plt.close()

@@ -159,7 +159,7 @@ class Simmo(object):
         # Parameters that control how FEM routine runs
         i_cond = 1  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        AC_FEM_debug = 1  # Fortran routines will display & save add. info
+        AC_FEM_debug = 0  # Fortran routines will display & save add. info
         ARPACK_tol = 1e-10  # ARPACK accuracy (0.0 for machine precision)
         # Size of Fortran's complex superarray (scales with mesh)
         # In theory could do some python-based preprocessing
@@ -182,7 +182,6 @@ class Simmo(object):
         shift2 = 0.5*self.q_acoustic*shift2
         shift = 13.0e9  # used for original test case
         shift = (shift1 + shift2)/8.
-        print 'shift', shift
 
 
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
@@ -194,7 +193,6 @@ class Simmo(object):
             type_nod = EM_sim.type_nod
             table_nod = EM_sim.table_nod
             x_arr = EM_sim.x_arr
-            plotting.plot_msh(x_arr, 'orig')
             keep_el_lst = [2] # ToDo: populate this automagically
             n_types_rm = 1 # ToDo: populate this automagically
             n_el_kept = 0
@@ -203,6 +201,8 @@ class Simmo(object):
             table_nod_AC_tmp = np.zeros(np.shape(table_nod))
             el_convert_tbl = {}
             node_convert_tbl = {}
+            if AC_FEM_debug == 1:
+                plotting.plot_msh(x_arr, 'orig')
 
             for el in range(n_msh_el):
                 if type_el[el] in keep_el_lst:
@@ -306,8 +306,9 @@ class Simmo(object):
             print "\n\n FEM routine calc_AC_modes",\
             "interrupted by keyboard.\n\n"
 
-        plotting.plot_msh(x_arr_AC, 'in')
-        plotting.plot_msh(x_arr_out, 'out')
+        if AC_FEM_debug == 1:
+            plotting.plot_msh(x_arr_AC, 'in')
+            plotting.plot_msh(x_arr_out, 'out')
 
         if EM_sim is None:
             table_nod_out = None
