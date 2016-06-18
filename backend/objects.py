@@ -218,16 +218,21 @@ class Struct(object):
         self.plot_abs = plot_abs
         self.plot_field_conc = plot_field_conc
         # Order must match msh templates!
-        acoustic_props = [inc_a_AC]
-        # acoustic_props = [bkg_AC, inc_a_AC]#, slab_a_AC,
-                          # slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC]
-        # rm_els = len(acoustic_props)
-        # acoustic_props = [x for x in acoustic_props if x is not None]
-        # rm_els = rm_els - len(acoustic_props)
-        # Any material not given accoustic props assumed to be vacuum.
-        rho = np.zeros(len(acoustic_props))
-        c_tensor = np.zeros((6,6,len(acoustic_props)))
-        for k_typ in range(len(acoustic_props)):
+        el_conv_table = {}
+        acoustic_props = [bkg_AC, inc_a_AC, slab_a_AC, slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC]
+        i = j = 1
+        for mat in acoustic_props:
+            if mat != None:
+                el_conv_table[i] = j
+                j += 1
+            i += 1
+        self.typ_el_AC = el_conv_table
+        acoustic_props = [x for x in acoustic_props if x is not None]
+        self.nb_typ_el_AC = len(acoustic_props)
+        # Any material not given acoustic_props assumed to be vacuum.
+        rho = np.zeros(self.nb_typ_el_AC)
+        c_tensor = np.zeros((6,6,self.nb_typ_el_AC))
+        for k_typ in range(self.nb_typ_el_AC):
             if acoustic_props[k_typ]:
                 rho[k_typ] = acoustic_props[k_typ][0]
                 c_tensor[0,0,k_typ] = acoustic_props[k_typ][1]
@@ -397,7 +402,7 @@ class Struct(object):
 
 
     def calc_AC_modes(self, wl_nm, q_acoustic, num_modes, EM_sim=None,
-                      keep_el_types=None, **args):
+                      **args):
         """ Run a simulation to find the Struct's acoustic modes.
 
             Args:
@@ -409,8 +414,7 @@ class Struct(object):
                 :Simmo: object
         """
         simmo_AC = Simmo(self, wl_nm, q_acoustic=q_acoustic,
-                         num_modes=num_modes, EM_sim=EM_sim,
-                         keep_el_types=keep_el_types)
+                         num_modes=num_modes, EM_sim=EM_sim)
 
         simmo_AC.calc_AC_modes(**args)
         return simmo_AC

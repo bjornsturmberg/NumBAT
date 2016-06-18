@@ -61,9 +61,8 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 ### Calculate Acoustic Modes
 # Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9)
-keep_el_types = [2] # ToDo: populate this automagically
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide, keep_el_types)
-np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
+# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # print 'Omega of AC wave \n', sim_AC_wguide.Eig_value
