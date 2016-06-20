@@ -40,7 +40,8 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.2, lc2=70.0, lc3=100.0)#,
+                        lc_bkg=0.2, lc2=20.0, lc3=20.0)#,
+                        # lc_bkg=0.2, lc2=70.0, lc3=100.0)#,
                         # make_mesh_now=False, plotting_fields=False,
                         # mesh_file='rect_acoustic_3.mail')
 
@@ -52,22 +53,23 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plot_EM_modes(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
+print 1j*sim_EM_wguide.EM_mode_overlap_v2
+print sim_EM_wguide.EM_mode_overlap
 
-### Calculate Acoustic Modes
-# Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
-q_acoustic = 2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9)
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
+# ### Calculate Acoustic Modes
+# # Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
+# q_acoustic = 2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9)
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value
-plotting.plot_EM_modes(sim_AC_wguide, EM_AC='AC')
+# # npzfile = np.load('wguide_data_AC.npz')
+# # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# # print 'Omega of AC wave \n', sim_AC_wguide.Eig_value
+# plotting.plot_EM_modes(sim_AC_wguide, EM_AC='AC')
 
 
 ######## SIMULATION GAME PLAN ########
 ### Calc unnormalised power in EM modes Eq. 8 (or Kokou equiv.)
 ### Calc Q_photoelastic Eq. 33
-### Calc Q_deformation_pol Eq. 36
 ### Calc Q_moving_boundary Eq. 41
 
 

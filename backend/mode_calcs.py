@@ -132,15 +132,21 @@ class Simmo(object):
         #     self.n_msh_pts = None
         #     self.n_msh_el = None
 
-        # try:
-        #     EM_mode_overlap = NumBAT.em_mode_energy_int(
-        #         self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts,
-        #         self.structure.nb_typ_el, self.table_nod, self.type_el,
-        #         self.x_arr, self.Eig_value, self.sol1, EM_FEM_debug)
+        try:
+            nnodes = 6
+            self.EM_mode_overlap_v2 = NumBAT.em_mode_energy_int_v2(
+                self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts, 
+                nnodes, self.table_nod, self.type_el,
+                self.x_arr, self.Eig_value, self.sol1)
 
-        # except KeyboardInterrupt:
-        #     print "\n\n FEM routine EM_mode_energy_int",\
-        #     "interrupted by keyboard.\n\n"
+            self.EM_mode_overlap = NumBAT.em_mode_energy_int(
+                self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts, 
+                nnodes, self.table_nod, self.type_el,
+                self.x_arr, self.Eig_value, self.sol1)
+
+        except KeyboardInterrupt:
+            print "\n\n FEM routine EM_mode_energy_int",\
+            "interrupted by keyboard.\n\n"
 
 
     def calc_AC_modes(self):

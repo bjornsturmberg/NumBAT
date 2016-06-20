@@ -21,7 +21,7 @@ unitcell_y = unitcell_x
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 
-slab_a_x=100
+slab_a_x=unitcell_x
 slab_a_y=1000
 
 ### Optical parameters
@@ -53,7 +53,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         slab_a_material=materials.Material(2.0 + 0.0j),
-                        slab_a_bkg_material=materials.Material(1.0 + 0.0j),
+                        slab_a_bkg_material=materials.Material(2.0 + 0.0j),
                         loss=False, inc_a_AC=inc_a_AC_props, slab_a_AC=slab_a_AC_props,
                         lc_bkg=0.2, lc2=70.0, lc3=100.0)#,
                         # make_mesh_now=False, plotting_fields=False,

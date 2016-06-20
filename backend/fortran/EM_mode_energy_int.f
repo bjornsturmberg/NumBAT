@@ -1,17 +1,17 @@
 C   Calculate the Overlap integral of an EM mode with itself.
 C
-      subroutine EM_mode_energy_int (lambda, nval, nel, 
-     *  npt, nnodes, nb_typ_el, table_nod,
-     *  type_el, x, beta1, soln_k1, debug, overlap)
+      subroutine EM_mode_energy_int (lambda, nval, nel, npt,
+     *  nnodes, table_nod,
+     *  type_el, x, betas, soln_k1, overlap)
 c
       implicit none
-      integer*8 nval, nel, npt, nnodes, nb_typ_el
+      integer*8 nval, nel, npt, nnodes     
       integer*8 type_el(nel)
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
       complex*16 soln_k1(3,nnodes+7,nval,nel)
-C       complex*16 pp(nb_typ_el)
       complex*16 beta1
+      complex*16 betas(nval)
       complex*16, dimension(nval) :: overlap
       double precision k_0, pi, lambda
 c     Local variables
@@ -46,10 +46,13 @@ c     NQUAD: The number of quadrature points used in each element.
 C
 C
 Cf2py intent(in) lambda, nval, nel, npt,
-Cf2py intent(in) nnodes, nb_typ_el, table_nod
-Cf2py intent(in) type_el, x, beta1, soln_k1, debug
+Cf2py intent(in) nnodes, table_nod
+Cf2py intent(in) type_el, x, betas, soln_k1
 C
-Cf2py depend(overlap) nval
+Cf2py depend(table_nod) nnodes, nel
+Cf2py depend(type_el) npt
+Cf2py depend(x) npt
+Cf2py depend(betas) nval
 C
 Cf2py intent(out) overlap
 C
@@ -175,6 +178,7 @@ C                z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
         enddo
 cccccccccc
         do ival=1,nval
+          beta1 = betas(ival)
           do i=1,nnodes
             do j=1,2
 c           The 2 transverse components of the mode jval
