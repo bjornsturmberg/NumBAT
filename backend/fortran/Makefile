@@ -5,6 +5,7 @@ COMPILER_VENDOR = gnu95
 
 SUBROUTINES_FOR_PYTHON = conv_gmsh.f py_calc_modes.f \
 	py_calc_modes_AC.f EM_mode_energy_int_v2.f EM_mode_energy_int.f
+	#photoelastic_int.f
 
 LIB_LOCATION = lib
 UMFPACK_NAME = umf4_f77zwrapper64.o

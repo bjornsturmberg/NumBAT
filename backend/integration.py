@@ -7,6 +7,31 @@
 
 import numpy as np
 
+# import materials
+# import objects
+# import mode_calcs
+# import plotting
+from fortran import NumBAT
+
+
+
+def gain_and_qs(sim_EM_wguide, sim_AC_wguide):
+    """ Calculate interaction integrals and SBS gain.
+    """ 
+
+    print np.shape(sim_EM_wguide.sol1)
+    # trimmed_EM_field = np.zeros()
+
+    # sim_EM_wguide.EM_mode_overlap_v2
+    # sim_AC_wguide.el_convert_tbl
+    # sim_AC_wguide.node_convert_tbl
+
+### Calc Q_photoelastic Eq. 33
+### Calc Q_moving_boundary Eq. 41
+
+    # return SBS_gain, Q_PE, Q_MB
+
+
 def quad_triangle(nquad):
     """ Implementation of quad_triangle
 

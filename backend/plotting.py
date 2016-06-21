@@ -49,7 +49,7 @@ def zeros_int_str(zero_int):
 
 
 #### Standard plotting of spectra #############################################
-def plot_EM_modes(sim_wguide, n_points=1000, xlim=None, ylim=None,
+def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                   EM_AC='EM', pdf_png='png', add_name=''):
     """ Plot EM mode fields.
 

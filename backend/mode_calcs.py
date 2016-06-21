@@ -49,8 +49,13 @@ class Simmo(object):
 
 
     def calc_EM_modes(self):
-        """ Run a Fortran FEM calculation to find the EM modes \
-        of a structure. """
+        """ Run a Fortran FEM calculation to find the optical modes. 
+        
+        Most important outputs are 
+        Eig_value - a 1d array of Eigenvalues
+        sol1 - the associated Eigenvectors, ie. the fields, stored as
+               [field comp, node nu on element, Eig value, el nu]
+        """
         st = self.structure
         wl = self.wl_nm
         self.n_effs = np.array([st.bkg_material.n(wl), st.inc_a_material.n(wl),
@@ -132,6 +137,7 @@ class Simmo(object):
         #     self.n_msh_pts = None
         #     self.n_msh_el = None
 
+### Calc unnormalised power in EM modes Eq. 8 (or Kokou equiv.)
         try:
             nnodes = 6
             self.EM_mode_overlap_v2 = NumBAT.em_mode_energy_int_v2(
@@ -150,8 +156,13 @@ class Simmo(object):
 
 
     def calc_AC_modes(self):
-        """ Run a Fortran FEM calculation to find the EM modes \
-        of a structure. """
+        """ Run a Fortran FEM calculation to find the acoustic modes. 
+        
+        Most important outputs are 
+        Eig_value - a 1d array of Eigenvalues
+        sol1 - the associated Eigenvectors, ie. the fields, stored as
+               [field comp, node nu on element, Eig value, el nu]
+        """
         st = self.structure
         wl = self.wl_nm
         q_acoustic = self.q_acoustic
@@ -200,7 +211,6 @@ class Simmo(object):
             type_nod = EM_sim.type_nod
             table_nod = EM_sim.table_nod
             x_arr = EM_sim.x_arr
-            # self.nb_typ_el_AC = len(self.structure.typ_el_AC)
             n_el_kept = 0
             n_msh_pts_AC = 0
             type_el_AC = []
@@ -244,6 +254,9 @@ class Simmo(object):
                 # Note x_arr needs to be adjust back to fortran indexing
                 x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1])*orig_unitcell_x
                 x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])*orig_unitcell_x
+
+            self.el_convert_tbl = el_convert_tbl
+            self.node_convert_tbl = node_convert_tbl
 
 
             ### AC FEM uses Neumann B.C.s so type_nod is totally irrelevant!

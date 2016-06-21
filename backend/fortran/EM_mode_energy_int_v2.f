@@ -28,7 +28,7 @@ c     Local variables
       integer*8 iel, ival
       integer*8 itrial, jtest, ui
       complex*16 vec_i(3), vec_j(3)
-      complex*16 z_tmp1
+      complex*16 z_tmp1, ii
 
       double precision mat_B(2,2), mat_T(2,2), det_b
 C
@@ -50,6 +50,7 @@ C
       ui = 6
       pi = 3.141592653589793d0
       k_0 = 2.0d0*pi/lambda
+      ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
         write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes
@@ -58,8 +59,6 @@ C
         stop
       endif
 C
-c
-
       do ival=1,nval
       overlap1 = 0.0d0
       beta1 = betas(ival)
@@ -99,11 +98,16 @@ c       then the gradient on the actual triangle is:
 c       grad_i  = Transpose(mat_T)*grad_i0
 cccccccc
         do i=1,nnodes
-c         The components (E_x,E_y,E_z) the mode ival
-          do j=1,3
+c         The components (E_x,E_y) of the mode ival
+          do j=1,2
             z_tmp1 = soln_k1(j,i,ival,iel)
-            E_field_el(j,i) = z_tmp1 * beta1
+            E_field_el(j,i) = z_tmp1
           enddo
+c         The component E_z of the mode ival. The FEM code uses the scaling:
+c         E_z = ii * beta1 * \hat{E}_z
+          j=3
+            z_tmp1 = soln_k1(j,i,ival,iel)
+            E_field_el(j,i) = z_tmp1 * ii * beta1
         enddo
         call get_H_field (nnodes, k_0, beta1, mat_T, 
      *    E_field_el, H_field_el)
