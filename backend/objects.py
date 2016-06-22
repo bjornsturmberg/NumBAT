@@ -233,6 +233,7 @@ class Struct(object):
         # Any material not given acoustic_props assumed to be vacuum.
         rho = np.zeros(self.nb_typ_el_AC)
         c_tensor = np.zeros((6,6,self.nb_typ_el_AC))
+        p_tensor = np.zeros((6,6,self.nb_typ_el_AC))
         for k_typ in range(self.nb_typ_el_AC):
             if acoustic_props[k_typ]:
                 rho[k_typ] = acoustic_props[k_typ][0]
