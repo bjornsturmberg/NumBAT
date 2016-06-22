@@ -27,6 +27,8 @@ inc_a_x = 314.7
 unitcell_y = unitcell_x
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
+# inc_a_x = 300
+# inc_a_y = 280
 
 ### Optical parameters
 eps = 12.25
@@ -54,14 +56,14 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
-print 1j*sim_EM_wguide.EM_mode_overlap_v2
-print sim_EM_wguide.EM_mode_overlap
+# print 1j*sim_EM_wguide.EM_mode_overlap_v2
+# print sim_EM_wguide.EM_mode_overlap
 
 
 ### Calculate Acoustic Modes
@@ -70,15 +72,15 @@ print sim_EM_wguide.EM_mode_overlap
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9)
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
-np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
-prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
-prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
-print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
-plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
+# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+npzfile = np.load('wguide_data_AC.npz')
+sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
+# prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
+# prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
+# print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
+# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 # import matplotlib
 # matplotlib.use('pdf')
@@ -100,9 +102,10 @@ plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 # integration.gain_and_qs(sim_EM_wguide, sim_AC_wguide)
 
 
-def gain_and_qs(sim_EM_wguide, sim_AC_wguide):
+def gain_and_qs(sim_EM_wguide, sim_AC_wguide,
+                EM_mode1=0, EM_mode2=0, AC_mode=0):
     """ Calculate interaction integrals and SBS gain.
-    """ 
+    """
     ncomps = 3
     nnodes = 6
     num_EM_modes = len(sim_EM_wguide.Eig_value)
@@ -114,24 +117,36 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide):
             for n in range(nnodes):
                 for x in range(ncomps):
                     trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
-
-    # try:
-    #     Q_PE = NumBAT.photoelastic_int(
-    #         self.wl_norm(), )
-
-    # except KeyboardInterrupt:
-    #     print "\n\n Routine photoelastic_int",\
-    #     "interrupted by keyboard.\n\n"
-
-
-
     # sim_EM_wguide.sol1 = trimmed_EM_field
-    # sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el 
-    # sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts 
-    # sim_EM_wguide.type_el = sim_AC_wguide.type_el 
-    # sim_EM_wguide.table_nod = sim_AC_wguide.table_nod 
+    # sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el
+    # sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts
+    # sim_EM_wguide.type_el = sim_AC_wguide.type_el
+    # sim_EM_wguide.table_nod = sim_AC_wguide.table_nod
     # sim_EM_wguide.x_arr = sim_AC_wguide.x_arr
     # plotting.plt_mode_fields(sim_EM_wguide, EM_AC='EM', add_name='trim')
+
+    relevant_eps_effs =[]
+    for el_typ in range(sim_EM_wguide.structure.nb_typ_el):
+        if el_typ in sim_AC_wguide.structure.typ_el_AC:
+            new_el = sim_AC_wguide.structure.typ_el_AC[el_typ]
+            relevant_eps_effs.append(sim_EM_wguide.n_effs[new_el]**2)
+
+    try:
+        Q_PE = NumBAT.photoelastic_int (sim_EM_wguide.wl_norm(),
+            sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_mode1,
+            EM_mode2, AC_mode, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+            sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+            sim_AC_wguide.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
+            sim_EM_wguide.Eig_value, trimmed_EM_field, sim_AC_wguide.sol1,
+            relevant_eps_effs)
+
+    except KeyboardInterrupt:
+        print "\n\n Routine photoelastic_int",\
+        "interrupted by keyboard.\n\n"
+
+
+
+
 
     # sim_EM_wguide.EM_mode_overlap_v2
     # print sim_AC_wguide.el_convert_tbl

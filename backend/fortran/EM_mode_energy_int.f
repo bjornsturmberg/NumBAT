@@ -2,11 +2,12 @@ C   Calculate the Overlap integral of an EM mode with itself.
 C
       subroutine EM_mode_energy_int (lambda, nval, nel, npt,
      *  nnodes, table_nod,
-     *  type_el, x, betas, soln_k1, overlap)
+     *  x, betas, soln_k1, overlap)
+C     *  type_el, x, betas, soln_k1, overlap)
 c
       implicit none
-      integer*8 nval, nel, npt, nnodes     
-      integer*8 type_el(nel)
+      integer*8 nval, nel, npt, nnodes
+C      integer*8 type_el(nel)
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
       complex*16 soln_k1(3,nnodes+7,nval,nel)
@@ -21,7 +22,7 @@ c     Local variables
       complex*16 sol_el_1(2*nnodes_0+10)
       complex*16 vec_1(2*nnodes_0)
       complex*16 basis_overlap
-      integer*8 i, j, j1, typ_e
+      integer*8 i, j, j1 !, typ_e
       integer*8 iel, ival
       integer*8 jtest, ind_jp, j_eq
       integer*8 itrial, ind_ip, i_eq
@@ -47,12 +48,14 @@ C
 C
 Cf2py intent(in) lambda, nval, nel, npt,
 Cf2py intent(in) nnodes, table_nod
-Cf2py intent(in) type_el, x, betas, soln_k1
+Cf2py intent(in) x, betas, soln_k1
+C Cf2py intent(in) type_el
 C
 Cf2py depend(table_nod) nnodes, nel
-Cf2py depend(type_el) npt
+C Cf2py depend(type_el) npt
 Cf2py depend(x) npt
 Cf2py depend(betas) nval
+Cf2py depend(soln_k1) nnodes, nval, nel
 C
 Cf2py intent(out) overlap
 C
@@ -80,7 +83,7 @@ C
 c
       n_curved = 0
       do iel=1,nel
-        typ_e = type_el(iel)
+C        typ_e = type_el(iel)
         do j=1,nnodes
           j1 = table_nod(j,iel)
           nod_el_p(j) = j1

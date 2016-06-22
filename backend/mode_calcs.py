@@ -49,9 +49,9 @@ class Simmo(object):
 
 
     def calc_EM_modes(self):
-        """ Run a Fortran FEM calculation to find the optical modes. 
-        
-        Most important outputs are 
+        """ Run a Fortran FEM calculation to find the optical modes.
+
+        Most important outputs are
         Eig_value - a 1d array of Eigenvalues
         sol1 - the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
@@ -137,28 +137,28 @@ class Simmo(object):
         #     self.n_msh_pts = None
         #     self.n_msh_el = None
 
-### Calc unnormalised power in EM modes Eq. 8 (or Kokou equiv.)
-        try:
-            nnodes = 6
-            self.EM_mode_overlap_v2 = NumBAT.em_mode_energy_int_v2(
-                self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts, 
-                nnodes, self.table_nod, self.type_el,
-                self.x_arr, self.Eig_value, self.sol1)
+# ### Calc unnormalised power in EM modes Eq. 8 (or Kokou equiv.)
+#         try:
+#             nnodes = 6
+#             self.EM_mode_overlap_v2 = NumBAT.em_mode_energy_int_v2(
+#                 self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts,
+#                 nnodes, self.table_nod,
+#                 self.x_arr, self.Eig_value, self.sol1)
 
-            self.EM_mode_overlap = NumBAT.em_mode_energy_int(
-                self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts, 
-                nnodes, self.table_nod, self.type_el,
-                self.x_arr, self.Eig_value, self.sol1)
+#             self.EM_mode_overlap = NumBAT.em_mode_energy_int(
+#                 self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts,
+#                 nnodes, self.table_nod, # self.type_el,
+#                 self.x_arr, self.Eig_value, self.sol1)
 
-        except KeyboardInterrupt:
-            print "\n\n FEM routine EM_mode_energy_int",\
-            "interrupted by keyboard.\n\n"
+#         except KeyboardInterrupt:
+#             print "\n\n FEM routine EM_mode_energy_int",\
+#             "interrupted by keyboard.\n\n"
 
 
     def calc_AC_modes(self):
-        """ Run a Fortran FEM calculation to find the acoustic modes. 
-        
-        Most important outputs are 
+        """ Run a Fortran FEM calculation to find the acoustic modes.
+
+        Most important outputs are
         Eig_value - a 1d array of Eigenvalues
         sol1 - the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
@@ -198,7 +198,7 @@ class Simmo(object):
         # Using acoustic velocity of shear mode pg 215 Auld vol 1.
         shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][relevant_el]/self.structure.rho[relevant_el]))
         shift2 = 0.5*self.q_acoustic*shift2
-        shift = 13.0e9  # used for original test case
+        # shift = 13.0e9  # used for original test case
         shift = (shift1 + shift2)/8.
 
 

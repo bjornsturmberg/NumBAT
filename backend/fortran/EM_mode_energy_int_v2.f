@@ -2,11 +2,10 @@ C   Calculate the Overlap integral of an EM mode with itself.
 C
       subroutine EM_mode_energy_int_v2 (lambda, nval, nel, npt,
      *  nnodes, table_nod,
-     *  type_el, x, betas, soln_k1, overlap)
+     *  x, betas, soln_k1, overlap)
 c
       implicit none
-      integer*8 nval, nel, npt, nnodes      
-      integer*8 type_el(nel)
+      integer*8 nval, nel, npt, nnodes
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
       complex*16 soln_k1(3,nnodes+7,nval,nel)
@@ -24,7 +23,7 @@ c     Local variables
       complex*16 E_field_el(3,nnodes_0)
       complex*16 H_field_el(3,nnodes_0)
       double precision p2_p2(nnodes_0,nnodes_0)
-      integer*8 i, j, j1, typ_e
+      integer*8 i, j, j1
       integer*8 iel, ival
       integer*8 itrial, jtest, ui
       complex*16 vec_i(3), vec_j(3)
@@ -35,12 +34,12 @@ C
 C
 Cf2py intent(in) lambda, nval, nel, npt,
 Cf2py intent(in) nnodes, table_nod
-Cf2py intent(in) type_el, x, betas, soln_k1
+Cf2py intent(in) x, betas, soln_k1
 C
 Cf2py depend(table_nod) nnodes, nel
-Cf2py depend(type_el) npt
 Cf2py depend(x) npt
 Cf2py depend(betas) nval
+Cf2py depend(soln_k1) nnodes, nval, nel
 C
 Cf2py intent(out) overlap
 C
@@ -63,7 +62,6 @@ C
       overlap1 = 0.0d0
       beta1 = betas(ival)
       do iel=1,nel
-        typ_e = type_el(iel)
         do j=1,nnodes
           j1 = table_nod(j,iel)
           nod_el_p(j) = j1
@@ -86,14 +84,14 @@ cc        if (abs(det_b) .le. 1.0d-8) then
           write(*,*) 'Aborting...'
           stop
         endif
-c       We also need, is the matrix mat_T of the reverse transmation 
+c       We also need, is the matrix mat_T of the reverse transmation
 c                (from reference to current triangle):
 c       mat_T = inverse matrix of de mat_B
         mat_T(1,1) =  mat_B(2,2) / det_b
         mat_T(2,2) =  mat_B(1,1) / det_b
         mat_T(1,2) = -mat_B(1,2) / det_b
         mat_T(2,1) = -mat_B(2,1) / det_b
-c       Note that if grad_i_0 is the gradient on the reference triangle, 
+c       Note that if grad_i_0 is the gradient on the reference triangle,
 c       then the gradient on the actual triangle is:
 c       grad_i  = Transpose(mat_T)*grad_i0
 cccccccc
@@ -109,7 +107,7 @@ c         E_z = ii * beta1 * \hat{E}_z
             z_tmp1 = soln_k1(j,i,ival,iel)
             E_field_el(j,i) = z_tmp1 * ii * beta1
         enddo
-        call get_H_field (nnodes, k_0, beta1, mat_T, 
+        call get_H_field (nnodes, k_0, beta1, mat_T,
      *    E_field_el, H_field_el)
 c       The matrix p2_p2 contains the overlap integrals between the P2-polynomial basis functions
         call mat_p2_p2(p2_p2, det_b)
