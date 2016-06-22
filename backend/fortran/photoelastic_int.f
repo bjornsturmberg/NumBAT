@@ -29,14 +29,14 @@ c     Local variables
       integer*8 i, j, j1, typ_e
       integer*8 iel
       integer*8 itrial, jtest, ui
-      complex*16 vec_i(3), vec_j(3), epsilon, eps_lst(nb_typ_el)
+      complex*16 vec_i(3), vec_j(3), eps_squared, eps_lst(nb_typ_el)
       complex*16 z_tmp1, z_tmp2, z_tmp3, ii
       double precision mat_B(2,2), mat_T(2,2), det_b
 C
 C
 Cf2py intent(in) lambda, nval_EM, nval_AC, ival1, ival2, ival3
 Cf2py intent(in) nel, npt, nnodes, table_nod, p_tensor
-Cf2py intent(in) type_el, x, betas, soln_EM, soln_AC
+Cf2py intent(in) type_el, x, betas, soln_EM, soln_AC, eps_lst
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
@@ -68,7 +68,7 @@ C
       beta2 = betas(ival2)
       do iel=1,nel
         typ_e = type_el(iel)
-        epsilon = eps_lst(typ_e)
+        eps_squared = eps_lst(typ_e)**2
         do j=1,nnodes
           j1 = table_nod(j,iel)
           nod_el_p(j) = j1
@@ -91,7 +91,7 @@ cc        if (abs(det_b) .le. 1.0d-8) then
           write(*,*) 'Aborting...'
           stop
         endif
-c       We also need, is the matrix mat_T of the reverse transmation
+c       We also need, is the matrix mat_T of the reverse transformation
 c                (from reference to current triangle):
 c       mat_T = inverse matrix of de mat_B
         mat_T(1,1) =  mat_B(2,2) / det_b
@@ -128,16 +128,12 @@ c       The matrix p2_p2 contains the overlap integrals between the P2-polynomia
           do i=1,3
             z_tmp1 = E_field_el1(i,itrial)
             vec_i(i) = conjg(z_tmp1)
+            z_tmp1 = E_field_el2(i,jtest)
+            vec_j(i) = z_tmp1
           enddo
-          do jtest=1,nnodes_0
-            do i=1,3
-              z_tmp1 = E_field_el2(i,jtest)
-              vec_j(i) = z_tmp1
-            enddo
-c           Cross-product Z.(E^* X H) of E^*=vec_i and H=vec_j
+c           Dot-product (E1^* X H) of E^*=vec_i and H=vec_j
             z_tmp1 = vec_i(1) * vec_j(2) - vec_i(2) * vec_j(1)
-            overlap = overlap + z_tmp1 * p2_p2(itrial, jtest)
-          enddo
+            overlap = overlap + eps_squared*z_tmp1*p2_p2(itrial, jtest)
         enddo
       enddo
 C
