@@ -26,9 +26,9 @@ c     Local variables
       complex*16 E_field_el2(3,nnodes_0)
       complex*16 U_field_el(3,nnodes_0)
       double precision p2_p2(nnodes_0,nnodes_0)
-      integer*8 i, j, j1, typ_e
+      integer*8 i, j, k, l, j1, typ_e
       integer*8 iel
-      integer*8 itrial, jtest, ui
+      integer*8 itrial, jtrial, ktrial, ltrial, ui
       complex*16 vec_i(3), vec_j(3), eps_squared, eps_lst(nb_typ_el)
       complex*16 z_tmp1, z_tmp2, z_tmp3, ii
       double precision mat_B(2,2), mat_T(2,2), det_b
@@ -128,12 +128,27 @@ c       The matrix p2_p2 contains the overlap integrals between the P2-polynomia
           do i=1,3
             z_tmp1 = E_field_el1(i,itrial)
             vec_i(i) = conjg(z_tmp1)
-            z_tmp1 = E_field_el2(i,jtest)
-            vec_j(i) = z_tmp1
           enddo
-c           Dot-product (E1^* X H) of E^*=vec_i and H=vec_j
-            z_tmp1 = vec_i(1) * vec_j(2) - vec_i(2) * vec_j(1)
-            overlap = overlap + eps_squared*z_tmp1*p2_p2(itrial, jtest)
+          do jtrial=1,nnodes_0
+            do j=1,3
+              z_tmp1 = E_field_el2(j,jtrial)
+              vec_j(j) = z_tmp1
+            enddo
+            do ktrial=1,nnodes_0
+              do k=1,3
+                
+              enddo
+              do ltrial=1,nnodes_0
+                do l=1,3
+                  z_tmp1 = U_field_el(l,ltrial)
+                  vec_l(l) = z_tmp1
+                enddo
+c               Dot-product (E1^* X H) of E^*=vec_i and H=vec_j
+                z_tmp1 = vec_i(1) * vec_j(2) - vec_i(2) * vec_j(1)
+                overlap = overlap + eps_squared*z_tmp1*p2_p2(itrial, jtrial)
+              enddo
+            enddo
+          enddo
         enddo
       enddo
 C
