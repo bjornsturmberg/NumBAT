@@ -2,11 +2,10 @@ C   Calculate the Overlap integral of an EM mode with itself.
 C
       subroutine EM_mode_energy_int (lambda, nval, nel, npt,
      *  nnodes, table_nod,
-     *  type_el, x, betas, soln_k1, overlap)
+     *  x, betas, soln_k1, overlap)
 c
       implicit none
-      integer*8 nval, nel, npt, nnodes     
-      integer*8 type_el(nel)
+      integer*8 nval, nel, npt, nnodes
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
       complex*16 soln_k1(3,nnodes+7,nval,nel)
@@ -18,10 +17,10 @@ c     Local variables
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
       integer*8 nod_el_p(nnodes_0)
-      complex*16 sol_el_1(2*nnodes_0+10)
+      complex*16 sol_el_1(2*nnodes_0+10), sol_el_2(2*nnodes_0)
       complex*16 vec_1(2*nnodes_0)
-      complex*16 basis_overlap
-      integer*8 i, j, j1, typ_e
+      complex*16 basis_overlap(2*nnodes_0,2*nnodes_0+10)
+      integer*8 i, j, j1
       integer*8 iel, ival
       integer*8 jtest, ind_jp, j_eq
       integer*8 itrial, ind_ip, i_eq
@@ -47,10 +46,9 @@ C
 C
 Cf2py intent(in) lambda, nval, nel, npt,
 Cf2py intent(in) nnodes, table_nod
-Cf2py intent(in) type_el, x, betas, soln_k1
+Cf2py intent(in) x, betas, soln_k1
 C
 Cf2py depend(table_nod) nnodes, nel
-Cf2py depend(type_el) npt
 Cf2py depend(x) npt
 Cf2py depend(betas) nval
 C
@@ -78,9 +76,8 @@ c
 C
       overlap = 0.0d0
 c
-      n_curved = 0
+c      n_curved = 0
       do iel=1,nel
-        typ_e = type_el(iel)
         do j=1,nnodes
           j1 = table_nod(j,iel)
           nod_el_p(j) = j1
@@ -92,7 +89,11 @@ c
           n_curved = n_curved + 1
         endif
 cccccccccc
-        basis_overlap = 0.0d0
+        do i=1,2*nnodes
+          do j=1,2*nnodes+10
+            basis_overlap(i,j) = 0.0d0
+          enddo
+        enddo
 cccccccccc
         do iq=1,nquad
           xx(1) = xq(iq)
@@ -134,7 +135,7 @@ c          Calculation of the matrix-matrix product:
      *      grad2_mat0, 2, ZERO, grad2_mat, 2)
           call DGEMM('Transpose','N', 2, 10, 2, ONE, mat_T, 2,
      *      grad3_mat0, 2, ZERO, grad3_mat, 2)
-          coeff_1 = ww * abs(det) ! * pp(typ_e)
+          coeff_1 = ww * abs(det)
           do itrial=1,nnodes_0
             do i_eq=1,2
               ind_ip = i_eq + 2*(itrial-1)
@@ -156,7 +157,9 @@ c                  z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
      *                        vec_phi_i(2)*vec_phi_j(2)
                   z_tmp1 = coeff_1 * z_tmp1
                   z_tmp1 = z_tmp1/k_0
-                  basis_overlap = basis_overlap + z_tmp1
+                  basis_overlap(ind_ip,ind_jp) =
+     *              basis_overlap(ind_ip,ind_jp) + z_tmp1
+cccc                  basis_overlap = basis_overlap + z_tmp1
                 enddo
               enddo
               do jtest=1,10
@@ -171,7 +174,9 @@ C                z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
      *                        vec_phi_i(2)*vec_phi_j(2)
                 z_tmp1 = coeff_1 * z_tmp1
                 z_tmp1 = z_tmp1/k_0
-                basis_overlap = basis_overlap + z_tmp1
+                basis_overlap(ind_ip,ind_jp) =
+     *            basis_overlap(ind_ip,ind_jp) + z_tmp1
+cccc                basis_overlap = basis_overlap + z_tmp1
               enddo
             enddo
           enddo
@@ -181,9 +186,20 @@ cccccccccc
           beta1 = betas(ival)
           do i=1,nnodes
             do j=1,2
+c             The 2 transverse components of the mode ival
+              ind_ip = j + 2*(i-1)
+              z_tmp1 = soln_k1(j,i,ival,iel)
+c             sol_el_2 : E-field
+              sol_el_2(ind_ip) = z_tmp1
+            enddo
+          enddo
+cccccccccccc
+          do i=1,nnodes
+            do j=1,2
 c           The 2 transverse components of the mode jval
               ind_jp = j + 2*(i-1)
               z_tmp1 = soln_k1(j,i,ival,iel)
+c             sol_el_1 : H-field
               sol_el_1(ind_jp) = z_tmp1 * beta1
             enddo
           enddo
@@ -192,6 +208,7 @@ cccccccccccc
 c         The longitudinal component at the vertices (P3 elements)
             ind_jp = i + 2*nnodes
             z_tmp1 = soln_k1(3,i,ival,iel)
+c           sol_el_1 : H-field
             sol_el_1(ind_jp) = z_tmp1 * beta1
           enddo
           do i=nnodes+1,13
@@ -206,7 +223,7 @@ c       Matrix-Vector product
             vec_1(i) = 0.0d0
             do j=1,2*nnodes+10
               z_tmp1 = sol_el_1(j)
-              z_tmp2 = basis_overlap
+              z_tmp2 = basis_overlap(i,j)
               vec_1(i) = vec_1(i) + z_tmp1 * z_tmp2
             enddo
           enddo
@@ -214,7 +231,7 @@ cccccccccccc
 c       Scalar product
           z_tmp1 = 0.0d0
           do i=1,2*nnodes
-            z_tmp1 = vec_1(i) * sol_el_1(i)
+            z_tmp1 = vec_1(i) * sol_el_2(i)
             overlap(ival) = overlap(ival)
      *          + z_tmp1
           enddo
