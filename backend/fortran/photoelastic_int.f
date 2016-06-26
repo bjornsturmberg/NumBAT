@@ -134,20 +134,20 @@ c       The matrix p2_p2 contains the overlap integrals between the P2-polynomia
               z_tmp1 = E_field_el2(j,jtrial)
               vec_j(j) = z_tmp1
             enddo
-            do ktrial=1,nnodes_0
-              do k=1,3
-                
-              enddo
-              do ltrial=1,nnodes_0
-                do l=1,3
-                  z_tmp1 = U_field_el(l,ltrial)
-                  vec_l(l) = z_tmp1
-                enddo
+C             do ktrial=1,nnodes_0
+C               do k=1,3
+C                 k = 1
+C               enddo
+C               do ltrial=1,nnodes_0
+C                 do l=1,3
+C                   z_tmp1 = U_field_el(l,ltrial)
+C                   vec_l(l) = z_tmp1
+C                 enddo
 c               Dot-product (E1^* X H) of E^*=vec_i and H=vec_j
                 z_tmp1 = vec_i(1) * vec_j(2) - vec_i(2) * vec_j(1)
-                overlap = overlap + eps_squared*z_tmp1*p2_p2(itrial, jtrial)
-              enddo
-            enddo
+            overlap = overlap + eps_squared*z_tmp1*p2_p2(itrial, jtrial)
+C               enddo
+C             enddo
           enddo
         enddo
       enddo
