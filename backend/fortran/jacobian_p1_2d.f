@@ -86,7 +86,8 @@ c     The value determinant can be obtained from the factorization P*L*U
         endif
       enddo
 
-       if(abs(det_jacobian) .lt. 1.0d-10) then
+C        if(abs(det_jacobian) .lt. 1.0d-10) then
+       if(abs(det_jacobian) .lt. 1.0d-20) then
          write(*,*)
          write(*,*) "   ???"
          write(*,*) "jacobian_p1_2d: det = 0 : det = ", det_jacobian
