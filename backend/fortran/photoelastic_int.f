@@ -23,13 +23,12 @@ c     Local variables
       parameter (nnodes_0 = 6)
       integer*8 nod_el_p(nnodes_0)
       double precision xel(2,nnodes_0)
-      complex*16 sol_el_1(2*nnodes_0+10), sol_el_2(2*nnodes_0)
       complex*16 vec_1(2*nnodes_0)
-      complex*16 basis_overlap(2*nnodes_0,2*nnodes_0+10)
-      complex*16 E_field_el1(3,nnodes_0)
-      complex*16 E_field_el2(3,nnodes_0)
-      complex*16 U_field_el(3,nnodes_0)
-      integer*8 i, j, k, l, j1, typ_e
+      complex*16 basis_overlap(2*nnodes_0,2*nnodes_0,2*nnodes_0)
+      complex*16 E1star
+      complex*16 E2
+      complex*16 Ustar, p, eps
+      integer*8 i, j, k, l, j1, typ_e, n, ij, kl, el_type
       integer*8 iel, ind_ip, i_eq
       integer*8 jtest, ind_jp, j_eq
       integer*8 ktest, ind_kp, k_eq
@@ -50,8 +49,8 @@ c     NQUAD: The number of quadrature points used in each element.
       complex*16 coeff_1
       double precision phi2_list(6), grad2_mat0(2,6)
       double precision grad2_mat(2,6)
-      double precision phi3_list(10), grad3_mat0(2,10)
-      double precision grad3_mat(2,10)
+C       double precision phi3_list(10), grad3_mat0(2,10)
+C       double precision grad3_mat(2,10)
       double precision vec_phi_j(2), vec_phi_i(2), vec_phi_k(2)
 C
 C
@@ -78,9 +77,9 @@ C
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
-        write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes
-        write(ui,*) "EM_mode_energy_int: nnodes should be equal to 6 !"
-        write(ui,*) "EM_mode_energy_int: Aborting..."
+        write(ui,*) "photoelastic_int: problem nnodes = ", nnodes
+        write(ui,*) "photoelastic_int: nnodes should be equal to 6 !"
+        write(ui,*) "photoelastic_int: Aborting..."
         stop
       endif
 C
@@ -89,7 +88,7 @@ C
       beta2 = betas(ival2)
       call quad_triangle (nquad, nquad_max, wq, xq, yq)
       if (debug .eq. 1) then
-        write(ui,*) "EM_mode_energy_int: nquad, nquad_max = ",
+        write(ui,*) "photoelastic_int: nquad, nquad_max = ",
      *              nquad, nquad_max
       endif
 C
@@ -106,8 +105,10 @@ C
         endif
 cccccccccc
         do i=1,2*nnodes
-          do j=1,2*nnodes+10
-            basis_overlap(i,j) = 0.0d0
+          do j=1,2*nnodes
+            do k=1,2*nnodes
+            basis_overlap(i,j,k) = 0.0d0
+            enddo
           enddo
         enddo
 cccccccccc
@@ -128,9 +129,9 @@ c           Rectilinear element
             call jacobian_p1_2d(xx, xel, nnodes,
      *               xx_g, det, mat_B, mat_T)
 c            if (det .le. 0) then
-            if (det .le. 0 .and. debug .eq. 1 .and. iq .eq. 1) then
+            if(det .le. 0 .and. debug .eq. 1 .and. iq .eq. 1) then
               write(*,*) "   !!!"
-              write(*,*) "EM_m_en_int: det <= 0: iel, det ", iel, det
+              write(*,*) "PE_int: det <= 0: iel, det ", iel, det
             endif
           else
 c           Isoparametric element
@@ -141,8 +142,8 @@ C            if(abs(det) .lt. 1.0d-10) then
            if(abs(det) .lt. 1.0d-20) then
              write(*,*)
              write(*,*) "   ???"
-             write(*,*) "EM_m_en_int: det = 0 : iel, det = ", iel, det
-             write(*,*) "EM_m_en_int: Aborting..."
+             write(*,*) "PE_int: det = 0 : iel, det = ", iel, det
+             write(*,*) "PE_int: Aborting..."
              stop
            endif
 c          grad_i  = gradient on the actual triangle
@@ -154,105 +155,128 @@ C           call DGEMM('Transpose','N', 2, 10, 2, ONE, mat_T, 2,
 C      *      grad3_mat0, 2, ZERO, grad3_mat, 2)
           coeff_1 = ww * abs(det)
           do itrial=1,nnodes_0
-            do i_eq=1,2
-              ind_ip = i_eq + 2*(itrial-1)
+            do i_eq=1,2,3
+              ind_ip = i_eq + 3*(itrial-1)
 c             Determine the basis vector
-              do i=1,2
+              do i=1,2,3
                 vec_phi_i(i) = 0.0d0
               enddo
               vec_phi_i(i_eq) = phi2_list(itrial)
               do jtest=1,nnodes_0
-                do j_eq=1,2
-                  ind_jp = j_eq + 2*(jtest-1)
+                do j_eq=1,2,3
+                  ind_jp = j_eq + 3*(jtest-1)
 c                 Determine the basis vector
-                  do i=1,2
+                  do i=1,2,3
                     vec_phi_j(i) = 0.0d0
                   enddo
                   vec_phi_j(j_eq) = phi2_list(jtest)
                   do ktest=1,nnodes_0
-                    do k_eq=1,2
-                      ind_kp = k_eq + 2*(ktest-1)
+                    do k_eq=1,2,3
+                      ind_kp = k_eq + 3*(ktest-1)
                       vec_phi_k(k_eq) = grad2_mat(k_eq,ktest)
 C                     Have all basis funcitions
                       z_tmp1 = vec_phi_i(1)*vec_phi_j(1)*vec_phi_k(1) +
      *                        vec_phi_i(2)*vec_phi_j(2)*vec_phi_k(2)
                       z_tmp1 = coeff_1 * z_tmp1
                       z_tmp1 = z_tmp1/k_0
-                      basis_overlap(ind_ip,ind_jp) =
-     *                  basis_overlap(ind_ip,ind_jp) + z_tmp1
-cccc                  basis_overlap = basis_overlap + z_tmp1
+                      basis_overlap(ind_ip,ind_jp,ind_kp) =
+     *                  basis_overlap(ind_ip,ind_jp,ind_kp) + z_tmp1
                     enddo
                   enddo
                 enddo
               enddo
-              do jtest=1,10
-                j_eq = 3
-                ind_jp = jtest + 2*nnodes_0
-c               Determine the basis vector
-                do i=1,2
-                  vec_phi_j(i) = -grad2_mat(i,jtest)
-                enddo
-C                z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
-                z_tmp1 = vec_phi_i(1)*vec_phi_j(1) +
-     *                        vec_phi_i(2)*vec_phi_j(2)
-                z_tmp1 = coeff_1 * z_tmp1
-                z_tmp1 = z_tmp1/k_0
-                basis_overlap(ind_ip,ind_jp) =
-     *            basis_overlap(ind_ip,ind_jp) + z_tmp1
-cccc                basis_overlap = basis_overlap + z_tmp1
-              enddo
+C               do jtest=1,10
+CCCCCCCCCC      ToDo: Bjorn doesnt know how to deal with z-comp
+C                 j_eq = 3
+C                 ind_jp = jtest + 2*nnodes_0
+C c               Determine the basis vector
+C                 do i=1,2
+C                   vec_phi_j(i) = -grad2_mat(i,jtest)
+C                 enddo
+C                 z_tmp1 = vec_phi_i(1)*vec_phi_j(1) +
+C      *                        vec_phi_i(2)*vec_phi_j(2)
+C                 z_tmp1 = coeff_1 * z_tmp1
+C                 z_tmp1 = z_tmp1/k_0
+C                 basis_overlap(ind_ip,ind_jp,ind_kp) =
+C      *            basis_overlap(ind_ip,ind_jp,ind_kp) + z_tmp1
+C               enddo
             enddo
           enddo
         enddo
 cccccccccc
-          do i=1,nnodes
-            do j=1,2
-c             The 2 transverse components of the mode ival
-              ind_ip = j + 2*(i-1)
-c             sol_el_2 : E-field
-              sol_el_2(ind_ip) = soln_EM(j,i,ival1,iel)
+          do n=1,nnodes
+            do i=1,2,3
+              E1star = conjg(soln_EM(i,n,ival1,iel))
+              do j=1,2,3
+                E2 = soln_EM(j,n,ival2,iel)
+                if (i .eq. 1 .and. j .eq. 1) then
+                  ij = 1
+                endif
+                if (i .eq. 2 .and. j .eq. 2) then
+                  ij = 2
+                endif
+                if (i .eq. 3 .and. j .eq. 3) then
+                  ij = 3
+                endif
+                if (i .eq. 2 .and. j .eq. 3) then
+                  ij = 4
+                endif
+                if (i .eq. 3 .and. j .eq. 2) then
+                  ij = 4
+                endif
+                if (i .eq. 1 .and. j .eq. 3) then
+                  ij = 5
+                endif
+                if (i .eq. 3 .and. j .eq. 1) then
+                  ij = 5
+                endif
+                if (i .eq. 1 .and. j .eq. 2) then
+                  ij = 6
+                endif
+                if (i .eq. 2 .and. j .eq. 1) then
+                  ij = 6
+                endif
+                do l=1,2,3
+                  Ustar = conjg(soln_AC(l,n,ival3,iel))
+                  do k=1,2,3
+                    if (k .eq. 1 .and. l .eq. 1) then
+                      kl = 1
+                    endif
+                    if (k .eq. 2 .and. l .eq. 2) then
+                      kl = 2
+                    endif
+                    if (k .eq. 3 .and. l .eq. 3) then
+                      kl = 3
+                    endif
+                    if (k .eq. 2 .and. l .eq. 3) then
+                      kl = 4
+                    endif
+                    if (k .eq. 3 .and. l .eq. 2) then
+                      kl = 4
+                    endif
+                    if (k .eq. 1 .and. l .eq. 3) then
+                      kl = 5
+                    endif
+                    if (k .eq. 3 .and. l .eq. 1) then
+                      kl = 5
+                    endif
+                    if (k .eq. 1 .and. l .eq. 2) then
+                      kl = 6
+                    endif
+                    if (k .eq. 2 .and. l .eq. 1) then
+                      kl = 6
+                    endif
+                    el_type = type_el(iel)
+                    p = p_tensor(ij,kl,el_type)
+                    eps = eps_lst(el_type)
+                    z_tmp1 = eps**2 * p * E1star * E2 * Ustar
+                    overlap = overlap + z_tmp1
+                  enddo
+                enddo
+              enddo
             enddo
           enddo
 cccccccccccc
-          do i=1,nnodes
-            do j=1,2
-c           The 2 transverse components of the mode jval
-              ind_jp = j + 2*(i-1)
-c             sol_el_1 : H-field
-              sol_el_1(ind_jp) = soln_EM(j,i,ival2,iel) * beta1
-            enddo
-          enddo
-cccccccccccc
-          do i=1,3
-c         The longitudinal component at the vertices (P3 elements)
-            ind_jp = i + 2*nnodes
-            z_tmp1 = soln_EM(3,i,ival1,iel)
-c           sol_el_1 : H-field
-            sol_el_1(ind_jp) = z_tmp1 * beta1
-          enddo
-          do i=nnodes+1,13
-c         The longitudinal component at the edge nodes and interior node (P3 elements)
-            ind_jp = i + 2*nnodes - nnodes + 3
-            z_tmp1 = soln_EM(3,i,ival2,iel)
-            sol_el_1(ind_jp) = z_tmp1 * beta1
-          enddo
-cccccccccccc
-c       Matrix-Vector product
-          do i=1,2*nnodes
-            vec_1(i) = 0.0d0
-            do j=1,2*nnodes+10
-              z_tmp1 = sol_el_1(j)
-              z_tmp2 = basis_overlap(i,j)
-              vec_1(i) = vec_1(i) + z_tmp1 * z_tmp2
-            enddo
-          enddo
-cccccccccccc
-c       Scalar product
-        z_tmp1 = 0.0d0
-        do i=1,2*nnodes
-          z_tmp1 = vec_1(i) * sol_el_2(i)
-          overlap = overlap + z_tmp1
-        enddo
       enddo
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
