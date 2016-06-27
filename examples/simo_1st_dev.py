@@ -19,17 +19,10 @@ speed_c = 299792458
 opt_freq_GHz = speed_c/wl_nm # putting in wl in nm gives you GHz
 unitcell_x = 2.5*1550
 inc_a_x = 314.7
-# print inc_a_x/wl_nm
-# print 2*np.pi/wl_nm
-# print (2*np.pi/wl_nm)/(2*np.pi*speed_c/inc_a_x)
-# inc_a_x = .35*wl_nm
-# print inc_a_x
 unitcell_y = unitcell_x
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 # inc_shape = 'circular'
-# inc_a_x = 300
-# inc_a_y = 280
 
 ### Optical parameters
 eps = 12.25
@@ -41,7 +34,7 @@ num_AC_modes = 20
 s = 2330  # kg/m3
 c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
 p_11 = -0.044; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9 ;eta_12 = 5.16  # m Pa s
+eta_11 = 5.9 ; eta_12 = 5.16  # m Pa s
 eta_44 = 620   # mu Pa s
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
@@ -80,20 +73,6 @@ np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
 # print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
-
-# import matplotlib
-# matplotlib.use('pdf')
-# import matplotlib.pyplot as plt
-# plt.clf()
-# plt.figure(figsize=(13,13))
-# ax = plt.subplot(1,1,1)
-# for q_acoustic in np.linspace(0,2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9),10):
-#     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
-#     prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
-#     prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
-#     plt.plot(np.ones(len(prop_AC_modes))*q_acoustic, prop_AC_modes, 'o')
-# plt.savefig('disp.pdf', bbox_inches='tight')
-# plt.close()
 
 
 ### Calculate interaction integrals

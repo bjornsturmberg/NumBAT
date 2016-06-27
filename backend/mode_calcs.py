@@ -24,10 +24,11 @@ class Simmo(object):
         Stores the calculated modes of :Struc: for illumination by :Light:
     """
     def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20,
-                 EM_sim=None):
+                 shift_AC_Hz=None, EM_sim=None):
         self.structure = structure
         self.wl_nm = wl_nm
         self.q_acoustic = q_acoustic
+        self.shift_AC_Hz = shift_AC_Hz
         self.EM_sim = EM_sim
         self.num_modes = num_modes
         self.mode_pol = None
@@ -188,20 +189,24 @@ class Simmo(object):
         real_max = 2**23
         int_max = 2**22
 
-        # Calculate where to center the Eigenmode solver around.
-        # (Shift and invert FEM method)
-        # For AC problem shift is a frequency - [shift] = s^-1.
-        relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
-        # relevant_el = relevant_el - 1 # ToDo: fudge factor as removed 1 type!
-        # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
-        shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
-        # Factor 2 from q_acoustic being twice beta.
-        shift1 = 0.5*self.q_acoustic*shift1
-        # Using acoustic velocity of shear mode pg 215 Auld vol 1.
-        shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][relevant_el]/self.structure.rho[relevant_el]))
-        shift2 = 0.5*self.q_acoustic*shift2
-        # shift = 13.0e9  # used for original test case
-        shift = (shift1 + shift2)/8.
+        # # Calculate where to center the Eigenmode solver around.
+        # # (Shift and invert FEM method)
+        # # For AC problem shift is a frequency - [shift] = s^-1.
+        # relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
+        # # relevant_el = relevant_el - 1 # ToDo: fudge factor as removed 1 type!
+        # # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
+        # shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
+        # # Factor 2 from q_acoustic being twice beta.
+        # shift1 = 0.5*self.q_acoustic*shift1
+        # # Using acoustic velocity of shear mode pg 215 Auld vol 1.
+        # shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][relevant_el]/self.structure.rho[relevant_el]))
+        # shift2 = 0.5*self.q_acoustic*shift2
+        # # shift = (shift1 + shift2)/8.
+        # # shift = 13.0e9  # used for original test case
+        if self.shift_AC_Hz is None:
+            shift = 20.0e9  
+        else:
+            shift = self.shift_AC_Hz 
 
 
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
