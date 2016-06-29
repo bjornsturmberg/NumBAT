@@ -80,7 +80,7 @@ np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # integration.gain_and_qs(sim_EM_wguide, sim_AC_wguide)
 
 
-def gain_and_qs(sim_EM_wguide, sim_AC_wguide,
+def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 EM_mode1=0, EM_mode2=0, AC_mode=0):
     """ Calculate interaction integrals and SBS gain.
     """
@@ -109,15 +109,15 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide,
             relevant_eps_effs.append(sim_EM_wguide.n_effs[el_typ]**2)
 
     try:
-        Fortran_debug = 1
+        Fortran_debug = 0
         Q_PE = NumBAT.photoelastic_int(sim_EM_wguide.wl_norm(),
             sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_mode1,
             EM_mode2, AC_mode, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
             sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-            sim_EM_wguide.Eig_value, trimmed_EM_field, sim_AC_wguide.sol1,
+            q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
             relevant_eps_effs, Fortran_debug)
-        print Q_PE
+        print "Q_PE", Q_PE
 
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int",\
@@ -135,7 +135,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide,
 ### Calc Q_moving_boundary Eq. 41
 
 
-gain_and_qs(sim_EM_wguide, sim_AC_wguide)
+gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic, AC_mode=2)
 
 
 
