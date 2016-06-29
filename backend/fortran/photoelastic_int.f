@@ -65,7 +65,7 @@ C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
-      eps_0 = 8.854187817d-12
+      eps_0 = 1.0!8.854187817d-12
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then

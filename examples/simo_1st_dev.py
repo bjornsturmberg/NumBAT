@@ -126,7 +126,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
     print "Q", Q
-    gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_mode]*np.real(Q**2)
+    gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_mode]*np.real(Q*np.conj(Q))
     normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]
     normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]
     normal_fact = normal_fact*sim_AC_wguide.AC_mode_overlap[AC_mode]
