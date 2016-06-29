@@ -53,7 +53,7 @@ class Simmo(object):
         """ Run a Fortran FEM calculation to find the optical modes.
 
         Most important outputs are
-        Eig_value - a 1d array of Eigenvalues
+        Eig_value - a 1d array of Eigenvalues (propagation constants) in [1/m]
         sol1 - the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
         """
@@ -118,8 +118,10 @@ class Simmo(object):
             self.Eig_value, self.sol1, self.mode_pol, \
             self.table_nod, self.type_el, self.type_nod, self.x_arr = resm
 
-            area = self.structure.unitcell_x * self.structure.unitcell_y
-            area_norm = area/self.structure.unitcell_x**2
+            # Make natural units 1/m
+            self.Eig_value = self.Eig_value/(self.structure.unitcell_x*1e-9)
+            # area = self.structure.unitcell_x * self.structure.unitcell_y
+            # area_norm = area/self.structure.unitcell_x**2
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_EM_modes",\
@@ -327,6 +329,9 @@ class Simmo(object):
                 table_nod_AC, type_el_AC, x_arr_AC)
             table_nod_out, type_el_out, x_arr_out, \
             self.Eig_value, self.sol1, self.mode_pol = resm
+
+            # Make natural units GHz
+            self.Eig_value = self.Eig_value*1e-9
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\

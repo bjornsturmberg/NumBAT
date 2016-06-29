@@ -62,7 +62,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
     """
 
     plt.clf()
-    EM_mode_fields = sim_wguide.sol1
+    mode_fields = sim_wguide.sol1
 
     # field mapping
     x_tmp = []
@@ -119,9 +119,9 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                 # values
                 v_x6p[i] = x_arr[i_ex, 0]
                 v_y6p[i] = x_arr[i_ex, 1]
-                v_Ex6p[i] = EM_mode_fields[0,i_node,ival,i_el]
-                v_Ey6p[i] = EM_mode_fields[1,i_node,ival,i_el]
-                v_Ez6p[i] = EM_mode_fields[2,i_node,ival,i_el]
+                v_Ex6p[i] = mode_fields[0,i_node,ival,i_el]
+                v_Ey6p[i] = mode_fields[1,i_node,ival,i_el]
+                v_Ez6p[i] = mode_fields[2,i_node,ival,i_el]
 
                 i += 1
 

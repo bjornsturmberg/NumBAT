@@ -15,7 +15,7 @@ c
       complex*16 soln_AC(3,nnodes,nval_AC,nel)
       complex*16 beta1, beta2, overlap
       complex*16 betas(nval_EM)
-      complex*16 p_tensor(6,6,nb_typ_el)
+      complex*16 p_tensor(3,3,3,3,nb_typ_el)
       double precision k_0, pi, lambda
 
 c     Local variables
@@ -209,65 +209,11 @@ cccccccccc
               E1star = conjg(soln_EM(i,n,ival1,iel))
               do j=1,2,3
                 E2 = soln_EM(j,n,ival2,iel)
-                if (i .eq. 1 .and. j .eq. 1) then
-                  ij = 1
-                endif
-                if (i .eq. 2 .and. j .eq. 2) then
-                  ij = 2
-                endif
-                if (i .eq. 3 .and. j .eq. 3) then
-                  ij = 3
-                endif
-                if (i .eq. 2 .and. j .eq. 3) then
-                  ij = 4
-                endif
-                if (i .eq. 3 .and. j .eq. 2) then
-                  ij = 4
-                endif
-                if (i .eq. 1 .and. j .eq. 3) then
-                  ij = 5
-                endif
-                if (i .eq. 3 .and. j .eq. 1) then
-                  ij = 5
-                endif
-                if (i .eq. 1 .and. j .eq. 2) then
-                  ij = 6
-                endif
-                if (i .eq. 2 .and. j .eq. 1) then
-                  ij = 6
-                endif
                 do l=1,2,3
                   Ustar = conjg(soln_AC(l,n,ival3,iel))
                   do k=1,2,3
-                    if (k .eq. 1 .and. l .eq. 1) then
-                      kl = 1
-                    endif
-                    if (k .eq. 2 .and. l .eq. 2) then
-                      kl = 2
-                    endif
-                    if (k .eq. 3 .and. l .eq. 3) then
-                      kl = 3
-                    endif
-                    if (k .eq. 2 .and. l .eq. 3) then
-                      kl = 4
-                    endif
-                    if (k .eq. 3 .and. l .eq. 2) then
-                      kl = 4
-                    endif
-                    if (k .eq. 1 .and. l .eq. 3) then
-                      kl = 5
-                    endif
-                    if (k .eq. 3 .and. l .eq. 1) then
-                      kl = 5
-                    endif
-                    if (k .eq. 1 .and. l .eq. 2) then
-                      kl = 6
-                    endif
-                    if (k .eq. 2 .and. l .eq. 1) then
-                      kl = 6
-                    endif
                     el_type = type_el(iel)
-                    p = p_tensor(ij,kl,el_type)
+                    p = p_tensor(i, j, k, l, el_type)
                     eps = eps_lst(el_type)
                     z_tmp1 = eps**2 * p * E1star * E2 * Ustar
                     overlap = overlap + z_tmp1

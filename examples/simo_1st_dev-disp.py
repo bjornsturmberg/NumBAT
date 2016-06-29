@@ -68,19 +68,19 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 ### Calculate Acoustic Modes
 # Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
 # Backward SBS
-q_acoustic = 2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9)
+q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
 # sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
+# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value # GHz
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
-# print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
+# print 'Omega of AC wave \n', prop_AC_modes/(2*np.pi*8.54e3/inc_a_x) # GHz
 
 import matplotlib
 matplotlib.use('pdf')
@@ -89,14 +89,16 @@ import matplotlib.pyplot as plt
 plt.clf()
 plt.figure(figsize=(13,13))
 ax = plt.subplot(1,1,1)
-for q_ac in np.linspace(0.0,q_acoustic,50):
+for q_ac in np.linspace(0.0,q_acoustic,1):#50):
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_ac, num_AC_modes, EM_sim=sim_EM_wguide)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
     # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.imag(x)) < 1e-0])
     # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value])
     # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
+
+    prop_AC_modes_allowed = integration.allowed_symmetries(sim_AC_wguide)
     for i in range(len(prop_AC_modes)):
-        Om = prop_AC_modes[i]*1e-9
+        Om = prop_AC_modes[i]
         # plt.plot(q_ac/q_acoustic, Om, marks[i%len(marks)])
         plt.plot(q_ac/q_acoustic, Om, 'ok')
     ax.set_ylim(0,20)

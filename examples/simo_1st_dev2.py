@@ -70,7 +70,7 @@ plotting.plot_EM_modes(sim_EM_wguide, xlim=0.1, ylim=0.1, EM_AC='EM')
 
 ### Calculate Acoustic Modes
 # Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
-q_acoustic = 2*sim_EM_wguide.Eig_value[0]/(unitcell_x*1e-9)
+q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
