@@ -52,9 +52,9 @@ C
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
-        write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes
-        write(ui,*) "EM_mode_energy_int: nnodes should be equal to 6 !"
-        write(ui,*) "EM_mode_energy_int: Aborting..."
+        write(ui,*) "EM_mode_en_int_v2: problem nnodes = ", nnodes
+        write(ui,*) "EM_mode_en_int_v2: nnodes should be equal to 6 !"
+        write(ui,*) "EM_mode_en_int_v2: Aborting..."
         stop
       endif
 C
@@ -79,7 +79,7 @@ c       maps the current triangle to the reference triangle.
         det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
         if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
 cc        if (abs(det_b) .le. 1.0d-8) then
-          write(*,*) '?? get_H_field: Determinant = 0 :', det_b
+          write(*,*) 'EM_mode_en_int_v2: Determinant = 0 :', det_b
           write(*,*) "xel = ", xel
           write(*,*) 'Aborting...'
           stop

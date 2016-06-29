@@ -19,6 +19,17 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide):
     """ Calculate interaction integrals and SBS gain.
     """ 
 
+# Calc Qs of a range of selected modes
+# Pass in the q_acoustic as this is beta of AC mode (which gives z derivative)
+
+### Notes about internals of fortran integration
+# Calc overlap of basis functions (and PE tensor and epsilon) 
+# Then use this multiple times for calc of each mode field values
+
+# phi is values of Lagrange polynomials (1-6) at that node.
+# grad is value of gradient of Lagrange polynomials (1-6) at that node.
+
+
     print np.shape(sim_EM_wguide.sol1)
     # trimmed_EM_field = np.zeros()
 

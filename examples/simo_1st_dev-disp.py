@@ -96,7 +96,7 @@ for q_ac in np.linspace(0.0,q_acoustic,1):#50):
     # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value])
     # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
 
-    prop_AC_modes_allowed = integration.allowed_symmetries(sim_AC_wguide)
+    # prop_AC_modes_allowed = integration.allowed_symmetries(sim_AC_wguide)
     for i in range(len(prop_AC_modes)):
         Om = prop_AC_modes[i]
         # plt.plot(q_ac/q_acoustic, Om, marks[i%len(marks)])

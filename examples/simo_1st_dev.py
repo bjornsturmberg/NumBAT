@@ -50,10 +50,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
@@ -64,7 +64,7 @@ np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, sim_EM_wguide)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
 np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
