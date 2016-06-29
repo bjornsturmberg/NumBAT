@@ -233,6 +233,7 @@ class Struct(object):
         # Any material not given acoustic_props assumed to be vacuum.
         rho = np.zeros(self.nb_typ_el_AC)
         c_tensor = np.zeros((6,6,self.nb_typ_el_AC))
+        c_tensor_z = np.zeros((3,3,3,self.nb_typ_el_AC))
         p_tensor = np.zeros((3,3,3,3,self.nb_typ_el_AC))
         for k_typ in range(self.nb_typ_el_AC):
             if acoustic_props[k_typ]:
@@ -240,15 +241,23 @@ class Struct(object):
                 c_tensor[0,0,k_typ] = acoustic_props[k_typ][1]
                 c_tensor[1,1,k_typ] = acoustic_props[k_typ][1]
                 c_tensor[2,2,k_typ] = acoustic_props[k_typ][1]
-                c_tensor[3,3,k_typ] = acoustic_props[k_typ][3]
-                c_tensor[4,4,k_typ] = acoustic_props[k_typ][3]
-                c_tensor[5,5,k_typ] = acoustic_props[k_typ][3]
                 c_tensor[0,1,k_typ] = acoustic_props[k_typ][2]
                 c_tensor[0,2,k_typ] = acoustic_props[k_typ][2]
                 c_tensor[1,0,k_typ] = acoustic_props[k_typ][2]
                 c_tensor[1,2,k_typ] = acoustic_props[k_typ][2]
                 c_tensor[2,0,k_typ] = acoustic_props[k_typ][2]
                 c_tensor[2,1,k_typ] = acoustic_props[k_typ][2]
+                c_tensor[3,3,k_typ] = acoustic_props[k_typ][3]
+                c_tensor[4,4,k_typ] = acoustic_props[k_typ][3]
+                c_tensor[5,5,k_typ] = acoustic_props[k_typ][3]
+
+                c_tensor_z[2,2,2,k_typ] = acoustic_props[k_typ][1]
+                c_tensor_z[2,0,0,k_typ] = acoustic_props[k_typ][2]
+                c_tensor_z[2,1,1,k_typ] = acoustic_props[k_typ][2]
+                c_tensor_z[1,1,2,k_typ] = acoustic_props[k_typ][3]
+                c_tensor_z[1,2,1,k_typ] = acoustic_props[k_typ][3]
+                c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ][3]
+                c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ][3]
 
                 p_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ][4]
                 p_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ][4]
@@ -273,6 +282,7 @@ class Struct(object):
                 p_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ][6]
         self.rho = rho
         self.c_tensor = c_tensor
+        self.c_tensor_z = c_tensor_z
         self.p_tensor = p_tensor
 
 

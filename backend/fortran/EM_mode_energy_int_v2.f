@@ -1,4 +1,5 @@
-C   Calculate the Overlap integral of an EM mode with itself.
+C Calculate the overlap integral of an EM mode with itself using
+C analytic expressions for basis function overlaps on linear elements.
 C
       subroutine EM_mode_energy_int_v2 (lambda, nval, nel, npt,
      *  nnodes, table_nod,
@@ -15,7 +16,6 @@ c
       double precision k_0, pi, lambda
 
 c     Local variables
-
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
       integer*8 nod_el_p(nnodes_0)
@@ -28,7 +28,6 @@ c     Local variables
       integer*8 itrial, jtest, ui
       complex*16 vec_i(3), vec_j(3)
       complex*16 z_tmp1, ii
-
       double precision mat_B(2,2), mat_T(2,2), det_b
 C
 C

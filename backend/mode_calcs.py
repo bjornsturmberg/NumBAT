@@ -140,7 +140,7 @@ class Simmo(object):
         #     self.n_msh_pts = None
         #     self.n_msh_el = None
 
-### Calc unnormalised power in each EM mode Eq. 8 (or Kokou equiv.)
+### Calc unnormalised power in each EM mode Kokou equiv. of Eq. 8.
         try:
             nnodes = 6
             if self.structure.inc_shape == 'rectangular':
@@ -352,3 +352,19 @@ class Simmo(object):
             self.table_nod = table_nod_out
             self.type_el = type_el_out
             self.x_arr = x_arr_out
+
+### Calc unnormalised power in each AC mode Eq. 18.
+        try:
+            nnodes = 6
+            # if self.structure.inc_shape == 'rectangular':
+
+            # elif self.structure.inc_shape == 'circular':
+            self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
+                self.num_modes, self.n_msh_el, self.n_msh_pts,
+                nnodes, self.table_nod, self.type_el, self.x_arr,
+                self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+                self.q_acoustic, self.Eig_value, self.sol1, AC_FEM_debug)
+
+        except KeyboardInterrupt:
+            print "\n\n FEM routine AC_mode_energy_int",\
+            "interrupted by keyboard.\n\n"

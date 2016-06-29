@@ -1,4 +1,5 @@
-C   Calculate the Overlap integral of an EM mode with itself.
+C Calculate the overlap integral of an EM mode with itself using
+C numerical quadrature.  
 C
       subroutine EM_mode_energy_int (lambda, nval, nel, npt,
      *  nnodes, table_nod,
@@ -13,6 +14,7 @@ c
       complex*16 betas(nval)
       complex*16, dimension(nval) :: overlap
       double precision k_0, pi, lambda
+
 c     Local variables
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)

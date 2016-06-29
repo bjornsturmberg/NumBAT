@@ -1,33 +1,32 @@
-C Calculate the overlap integral of two EM modes and an AC mode
-C using numerical quadrature.
+C Calculate the overlap integral of an AC mode with itself using
+C numerical quadrature.  
 C
-      subroutine photoelastic_int (nval_EM, nval_AC, ival1,
-     *  ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
-     *  nb_typ_el, p_tensor, beta_AC, soln_EM, soln_AC, eps_lst, 
+      subroutine AC_mode_energy_int (nval_AC, 
+     *  nel, npt, nnodes, table_nod, type_el, x,
+     *  nb_typ_el, c_tensor_z, beta_AC, Omega_AC, soln_AC,
      *  debug, overlap)
 c
       implicit none
-      integer*8 nval_EM, nval_AC, ival1, ival2, ival3
+      integer*8 nval_AC, ival
       integer*8 nel, npt, nnodes, nb_typ_el
       integer*8 type_el(nel), debug
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
 c      complex*16 x(2,npt)
-      complex*16 soln_EM(3,nnodes,nval_EM,nel)
       complex*16 soln_AC(3,nnodes,nval_AC,nel)
+      complex*16 Omega_AC(nval_AC)
       complex*16 overlap, beta_AC
-      complex*16 p_tensor(3,3,3,3,nb_typ_el)
+      complex*16 c_tensor_z(3,3,3,nb_typ_el)
 
 c     Local variables
       integer*8 nnodes0
       parameter (nnodes0 = 6)
       integer*8 nod_el_p(nnodes0)
       double precision xel(2,nnodes0)
-      complex*16 basis_overlap(3*nnodes0,3*nnodes0,3,3*nnodes0)
-      complex*16 E1star, E2, Ustar, eps
+      complex*16 basis_overlap(3*nnodes0,3,3*nnodes0)
+      complex*16 U, Ustar, eps
       integer*8 i, j, k, l, j1, typ_e
-      integer*8 iel, ind_ip, i_eq
-      integer*8 jtest, ind_jp, j_eq, k_eq
+      integer*8 iel, ind_ip, i_eq, k_eq
       integer*8 ltest, ind_lp, l_eq
       integer*8 itrial, ui
       complex*16 eps_lst(nb_typ_el)
@@ -36,7 +35,7 @@ c     Local variables
 c
 c     NQUAD: The number of quadrature points used in each element.
       integer*8 nquad, nquad_max, iq
-      parameter (nquad_max = 16) ! Limit to P2 polynomials
+      parameter (nquad_max = 25)
       double precision wq(nquad_max)
       double precision xq(nquad_max), yq(nquad_max)
       double precision xx(2), xx_g(2), ww, det
@@ -48,16 +47,16 @@ c     NQUAD: The number of quadrature points used in each element.
       double precision grad2_mat(2,6)
 C
 C
-Cf2py intent(in) nval_EM, nval_AC, ival1, ival2, ival3, nb_typ_el
-Cf2py intent(in) nel, npt, nnodes, table_nod, p_tensor, beta_AC , debug
-Cf2py intent(in) type_el, x, soln_EM, soln_AC, eps_lst
+Cf2py intent(in) nval_AC, nel, npt, nnodes, table_nod
+Cf2py intent(in) type_el, x, nb_typ_el, c_tensor_z, beta_AC 
+Cf2py intent(in) soln_AC, debug, Omega_AC
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
 Cf2py depend(x) npt
-Cf2py depend(soln_EM) nnodes, nval_EM, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
-Cf2py depend(p_tensor) nb_typ_el
+Cf2py depend(c_tensor_z) nb_typ_el
+Cf2py depend(Omega_AC) nval_AC
 C
 Cf2py intent(out) overlap
 C
@@ -65,20 +64,19 @@ C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
-      eps_0 = 8.854187817d-12
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
-        write(ui,*) "photoelastic_int: problem nnodes = ", nnodes
-        write(ui,*) "photoelastic_int: nnodes should be equal to 6 !"
-        write(ui,*) "photoelastic_int: Aborting..."
+        write(ui,*) "AC_mode_energy_int: problem nnodes = ", nnodes
+        write(ui,*) "AC_mode_energy_int: nnodes should be equal to 6 !"
+        write(ui,*) "AC_mode_energy_int: Aborting..."
         stop
       endif
 C
       overlap = 0.0d0
       call quad_triangle (nquad, nquad_max, wq, xq, yq)
       if (debug .eq. 1) then
-        write(ui,*) "photoelastic_int: nquad, nquad_max = ",
+        write(ui,*) "AC_mode_energy_int: nquad, nquad_max = ",
      *              nquad, nquad_max
       endif
 cccccccccccc
@@ -98,11 +96,9 @@ cccccccccccc
         endif
 cccccccccc
         do i=1,3*nnodes
-          do j=1,3*nnodes
-            do k=1,3
-              do l=1,3*nnodes
-                basis_overlap(i,j,k,l) = 0.0d0
-              enddo
+          do k=1,3
+            do l=1,3*nnodes
+              basis_overlap(i,k,l) = 0.0d0
             enddo
           enddo
         enddo
@@ -151,42 +147,35 @@ C which is a superposition of P2 polynomials for each function (field).
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
-              do jtest=1,nnodes0
-                do j_eq=1,3
-                  ind_jp = j_eq + 3*(jtest-1)
-C                 Gradient of transverse components of basis function
-                  do k_eq=1,2
-                    do ltest=1,nnodes0
-                      do l_eq=1,3
-                        ind_lp = l_eq + 3*(ltest-1)
-                        z_tmp1 = phi2_list(itrial) * phi2_list(jtest)
-     *                          * grad2_mat(k_eq,ltest)
-                        coeff_2 = p_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
-                        eps = eps_lst(typ_e)
-                        z_tmp1 = coeff_1 * coeff_2 * eps**2 * z_tmp1
-                        basis_overlap(ind_ip,ind_jp,k_eq,ind_lp) =
-     *                    basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
-     *                          + z_tmp1
-                      enddo
-                    enddo
+C             Gradient of transverse components of basis function
+              do k_eq=1,2
+                do ltest=1,nnodes0
+                  do l_eq=1,3
+                    ind_lp = l_eq + 3*(ltest-1)
+                    z_tmp1 = phi2_list(itrial) 
+     *                      * grad2_mat(k_eq,ltest)
+                    coeff_2 = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
+                    z_tmp1 = coeff_1 * coeff_2 * z_tmp1
+                    basis_overlap(ind_ip,k_eq,ind_lp) =
+     *                basis_overlap(ind_ip,k_eq,ind_lp)
+     *                      + z_tmp1
                   enddo
-C                 Gradient of longitudinal components of basis function,
-C                 which is i*beta*phi because field is assumed to be of
-C                 form e^{i*beta*z} phi.
-                  k_eq=3
-                  do ltest=1,nnodes0
-                    do l_eq=1,3
-                      ind_lp = l_eq + 3*(ltest-1)
-                      z_tmp1 = phi2_list(itrial) * phi2_list(jtest)
-     *                        * phi2_list(ltest) * ii * beta_AC
-                      coeff_2 = p_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
-                      eps = eps_lst(typ_e)
-                      z_tmp1 = coeff_1 * coeff_2 * eps**2 * z_tmp1
-                      basis_overlap(ind_ip,ind_jp,k_eq,ind_lp) =
-     *                  basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
-     *                        + z_tmp1
-                    enddo
-                  enddo
+                enddo
+              enddo
+C             Gradient of longitudinal components of basis function,
+C             which is i*beta*phi because field is assumed to be of
+C             form e^{i*beta*z} phi.
+              k_eq=3
+              do ltest=1,nnodes0
+                do l_eq=1,3
+                  ind_lp = l_eq + 3*(ltest-1)
+                  z_tmp1 = phi2_list(itrial)
+     *                    * phi2_list(ltest) * ii * beta_AC
+                  coeff_2 = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
+                  z_tmp1 = coeff_1 * coeff_2 * z_tmp1
+                  basis_overlap(ind_ip,k_eq,ind_lp) =
+     *              basis_overlap(ind_ip,k_eq,ind_lp)
+     *                    + z_tmp1
                 enddo
               enddo
             enddo
@@ -222,13 +211,7 @@ cccccccccccc
 C Loop over elements - end
 cccccccccccc
       enddo
-C Apply scaling that sits outside of integration.
-      overlap = overlap * eps_0
-      if(debug .eq. 1) then
-        write(*,*) "PE_int: overlap"
-        write(*,*) overlap
-      endif
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-      end subroutine photoelastic_int
+      end subroutine AC_mode_energy_int

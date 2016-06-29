@@ -110,7 +110,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     try:
         Fortran_debug = 0
-        Q_PE = NumBAT.photoelastic_int(sim_EM_wguide.wl_norm(),
+        Q_PE = NumBAT.photoelastic_int(
             sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_mode1,
             EM_mode2, AC_mode, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
             sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
@@ -123,7 +123,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         print "\n\n Routine photoelastic_int",\
         "interrupted by keyboard.\n\n"
 
-
+    Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
+    Q = Q_PE + Q_MB
+    gain = 2*opt_freq_GHz*sim_AC_wguide.Eig_value[AC_mode]*1e-9*np.real(Q**2)
+    normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]
+    normal_fact *= sim_EM_wguide.EM_mode_overlap[EM_mode2]
+    # normal_fact *= sim_AC_wguide.AC_mode_overlap[AC_mode]
+    gain = gain/normal_fact
+    print "gain", gain
 
 
 
