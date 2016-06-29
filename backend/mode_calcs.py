@@ -120,8 +120,9 @@ class Simmo(object):
 
             # Make natural units 1/m
             self.Eig_value = self.Eig_value/(self.structure.unitcell_x*1e-9)
-            area = self.structure.unitcell_x * self.structure.unitcell_y
-            area_norm = area/self.structure.unitcell_x**2
+            area = self.structure.unitcell_x*1e-9 * self.structure.unitcell_y*1e-9
+            # area = self.structure.unitcell_x * self.structure.unitcell_y
+            # area_norm = area/self.structure.unitcell_x**2
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_EM_modes",\
@@ -158,6 +159,18 @@ class Simmo(object):
         except KeyboardInterrupt:
             print "\n\n FEM routine EM_mode_energy_int",\
             "interrupted by keyboard.\n\n"
+        ### Not necessary because EM FEM mesh always normalised in area to unity.
+        # print area
+        # x_tmp = []
+        # y_tmp = []
+        # for i in np.arange(self.n_msh_pts):
+        #     x_tmp.append(self.x_arr[0,i])
+        #     y_tmp.append(self.x_arr[1,i])
+        # x_min = np.min(x_tmp); x_max=np.max(x_tmp)
+        # y_min = np.min(y_tmp); y_max=np.max(y_tmp)
+        # area = abs((x_max-x_min)*(y_max-y_min))
+        # print area
+        # self.EM_mode_overlap = self.EM_mode_overlap*area
 
 
     def calc_AC_modes(self):
@@ -368,3 +381,14 @@ class Simmo(object):
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\
             "interrupted by keyboard.\n\n"
+
+        x_tmp = []
+        y_tmp = []
+        for i in np.arange(self.n_msh_pts):
+            x_tmp.append(self.x_arr[0,i])
+            y_tmp.append(self.x_arr[1,i])
+        x_min = np.min(x_tmp); x_max=np.max(x_tmp)
+        y_min = np.min(y_tmp); y_max=np.max(y_tmp)
+        area = abs((x_max-x_min)*(y_max-y_min))
+        print "AC FEM area", area
+        self.AC_mode_overlap = self.AC_mode_overlap*area

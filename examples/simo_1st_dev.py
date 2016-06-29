@@ -50,10 +50,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
@@ -108,6 +108,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         if el_typ+1 in sim_AC_wguide.structure.typ_el_AC:
             relevant_eps_effs.append(sim_EM_wguide.n_effs[el_typ]**2)
 
+### Calc Q_photoelastic Eq. 33
     try:
         Fortran_debug = 0
         Q_PE = NumBAT.photoelastic_int(
@@ -124,18 +125,21 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
+    print "Q", Q
     gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_mode]*np.real(Q**2)
     normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]
     normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]
     normal_fact = normal_fact*sim_AC_wguide.AC_mode_overlap[AC_mode]
 
-    print gain
-    print sim_EM_wguide.EM_mode_overlap[EM_mode1]
-    print sim_EM_wguide.EM_mode_overlap[EM_mode2]
-    print sim_AC_wguide.AC_mode_overlap[AC_mode]
+    print "gain", gain
+    print "EM mode 1 power", sim_EM_wguide.EM_mode_overlap[EM_mode1]
+    print "EM mode 2 power", sim_EM_wguide.EM_mode_overlap[EM_mode2]
+    print "AC mode power", sim_AC_wguide.AC_mode_overlap[AC_mode]
 
     gain = gain/normal_fact
-    print "gain", gain
+    alpha = 1/98.70e-6
+    gain = gain/alpha
+    print "gain normalised", gain
 
 
 
@@ -143,7 +147,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print sim_AC_wguide.el_convert_tbl
     # sim_AC_wguide.node_convert_tbl
 
-### Calc Q_photoelastic Eq. 33
 ### Calc Q_moving_boundary Eq. 41
 
 
