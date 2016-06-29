@@ -76,7 +76,9 @@ c
      *              nquad, nquad_max
       endif
 C
-      overlap = 0.0d0
+      do i=1,nval
+        overlap(i) = 0.0d0
+      enddo
 c
 c      n_curved = 0
       do iel=1,nel

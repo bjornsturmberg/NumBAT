@@ -18,7 +18,7 @@ c     Local variables
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
       double precision vec_grad(2,nnodes_0)
-      integer*8 i, j, inod, jnod
+      integer*8 j, inod, jnod
       complex*16 ii, z_tmp1, z_tmp2
       complex*16 Maxwell_coeff
 C

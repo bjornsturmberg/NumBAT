@@ -6,13 +6,13 @@ c   The dimension of the geometric domain is : dim_32 = 2
 c   The dimension of the vector field is : dim2 = 3
 c
 
-      subroutine array_sol_AC (i_cond, nval, nel, npt, neq,
+      subroutine array_sol_AC (nval, nel, npt, neq,
      *     nnodes, index, table_nod, type_el, ineq,
      *     x, v_cmplx, v_tmp, mode_pol, sol_0, sol)
 
 
       implicit none
-      integer*8 i_cond, nval, nel, npt, neq, nnodes
+      integer*8 nval, nel, npt, neq, nnodes
       integer*8 n_core(2), type_el(nel)
       integer*8 ineq(3,npt), index(*)
       integer*8 table_nod(nnodes,nel)
@@ -37,18 +37,16 @@ c
       double precision ZERO, ONE
       parameter ( ZERO = 0.0D0, ONE = 1.0D0)
 c
-      integer*8 j, k, i1, j1, m, inod, typ_e, debug
+      integer*8 j, i1, j1, inod, typ_e, debug
       integer*8 iel, ival, ival2, jtest, jp, ind_jp, j_eq
-      double precision ddot
       complex*16 ii, z_tmp1, z_tmp2, z_sol_max
 
       double precision x_min, x_max, y_min, y_max
       double precision x_mid, y_mid
       double precision dx, dy, x_0, y_0
       double precision lx, ly, rx, ry
-      complex*16 z_sol_max_mid  ! Value at (or near) the middle point
 
-      integer*8 i_sol_max, i_sol_max_mid, i_sol_max_tmp
+      integer*8 i_sol_max, i_sol_max_tmp
       integer*8 i_component, i_component_tmp
 
 c

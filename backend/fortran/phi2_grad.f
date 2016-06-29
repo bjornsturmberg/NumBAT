@@ -21,8 +21,8 @@ c     Local variables
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
       double precision xel_0(2,nnodes_0)
-      double precision phi_xi, phi_yi, phi_xj, phi_yj
-      double precision phi0_xi, phi0_yi, phi0_xj, phi0_yj
+      double precision phi_xi, phi_yi
+      double precision phi0_xi, phi0_yi
       double precision x, y
       integer*8 i
 

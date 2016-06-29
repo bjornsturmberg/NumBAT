@@ -206,7 +206,7 @@ C now multiply by specific field values for modes of interest.
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
-                    Ustar = conjg(soln_AC(l,ltest,ival3,iel))
+                    Ustar = conjg(soln_AC(l_eq,ltest,ival3,iel))
                     do k_eq=1,3
                       z_tmp1 = basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
                       z_tmp1 = E1star * E2 * Ustar * z_tmp1

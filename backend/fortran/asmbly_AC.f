@@ -1,5 +1,4 @@
 
-
       subroutine asmbly_AC (i_base, nel, npt, neq, nnodes, 
      *  shift, beta, nb_typ_el, rho, c_tensor, 
      *  table_nod, type_el, ineq, 
@@ -22,7 +21,6 @@ c     rho: density
       double precision mat1_re(nonz), mat1_im(nonz)
 
 c     Local variables
-
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
       integer*8 nod_el(nnodes_0)
@@ -34,9 +32,6 @@ c     Local variables
       integer*8 itrial, ip, ind_ip, i_eq
       integer*8 col_start, col_end
 
-
-      double precision mat_B(2,2), mat_T(2,2), det
-      double precision r_tmp1, r_tmp2
       complex*16 mat_K(18,18), mat_M(18,18)
       complex*16 ii, c_tensor_el(6,6), rho_el
       complex*16 z_tmp1, z_tmp2
@@ -44,7 +39,6 @@ c     Local variables
 c
 ccccccccccccccccccccccccccccccccccccccc
 c
-
 c      write(*,*) "B: nnodes = ", nnodes
 c
 c      write(*,*) "i_base, nel, npt, neq, nnodes = ",

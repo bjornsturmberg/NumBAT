@@ -68,10 +68,10 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim
 np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value # GHz
+# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
 # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
-# print 'Omega of AC wave \n', prop_AC_modes/(2*np.pi*8.54e3/inc_a_x) # GHz
+# print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 
@@ -117,7 +117,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
             sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
             q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
             relevant_eps_effs, Fortran_debug)
-        print "Q_PE", Q_PE
 
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int",\
@@ -125,10 +124,16 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
-    gain = 2*opt_freq_GHz*sim_AC_wguide.Eig_value[AC_mode]*1e-9*np.real(Q**2)
+    gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_mode]*np.real(Q**2)
     normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]
-    normal_fact *= sim_EM_wguide.EM_mode_overlap[EM_mode2]
-    # normal_fact *= sim_AC_wguide.AC_mode_overlap[AC_mode]
+    normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]
+    normal_fact = normal_fact*sim_AC_wguide.AC_mode_overlap[AC_mode]
+
+    print gain
+    print sim_EM_wguide.EM_mode_overlap[EM_mode1]
+    print sim_EM_wguide.EM_mode_overlap[EM_mode2]
+    print sim_AC_wguide.AC_mode_overlap[AC_mode]
+
     gain = gain/normal_fact
     print "gain", gain
 

@@ -447,7 +447,7 @@ C                 using the permutation vector index
       if (debug .eq. 1) then
         write(ui,*) "py_calc_modes_AC: call to array_sol"
       endif
-        call array_sol_AC (i_cond, nval, nel, npt, neq, nnodes,
+        call array_sol_AC (nval, nel, npt, neq, nnodes,
      *   index, table_nod, type_el, a(ip_eq), x_arr, beta1,
      *   b(jp_eigenval_tmp), mode_pol, b(jp_vp), sol1)
 

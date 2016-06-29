@@ -120,8 +120,8 @@ class Simmo(object):
 
             # Make natural units 1/m
             self.Eig_value = self.Eig_value/(self.structure.unitcell_x*1e-9)
-            # area = self.structure.unitcell_x * self.structure.unitcell_y
-            # area_norm = area/self.structure.unitcell_x**2
+            area = self.structure.unitcell_x * self.structure.unitcell_y
+            area_norm = area/self.structure.unitcell_x**2
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_EM_modes",\
@@ -330,8 +330,8 @@ class Simmo(object):
             table_nod_out, type_el_out, x_arr_out, \
             self.Eig_value, self.sol1, self.mode_pol = resm
 
-            # Make natural units GHz
-            self.Eig_value = self.Eig_value*1e-9
+            # # Make natural units GHz
+            # self.Eig_value = self.Eig_value*1e-9
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\

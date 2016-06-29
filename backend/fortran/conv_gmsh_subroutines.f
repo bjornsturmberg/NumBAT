@@ -489,7 +489,7 @@ c
       integer xadj(npt+1), adjncy(long_adj)
       double precision x(npt), y(npt)
 c
-      integer i, j, k, i1, j2, j3, k1, ind1, ind2
+      integer i, j, k, i1, k1, ind1, ind2
       integer npt_max, ip(2,3), m, m1
       parameter(npt_max=250000)
       integer lb2(npt_max)
@@ -786,7 +786,7 @@ c     Local data
       integer tab_ne(max_ne_0), tab_npt(max_npt_0,3)
 c
 c
-      integer i, j, k
+      integer i, j
 c
       integer debug, ui
       character file_ui*100
@@ -887,7 +887,7 @@ c
       double precision x_0(max_npt),  y_0(max_npt)
 c
 c     Local variables
-      integer i, i1, i2, i_a, i_b, j, j1, j2, k
+      integer i, i1, i2, i_a, i_b, j, j1, j2
       integer ne_1, npt_1, npt_2
       integer nut_0(6), nut_a(6), nut_b(6)
       double precision tol, y_min, y_max, y_mid
@@ -1061,7 +1061,7 @@ c
       double precision x_0(max_npt),  y_0(max_npt)
 c
 c     Local variables
-      integer i, i1, i2, i_a, i_b, j, j1, j2, k
+      integer i, i1, i2, i_a, i_b, j, j1, j2
       integer ne_1, npt_1, npt_2
       integer nut_0(6), nut_a(6), nut_b(6)
       double precision tol, x_min, x_max, x_mid

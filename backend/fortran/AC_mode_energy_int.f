@@ -1,21 +1,22 @@
 C Calculate the overlap integral of an AC mode with itself using
 C numerical quadrature.  
 C
-      subroutine AC_mode_energy_int (nval_AC, 
+      subroutine AC_mode_energy_int (nval, 
      *  nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, c_tensor_z, beta_AC, Omega_AC, soln_AC,
      *  debug, overlap)
 c
       implicit none
-      integer*8 nval_AC, ival
+      integer*8 nval, ival
       integer*8 nel, npt, nnodes, nb_typ_el
       integer*8 type_el(nel), debug
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
 c      complex*16 x(2,npt)
-      complex*16 soln_AC(3,nnodes,nval_AC,nel)
-      complex*16 Omega_AC(nval_AC)
-      complex*16 overlap, beta_AC
+      complex*16 soln_AC(3,nnodes,nval,nel)
+      complex*16 Omega_AC(nval), Om
+      complex*16 beta_AC
+      complex*16, dimension(nval) :: overlap
       complex*16 c_tensor_z(3,3,3,nb_typ_el)
 
 c     Local variables
@@ -24,14 +25,13 @@ c     Local variables
       integer*8 nod_el_p(nnodes0)
       double precision xel(2,nnodes0)
       complex*16 basis_overlap(3*nnodes0,3,3*nnodes0)
-      complex*16 U, Ustar, eps
+      complex*16 U, Ustar
       integer*8 i, j, k, l, j1, typ_e
       integer*8 iel, ind_ip, i_eq, k_eq
       integer*8 ltest, ind_lp, l_eq
       integer*8 itrial, ui
-      complex*16 eps_lst(nb_typ_el)
       complex*16 z_tmp1, ii
-      double precision mat_B(2,2), mat_T(2,2), eps_0
+      double precision mat_B(2,2), mat_T(2,2)
 c
 c     NQUAD: The number of quadrature points used in each element.
       integer*8 nquad, nquad_max, iq
@@ -47,16 +47,16 @@ c     NQUAD: The number of quadrature points used in each element.
       double precision grad2_mat(2,6)
 C
 C
-Cf2py intent(in) nval_AC, nel, npt, nnodes, table_nod
+Cf2py intent(in) nval, nel, npt, nnodes, table_nod
 Cf2py intent(in) type_el, x, nb_typ_el, c_tensor_z, beta_AC 
 Cf2py intent(in) soln_AC, debug, Omega_AC
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
 Cf2py depend(x) npt
-Cf2py depend(soln_AC) nnodes, nval_AC, nel
+Cf2py depend(soln_AC) nnodes, nval, nel
 Cf2py depend(c_tensor_z) nb_typ_el
-Cf2py depend(Omega_AC) nval_AC
+Cf2py depend(Omega_AC) nval
 C
 Cf2py intent(out) overlap
 C
@@ -73,12 +73,16 @@ C
         stop
       endif
 C
-      overlap = 0.0d0
       call quad_triangle (nquad, nquad_max, wq, xq, yq)
       if (debug .eq. 1) then
         write(ui,*) "AC_mode_energy_int: nquad, nquad_max = ",
      *              nquad, nquad_max
       endif
+C
+      do i=1,nval
+        overlap(i) = 0.0d0
+      enddo
+C
 cccccccccccc
 C Loop over elements - start
 cccccccccccc
@@ -152,10 +156,9 @@ C             Gradient of transverse components of basis function
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
-                    z_tmp1 = phi2_list(itrial) 
-     *                      * grad2_mat(k_eq,ltest)
-                    coeff_2 = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
-                    z_tmp1 = coeff_1 * coeff_2 * z_tmp1
+                    z_tmp1 = phi2_list(itrial) * grad2_mat(k_eq,ltest)
+                    coeff_1 = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
+                    z_tmp1 = coeff_1 * z_tmp1
                     basis_overlap(ind_ip,k_eq,ind_lp) =
      *                basis_overlap(ind_ip,k_eq,ind_lp)
      *                      + z_tmp1
@@ -171,8 +174,8 @@ C             form e^{i*beta*z} phi.
                   ind_lp = l_eq + 3*(ltest-1)
                   z_tmp1 = phi2_list(itrial)
      *                    * phi2_list(ltest) * ii * beta_AC
-                  coeff_2 = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
-                  z_tmp1 = coeff_1 * coeff_2 * z_tmp1
+                  coeff_1 = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
+                  z_tmp1 = coeff_1 * z_tmp1
                   basis_overlap(ind_ip,k_eq,ind_lp) =
      *              basis_overlap(ind_ip,k_eq,ind_lp)
      *                    + z_tmp1
@@ -184,23 +187,20 @@ C             form e^{i*beta*z} phi.
 cccccccccc
 C Having calculated overlap of basis functions on element
 C now multiply by specific field values for modes of interest.
-        do itrial=1,nnodes0
-          do i_eq=1,3
-            ind_ip = i_eq + 3*(itrial-1)
-            E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
-            do jtest=1,nnodes0
-              do j_eq=1,3
-                ind_jp = j_eq + 3*(jtest-1)
-                E2 = soln_EM(j_eq,jtest,ival2,iel)
-                do ltest=1,nnodes0
-                  do l_eq=1,3
-                    ind_lp = l_eq + 3*(ltest-1)
-                    Ustar = conjg(soln_AC(l,ltest,ival3,iel))
-                    do k_eq=1,3
-                      z_tmp1 = basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
-                      z_tmp1 = E1star * E2 * Ustar * z_tmp1
-                      overlap = overlap + z_tmp1
-                    enddo
+        do ival=1,nval
+          Om = Omega_AC(ival)
+          do itrial=1,nnodes0
+            do i_eq=1,3
+              ind_ip = i_eq + 3*(itrial-1)
+              Ustar = conjg(soln_AC(i_eq,itrial,ival,iel))
+              do ltest=1,nnodes0
+                do l_eq=1,3
+                  ind_lp = l_eq + 3*(ltest-1)
+                  U = soln_AC(l_eq,ltest,ival,iel)
+                  do k_eq=1,3
+                    z_tmp1 = basis_overlap(ind_ip,k_eq,ind_lp)
+                    z_tmp1 = -2 * ii * Om * Ustar * U * z_tmp1
+                    overlap(ival) = overlap(ival) + z_tmp1
                   enddo
                 enddo
               enddo

@@ -75,12 +75,12 @@ q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value # GHz
+# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
-# print 'Omega of AC wave \n', prop_AC_modes/(2*np.pi*8.54e3/inc_a_x) # GHz
+# print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
 
 import matplotlib
 matplotlib.use('pdf')
