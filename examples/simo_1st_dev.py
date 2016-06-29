@@ -34,8 +34,8 @@ num_AC_modes = 20
 s = 2330  # kg/m3
 c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
 p_11 = -0.044; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9 ; eta_12 = 5.16  # m Pa s
-eta_44 = 620   # mu Pa s
+eta_11 = 5.9e-3 ; eta_12 = 5.16e-3  # Pa s
+eta_44 = 620e-6   # Pa s
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
