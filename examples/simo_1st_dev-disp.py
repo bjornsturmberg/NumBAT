@@ -32,7 +32,7 @@ inc_shape = 'rectangular'
 ### Optical parameters
 eps = 12.25
 num_EM_modes = 20
-num_AC_modes = 60
+num_AC_modes = 20
 
 ### Acoustic parameters
 # Inclusion a
@@ -57,10 +57,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
@@ -89,7 +89,7 @@ import matplotlib.pyplot as plt
 plt.clf()
 plt.figure(figsize=(13,13))
 ax = plt.subplot(1,1,1)
-for q_ac in np.linspace(0.0,q_acoustic,1):#50):
+for q_ac in np.linspace(0.0,q_acoustic,50):
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_ac, num_AC_modes, EM_sim=sim_EM_wguide)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
     # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.imag(x)) < 1e-0])
@@ -98,7 +98,7 @@ for q_ac in np.linspace(0.0,q_acoustic,1):#50):
 
     # prop_AC_modes_allowed = integration.allowed_symmetries(sim_AC_wguide)
     for i in range(len(prop_AC_modes)):
-        Om = prop_AC_modes[i]
+        Om = prop_AC_modes[i]*1e-9
         # plt.plot(q_ac/q_acoustic, Om, marks[i%len(marks)])
         plt.plot(q_ac/q_acoustic, Om, 'ok')
     ax.set_ylim(0,20)
