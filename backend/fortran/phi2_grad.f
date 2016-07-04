@@ -7,22 +7,21 @@ c       grad_i  = Transpose(mat_T)*grad_i0
 c
 ccccccccccccccccccccccccccccccc
 c
-      subroutine phi2_grad(inode, nnodes, c, vec_grad)
+      subroutine phi2_grad(inode, nnodes, mat_jac, vec_grad)
 
-cc  dt, mat_jac
 c
       implicit none
       integer*8 inode, nnodes
       double precision vec_grad(2,nnodes)
-      double precision c(2,2)
-cc      double precision mat_jac(2,2), dt 
+      double precision mat_jac(2,2), dt 
 
 c     Local variables
+      double precision c(2,2)
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
       double precision xel_0(2,nnodes_0)
-      double precision phi_xi, phi_yi
-      double precision phi0_xi, phi0_yi
+      double precision phi_xi, phi_yi, phi_xj, phi_yj
+      double precision phi0_xi, phi0_yi, phi0_xj, phi0_yj
       double precision x, y
       integer*8 i
 
@@ -41,18 +40,13 @@ c     Coordinates (x,y)= xel_0(1..2,inode) of the P2 Lagrange interpolaion nodes
       xel_0(2,5) = 0.5d0
       xel_0(1,6) = 0
       xel_0(2,6) = 0.5d0
-
-cc      if(abs(dt) .gt. 1.0d-12) then
-cc        c(1,1) = mat_jac(2,2)/dt
-cc        c(1,2) = -mat_jac(1,2)/dt
-cc        c(2,1) = -mat_jac(2,1)/dt
-cc        c(2,2) = mat_jac(1,1)/dt
-cc      else
-cc        write(*,*) 'phi2_grad: ATTENTION: determinant is zero !'
-cc        write(*,*) 'dt = ', dt
-cc        write(*,*) 'Aborting...'
-cc        stop
-cc      endif
+c
+c     C = Tanspose[mat_jac]
+      c(1,1) = mat_jac(1,1)
+      c(2,2) = mat_jac(2,2)
+      c(1,2) = mat_jac(2,1)
+      c(2,1) = mat_jac(1,2)
+c
       x = xel_0(1,inode)
       y = xel_0(2,inode)
 c
