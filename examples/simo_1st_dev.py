@@ -50,10 +50,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
@@ -64,10 +64,10 @@ np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
-np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
+# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+npzfile = np.load('wguide_data_AC.npz')
+sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
 # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
@@ -119,6 +119,18 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
             q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
             relevant_eps_effs, Fortran_debug)
 
+        # EM_mode_overlap2 = NumBAT.em_mode_energy_int_v2(
+        #     sim_EM_wguide.wl_norm(), sim_EM_wguide.num_modes, sim_AC_wguide.n_msh_el, 
+        #     sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod,
+        #     sim_AC_wguide.x_arr, sim_EM_wguide.Eig_value, trimmed_EM_field)
+        # # EM_mode_overlap2 = NumBAT.em_mode_energy_int_v2(
+        # #     sim_EM_wguide.wl_norm(), sim_EM_wguide.num_modes, sim_EM_wguide.n_msh_el, 
+        # #     sim_EM_wguide.n_msh_pts, nnodes, sim_EM_wguide.table_nod,
+        # #     sim_EM_wguide.x_arr, sim_EM_wguide.Eig_value, sim_EM_wguide.sol1)
+
+        # print sim_EM_wguide.EM_mode_overlap
+        # print EM_mode_overlap2
+
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int",\
         "interrupted by keyboard.\n\n"
@@ -127,13 +139,13 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     Q = Q_PE + Q_MB
     print "Q", Q
     gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_mode]*np.real(Q*np.conj(Q))
-    normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]
-    normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]
+    normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]*unitcell_x*1e-9*unitcell_y*1e-9
+    normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]*unitcell_x*1e-9*unitcell_y*1e-9
     normal_fact = normal_fact*sim_AC_wguide.AC_mode_overlap[AC_mode]
 
     print "gain", gain
-    print "EM mode 1 power", sim_EM_wguide.EM_mode_overlap[EM_mode1]
-    print "EM mode 2 power", sim_EM_wguide.EM_mode_overlap[EM_mode2]
+    print "EM mode 1 power", sim_EM_wguide.EM_mode_overlap[EM_mode1]*unitcell_x*1e-9*unitcell_y*1e-9
+    print "EM mode 2 power", sim_EM_wguide.EM_mode_overlap[EM_mode2]*unitcell_x*1e-9*unitcell_y*1e-9
     print "AC mode power", sim_AC_wguide.AC_mode_overlap[AC_mode]
 
     gain = gain/normal_fact
