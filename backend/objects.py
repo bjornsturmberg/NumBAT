@@ -235,6 +235,7 @@ class Struct(object):
         c_tensor = np.zeros((6,6,self.nb_typ_el_AC))
         c_tensor_z = np.zeros((3,3,3,self.nb_typ_el_AC))
         p_tensor = np.zeros((3,3,3,3,self.nb_typ_el_AC))
+        eta_tensor = np.zeros((3,3,3,3,self.nb_typ_el_AC))
         for k_typ in range(self.nb_typ_el_AC):
             if acoustic_props[k_typ]:
                 rho[k_typ] = acoustic_props[k_typ][0]
@@ -280,10 +281,33 @@ class Struct(object):
                 p_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ][6]
                 p_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ][6]
                 p_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ][6]
+
+                eta_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ][7]
+                eta_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ][7]
+                eta_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ][7]
+                eta_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ][8]
+                eta_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ][8]
+                eta_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ][8]
+                eta_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ][8]
+                eta_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ][8]
+                eta_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ][8]
+                eta_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ][9]
         self.rho = rho
         self.c_tensor = c_tensor
         self.c_tensor_z = c_tensor_z
         self.p_tensor = p_tensor
+        self.eta_tensor = eta_tensor
 
 
     def make_mesh(self):

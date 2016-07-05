@@ -64,10 +64,10 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
-# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-npzfile = np.load('wguide_data_AC.npz')
-sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
+np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
 # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
@@ -135,23 +135,25 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         print "\n\n Routine photoelastic_int",\
         "interrupted by keyboard.\n\n"
 
+    eps_0 = 8.854187817e-12
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
     print "Q", Q
     gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_mode]*np.real(Q*np.conj(Q))
-    normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]*unitcell_x*1e-9*unitcell_y*1e-9
-    normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]*unitcell_x*1e-9*unitcell_y*1e-9
-    normal_fact = normal_fact*sim_AC_wguide.AC_mode_overlap[AC_mode]
+    normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]*eps_0#*unitcell_x*1e-9*unitcell_y*1e-9
+    normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]*eps_0#*unitcell_x*1e-9*unitcell_y*1e-9
+    normal_fact = normal_fact*sim_AC_wguide.AC_mode_overlap[AC_mode]#*inc_a_x*1e-9*inc_a_y*1e-9
 
     print "gain", gain
-    print "EM mode 1 power", sim_EM_wguide.EM_mode_overlap[EM_mode1]*unitcell_x*1e-9*unitcell_y*1e-9
-    print "EM mode 2 power", sim_EM_wguide.EM_mode_overlap[EM_mode2]*unitcell_x*1e-9*unitcell_y*1e-9
-    print "AC mode power", sim_AC_wguide.AC_mode_overlap[AC_mode]
+    print "EM mode 1 power", sim_EM_wguide.EM_mode_overlap[EM_mode1]*eps_0#*unitcell_x*1e-9*unitcell_y*1e-9
+    print "EM mode 2 power", sim_EM_wguide.EM_mode_overlap[EM_mode2]*eps_0#*unitcell_x*1e-9*unitcell_y*1e-9
+    print "AC mode power", sim_AC_wguide.AC_mode_overlap[AC_mode]#*inc_a_x*1e-9*inc_a_y*1e-9
 
     gain = gain/normal_fact
     alpha = 1/98.70e-6
     gain = gain/alpha
     print "gain normalised", gain
+    print "gain error factor", gain/310.
 
 
 

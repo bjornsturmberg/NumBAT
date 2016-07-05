@@ -1,0 +1,220 @@
+C Calculate the overlap integral of an AC mode with itself using
+C numerical quadrature.  
+C
+      subroutine AC_alpha_int (nval, 
+     *  nel, npt, nnodes, table_nod, type_el, x,
+     *  nb_typ_el, eta_tensor, beta_AC, Omega_AC, soln_AC,
+     *  AC_mode_overlap, debug, overlap)
+c
+      implicit none
+      integer*8 nval, ival
+      integer*8 nel, npt, nnodes, nb_typ_el
+      integer*8 type_el(nel), debug
+      integer*8 table_nod(nnodes,nel)
+      double precision x(2,npt)
+c      complex*16 x(2,npt)
+      complex*16 soln_AC(3,nnodes,nval,nel)
+      complex*16 Omega_AC(nval), Om
+      complex*16 beta_AC, AC_mode_overlap(nval)
+      complex*16, dimension(nval) :: overlap
+      complex*16 eta_tensor(3,3,3,3,nb_typ_el)
+
+c     Local variables
+      integer*8 nnodes0
+      parameter (nnodes0 = 6)
+      integer*8 nod_el_p(nnodes0)
+      double precision xel(2,nnodes0)
+      complex*16 basis_overlap(3*nnodes0,3,3,3*nnodes0)
+      complex*16 U, Ustar
+      integer*8 i, j, k, l, j1, typ_e
+      integer*8 iel, ind_ip, i_eq, k_eq
+      integer*8 ltest, ind_lp, l_eq
+      integer*8 itrial, ui
+      complex*16 z_tmp1, ii
+      double precision mat_B(2,2), mat_T(2,2)
+c
+c     NQUAD: The number of quadrature points used in each element.
+      integer*8 nquad, nquad_max, iq
+      parameter (nquad_max = 25)
+      double precision wq(nquad_max)
+      double precision xq(nquad_max), yq(nquad_max)
+      double precision xx(2), xx_g(2), ww, det
+      integer*8 info_curved, n_curved
+      double precision r_tmp1, ZERO, ONE
+      parameter ( ZERO = 0.0D0, ONE = 1.0D0)
+      complex*16 coeff_1
+      double precision phi2_list(6), grad2_mat0(2,6)
+      double precision grad2_mat(2,6)
+C
+C
+Cf2py intent(in) nval, nel, npt, nnodes, table_nod
+Cf2py intent(in) type_el, x, nb_typ_el, eta_tensor, beta_AC 
+Cf2py intent(in) soln_AC, debug, Omega_AC
+C
+Cf2py depend(table_nod) nnodes, nel
+Cf2py depend(type_el) npt
+Cf2py depend(x) npt
+Cf2py depend(soln_AC) nnodes, nval, nel
+Cf2py depend(eta_tensor) nb_typ_el
+Cf2py depend(Omega_AC) nval
+Cf2py depend(AC_mode_overlap) nval
+C
+Cf2py intent(out) overlap
+C
+C
+CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
+C
+      ui = 6
+      ii = cmplx(0.0d0, 1.0d0)
+C
+      if ( nnodes .ne. 6 ) then
+        write(ui,*) "AC_alpha_int: problem nnodes = ", nnodes
+        write(ui,*) "AC_alpha_int: nnodes should be equal to 6 !"
+        write(ui,*) "AC_alpha_int: Aborting..."
+        stop
+      endif
+C
+      call quad_triangle (nquad, nquad_max, wq, xq, yq)
+      if (debug .eq. 1) then
+        write(ui,*) "AC_alpha_int: nquad, nquad_max = ",
+     *              nquad, nquad_max
+      endif
+C
+      do i=1,nval
+        overlap(i) = 0.0d0
+      enddo
+C
+cccccccccccc
+C Loop over elements - start
+cccccccccccc
+      do iel=1,nel
+        typ_e = type_el(iel)
+        do j=1,nnodes
+          j1 = table_nod(j,iel)
+          nod_el_p(j) = j1
+          xel(1,j) = x(1,j1)
+          xel(2,j) = x(2,j1)
+        enddo
+        call curved_elem_tri (nnodes, xel, info_curved, r_tmp1)
+        if (info_curved .eq. 1) then
+          n_curved = n_curved + 1
+        endif
+cccccccccc
+        do i=1,3*nnodes
+          do j=1,3
+            do k=1,3
+              do l=1,3*nnodes
+                basis_overlap(i,j,k,l) = 0.0d0
+              enddo
+            enddo
+          enddo
+        enddo
+cccccccccc
+C For each quadrature point evaluate overlap of Lagrange polynomials 
+C or derivative of Lagrange polynomials 
+C         do iq=1,nquad
+C           xx(1) = xq(iq)
+C           xx(2) = yq(iq)
+C           ww = wq(iq)
+C c         xx   = coordinate on the reference triangle
+C c         xx_g = coordinate on the actual triangle
+C C         phi2_list = values of Lagrange polynomials (1-6) at each local node.
+C C         grad2_mat0 = gradient on the reference triangle (P2 element)
+C            call phi2_2d_mat(xx, phi2_list, grad2_mat0)
+C c
+C           if (info_curved .eq. 0) then
+C c           Rectilinear element
+C             call jacobian_p1_2d(xx, xel, nnodes,
+C      *               xx_g, det, mat_B, mat_T)
+C             if(det .le. 0 .and. debug .eq. 1 .and. iq .eq. 1) then
+C               write(*,*) "   !!!"
+C               write(*,*) "PE_int: det <= 0: iel, det ", iel, det
+C             endif
+C           else
+C c           Isoparametric element
+C             call jacobian_p2_2d(xx, xel, nnodes, phi2_list,
+C      *               grad2_mat0, xx_g, det, mat_B, mat_T)
+C           endif
+C C            if(abs(det) .lt. 1.0d-10) then
+C            if(abs(det) .lt. 1.0d-20) then
+C              write(*,*)
+C              write(*,*) "   ???"
+C              write(*,*) "PE_int: det = 0 : iel, det = ", iel, det
+C              write(*,*) "PE_int: Aborting..."
+C              stop
+C            endif
+C c          grad_i  = gradient on the actual triangle
+C c          grad_i  = Transpose(mat_T)*grad_i0
+C c          Calculation of the matrix-matrix product:
+C           call DGEMM('Transpose','N', 2, 6, 2, ONE, mat_T, 2,
+C      *           grad2_mat0, 2, ZERO, grad2_mat, 2)
+C           coeff_1 = ww * abs(det)
+C C Calculate overlap of basis functions at quadrature point, 
+C C which is a superposition of P2 polynomials for each function (field).
+C           do itrial=1,nnodes0
+C             do i_eq=1,3
+C               ind_ip = i_eq + 3*(itrial-1)
+C C             Gradient of transverse components of basis function
+C               do k_eq=1,2
+C                 do ltest=1,nnodes0
+C                   do l_eq=1,3
+C                     ind_lp = l_eq + 3*(ltest-1)
+C                     z_tmp1 = phi2_list(itrial) * grad2_mat(k_eq,ltest)
+C                     coeff_1 = eta_tensor(i_eq,k_eq,l_eq,typ_e)
+C                     z_tmp1 = coeff_1 * z_tmp1
+C                     basis_overlap(ind_ip,k_eq,ind_lp) =
+C      *                basis_overlap(ind_ip,k_eq,ind_lp)
+C      *                      + z_tmp1
+C                   enddo
+C                 enddo
+C               enddo
+C C             Gradient of longitudinal components of basis function,
+C C             which is i*beta*phi because field is assumed to be of
+C C             form e^{i*beta*z} phi.
+C               k_eq=3
+C               do ltest=1,nnodes0
+C                 do l_eq=1,3
+C                   ind_lp = l_eq + 3*(ltest-1)
+C                   z_tmp1 = phi2_list(itrial)
+C      *                    * phi2_list(ltest) * ii * beta_AC
+C                   coeff_1 = eta_tensor(i_eq,k_eq,l_eq,typ_e)
+C                   z_tmp1 = coeff_1 * z_tmp1
+C                   basis_overlap(ind_ip,k_eq,ind_lp) =
+C      *              basis_overlap(ind_ip,k_eq,ind_lp)
+C      *                    + z_tmp1
+C                 enddo
+C               enddo
+C             enddo
+C           enddo
+C         enddo
+C cccccccccc
+C C Having calculated overlap of basis functions on element
+C C now multiply by specific field values for modes of interest.
+C         do ival=1,nval
+C           Om = Omega_AC(ival)
+C           do itrial=1,nnodes0
+C             do i_eq=1,3
+C               ind_ip = i_eq + 3*(itrial-1)
+C               Ustar = conjg(soln_AC(i_eq,itrial,ival,iel))
+C               do ltest=1,nnodes0
+C                 do l_eq=1,3
+C                   ind_lp = l_eq + 3*(ltest-1)
+C                   U = soln_AC(l_eq,ltest,ival,iel)
+C                   do k_eq=1,3
+C                     z_tmp1 = basis_overlap(ind_ip,k_eq,ind_lp)
+C                     z_tmp1 = -2 * ii * Om * Ustar * U * z_tmp1
+C                     overlap(ival) = overlap(ival) + z_tmp1
+C                   enddo
+C                 enddo
+C               enddo
+C             enddo
+C           enddo
+C         enddo
+cccccccccccc
+C Loop over elements - end
+cccccccccccc
+      enddo
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+      end subroutine AC_alpha_int
