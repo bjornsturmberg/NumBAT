@@ -68,9 +68,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-### Calc loss alphar Eq. 45
+### Calc alpha (loss) Eq. 45
     try:
-        alpha_numbat = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el, 
+        alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el, 
             sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
             sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
@@ -82,20 +82,20 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 # Christians values for alpha of first 3 modes
     print '---------'
-    print alpha_numbat[2]
-    alpha = 1/98.70e-6
-    print alpha
-    print alpha_numbat[2]/alpha
+    print alpha[2]
+    alpha_2 = 1/98.70e-6
+    print alpha_2
+    print alpha_2/alpha[2]
     print '---------'
-    print alpha_numbat[0]
+    print alpha[0]
     alpha_0 = 1/186.52e-6
     print alpha_0
-    print alpha_numbat[0]/alpha_0
+    print alpha_0/alpha[0]
     print '---------'
-    print alpha_numbat[1]
+    print alpha[1]
     alpha_1 = 1/142.79e-6
     print alpha_1
-    print alpha_numbat[1]/alpha_1
+    print alpha_1/alpha[1]
     print '---------'
 
     eps_0 = 8.854187817e-12
@@ -114,10 +114,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     print "AC mode power", P3
 
     gain = gain/normal_fact
-    alpha = 1/98.70e-6
-    SBS_gain = gain/alpha
+    alpha_2 = 1/98.70e-6
+    SBS_gain = gain/alpha_2
+    SBS_gain = gain/alpha[2]
+    print "SBS_gain", SBS_gain
 
-    return SBS_gain, Q_PE, Q_MB
+    return SBS_gain, Q_PE, Q_MB, alpha
 
 
 # ### Calc Q_moving_boundary Eq. 41

@@ -73,6 +73,6 @@ np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 
 
 ### Calculate interaction integrals
-SBS_gain, Q_PE, Q_MB = integration.gain_and_qs(sim_EM_wguide, 
+SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(sim_EM_wguide, 
                            sim_AC_wguide, q_acoustic, AC_ival=2)
 
