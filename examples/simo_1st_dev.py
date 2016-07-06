@@ -131,29 +131,65 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         # print sim_EM_wguide.EM_mode_overlap
         # print EM_mode_overlap2
 
+        alpha_numbat = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el, 
+            sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
+            sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+            sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
+            q_acoustic, sim_AC_wguide.sol1, sim_AC_wguide.sol1, 
+            sim_AC_wguide.AC_mode_overlap, Fortran_debug)
+
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int",\
         "interrupted by keyboard.\n\n"
 
-    eps_0 = 8.854187817e-12
-    Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
-    Q = Q_PE + Q_MB
-    print "Q", Q
-    gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_mode]*np.real(Q*np.conj(Q))
-    normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]*eps_0#*unitcell_x*1e-9*unitcell_y*1e-9
-    normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]*eps_0#*unitcell_x*1e-9*unitcell_y*1e-9
-    normal_fact = normal_fact*sim_AC_wguide.AC_mode_overlap[AC_mode]#*inc_a_x*1e-9*inc_a_y*1e-9
-
-    print "gain", gain
-    print "EM mode 1 power", sim_EM_wguide.EM_mode_overlap[EM_mode1]*eps_0#*unitcell_x*1e-9*unitcell_y*1e-9
-    print "EM mode 2 power", sim_EM_wguide.EM_mode_overlap[EM_mode2]*eps_0#*unitcell_x*1e-9*unitcell_y*1e-9
-    print "AC mode power", sim_AC_wguide.AC_mode_overlap[AC_mode]#*inc_a_x*1e-9*inc_a_y*1e-9
-
-    gain = gain/normal_fact
+# Christians values for alpha of first 3 modes
+    print '---------'
+    print alpha_numbat[2]
     alpha = 1/98.70e-6
-    gain = gain/alpha
-    print "gain normalised", gain
-    print "gain error factor", gain/310.
+    print alpha
+    print alpha_numbat[2]/alpha
+    print '---------'
+    print alpha_numbat[0]
+    alpha_0 = 1/186.52e-6
+    print alpha_0
+    print alpha_numbat[0]/alpha_0
+    print '---------'
+    print alpha_numbat[1]
+    alpha_1 = 1/142.79e-6
+    print alpha_1
+    print alpha_numbat[1]/alpha_1
+    print '---------'
+    # print '---------'
+    # print 98.70/186.52
+    # print alpha_numbat[0]/alpha_numbat[2]
+    # print 98.70/142.79
+    # print alpha_numbat[1]/alpha_numbat[2]
+    # print '---------'
+
+
+
+
+    # eps_0 = 8.854187817e-12
+    # Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
+    # Q = Q_PE + Q_MB
+    # print "Q", Q
+    # gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_mode]*np.real(Q*np.conj(Q))
+    # normal_fact = sim_EM_wguide.EM_mode_overlap[EM_mode1]#*eps_0*unitcell_x*1e-9*unitcell_y*1e-9
+    # normal_fact = normal_fact*sim_EM_wguide.EM_mode_overlap[EM_mode2]#*eps_0*unitcell_x*1e-9*unitcell_y*1e-9
+    # normal_fact = normal_fact*sim_AC_wguide.AC_mode_overlap[AC_mode]#*inc_a_x*1e-9*inc_a_y*1e-9
+
+    # print "gain", gain
+    # print "EM mode 1 power", sim_EM_wguide.EM_mode_overlap[EM_mode1]#*eps_0*unitcell_x*1e-9*unitcell_y*1e-9
+    # print "EM mode 2 power", sim_EM_wguide.EM_mode_overlap[EM_mode2]#*eps_0*unitcell_x*1e-9*unitcell_y*1e-9
+    # print "AC mode power", sim_AC_wguide.AC_mode_overlap[AC_mode]#*inc_a_x*1e-9*inc_a_y*1e-9
+
+    # gain = gain/normal_fact
+    # alpha = 1/98.70e-6
+    # print alpha_numbat[2]/alpha
+    # gain = gain/alpha
+    # print "gain normalised", gain
+    # print "gain error factor", gain/310.
+
 
 
 

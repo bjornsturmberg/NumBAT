@@ -209,7 +209,7 @@ cccccccccccc
       enddo
 C Multiply through prefactor
       do i=1,nval
-        overlap(i) = -2 * ii * Omega_AC(i) * overlap(i)
+        overlap(i) = -2.0 * ii * Omega_AC(i) * overlap(i)
       enddo
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
