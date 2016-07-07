@@ -31,8 +31,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     ncomps = 3
     nnodes = 6
-    speed_c = 299792458
-    opt_freq_GHz = speed_c/sim_EM_wguide.wl_nm # putting in wl in nm gives you GHz
     num_EM_modes = len(sim_EM_wguide.Eig_value)
     n_msh_el_AC = sim_AC_wguide.n_msh_el
     trimmed_EM_field = np.zeros((ncomps,nnodes,num_EM_modes,n_msh_el_AC), dtype=complex)
@@ -70,37 +68,41 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 ### Calc alpha (loss) Eq. 45
     try:
-        alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el, 
-            sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
+        alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el,
+            sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod,
             sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
-            q_acoustic, sim_AC_wguide.sol1, sim_AC_wguide.sol1, 
+            q_acoustic, sim_AC_wguide.Eig_value, sim_AC_wguide.sol1,
             sim_AC_wguide.AC_mode_overlap, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
 
 
 # Christians values for alpha of first 3 modes
-    print '---------'
-    print alpha[2]
-    alpha_2 = 1/98.70e-6
-    print alpha_2
-    print alpha_2/alpha[2]
-    print '---------'
-    print alpha[0]
-    alpha_0 = 1/186.52e-6
-    print alpha_0
-    print alpha_0/alpha[0]
-    print '---------'
-    print alpha[1]
-    alpha_1 = 1/142.79e-6
-    print alpha_1
-    print alpha_1/alpha[1]
-    print '---------'
+    # print sim_AC_wguide.AC_mode_overlap
+    print alpha
+    # print '---------'
+    # print alpha[2]
+    # alpha_2 = 1/98.70e-6
+    # print alpha_2
+    # print alpha_2/alpha[2]
+    # print '---------'
+    # print alpha[0]
+    # alpha_0 = 1/186.52e-6
+    # print alpha_0
+    # print alpha_0/alpha[0]
+    # print '---------'
+    # print alpha[1]
+    # alpha_1 = 1/142.79e-6
+    # print alpha_1
+    # print alpha_1/alpha[1]
+    # print '---------'
 
     eps_0 = 8.854187817e-12
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
+    speed_c = 299792458
+    opt_freq_GHz = speed_c/sim_EM_wguide.wl_nm # putting in wl in nm gives you GHz
     gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_ival]*np.real(Q*np.conj(Q))
     P1 = sim_EM_wguide.EM_mode_overlap[EM_ival1]#*eps_0*unitcell_x*1e-9*unitcell_y*1e-9
     P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]#*eps_0*unitcell_x*1e-9*unitcell_y*1e-9

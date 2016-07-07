@@ -20,7 +20,7 @@ c     Local variables
       parameter (nnodes_P2_0 = 6, nnodes_P3_0 = 10)
       double precision vec_grad_P2(2,nnodes_P2_0)
       double precision vec_grad_P3(2,nnodes_P3_0)
-      integer*8 i, j, inod, jnod
+      integer*8 j, inod, jnod
       complex*16 ii, z_tmp1, z_tmp2
       complex*16 Maxwell_coeff
 C

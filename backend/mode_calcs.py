@@ -354,17 +354,17 @@ class Simmo(object):
             plotting.plot_msh(x_arr_AC, 'in')
             plotting.plot_msh(x_arr_out, 'out')
 
-        if EM_sim is None:
-            table_nod_out = None
-            type_el_out = None
-            x_arr_out = None
-            self.table_nod = table_nod_AC
-            self.type_el = type_el_AC
-            self.x_arr = x_arr_AC
-        else:
-            self.table_nod = table_nod_out
-            self.type_el = type_el_out
-            self.x_arr = x_arr_out
+        # if EM_sim is None:
+        #     table_nod_out = None
+        #     type_el_out = None
+        #     x_arr_out = None
+        #     self.table_nod = table_nod_AC
+        #     self.type_el = type_el_AC
+        #     self.x_arr = x_arr_AC
+        # else:
+        self.table_nod = table_nod_out
+        self.type_el = type_el_out
+        self.x_arr = x_arr_out
 
 ### Calc unnormalised power in each AC mode Eq. 18.
         try:
@@ -382,13 +382,13 @@ class Simmo(object):
             print "\n\n FEM routine AC_mode_energy_int",\
             "interrupted by keyboard.\n\n"
 
-        x_tmp = []
-        y_tmp = []
-        for i in np.arange(self.n_msh_pts):
-            x_tmp.append(self.x_arr[0,i])
-            y_tmp.append(self.x_arr[1,i])
-        x_min = np.min(x_tmp); x_max=np.max(x_tmp)
-        y_min = np.min(y_tmp); y_max=np.max(y_tmp)
-        area = abs((x_max-x_min)*(y_max-y_min))
-        print "AC FEM area", area
-        self.AC_mode_overlap = self.AC_mode_overlap*area
+        # x_tmp = []
+        # y_tmp = []
+        # for i in np.arange(self.n_msh_pts):
+        #     x_tmp.append(self.x_arr[0,i])
+        #     y_tmp.append(self.x_arr[1,i])
+        # x_min = np.min(x_tmp); x_max=np.max(x_tmp)
+        # y_min = np.min(y_tmp); y_max=np.max(y_tmp)
+        # area = abs((x_max-x_min)*(y_max-y_min))
+        # print "AC FEM area", area
+        # self.AC_mode_overlap = self.AC_mode_overlap*area

@@ -22,6 +22,9 @@ inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 # inc_shape = 'circular'
 
+# unitcell_x = inc_a_x
+# unitcell_y = inc_a_y
+
 ### Optical parameters
 eps = 12.25
 num_EM_modes = 20
@@ -41,7 +44,6 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
                         lc_bkg=0.2, lc2=20.0, lc3=20.0)#,
-                        # lc_bkg=0.2, lc2=70.0, lc3=100.0)#,
                         # make_mesh_now=False, plotting_fields=False,
                         # mesh_file='rect_acoustic_3.mail')
 
@@ -62,7 +64,8 @@ q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
-np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=None)
+# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz

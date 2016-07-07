@@ -123,9 +123,9 @@ c
 c           Rectilinear element
             call jacobian_p1_2d(xx, xel, nnodes,
      *               xx_g, det, mat_B, mat_T)
-            if(det .le. 0 .and. debug .eq. 1 .and. iq .eq. 1) then
+            if(det .le. 0 .and. debug .eq. 2 .and. iq .eq. 1) then
               write(*,*) "   !!!"
-              write(*,*) "PE_int: det <= 0: iel, det ", iel, det
+              write(*,*) "AC_m_en_int: det <= 0: iel, det ", iel, det
             endif
           else
 c           Isoparametric element
@@ -136,8 +136,8 @@ C            if(abs(det) .lt. 1.0d-10) then
            if(abs(det) .lt. 1.0d-20) then
              write(*,*)
              write(*,*) "   ???"
-             write(*,*) "PE_int: det = 0 : iel, det = ", iel, det
-             write(*,*) "PE_int: Aborting..."
+             write(*,*) "AC_m_en_int: det = 0 : iel, det = ", iel, det
+             write(*,*) "AC_m_en_int: Aborting..."
              stop
            endif
 c          grad_i  = gradient on the actual triangle
