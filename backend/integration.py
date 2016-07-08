@@ -6,6 +6,11 @@
 """
 
 import numpy as np
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # import materials
 # import objects
@@ -291,6 +296,252 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 # # [wq, xq, yq] = integration.quad_triangle(nquad)
 
 
+#### Categorise modes by their symmetries #############################################
+def symmetries(sim_wguide, n_points=100):
+    """ Plot EM mode fields.
+
+        Args:
+            sim_wguide : A :Struct: instance that has had calc_modes calculated
+
+        Keyword Args:
+            n_points  (int): The number of points across unitcell to \
+                interpolate the field onto.
+    """
+
+    mode_fields = sim_wguide.sol1
+
+    # field mapping
+    x_tmp = []
+    y_tmp = []
+    for i in np.arange(sim_wguide.n_msh_pts):
+        x_tmp.append(sim_wguide.x_arr[0,i])
+        y_tmp.append(sim_wguide.x_arr[1,i])
+    x_min = np.min(x_tmp); x_max=np.max(x_tmp)
+    y_min = np.min(y_tmp); y_max=np.max(y_tmp)
+    area = abs((x_max-x_min)*(y_max-y_min))
+    n_pts_x = int(n_points*abs(x_max-x_min)/np.sqrt(area))
+    n_pts_y = int(n_points*abs(y_max-y_min)/np.sqrt(area))
+    v_x=np.zeros(n_pts_x*n_pts_y)
+    v_y=np.zeros(n_pts_x*n_pts_y)
+    i=0
+    for x in np.linspace(x_min,x_max,n_pts_x):
+        for y in np.linspace(y_min,y_max,n_pts_y):
+            v_x[i] = x
+            v_y[i] = y
+            i+=1
+    v_x = np.array(v_x)
+    v_y = np.array(v_y)
+
+    # unrolling data for the interpolators
+    table_nod = sim_wguide.table_nod.T
+    x_arr = sim_wguide.x_arr.T
+
+    sym_list = []
+
+    # for ival in [0]:
+    # for ival in [3]:
+    for ival in range(len(sim_wguide.Eig_value)):
+        # dense triangulation with multiple points
+        v_x6p = np.zeros(6*sim_wguide.n_msh_el)
+        v_y6p = np.zeros(6*sim_wguide.n_msh_el)
+        v_Ex6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
+        v_Ey6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
+        v_Ez6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
+        v_triang6p = []
+
+        i = 0
+        for i_el in np.arange(sim_wguide.n_msh_el):
+
+            # triangles
+            idx = np.arange(6*i_el, 6*(i_el+1))
+            triangles = [[idx[0], idx[3], idx[5]],
+                         [idx[1], idx[4], idx[3]],
+                         [idx[2], idx[5], idx[4]],
+                         [idx[3], idx[4], idx[5]]]
+            v_triang6p.extend(triangles)
+
+            for i_node in np.arange(6):
+                # index for the coordinates
+                i_ex = table_nod[i_el, i_node]-1
+                # values
+                v_x6p[i] = x_arr[i_ex, 0]
+                v_y6p[i] = x_arr[i_ex, 1]
+                v_Ex6p[i] = mode_fields[0,i_node,ival,i_el]
+                v_Ey6p[i] = mode_fields[1,i_node,ival,i_el]
+                v_Ez6p[i] = mode_fields[2,i_node,ival,i_el]
+                i += 1
+
+        # dense triangulation with unique points
+        v_triang1p = []
+        for i_el in np.arange(sim_wguide.n_msh_el):
+            # triangles
+            triangles = [[table_nod[i_el,0]-1,table_nod[i_el,3]-1,table_nod[i_el,5]-1],
+                         [table_nod[i_el,1]-1,table_nod[i_el,4]-1,table_nod[i_el,3]-1],
+                         [table_nod[i_el,2]-1,table_nod[i_el,5]-1,table_nod[i_el,4]-1],
+                         [table_nod[i_el,3]-1,table_nod[i_el,4]-1,table_nod[i_el,5]-1]]
+            v_triang1p.extend(triangles)
+
+        # triangulations
+        triang6p = matplotlib.tri.Triangulation(v_x6p,v_y6p,v_triang6p)
+        triang1p = matplotlib.tri.Triangulation(x_arr[:,0],x_arr[:,1],v_triang1p)
+
+        # building interpolators: triang1p for the finder, triang6p for the values
+        finder = matplotlib.tri.TrapezoidMapTriFinder(triang1p)
+        ReEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.real,trifinder=finder)
+        ImEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.imag,trifinder=finder)
+        ReEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.real,trifinder=finder)
+        ImEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.imag,trifinder=finder)
+        ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
+        ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
+
+        ### plotting
+        # interpolated fields
+        m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_Ex = m_ReEx + 1j*m_ImEx
+        m_Ey = m_ReEy + 1j*m_ImEy
+        m_Ez = m_ReEz + 1j*m_ImEz
+
+        m_Ex_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        m_Ex_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        m_Ex_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        m_Ey_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        m_Ey_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        m_Ey_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        m_Ez_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        m_Ez_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        m_Ez_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        Ex_sigma_y = 0
+        Ey_sigma_y = 0
+        Ez_sigma_y = 0
+        Ex_sigma_x = 0
+        Ey_sigma_x = 0
+        Ez_sigma_x = 0
+        Ex_C_2 = 0
+        Ey_C_2 = 0
+        Ez_C_2 = 0
+        # max_E = max(np.max(np.abs(m_Ex)), np.max(np.abs(m_Ey)), np.max(np.abs(m_Ez)))
+
+        for ix in range(n_pts_x):
+            for iy in range(n_pts_y):
+                m_Ex_ymirror[ix,iy] = (m_Ex[ix,n_pts_y-iy-1])
+                m_Ey_ymirror[ix,iy] = -1*(m_Ey[ix,n_pts_y-iy-1])
+                m_Ez_ymirror[ix,iy] = m_Ez[ix,n_pts_y-iy-1]
+                m_Ex_xmirror[ix,iy] = -1*(m_Ex[n_pts_x-ix-1,iy])
+                m_Ey_xmirror[ix,iy] = (m_Ey[n_pts_x-ix-1,iy])
+                m_Ez_xmirror[ix,iy] = m_Ez[n_pts_x-ix-1,iy]
+                m_Ex_rotated[ix,iy] = -1*(m_Ex[n_pts_x-ix-1,n_pts_y-iy-1])
+                m_Ey_rotated[ix,iy] = -1*(m_Ey[n_pts_x-ix-1,n_pts_y-iy-1])
+                m_Ez_rotated[ix,iy] = m_Ez[n_pts_x-ix-1,iy]
+                # Ex_sigma_y += np.abs(m_Ex[ix,iy] - m_Ex_ymirror[ix,iy])/max_E
+                # Ey_sigma_y += np.abs(m_Ey[ix,iy] - m_Ey_ymirror[ix,iy])/max_E
+                # Ez_sigma_y += np.abs(m_Ez[ix,iy] - m_Ez_ymirror[ix,iy])/max_E
+                # Ex_sigma_x += np.abs(m_Ex[ix,iy] - m_Ex_xmirror[ix,iy])/max_E
+                # Ey_sigma_x += np.abs(m_Ey[ix,iy] - m_Ey_xmirror[ix,iy])/max_E
+                # Ez_sigma_x += np.abs(m_Ez[ix,iy] - m_Ez_xmirror[ix,iy])/max_E
+                # Ex_C_2 += np.abs(m_Ex[ix,iy] - m_Ex_rotated[ix,iy])/max_E
+                # Ey_C_2 += np.abs(m_Ey[ix,iy] - m_Ey_rotated[ix,iy])/max_E
+                # Ez_C_2 += np.abs(m_Ez[ix,iy] - m_Ez_rotated[ix,iy])/max_E
+
+        Ex_sigma_y = np.sum(np.abs(m_Ex - m_Ex_ymirror))
+        Ey_sigma_y = np.sum(np.abs(m_Ey - m_Ey_ymirror))
+        Ez_sigma_y = np.sum(np.abs(m_Ez - m_Ez_ymirror))
+        Ex_sigma_x = np.sum(np.abs(m_Ex - m_Ex_xmirror))
+        Ey_sigma_x = np.sum(np.abs(m_Ey - m_Ey_xmirror))
+        Ez_sigma_x = np.sum(np.abs(m_Ez - m_Ez_xmirror))
+        Ex_C_2 = np.sum(np.abs(m_Ex - m_Ex_rotated))
+        Ey_C_2 = np.sum(np.abs(m_Ey - m_Ey_rotated))
+        Ez_C_2 = np.sum(np.abs(m_Ez - m_Ez_rotated))
+        sigma_y = (Ex_sigma_y + Ey_sigma_y + Ez_sigma_y)/(n_pts_x*n_pts_y)
+        sigma_x = (Ex_sigma_x + Ey_sigma_x + Ez_sigma_x)/(n_pts_x*n_pts_y)
+        C_2 = (Ex_C_2 + Ey_C_2 + Ez_C_2)/(n_pts_x*n_pts_y)
+        # print 'C_2', C_2
+        # print 'sigma_y', sigma_y
+        # print 'sigma_x', sigma_x
+
+        if abs(C_2) > 0.1:
+            C_2_print = -1
+        else:
+            C_2_print = 1
+        if abs(sigma_y) > 0.1:
+            sigma_y_print = -1
+        else:
+            sigma_y_print = 1
+        if abs(sigma_x) > 0.1:
+            sigma_x_print = -1
+        else:
+            sigma_x_print = 1
+        # print 'C_2', C_2_print
+        # print 'sigma_y', sigma_y_print
+        # print 'sigma_x', sigma_x_print
+        sym_list.append([C_2_print, sigma_y_print, sigma_x_print])
+
+        # v_plots = [np.real(m_Ex_ymirror),np.real(m_Ey_ymirror),np.real(m_Ez_ymirror),
+        #     np.imag(m_Ex_ymirror),np.imag(m_Ey_ymirror),np.imag(m_Ez_ymirror)]
+        # # field plots
+        # plt.clf()
+        # plt.figure(figsize=(13,13))
+        # for i_p,plot in enumerate(v_plots):
+        #     ax = plt.subplot(3,3,i_p+1)
+        #     im = plt.imshow(plot.T,cmap='inferno');
+        #     # colorbar
+        #     divider = make_axes_locatable(ax)
+        #     cax = divider.append_axes("right", size="5%", pad=0.1)
+        #     cbar = plt.colorbar(im, cax=cax)
+        # plt.savefig('fields/field_%(i)i-ymirror.pdf' %
+        #         {'i' : ival}, bbox_inches='tight')
+        # plt.close()
+        # v_plots = [np.real(m_Ex_xmirror),np.real(m_Ey_xmirror),np.real(m_Ez_xmirror),
+        #     np.imag(m_Ex_xmirror),np.imag(m_Ey_xmirror),np.imag(m_Ez_xmirror)]
+        # # field plots
+        # plt.clf()
+        # plt.figure(figsize=(13,13))
+        # for i_p,plot in enumerate(v_plots):
+        #     ax = plt.subplot(3,3,i_p+1)
+        #     im = plt.imshow(plot.T,cmap='inferno');
+        #     # colorbar
+        #     divider = make_axes_locatable(ax)
+        #     cax = divider.append_axes("right", size="5%", pad=0.1)
+        #     cbar = plt.colorbar(im, cax=cax)
+        # plt.savefig('fields/field_%(i)i-xmirror.pdf' %
+        #         {'i' : ival}, bbox_inches='tight')
+        # plt.close()
+        # v_plots = [np.real(m_Ex_rotated),np.real(m_Ey_rotated),np.real(m_Ez_rotated),
+        #     np.imag(m_Ex_rotated),np.imag(m_Ey_rotated),np.imag(m_Ez_rotated)]
+        # # field plots
+        # plt.clf()
+        # plt.figure(figsize=(13,13))
+        # for i_p,plot in enumerate(v_plots):
+        #     ax = plt.subplot(3,3,i_p+1)
+        #     im = plt.imshow(plot.T,cmap='inferno');
+        #     # colorbar
+        #     divider = make_axes_locatable(ax)
+        #     cax = divider.append_axes("right", size="5%", pad=0.1)
+        #     cbar = plt.colorbar(im, cax=cax)
+        # plt.savefig('fields/field_%(i)i-rotated.pdf' %
+        #         {'i' : ival}, bbox_inches='tight')
+        # plt.close()
+        # v_plots = [m_ReEx,m_ReEy,m_ReEz,
+        #     m_ImEx,m_ImEy,m_ImEz]
+        # # field plots
+        # plt.clf()
+        # plt.figure(figsize=(13,13))
+        # for i_p,plot in enumerate(v_plots):
+        #     ax = plt.subplot(3,3,i_p+1)
+        #     im = plt.imshow(plot.T,cmap='inferno');
+        #     # colorbar
+        #     divider = make_axes_locatable(ax)
+        #     cax = divider.append_axes("right", size="5%", pad=0.1)
+        #     cbar = plt.colorbar(im, cax=cax)
+        # plt.savefig('fields/field_%(i)i.pdf' %
+        #         {'i' : ival}, bbox_inches='tight')
+        # plt.close()
+
+    return sym_list
 
 
 

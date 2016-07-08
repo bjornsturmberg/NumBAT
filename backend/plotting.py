@@ -102,7 +102,6 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
 
         i = 0
         for i_el in np.arange(sim_wguide.n_msh_el):
-
             # triangles
             idx = np.arange(6*i_el, 6*(i_el+1))
             triangles = [[idx[0], idx[3], idx[5]],
@@ -112,17 +111,14 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
             v_triang6p.extend(triangles)
 
             for i_node in np.arange(6):
-
                 # index for the coordinates
                 i_ex = table_nod[i_el, i_node]-1
-
                 # values
                 v_x6p[i] = x_arr[i_ex, 0]
                 v_y6p[i] = x_arr[i_ex, 1]
                 v_Ex6p[i] = mode_fields[0,i_node,ival,i_el]
                 v_Ey6p[i] = mode_fields[1,i_node,ival,i_el]
                 v_Ez6p[i] = mode_fields[2,i_node,ival,i_el]
-
                 i += 1
 
         v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
@@ -132,7 +128,6 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
         # dense triangulation with unique points
         v_triang1p = []
         for i_el in np.arange(sim_wguide.n_msh_el):
-
             # triangles
             triangles = [[table_nod[i_el,0]-1,table_nod[i_el,3]-1,table_nod[i_el,5]-1],
                          [table_nod[i_el,1]-1,table_nod[i_el,4]-1,table_nod[i_el,3]-1],
@@ -164,7 +159,12 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
         m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
         v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
-        v_labels = ["ReEx","ReEy","ReEz","ImEx","ImEy","ImEz","AbsE"]
+        if EM_AC=='EM':
+            v_labels = ["Re(E_x)","Re(E_y)","Re(E_z)","Im(E_x)","Im(E_y)","Im(E_z)","Abs(E)"]
+        elif EM_AC=='AC':
+            v_labels = ["Re(u_x)","Re(u_y)","Re(u_z)","Im(u_x)","Im(u_y)","Im(u_z)","Abs(u)"]
+        else:
+            raise ValueError, "EM_AC must be either 'AC' or 'EM'."
 
         # field plots
         plt.clf()
