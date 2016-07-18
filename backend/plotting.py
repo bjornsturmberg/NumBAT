@@ -62,7 +62,6 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
     """
 
     plt.clf()
-    mode_fields = sim_wguide.sol1
 
     # field mapping
     x_tmp = []
@@ -116,9 +115,9 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                 # values
                 v_x6p[i] = x_arr[i_ex, 0]
                 v_y6p[i] = x_arr[i_ex, 1]
-                v_Ex6p[i] = mode_fields[0,i_node,ival,i_el]
-                v_Ey6p[i] = mode_fields[1,i_node,ival,i_el]
-                v_Ez6p[i] = mode_fields[2,i_node,ival,i_el]
+                v_Ex6p[i] = sim_wguide.sol1[0,i_node,ival,i_el]
+                v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
+                v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
                 i += 1
 
         v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
@@ -189,7 +188,6 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
             cax = divider.append_axes("right", size="5%", pad=0.1)
             cbar = plt.colorbar(im, cax=cax)
             cbar.ax.tick_params(labelsize=title_font-10)
-        # plt.tight_layout(1)
 
         if EM_AC=='EM':
             n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_norm() / (2*np.pi)
@@ -220,10 +218,11 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
         plt.text(10, 0.5, k_str, fontsize=title_font)
 
         if not os.path.exists("fields"):
-                        os.mkdir("fields")
+            os.mkdir("fields")
         if pdf_png=='png':
             plt.savefig('fields/%(s)s_field_%(i)i%(add)s.png' %
-                {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
+                {'s' : EM_AC, 'i' : ival, 'add' : add_name}) 
+                #, bbox_inches='tight') - this caused error in Q calc... ?
         elif pdf_png=='pdf':
             plt.savefig('fields/%(s)s_field_%(i)i%(add)s.pdf' %
                 {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')

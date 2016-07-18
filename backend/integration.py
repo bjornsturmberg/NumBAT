@@ -60,6 +60,21 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     Fortran_debug = 0
 ### Calc Q_photoelastic Eq. 33
+    # print sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1
+    # print EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes
+    # print sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor
+    # print relevant_eps_effs
+    # print np.shape(sim_AC_wguide.table_nod)
+    # print np.shape(sim_AC_wguide.type_el)
+    # print np.shape(sim_AC_wguide.x_arr)
+    # print np.shape(trimmed_EM_field)
+    # print np.shape(sim_AC_wguide.sol1)
+    # print sim_AC_wguide.table_nod[0,0]
+    # print sim_AC_wguide.type_el[0]
+    # print sim_AC_wguide.x_arr[0,0]
+    # print trimmed_EM_field[0,0,0,0]
+    # print sim_AC_wguide.sol1[0,0,0,0]
+
     try:
         Q_PE = NumBAT.photoelastic_int(
             sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
