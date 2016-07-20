@@ -4,7 +4,7 @@ C
       subroutine photoelastic_int (nval_EM, nval_AC, ival1,
      *  ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, p_tensor, beta_AC, soln_EM, soln_AC, eps_lst, 
-     *  debug, overlap)
+     *  debug, overlap, basis_overlap)
 c
       implicit none
       integer*8 nval_EM, nval_AC, ival1, ival2, ival3
@@ -21,7 +21,6 @@ c      complex*16 x(2,npt)
 c     Local variables
       integer*8 nnodes0
       parameter (nnodes0 = 6)
-      integer*8 nod_el_p(nnodes0)
       double precision xel(2,nnodes0)
       complex*16 basis_overlap(3*nnodes0,3*nnodes0,3,3*nnodes0)
       complex*16 E1star, E2, Ustar, eps
@@ -59,7 +58,7 @@ Cf2py depend(soln_EM) nnodes, nval_EM, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(p_tensor) nb_typ_el
 C
-Cf2py intent(out) overlap
+Cf2py intent(out) overlap, basis_overlap
 C
 C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
@@ -88,7 +87,6 @@ cccccccccccc
         typ_e = type_el(iel)
         do j=1,nnodes
           j1 = table_nod(j,iel)
-          nod_el_p(j) = j1
           xel(1,j) = x(1,j1)
           xel(2,j) = x(2,j1)
         enddo
@@ -117,13 +115,13 @@ c         xx   = coordinate on the reference triangle
 c         xx_g = coordinate on the actual triangle
 C         phi2_list = values of Lagrange polynomials (1-6) at each local node.
 C         grad2_mat0 = gradient on the reference triangle (P2 element)
-           call phi2_2d_mat(xx, phi2_list, grad2_mat0)
+          call phi2_2d_mat(xx, phi2_list, grad2_mat0)
 c
           if (info_curved .eq. 0) then
 c           Rectilinear element
             call jacobian_p1_2d(xx, xel, nnodes,
      *               xx_g, det, mat_B, mat_T)
-            if(det .le. 0 .and. debug .eq. 1 .and. iq .eq. 1) then
+            if(det .le. 0 .and. debug .eq. 2 .and. iq .eq. 1) then
               write(*,*) "   !!!"
               write(*,*) "PE_int: det <= 0: iel, det ", iel, det
             endif

@@ -4,7 +4,7 @@ C
       subroutine AC_alpha_int (nval, 
      *  nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, eta_tensor, beta_AC, Omega_AC, soln_AC,
-     *  AC_mode_overlap, debug, overlap)
+     *  AC_mode_overlap, debug, overlap, basis_overlap)
 c
       implicit none
       integer*8 nval, ival
@@ -59,7 +59,7 @@ Cf2py depend(eta_tensor) nb_typ_el
 Cf2py depend(Omega_AC) nval
 Cf2py depend(AC_mode_overlap) nval
 C
-Cf2py intent(out) overlap
+Cf2py intent(out) overlap, basis_overlap
 C
 C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
@@ -126,9 +126,9 @@ c
 c           Rectilinear element
             call jacobian_p1_2d(xx, xel, nnodes,
      *               xx_g, det, mat_B, mat_T)
-            if(det .le. 0 .and. debug .eq. 1 .and. iq .eq. 1) then
+            if(det .le. 0 .and. debug .eq. 2 .and. iq .eq. 1) then
               write(*,*) "   !!!"
-              write(*,*) "PE_int: det <= 0: iel, det ", iel, det
+              write(*,*) "AC_alpha_int: det <= 0: iel, det ", iel, det
             endif
           else
 c           Isoparametric element
@@ -139,8 +139,8 @@ C            if(abs(det) .lt. 1.0d-10) then
            if(abs(det) .lt. 1.0d-20) then
              write(*,*)
              write(*,*) "   ???"
-             write(*,*) "PE_int: det = 0 : iel, det = ", iel, det
-             write(*,*) "PE_int: Aborting..."
+             write(*,*) "AC_alpha_int: det = 0 : iel, det = ", iel, det
+             write(*,*) "AC_alpha_int: Aborting..."
              stop
            endif
 c          grad_i  = gradient on the actual triangle

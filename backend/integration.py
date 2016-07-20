@@ -60,23 +60,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     Fortran_debug = 0
 ### Calc Q_photoelastic Eq. 33
-    # print sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1
-    # print EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes
-    # print sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor
-    # print relevant_eps_effs
-    # print np.shape(sim_AC_wguide.table_nod)
-    # print np.shape(sim_AC_wguide.type_el)
-    # print np.shape(sim_AC_wguide.x_arr)
-    # print np.shape(trimmed_EM_field)
-    # print np.shape(sim_AC_wguide.sol1)
-    # print sim_AC_wguide.table_nod[0,0]
-    # print sim_AC_wguide.type_el[0]
-    # print sim_AC_wguide.x_arr[0,0]
-    # print trimmed_EM_field[0,0,0,0]
-    # print sim_AC_wguide.sol1[0,0,0,0]
-
     try:
-        Q_PE = NumBAT.photoelastic_int(
+        Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
             sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
             EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
             sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
@@ -88,7 +73,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 ### Calc alpha (loss) Eq. 45
     try:
-        alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el,
+        alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el,
             sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod,
             sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
@@ -98,9 +83,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
 
 
+    print np.max(basis_overlap_PE)
+    print np.max(basis_overlap_alpha)
+
+    print Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9)**2
+
 # Christians values for alpha of first 3 modes
     # print sim_AC_wguide.AC_mode_overlap
-    print alpha
+    # print alpha
     # print '---------'
     # print alpha[2]
     # alpha_2 = 1/98.70e-6
@@ -138,7 +128,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     gain = gain/normal_fact
     alpha_2 = 1/98.70e-6
     SBS_gain = gain/alpha_2
-    SBS_gain = gain/alpha[2]
+    # SBS_gain = gain/alpha[2]
     print "SBS_gain", SBS_gain
 
     return SBS_gain, Q_PE, Q_MB, alpha
