@@ -61,13 +61,22 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     Fortran_debug = 0
 ### Calc Q_photoelastic Eq. 33
     try:
-        Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
-            sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
-            EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
-            sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-            sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-            q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
-            relevant_eps_effs, Fortran_debug)
+        if sim_EM_wguide.structure.inc_shape == 'rectangular':
+            Q_PE, basis_overlap_PE = NumBAT.photoelastic_int_v2(
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
+                EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
+                q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
+                relevant_eps_effs, Fortran_debug)
+        elif sim_EM_wguide.structure.inc_shape == 'circular':
+            Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
+                EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
+                q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
+                relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
@@ -86,7 +95,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     print np.max(basis_overlap_PE)
     print np.max(basis_overlap_alpha)
 
-    print Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9)**2
+    # print Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)**2
 
 # Christians values for alpha of first 3 modes
     # print sim_AC_wguide.AC_mode_overlap
@@ -125,11 +134,39 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     print "EM mode 2 power", P2
     print "AC mode power", P3
 
-    gain = gain/normal_fact
+    gain2 = gain/normal_fact
     alpha_2 = 1/98.70e-6
-    SBS_gain = gain/alpha_2
+    SBS_gain = gain2/alpha_2
     # SBS_gain = gain/alpha[2]
     print "SBS_gain", SBS_gain
+
+    num_EM_modes = len(sim_EM_wguide.Eig_value)
+    n_msh_el_AC = sim_AC_wguide.n_msh_el
+    trimmed_EM_field = np.zeros((ncomps,nnodes+7,num_EM_modes,n_msh_el_AC), dtype=complex)
+    for el in range(n_msh_el_AC):
+        new_el = sim_AC_wguide.el_convert_tbl[el]
+        for ival in range(num_EM_modes):
+            for n in range(nnodes+7):
+                for x in range(ncomps):
+                    trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
+
+    P11 = NumBAT.em_mode_energy_int(
+        sim_EM_wguide.wl_norm(), sim_AC_wguide.num_modes, 
+        sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts,
+        nnodes, sim_AC_wguide.table_nod,
+        sim_AC_wguide.x_arr, sim_EM_wguide.Eig_value, trimmed_EM_field)
+    print P11[EM_ival1]
+    print P11[EM_ival1]/P1
+    print 2.5*1550*1e-9
+    print 2.5*1550*1e-9/0.5
+    # print P1/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
+    normal_fact = P11[EM_ival1]*P11[EM_ival2]*P3
+    gain2 = gain/normal_fact
+    alpha_2 = 1/98.70e-6
+    SBS_gain = gain2/alpha_2
+    # SBS_gain = gain/alpha[2]
+    print "SBS_gain", SBS_gain
+    print "SBS_gain/eps_0", SBS_gain/eps_0
 
     return SBS_gain, Q_PE, Q_MB, alpha
 

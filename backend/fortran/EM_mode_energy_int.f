@@ -53,6 +53,7 @@ C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(x) npt
 Cf2py depend(betas) nval
+Cf2py depend(soln_k1) nnodes, nval, nel
 C
 Cf2py intent(out) overlap
 C
@@ -116,7 +117,7 @@ c           Rectilinear element
             call jacobian_p1_2d(xx, xel, nnodes,
      *               xx_g, det, mat_B, mat_T)
 c            if (det .le. 0) then
-            if (det .le. 0 .and. debug .eq. 1 .and. iq .eq. 1) then
+            if (det .le. 0 .and. debug .eq. 2 .and. iq .eq. 1) then
               write(*,*) "   !!!"
               write(*,*) "EM_m_en_int: det <= 0: iel, det ", iel, det
             endif
@@ -125,7 +126,7 @@ c           Isoparametric element
             call jacobian_p2_2d(xx, xel, nnodes, phi2_list,
      *               grad2_mat0, xx_g, det, mat_B, mat_T)
           endif
-           if(abs(det) .lt. 1.0d-10) then
+           if(abs(det) .lt. 1.0d-20) then
              write(*,*)
              write(*,*) "   ???"
              write(*,*) "EM_m_en_int: det = 0 : iel, det = ", iel, det

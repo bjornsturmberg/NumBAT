@@ -55,9 +55,9 @@ C
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes_P2 .ne. 6 ) then
-        write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes_P2
-        write(ui,*) "EM_mode_energy_int: nnodes should be equal to 6 !"
-        write(ui,*) "EM_mode_energy_int: Aborting..."
+        write(ui,*) "EM_mode_en_int_v2: problem nnodes = ", nnodes_P2
+        write(ui,*) "EM_mode_en_int_v2: nnodes should be equal to 6 !"
+        write(ui,*) "EM_mode_en_int_v2: Aborting..."
         stop
       endif
 C
