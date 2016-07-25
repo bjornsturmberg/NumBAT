@@ -13,7 +13,10 @@ import plotting
 from fortran import NumBAT
 
 
+speed_c = 299792458
 ### Geometric parameters
+# opt_freq_GHz = 11
+# wl_nm = 2*np.pi*speed_c/(opt_freq_GHz)
 wl_nm = 1550
 unitcell_x = 2.5*1550
 inc_a_x = 314.7
@@ -48,13 +51,18 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         # mesh_file='rect_acoustic_3.mail')
 
 
+# opt_freq_GHz = np.linspace(11, 25, 50)
+# wl_nms = 2*np.pi*speed_c/opt_freq_GHz
+# gain_array = []
+
+# for wl_nm in wl_nms:
 ### Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
-plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 
 ### Calculate Acoustic Modes
@@ -79,3 +87,15 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim
 SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(sim_EM_wguide, 
                            sim_AC_wguide, q_acoustic, AC_ival=2)
 
+    # gain_array.append(np.real(SBS_gain))
+
+
+# import matplotlib
+# matplotlib.use('pdf')
+# import matplotlib.pyplot as plt
+# plt.figure(figsize=(13,13))
+# plt.clf()
+# # plt.plot(gain_array,opt_freq_GHz,'r',linewidth=3)
+# plt.plot(opt_freq_GHz,gain_array,'r',linewidth=3)
+# plt.savefig('gain.pdf')
+# plt.close()

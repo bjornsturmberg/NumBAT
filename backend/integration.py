@@ -92,44 +92,47 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
 
 
-    print np.max(basis_overlap_PE)
-    print np.max(basis_overlap_alpha)
+    # print np.max(basis_overlap_PE)
+    # print np.max(basis_overlap_alpha)
 
     # print Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)**2
 
 # Christians values for alpha of first 3 modes
     # print sim_AC_wguide.AC_mode_overlap
     # print alpha
-    # print '---------'
-    # print alpha[2]
-    # alpha_2 = 1/98.70e-6
-    # print alpha_2
-    # print alpha_2/alpha[2]
-    # print '---------'
-    # print alpha[0]
-    # alpha_0 = 1/186.52e-6
-    # print alpha_0
-    # print alpha_0/alpha[0]
-    # print '---------'
-    # print alpha[1]
-    # alpha_1 = 1/142.79e-6
-    # print alpha_1
-    # print alpha_1/alpha[1]
-    # print '---------'
+    print '---------'
+    print alpha[2]
+    alpha_2 = 1/98.70e-6
+    print alpha_2
+    print alpha_2/alpha[2]
+    print '---------'
+    print alpha[0]
+    alpha_0 = 1/186.52e-6
+    print alpha_0
+    print alpha_0/alpha[0]
+    print '---------'
+    print alpha[1]
+    alpha_1 = 1/142.79e-6
+    print alpha_1
+    print alpha_1/alpha[1]
+    print '---------'
 
     eps_0 = 8.854187817e-12
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
     speed_c = 299792458
-    opt_freq_GHz = speed_c/sim_EM_wguide.wl_nm # putting in wl in nm gives you GHz
+    opt_freq_GHz = 2*np.pi*speed_c/sim_EM_wguide.wl_nm # putting in wl in nm gives you GHz
     gain = 2*opt_freq_GHz*1e9*sim_AC_wguide.Eig_value[AC_ival]*np.real(Q*np.conj(Q))
     P1 = sim_EM_wguide.EM_mode_overlap[EM_ival1]#*eps_0*unitcell_x*1e-9*unitcell_y*1e-9
     P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]#*eps_0*unitcell_x*1e-9*unitcell_y*1e-9
     P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]#*inc_a_x*1e-9*inc_a_y*1e-9
     normal_fact = P1*P2*P3
 
-    print "Q", Q
-    print "gain", gain
+    print "omega", opt_freq_GHz
+    # print "Omega", sim_AC_wguide.Eig_value[AC_ival]
+
+    # print "Q", Q
+    # print "gain", gain
     print "EM mode 1 power", P1
     print "EM mode 2 power", P2
     print "AC mode power", P3
@@ -137,7 +140,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     gain2 = gain/normal_fact
     alpha_2 = 1/98.70e-6
     SBS_gain = gain2/alpha_2
-    # SBS_gain = gain/alpha[2]
+    # # SBS_gain = gain/alpha[2]
     print "SBS_gain", SBS_gain
 
     num_EM_modes = len(sim_EM_wguide.Eig_value)
@@ -155,20 +158,37 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts,
         nnodes, sim_AC_wguide.table_nod,
         sim_AC_wguide.x_arr, sim_EM_wguide.Eig_value, trimmed_EM_field)
-    print P11[EM_ival1]
-    print P11[EM_ival1]/P1
-    print 2.5*1550*1e-9
-    print 2.5*1550*1e-9/0.5
+    print "EM mode 1 power", P11[EM_ival1]
+    # print "EM mode 1 power ratio", P11[EM_ival1]/P1
+    # print 2.5*1550*1e-9
+    # print 2.5*1550*1e-9/0.5
     # print P1/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
     normal_fact = P11[EM_ival1]*P11[EM_ival2]*P3
     gain2 = gain/normal_fact
     alpha_2 = 1/98.70e-6
     SBS_gain = gain2/alpha_2
-    # SBS_gain = gain/alpha[2]
+    # SBS_gain = gain2/alpha[2]
     print "SBS_gain", SBS_gain
-    print "SBS_gain/eps_0", SBS_gain/eps_0
+    print "SBS_gain per m?", SBS_gain*1e9
+    # print "SBS_gain per m?", SBS_gain*speed_c
+    SBS_gain = SBS_gain*1e9
 
     return SBS_gain, Q_PE, Q_MB, alpha
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # ### Calc Q_moving_boundary Eq. 41

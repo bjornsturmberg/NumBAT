@@ -343,6 +343,10 @@ class Simmo(object):
             table_nod_out, type_el_out, x_arr_out, \
             self.Eig_value, self.sol1, self.mode_pol = resm
 
+            # FEM Eigenvalue is frequency, rather than angular frequency Omega
+            # Make adjustment to Omega here!
+            self.Eig_value = self.Eig_value*2*np.pi
+
             # # Make natural units GHz
             # self.Eig_value = self.Eig_value*1e-9
 

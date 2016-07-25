@@ -17,7 +17,7 @@ c     Local variables
 
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
-      double precision vec_grad(2,nnodes_0)
+      double precision vec_grad(2,nnodes_0), speed_c, omega
       integer*8 j, inod, jnod
       complex*16 ii, z_tmp1, z_tmp2
       complex*16 Maxwell_coeff
@@ -26,6 +26,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCC
 C
 c  ii = sqrt(-1)
       ii = dcmplx(0.0d0, 1.0d0)
+      speed_c = 299792458
 C
 c      By applying the Maxwell's equations to the E-field of a waveguide mode, we get:
 c      H_x = [-beta*E_y + D(E_z,y)] * Coefficient
@@ -61,7 +62,9 @@ c       vec_grad: contains the gradients of all 6 basis polynomials at the node 
       enddo
 c     The curl of the E-field must be multiplied by a coefficient in order to get the H-field
 c     For example: Maxwell_coeff = 1/ (i * k0 * mu) 
-      Maxwell_coeff = 1.0d0 / (ii * k_0)
+      omega = k_0 * speed_c
+      Maxwell_coeff = 1.0d0 / (ii * omega)
+C       Maxwell_coeff = 1.0d0 / (ii * k_0)
       do inod=1,nnodes
         do j=1,3
           H_field_el(j,inod) = H_field_el(j,inod) * Maxwell_coeff
