@@ -127,7 +127,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]
     P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
     normal_fact = P1*P2*P3
-
     print "EM mode 1 power", P1
 
     P1 = NumBAT.em_mode_energy_int_v2_wg(
@@ -163,7 +162,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                     trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
 
     x_arr2 = sim_AC_wguide.x_arr/(sim_EM_wguide.structure.unitcell_x*1e-9)
-    print x_arr2
     P11 = NumBAT.em_mode_energy_int(
         sim_EM_wguide.k_0, sim_AC_wguide.num_modes, 
         sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts,
@@ -175,20 +173,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     SBS_gain = gain2/alpha_2
     # SBS_gain = gain2/alpha[2]
     print "SBS_gain", SBS_gain
-
-
-    # print sim_AC_wguide.x_arr
-    # P11 = NumBAT.em_mode_energy_int(
-    #     sim_EM_wguide.k_0, sim_AC_wguide.num_modes, 
-    #     sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts,
-    #     nnodes, sim_AC_wguide.table_nod,
-    #     sim_AC_wguide.x_arr, sim_EM_wguide.Eig_value, trimmed_EM_field)
-    # print "EM mode 1 power", P11[EM_ival1]
-    # normal_fact = P11[EM_ival1]*P11[EM_ival2]*P3
-    # gain2 = gain/normal_fact
-    # SBS_gain = gain2/alpha_2
-    # # SBS_gain = gain2/alpha[2]
-    # print "SBS_gain", SBS_gain
 
     return SBS_gain, Q_PE, Q_MB, alpha
 

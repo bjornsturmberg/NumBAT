@@ -44,7 +44,7 @@ c     NQUAD: The number of quadrature points used in each element.
       parameter (nquad_max = 25)
       double precision wq(nquad_max)
       double precision xq(nquad_max), yq(nquad_max)
-      double precision xx(2), xx_g(2), ww, det
+      double precision xx(2), xx_g(2), ww, det, speed_c, mu_0
       double precision mat_B(2,2), mat_T(2,2)
 C
 C
@@ -63,6 +63,8 @@ C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
+      speed_c = 299792458
+      mu_0 = 1.2566370614d-6
 C
       if ( nnodes .ne. 6 ) then
         write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes
@@ -159,7 +161,7 @@ c                 Determine the basis vector
                   vec_phi_j(j_eq) = phi2_list(jtest)
                   z_tmp1 = vec_phi_i(1)*vec_phi_j(1) +
      *                        vec_phi_i(2)*vec_phi_j(2)
-                  z_tmp1 = coeff_1 * z_tmp1 / k_0
+                  z_tmp1 = coeff_1 * z_tmp1 / (k_0 * speed_c * mu_0)
                   basis_overlap(ind_ip,ind_jp) =
      *              basis_overlap(ind_ip,ind_jp) + z_tmp1
                 enddo
@@ -173,7 +175,7 @@ c               Determine the basis vector
                 enddo
                 z_tmp1 = vec_phi_i(1)*vec_phi_j(1) +
      *                        vec_phi_i(2)*vec_phi_j(2)
-                z_tmp1 = coeff_1 * z_tmp1 / k_0
+                z_tmp1 = coeff_1 * z_tmp1 / (k_0 * speed_c * mu_0)
                 basis_overlap(ind_ip,ind_jp) =
      *            basis_overlap(ind_ip,ind_jp) + z_tmp1
               enddo

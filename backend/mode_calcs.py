@@ -144,7 +144,6 @@ class Simmo(object):
         try:
             nnodes = 6
             if self.structure.inc_shape == 'rectangular':
-                print self.x_arr
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_wg(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
