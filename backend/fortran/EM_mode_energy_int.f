@@ -1,10 +1,12 @@
 C Calculate the overlap integral of an EM mode with itself using
 C numerical quadrature.  
 C
-      subroutine EM_mode_energy_int (lambda, nval, nel, npt,
+      subroutine EM_mode_energy_int (k_0, nval, nel, npt,
      *  nnodes, table_nod,
      *  x, betas, soln_k1, overlap)
 c
+C     k_0 = 2 pi / lambda, where lambda in meters.
+C
       implicit none
       integer*8 nval, nel, npt, nnodes
       integer*8 table_nod(nnodes,nel)
@@ -13,7 +15,7 @@ c
       complex*16 beta1
       complex*16 betas(nval)
       complex*16, dimension(nval) :: overlap
-      double precision k_0, pi, lambda
+      double precision k_0
 
 c     Local variables
       integer*8 nnodes_0
@@ -46,7 +48,7 @@ c     NQUAD: The number of quadrature points used in each element.
       double precision mat_B(2,2), mat_T(2,2)
 C
 C
-Cf2py intent(in) lambda, nval, nel, npt,
+Cf2py intent(in) k_0, nval, nel, npt,
 Cf2py intent(in) nnodes, table_nod
 Cf2py intent(in) x, betas, soln_k1
 C
@@ -61,8 +63,6 @@ C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
-      pi = 3.141592653589793d0
-      k_0 = 2.0d0*pi/lambda
 C
       if ( nnodes .ne. 6 ) then
         write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes
@@ -157,14 +157,11 @@ c                 Determine the basis vector
                     vec_phi_j(i) = 0.0d0
                   enddo
                   vec_phi_j(j_eq) = phi2_list(jtest)
-c                  z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
                   z_tmp1 = vec_phi_i(1)*vec_phi_j(1) +
      *                        vec_phi_i(2)*vec_phi_j(2)
-                  z_tmp1 = coeff_1 * z_tmp1
-                  z_tmp1 = z_tmp1/k_0
+                  z_tmp1 = coeff_1 * z_tmp1 / k_0
                   basis_overlap(ind_ip,ind_jp) =
      *              basis_overlap(ind_ip,ind_jp) + z_tmp1
-cccc                  basis_overlap = basis_overlap + z_tmp1
                 enddo
               enddo
               do jtest=1,10
@@ -174,14 +171,11 @@ c               Determine the basis vector
                 do i=1,2
                   vec_phi_j(i) = -grad3_mat(i,jtest)
                 enddo
-C                z_tmp1 = ddot(2, vec_phi_i, 1, vec_phi_j, 1)
                 z_tmp1 = vec_phi_i(1)*vec_phi_j(1) +
      *                        vec_phi_i(2)*vec_phi_j(2)
-                z_tmp1 = coeff_1 * z_tmp1
-                z_tmp1 = z_tmp1/k_0
+                z_tmp1 = coeff_1 * z_tmp1 / k_0
                 basis_overlap(ind_ip,ind_jp) =
      *            basis_overlap(ind_ip,ind_jp) + z_tmp1
-cccc                basis_overlap = basis_overlap + z_tmp1
               enddo
             enddo
           enddo

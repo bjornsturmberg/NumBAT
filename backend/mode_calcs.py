@@ -14,8 +14,6 @@ sys.path.append("../backend/")
 import plotting
 from fortran import NumBAT
 
-pi = np.pi
-
 
 class Simmo(object):
     """ Interaction of one :Light: object with one :Struc: object.
@@ -34,6 +32,7 @@ class Simmo(object):
         self.mode_pol = None
         # just off normal incidence to avoid degeneracies
         self.k_pll = np.array([1e-16, 1e-16])
+        self.k_0 = 2 * np.pi / (self.wl_nm*1e-9)
 
 
     def k_pll_norm(self):
@@ -89,8 +88,8 @@ class Simmo(object):
         max_n = np.real(self.n_effs).max()
         # Take real part so that complex conjugate pair Eigenvalues are
         # equal distance from shift and invert point and therefore both found.
-        k_0 = 2 * pi / self.wl_norm()
-        shift = 1.1*max_n**2 * k_0**2  \
+        k_0_norm = 2 * np.pi / self.wl_norm()
+        shift = 1.1*max_n**2 * k_0_norm**2  \
             - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
 
         if EM_FEM_debug == 1:
@@ -120,7 +119,7 @@ class Simmo(object):
 
             # Make natural units 1/m
             self.Eig_value = self.Eig_value/(self.structure.unitcell_x*1e-9)
-            area = self.structure.unitcell_x*1e-9 * self.structure.unitcell_y*1e-9
+            # area = self.structure.unitcell_x*1e-9 * self.structure.unitcell_y*1e-9
             # area = self.structure.unitcell_x * self.structure.unitcell_y
             # area_norm = area/self.structure.unitcell_x**2
 
@@ -145,14 +144,19 @@ class Simmo(object):
         try:
             nnodes = 6
             if self.structure.inc_shape == 'rectangular':
-                self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2(
-                    self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts,
+                print self.x_arr
+                self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_wg(
+                    self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
-                    self.x_arr, self.Eig_value, self.sol1)
+                    self.x_arr, self.Eig_value, self.sol1, self.type_el)
+                # self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2(
+                #     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
+                #     nnodes, self.table_nod,
+                #     self.x_arr, self.Eig_value, self.sol1)
 
             elif self.structure.inc_shape == 'circular':
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int(
-                    self.wl_norm(), self.num_modes, self.n_msh_el, self.n_msh_pts,
+                    self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_value, self.sol1)
 

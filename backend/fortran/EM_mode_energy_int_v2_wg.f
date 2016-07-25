@@ -1,9 +1,9 @@
 C Calculate the overlap integral of an EM mode with itself using
 C analytic expressions for basis function overlaps on linear elements.
 C
-      subroutine EM_mode_energy_int_v2 (k_0, nval, nel, npt,
+      subroutine EM_mode_energy_int_v2_wg (k_0, nval, nel, npt,
      *  nnodes_P2, table_nod,
-     *  x, betas, soln_k1, overlap)
+     *  x, betas, soln_k1, type_el, overlap)
 c
 C     k_0 = 2 pi / lambda, where lambda in meters.
 C
@@ -23,6 +23,7 @@ c     Local variables
       integer*8 nnodes_P2_0, nnodes_P3_0
       parameter (nnodes_P2_0 = 6, nnodes_P3_0 = 10)
       integer*8 nod_el_p(nnodes_P2_0)
+      integer*8 type_el(nel), typ_e
       double precision xel(2,nnodes_P2_0)
       complex*16 E_field_el(3,nnodes_P2_0)
       complex*16 H_field_el(3,nnodes_P2_0)
@@ -39,12 +40,13 @@ C
 C
 Cf2py intent(in) k_0, nval, nel, npt,
 Cf2py intent(in) nnodes_P2, table_nod
-Cf2py intent(in) x, betas, soln_k1
+Cf2py intent(in) x, betas, soln_k1, type_el
 C
 Cf2py depend(table_nod) nnodes_P2, nel
 Cf2py depend(x) npt
 Cf2py depend(betas) nval
 Cf2py depend(soln_k1) nnodes_P2, nval, nel
+Cf2py depend(type_el) nel
 C
 Cf2py intent(out) overlap
 C
@@ -65,6 +67,8 @@ C
       overlap1 = 0.0d0
       beta1 = betas(ival)
       do iel=1,nel
+        typ_e = type_el(iel)
+        if (typ_e .gt. 1) then
         do j=1,nnodes_P2
           j1 = table_nod(j,iel)
           nod_el_p(j) = j1
@@ -144,6 +148,7 @@ c           Cross-product Z.(E^* X H) of E^*=vec_i and H=vec_j
             overlap1 = overlap1 + z_tmp1 * p2_p2(itrial, jtest)
           enddo
         enddo
+      endif
       enddo
       overlap(ival) = overlap1
       enddo
@@ -151,4 +156,4 @@ C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
 C
-      end subroutine EM_mode_energy_int_v2
+      end subroutine EM_mode_energy_int_v2_wg

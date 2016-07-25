@@ -67,8 +67,8 @@ c       vec_grad_p2: contains the gradients of all 6 basis polynomials at the no
 c     The curl of the E-field must be multiplied by a coefficient in order to get the H-field
 c     For example: Maxwell_coeff = 1/ (i * k0 * mu) 
       omega = k_0 * speed_c
-      Maxwell_coeff = 1.0d0 / (ii * omega)
-C       Maxwell_coeff = 1.0d0 / (ii * omega * mu_0)
+C       Maxwell_coeff = 1.0d0 / (ii * omega)
+      Maxwell_coeff = 1.0d0 / (ii * omega * mu_0)
 C       Maxwell_coeff = 1.0d0 / (ii * k_0)
       do inod=1,nnodes_P2
         do j=1,3
