@@ -85,7 +85,8 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim
 
 ### Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(sim_EM_wguide, 
-                           sim_AC_wguide, q_acoustic, AC_ival=2)
+                           sim_AC_wguide, q_acoustic, 
+                           EM_ival1=0, EM_ival2=0, AC_ival=2)
 
     # gain_array.append(np.real(SBS_gain))
 
