@@ -65,7 +65,7 @@ C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
-      eps_0 = 1.0d0!8.854187817d-12
+      eps_0 = 8.854187817d-12
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
@@ -177,13 +177,7 @@ C                 Gradient of transverse components of basis function
               enddo
             enddo
           enddo
-
-
-cc      stop
-
-
-cccccccc
-cccccccccc
+C
 cccccccccc
 C Having calculated overlap of basis functions on element
 C now multiply by specific field values for modes of interest.

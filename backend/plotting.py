@@ -206,13 +206,13 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
             plt.text(10, 0.3, n_str, fontsize=title_font)
         elif EM_AC=='AC':
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
-                k_str = r'$\Omega = %(re_k)f6 %(im_k)f6 i$ GHz'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
+                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9/(2*np.pi)),
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9/(2*np.pi))}
             else:
-                k_str = r'$\Omega = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
+                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9/(2*np.pi)),
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9/(2*np.pi))}
         else:
             raise ValueError, "EM_AC must be either 'AC' or 'EM'."
         plt.text(10, 0.5, k_str, fontsize=title_font)

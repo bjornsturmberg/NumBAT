@@ -119,6 +119,7 @@ class Simmo(object):
 
             # Make natural units 1/m
             self.Eig_value = self.Eig_value/(self.structure.unitcell_x*1e-9)
+            # self.sol1 = self.sol1/(self.structure.unitcell_x*1e-9)
             # area = self.structure.unitcell_x*1e-9 * self.structure.unitcell_y*1e-9
             # area = self.structure.unitcell_x * self.structure.unitcell_y
             # area_norm = area/self.structure.unitcell_x**2
