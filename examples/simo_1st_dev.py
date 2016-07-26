@@ -31,8 +31,8 @@ inc_shape = 'rectangular'
 
 ### Optical parameters
 eps = 12.25
-num_EM_modes = 20
-num_AC_modes = 20
+num_EM_modes = 40
+num_AC_modes = 40
 
 ### Acoustic parameters
 # Inclusion a
@@ -47,7 +47,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.2, lc2=20.0, lc3=20.0)#,
+                        lc_bkg=0.1, lc2=40.0, lc3=20.0)#,
                         # make_mesh_now=False, plotting_fields=False,
                         # mesh_file='rect_acoustic_3.mail')
 
@@ -77,7 +77,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value/(2*np.pi)*1e-9 # GHz
+print 'Omega of AC wave \n', sim_AC_wguide.Eig_value/(2*np.pi)*1e-9 # GHz
 # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
 # print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
@@ -85,9 +85,22 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim
 
 
 ### Calculate interaction integrals
-SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(sim_EM_wguide, 
+SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide, 
                            sim_AC_wguide, q_acoustic, 
                            EM_ival1=0, EM_ival2=0, AC_ival=2)
+
+print "num_EM_modes", num_EM_modes
+print "num_AC_modes", num_AC_modes
+print "lc_bkg", wguide.lc
+print "lc_bkg", wguide.lc2
+print "lc_bkg", wguide.lc3
+print "Gain", SBS_gain
+print "Q_PE", Q_PE
+print "alpha[2]", alpha[2]
+alpha_2 = 1/98.70e-6
+print "CW_alpha/alpha[2]", alpha_2/alpha[2]
+print "EM power", P1
+print "AC power", P3
 
     # gain_array.append(np.real(SBS_gain))
 

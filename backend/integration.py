@@ -123,7 +123,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-    print Q_PE
+    # print Q_PE
     # Q_PE = Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
     # print Q_PE
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
@@ -135,22 +135,22 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]
     P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
     normal_fact = P1*P2*P3
-    print "EM mode 1 power internal (wg)", P1
-    print "EM mode 1 power quad", sim_EM_wguide.EM_mode_overlap2[EM_ival1]
-    print "AC mode power", P3
+    # print "EM mode 1 power internal (wg)", P1
+    # print "EM mode 1 power quad", sim_EM_wguide.EM_mode_overlap2[EM_ival1]
+    # print "AC mode power", P3
     gain2 = np.real(gain/normal_fact)
     alpha_2 = 1/98.70e-6
     SBS_gain = gain2/alpha_2
-    # # SBS_gain = gain/alpha[2]
-    print "SBS_gain", SBS_gain
-    print "SBS_gain", SBS_gain/(sim_EM_wguide.structure.unitcell_x*1e-9)
-    print "SBS_gain", SBS_gain/(sim_EM_wguide.structure.inc_a_x*1e-9)
-    CW_gain = 310.25
-    # CW_gain = 2464.98
-    print "factor", CW_gain/SBS_gain
-    print "factor", np.sqrt(CW_gain/SBS_gain)
-    print "unit cell", 1./(sim_EM_wguide.structure.unitcell_x*1e-9)
-    print "wg", 1./(sim_EM_wguide.structure.inc_a_x*1e-9)
+    # # # SBS_gain = gain/alpha[2]
+    # print "SBS_gain", SBS_gain
+    # print "SBS_gain", SBS_gain/(sim_EM_wguide.structure.unitcell_x*1e-9)
+    # print "SBS_gain", SBS_gain/(sim_EM_wguide.structure.inc_a_x*1e-9)
+    # CW_gain = 310.25
+    # # CW_gain = 2464.98
+    # print "factor", CW_gain/SBS_gain
+    # print "factor", np.sqrt(CW_gain/SBS_gain)
+    # print "unit cell", 1./(sim_EM_wguide.structure.unitcell_x*1e-9)
+    # print "wg", 1./(sim_EM_wguide.structure.inc_a_x*1e-9)
 
     # import time
     # start = time.time()
@@ -170,7 +170,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print elapsed
     # print "EM mode 1 power", P11[0]
 
-    return SBS_gain, Q_PE, Q_MB, alpha
+    return SBS_gain, Q_PE, Q_MB, alpha, P1, P3
 
     # num_EM_modes = len(sim_EM_wguide.Eig_value)
     # n_msh_el_AC = sim_AC_wguide.n_msh_el
