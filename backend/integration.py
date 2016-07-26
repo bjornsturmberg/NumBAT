@@ -122,7 +122,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-    Q_PE = Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
+    print Q_PE
+    # Q_PE = Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
 
@@ -132,6 +133,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
     normal_fact = P1*P2*P3
     print "EM mode 1 power internal (wg)", P1
+    print "AC mode power", P3
     gain2 = np.real(gain/normal_fact)
     alpha_2 = 1/98.70e-6
     SBS_gain = gain2/alpha_2
