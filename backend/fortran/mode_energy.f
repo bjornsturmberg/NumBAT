@@ -114,7 +114,8 @@ c       Total energy and normalization
       do ival=1,nval
         z_tmp = mode_pol(1,ival) + mode_pol(2,ival) 
      *        + mode_pol(3,ival)
-        if (abs(z_tmp) .lt. 1.0d-10) then
+C         if (abs(z_tmp) .lt. 1.0d-10) then
+        if (abs(z_tmp) .lt. 1.0d-20) then
           write(*,*) "mode_energy: the total energy ",
      *       "is too small : ", z_tmp
           write(*,*) "mode_energy: ival = ", ival

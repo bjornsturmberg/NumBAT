@@ -24,7 +24,7 @@ class Simmo(object):
     def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20,
                  shift_AC_Hz=None, EM_sim=None):
         self.structure = structure
-        self.wl_nm = wl_nm
+        self.wl_m = wl_nm*1e-9
         self.q_acoustic = q_acoustic
         self.shift_AC_Hz = shift_AC_Hz
         self.EM_sim = EM_sim
@@ -32,20 +32,20 @@ class Simmo(object):
         self.mode_pol = None
         # just off normal incidence to avoid degeneracies
         self.k_pll = np.array([1e-16, 1e-16])
-        self.k_0 = 2 * np.pi / (self.wl_nm*1e-9)
+        self.k_0 = 2 * np.pi / self.wl_m
 
 
     def k_pll_norm(self):
         return self.k_pll * self.structure.unitcell_x
 
 
-    def wl_norm(self):
-        """ Return normalised wavelength (wl/unitcell_x). """
-        wl = self.wl_nm / self.structure.unitcell_x
-        # Avoid Wood Anomalies
-        if self.wl_nm % self.structure.unitcell_x == 0:
-            wl += 1e-10
-        return wl
+    # def wl_norm(self):
+    #     """ Return normalised wavelength (wl/unitcell_x). """
+    #     wl = self.wl_nm / self.structure.unitcell_x
+    #     # Avoid Wood Anomalies
+    #     if self.wl_nm % self.structure.unitcell_x == 0:
+    #         wl += 1e-10
+    #     return wl
 
 
     def calc_EM_modes(self):
@@ -57,7 +57,7 @@ class Simmo(object):
                [field comp, node nu on element, Eig value, el nu]
         """
         st = self.structure
-        wl = self.wl_nm
+        wl = self.wl_m
         self.n_effs = np.array([st.bkg_material.n(wl), st.inc_a_material.n(wl),
                                 st.inc_b_material.n(wl), st.slab_a_material.n(wl),
                                 st.slab_a_bkg_material.n(wl), st.slab_b_material.n(wl),
@@ -88,9 +88,12 @@ class Simmo(object):
         max_n = np.real(self.n_effs).max()
         # Take real part so that complex conjugate pair Eigenvalues are
         # equal distance from shift and invert point and therefore both found.
-        k_0_norm = 2 * np.pi / self.wl_norm()
-        shift = 1.1*max_n**2 * k_0_norm**2  \
+        self.d_in_m = self.structure.unitcell_x*1e-9
+        shift = 1.1*max_n**2 * self.k_0**2  \
             - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
+        # k_0_norm = 2 * np.pi / self.wl_norm()
+        # shift = 1.1*max_n**2 * k_0_norm**2  \
+        #     - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
 
         if EM_FEM_debug == 1:
             print 'shift', shift
@@ -106,23 +109,16 @@ class Simmo(object):
 
         try:
             resm = NumBAT.calc_em_modes(
-                self.wl_norm(), self.num_modes,
+                self.wl_m, self.num_modes,
                 EM_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el, self.n_effs,
-                self.k_pll_norm(), shift, self.E_H_field, i_cond, itermax,
+                self.k_pll_norm(), self.d_in_m, shift, self.E_H_field, i_cond, itermax,
                 self.structure.plotting_fields, self.structure.plot_real,
                 self.structure.plot_imag, self.structure.plot_abs,
                 cmplx_max, real_max, int_max)
 
             self.Eig_value, self.sol1, self.mode_pol, \
             self.table_nod, self.type_el, self.type_nod, self.x_arr = resm
-
-            # Make natural units 1/m
-            self.Eig_value = self.Eig_value/(self.structure.unitcell_x*1e-9)
-            # self.sol1 = self.sol1/(self.structure.unitcell_x*1e-9)
-            # area = self.structure.unitcell_x*1e-9 * self.structure.unitcell_y*1e-9
-            # area = self.structure.unitcell_x * self.structure.unitcell_y
-            # area_norm = area/self.structure.unitcell_x**2
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_EM_modes",\
@@ -185,12 +181,10 @@ class Simmo(object):
         sol1 - the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
         """
-        st = self.structure
-        wl = self.wl_nm
         q_acoustic = self.q_acoustic
         EM_sim = self.EM_sim
         self.d_in_m = self.structure.inc_a_x*1e-9
-        orig_unitcell_x = self.structure.unitcell_x*1e-9
+        # orig_unitcell_x = self.structure.unitcell_x*1e-9
 
         if self.num_modes < 20:
             self.num_modes = 20
@@ -278,8 +272,8 @@ class Simmo(object):
             x_arr_AC = np.zeros((2,n_msh_pts_AC))
             for node in unique_nodes:
                 # Note x_arr needs to be adjust back to fortran indexing
-                x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1])*orig_unitcell_x
-                x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])*orig_unitcell_x
+                x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1])#*orig_unitcell_x
+                x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])#*orig_unitcell_x
 
             self.el_convert_tbl = el_convert_tbl
             self.node_convert_tbl = node_convert_tbl
@@ -336,7 +330,7 @@ class Simmo(object):
 
         try:
             resm = NumBAT.calc_ac_modes(
-                self.wl_norm(), self.q_acoustic, self.num_modes,
+                self.q_acoustic, self.num_modes,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el_AC,
                 self.structure.c_tensor, self.structure.rho,

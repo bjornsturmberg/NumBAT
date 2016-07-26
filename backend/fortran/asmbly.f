@@ -182,7 +182,8 @@ c           Isoparametric element
             stop
           endif
 c            write(ui,*) "asmbly: info_curved = ", info_curved
-           if(abs(det) .lt. 1.0d-10) then
+C            if(abs(det) .lt. 1.0d-10) then
+           if(abs(det) .lt. 1.0d-20) then
              write(ui,*)
              write(ui,*) "   ???"
              write(ui,*) "asmbly: det = 0 : iel, det = ", iel, det

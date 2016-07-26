@@ -14,7 +14,8 @@ from fortran import NumBAT
 
 
 speed_c = 299792458
-### Geometric parameters
+### Geometric parameters 
+## All spacial variables given in nm!
 # opt_freq_GHz = 11
 # wl_nm = 2*np.pi*speed_c/(opt_freq_GHz)
 wl_nm = 1550
@@ -76,7 +77,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9/(2*np.pi) # GHz
+# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value/(2*np.pi)*1e-9 # GHz
 # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
 # print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz

@@ -2,7 +2,7 @@
 c     Explicit inputs
      *    lambda, nval,
      *    debug, mesh_file, npt, nel,
-     *    nb_typ_el, n_eff, bloch_vec, shift,
+     *    nb_typ_el, n_eff, bloch_vec, d_in_m, shift,
      *    E_H_field, i_cond, itermax,
      *    plot_modes, plot_real, plot_imag, plot_abs,
      *    cmplx_max, real_max, int_max,
@@ -82,8 +82,8 @@ c      integer*8 ip_row_ptr, ip_bandw_1, ip_adjncy
 c      integer*8 len_adj, len_adj_max, len_0_adj_max
 c, iout, nonz_1, nonz_2
       integer*8 i, j!, mesh_format
-c     Wavelength lambda is in normalised units of d_in_nm
-      double precision lambda
+c     Wavelength lambda in units of m
+      double precision lambda, d_in_m
       double precision freq, lat_vecs(2,2), tol
       double precision k_0, pi, lx, ly, bloch_vec(2), bloch_vec_k(2)
       complex*16 shift
@@ -132,7 +132,7 @@ c     new breed of variables to prise out of a, b and c
 
 Cf2py intent(in) lambda, nval
 Cf2py intent(in) debug, mesh_file, npt, nel
-Cf2py intent(in) n_eff, bloch_vec, shift
+Cf2py intent(in) n_eff, bloch_vec, d_in_m, shift
 Cf2py intent(in) E_H_field, i_cond, itermax
 Cf2py intent(in) plot_modes, plot_real, plot_imag, plot_abs
 Cf2py intent(in) cmplx_max, real_max, int_max, nb_typ_el
@@ -159,8 +159,11 @@ C      mesh_format = 1
 C      Checks = 0 ! check completeness, energy conservation
       PrintAll = debug ! only need to print when debugging J overlap, orthogonal
       tol = 0.0 ! ARPACK accuracy (0.0 for machine precision)
-      lx=1.0 ! Diameter of unit cell. Default, lx = 1.0.
-      ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell.
+C       lx=1.0 ! Diameter of unit cell. Default, lx = 1.0.
+C       ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell.
+
+      lx = d_in_m
+      ly = d_in_m
 
       if (debug .eq. 1) then
         write(*,*) "WELCOME TO DEBUG MODE, py_calc_modes.f"
@@ -516,11 +519,9 @@ C
 C
 C
       write(ui,*)
-      write(ui,*) "---------------------------------------",
-     *     "-------"
-      write(ui,*) " EM FEM, wavelength : ", lambda, " (d)"
-      write(ui,*) "---------------------------------------",
-     *     "-------"
+      write(ui,*) "----------------------------------------------"
+      write(ui,*) " EM FEM, wavelength : ", lambda*1.0d9, "nm"
+      write(ui,*) "----------------------------------------------"
       write(ui,*)
 C
       freq = 1.0d0/lambda

@@ -190,7 +190,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
             cbar.ax.tick_params(labelsize=title_font-10)
 
         if EM_AC=='EM':
-            n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_norm() / (2*np.pi)
+            n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_m / (2*np.pi)
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
                 k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_value[ival]),

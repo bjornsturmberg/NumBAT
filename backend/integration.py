@@ -40,7 +40,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 
     speed_c = 299792458
-    opt_freq = 2*np.pi*speed_c/(sim_EM_wguide.wl_nm*1e-9) # In units of Hz
+    opt_freq = 2*np.pi*speed_c/(sim_EM_wguide.wl_m) # In units of Hz
 
     ncomps = 3
     nnodes = 6
@@ -122,7 +122,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-    Q_PE = Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
+    # print Q_PE
+    # Q_PE = Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
+    # print Q_PE
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
 
