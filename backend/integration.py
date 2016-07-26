@@ -40,7 +40,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 
     speed_c = 299792458
-    opt_freq = 2*np.pi*speed_c/(sim_EM_wguide.wl_m) # In units of Hz
+    EM_freq_omega = 2*np.pi*speed_c/(sim_EM_wguide.wl_m) # Angular freq in units of Hz
+    AC_freq_Omega = sim_AC_wguide.Eig_value[AC_ival] # Angular freq in units of Hz
 
     ncomps = 3
     nnodes = 6
@@ -122,27 +123,34 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-    # print Q_PE
+    print Q_PE
     # Q_PE = Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
     # print Q_PE
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
 
-    gain = 2*opt_freq*sim_AC_wguide.Eig_value[AC_ival]*np.real(Q*np.conj(Q))
+    gain = 2*EM_freq_omega*AC_freq_Omega*np.real(Q*np.conj(Q))
+
     P1 = sim_EM_wguide.EM_mode_overlap[EM_ival1]
     P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]
     P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
     normal_fact = P1*P2*P3
     print "EM mode 1 power internal (wg)", P1
+    print "EM mode 1 power quad", sim_EM_wguide.EM_mode_overlap2[EM_ival1]
+    print "AC mode power", P3
     gain2 = np.real(gain/normal_fact)
     alpha_2 = 1/98.70e-6
     SBS_gain = gain2/alpha_2
     # # SBS_gain = gain/alpha[2]
     print "SBS_gain", SBS_gain
+    print "SBS_gain", SBS_gain/(sim_EM_wguide.structure.unitcell_x*1e-9)
+    print "SBS_gain", SBS_gain/(sim_EM_wguide.structure.inc_a_x*1e-9)
     CW_gain = 310.25
     # CW_gain = 2464.98
     print "factor", CW_gain/SBS_gain
     print "factor", np.sqrt(CW_gain/SBS_gain)
+    print "unit cell", 1./(sim_EM_wguide.structure.unitcell_x*1e-9)
+    print "wg", 1./(sim_EM_wguide.structure.inc_a_x*1e-9)
 
     # import time
     # start = time.time()

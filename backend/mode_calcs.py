@@ -35,19 +35,6 @@ class Simmo(object):
         self.k_0 = 2 * np.pi / self.wl_m
 
 
-    def k_pll_norm(self):
-        return self.k_pll * self.structure.unitcell_x
-
-
-    # def wl_norm(self):
-    #     """ Return normalised wavelength (wl/unitcell_x). """
-    #     wl = self.wl_nm / self.structure.unitcell_x
-    #     # Avoid Wood Anomalies
-    #     if self.wl_nm % self.structure.unitcell_x == 0:
-    #         wl += 1e-10
-    #     return wl
-
-
     def calc_EM_modes(self):
         """ Run a Fortran FEM calculation to find the optical modes.
 
@@ -58,6 +45,7 @@ class Simmo(object):
         """
         st = self.structure
         wl = self.wl_m
+        self.d_in_m = self.structure.unitcell_x*1e-9
         self.n_effs = np.array([st.bkg_material.n(wl), st.inc_a_material.n(wl),
                                 st.inc_b_material.n(wl), st.slab_a_material.n(wl),
                                 st.slab_a_bkg_material.n(wl), st.slab_b_material.n(wl),
@@ -88,12 +76,8 @@ class Simmo(object):
         max_n = np.real(self.n_effs).max()
         # Take real part so that complex conjugate pair Eigenvalues are
         # equal distance from shift and invert point and therefore both found.
-        self.d_in_m = self.structure.unitcell_x*1e-9
         shift = 1.1*max_n**2 * self.k_0**2  \
-            - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
-        # k_0_norm = 2 * np.pi / self.wl_norm()
-        # shift = 1.1*max_n**2 * k_0_norm**2  \
-        #     - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
+            - self.k_pll[0]**2 - self.k_pll[1]**2
 
         if EM_FEM_debug == 1:
             print 'shift', shift
@@ -112,7 +96,7 @@ class Simmo(object):
                 self.wl_m, self.num_modes,
                 EM_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el, self.n_effs,
-                self.k_pll_norm(), self.d_in_m, shift, self.E_H_field, i_cond, itermax,
+                self.k_pll, self.d_in_m, shift, self.E_H_field, i_cond, itermax,
                 self.structure.plotting_fields, self.structure.plot_real,
                 self.structure.plot_imag, self.structure.plot_abs,
                 cmplx_max, real_max, int_max)
@@ -141,17 +125,17 @@ class Simmo(object):
         try:
             nnodes = 6
             if self.structure.inc_shape == 'rectangular':
-                self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_wg(
-                    self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
-                    nnodes, self.table_nod,
-                    self.x_arr, self.Eig_value, self.sol1, self.type_el)
-                # self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2(
+                # self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_wg(
                 #     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                 #     nnodes, self.table_nod,
-                #     self.x_arr, self.Eig_value, self.sol1)
+                #     self.x_arr, self.Eig_value, self.sol1, self.type_el)
+                self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2(
+                    self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
+                    nnodes, self.table_nod,
+                    self.x_arr, self.Eig_value, self.sol1)
 
-            elif self.structure.inc_shape == 'circular':
-                self.EM_mode_overlap = NumBAT.em_mode_energy_int(
+            # elif self.structure.inc_shape == 'circular':
+                self.EM_mode_overlap2 = NumBAT.em_mode_energy_int(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_value, self.sol1)
@@ -184,7 +168,6 @@ class Simmo(object):
         q_acoustic = self.q_acoustic
         EM_sim = self.EM_sim
         self.d_in_m = self.structure.inc_a_x*1e-9
-        # orig_unitcell_x = self.structure.unitcell_x*1e-9
 
         if self.num_modes < 20:
             self.num_modes = 20
@@ -272,8 +255,8 @@ class Simmo(object):
             x_arr_AC = np.zeros((2,n_msh_pts_AC))
             for node in unique_nodes:
                 # Note x_arr needs to be adjust back to fortran indexing
-                x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1])#*orig_unitcell_x
-                x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])#*orig_unitcell_x
+                x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1])
+                x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])
 
             self.el_convert_tbl = el_convert_tbl
             self.node_convert_tbl = node_convert_tbl
@@ -345,9 +328,6 @@ class Simmo(object):
             # Make adjustment to Omega here!
             self.Eig_value = self.Eig_value*2*np.pi
 
-            # # Make natural units GHz
-            # self.Eig_value = self.Eig_value*1e-9
-
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\
             "interrupted by keyboard.\n\n"
@@ -383,14 +363,3 @@ class Simmo(object):
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\
             "interrupted by keyboard.\n\n"
-
-        # x_tmp = []
-        # y_tmp = []
-        # for i in np.arange(self.n_msh_pts):
-        #     x_tmp.append(self.x_arr[0,i])
-        #     y_tmp.append(self.x_arr[1,i])
-        # x_min = np.min(x_tmp); x_max=np.max(x_tmp)
-        # y_min = np.min(y_tmp); y_max=np.max(y_tmp)
-        # area = abs((x_max-x_min)*(y_max-y_min))
-        # print "AC FEM area", area
-        # self.AC_mode_overlap = self.AC_mode_overlap*area
