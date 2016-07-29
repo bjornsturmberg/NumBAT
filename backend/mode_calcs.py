@@ -76,8 +76,8 @@ class Simmo(object):
         max_n = np.real(self.n_effs).max()
         # Take real part so that complex conjugate pair Eigenvalues are
         # equal distance from shift and invert point and therefore both found.
-        shift = 1.1*max_n**2 * self.k_0**2  \
-            - self.k_pll[0]**2 - self.k_pll[1]**2
+        shift = 0.4*max_n**2 * self.k_0**2 # - self.k_pll[0]**2 - self.k_pll[1]**2
+
 
         if EM_FEM_debug == 1:
             print 'shift', shift

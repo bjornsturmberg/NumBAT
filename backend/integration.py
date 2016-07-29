@@ -71,12 +71,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     Fortran_debug = 0
 ### Calc alpha (loss) Eq. 45
     try:
+        print 'alpha begin'
         alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el,
             sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod,
             sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
             q_acoustic, sim_AC_wguide.Eig_value, sim_AC_wguide.sol1,
             sim_AC_wguide.AC_mode_overlap, Fortran_debug)
+        print 'alpha end'
     # Christians values for alpha of first 3 modes
         # print sim_AC_wguide.AC_mode_overlap
         # print alpha
@@ -104,6 +106,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     try:
         #TODO: removes basis_overlaps
         #TODO: allow lists to be inserted for ivals
+        print 'Q_PE begin'
+        Fortran_debug = 1
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
             Q_PE, basis_overlap_PE = NumBAT.photoelastic_int_v2(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
@@ -120,6 +124,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, Fortran_debug)
+        print 'Q_PE end'
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 

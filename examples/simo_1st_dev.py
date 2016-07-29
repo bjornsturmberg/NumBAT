@@ -26,13 +26,10 @@ inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 # inc_shape = 'circular'
 
-# unitcell_x = inc_a_x
-# unitcell_y = inc_a_y
-
 ### Optical parameters
 eps = 12.25
-num_EM_modes = 40
-num_AC_modes = 40
+num_EM_modes = 20
+num_AC_modes = 20
 
 ### Acoustic parameters
 # Inclusion a
@@ -47,7 +44,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.1, lc2=40.0, lc3=20.0)#,
+                        lc_bkg=0.1, lc2=60.0, lc3=40.0)#,
                         # make_mesh_now=False, plotting_fields=False,
                         # mesh_file='rect_acoustic_3.mail')
 
@@ -62,7 +59,7 @@ sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-# print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
+print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 
@@ -94,13 +91,13 @@ print "num_AC_modes", num_AC_modes
 print "lc_bkg", wguide.lc
 print "lc_bkg", wguide.lc2
 print "lc_bkg", wguide.lc3
-print "Gain", SBS_gain
-print "Q_PE", Q_PE
 print "alpha[2]", alpha[2]
 alpha_2 = 1/98.70e-6
 print "CW_alpha/alpha[2]", alpha_2/alpha[2]
 print "EM power", P1
 print "AC power", P3
+print "Q_PE", Q_PE
+print "Gain", SBS_gain
 
     # gain_array.append(np.real(SBS_gain))
 
