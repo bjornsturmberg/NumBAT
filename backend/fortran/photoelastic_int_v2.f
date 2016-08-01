@@ -183,7 +183,7 @@ C Having calculated overlap of basis functions on element
 C now multiply by specific field values for modes of interest.
         do itrial=1,nnodes0
           do i_eq=1,3
-            ind_ip = i_eq + 3*(itrial-1)
+            ind_ip = i_eq + 3*(itrial-1)          
             E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
             do jtest=1,nnodes0
               do j_eq=1,3

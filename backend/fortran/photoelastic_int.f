@@ -75,30 +75,25 @@ C
       endif
 C
       overlap = 0.0d0
-      write(*,*) "call quad_triangle begin"
       call quad_triangle (nquad, nquad_max, wq, xq, yq)
       if (debug .eq. 1) then
         write(ui,*) "photoelastic_int: nquad, nquad_max = ",
      *              nquad, nquad_max
       endif
-        write(*,*) "call quad_triangle end"
 cccccccccccc
 C Loop over elements - start
 cccccccccccc
       do iel=1,nel
         typ_e = type_el(iel)
-        write(*,*) "iel", iel
         do j=1,nnodes
           j1 = table_nod(j,iel)
           xel(1,j) = x(1,j1)
           xel(2,j) = x(2,j1)
         enddo
-        write(*,*) "call curved_elem_tri"
         call curved_elem_tri (nnodes, xel, info_curved, r_tmp1)
         if (info_curved .eq. 1) then
           n_curved = n_curved + 1
         endif
-        write(*,*) "call curved_elem_tri end"
 cccccccccc
         do i=1,3*nnodes
           do j=1,3*nnodes
@@ -120,9 +115,7 @@ c         xx   = coordinate on the reference triangle
 c         xx_g = coordinate on the actual triangle
 C         phi2_list = values of Lagrange polynomials (1-6) at each local node.
 C         grad2_mat0 = gradient on the reference triangle (P2 element)
-          write(*,*) "call phi2_2d_mat"
           call phi2_2d_mat(xx, phi2_list, grad2_mat0)
-          write(*,*) "call phi2_2d_mat end"
 c
           if (info_curved .eq. 0) then
 c           Rectilinear element
@@ -148,7 +141,6 @@ C            if(abs(det) .lt. 1.0d-10) then
 c          grad_i  = gradient on the actual triangle
 c          grad_i  = Transpose(mat_T)*grad_i0
 c          Calculation of the matrix-matrix product:
-          write(*,*) "call DGEMM"
           call DGEMM('Transpose','N', 2, 6, 2, ONE, mat_T, 2,
      *           grad2_mat0, 2, ZERO, grad2_mat, 2)
           coeff_1 = ww * abs(det)

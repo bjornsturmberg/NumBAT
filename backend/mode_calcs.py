@@ -68,8 +68,8 @@ class Simmo(object):
         # In theory could do some python-based preprocessing
         # on the mesh file to work out RAM requirements
         cmplx_max = 2**27  # 30
-        real_max = 2**23
-        int_max = 2**22
+        real_max = 2**24
+        int_max = 2**23
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -133,7 +133,6 @@ class Simmo(object):
                 #     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                 #     nnodes, self.table_nod,
                 #     self.x_arr, self.Eig_value, self.sol1)
-
             elif self.structure.inc_shape == 'circular':
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,

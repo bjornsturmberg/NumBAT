@@ -44,7 +44,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.1, lc2=60.0, lc3=40.0)#,
+                        lc_bkg=0.1, lc2=50.0, lc3=50.0)#,
                         # make_mesh_now=False, plotting_fields=False,
                         # mesh_file='rect_acoustic_3.mail')
 
@@ -56,7 +56,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 # for wl_nm in wl_nms:
 ### Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
