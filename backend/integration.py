@@ -39,9 +39,30 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 # grad is value of gradient of Lagrange polynomials (1-6) at that node.
 
 
-    EM_ival1_fortran = EM_ival1+1  # convert back to fortran indexing
-    EM_ival2_fortran = EM_ival2+1  # convert back to fortran indexing
-    AC_ival_fortran = AC_ival+1  # convert back to fortran indexing
+    if EM_ival1 == 'All':
+        EM_ival1_fortran = -1
+        P1 = sim_EM_wguide.EM_mode_overlap
+    else:
+        EM_ival1_fortran = EM_ival1+1  # convert back to fortran indexing
+        P1 = sim_EM_wguide.EM_mode_overlap[EM_ival1]
+
+    if EM_ival2 == 'All':
+        EM_ival2_fortran = -1
+        P2 = sim_EM_wguide.EM_mode_overlap
+    else:
+        EM_ival2_fortran = EM_ival2+1  # convert back to fortran indexing
+        P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]
+
+    if AC_ival == 'All':
+        AC_ival_fortran = -1
+        # Note: sim_AC_wguide.Omega_AC if the acoustic angular freq in units of Hz
+        AC_freq_Omega = sim_AC_wguide.Omega_AC
+        P3 = sim_AC_wguide.AC_mode_overlap
+    else:
+        AC_freq_Omega = sim_AC_wguide.Omega_AC[AC_ival]
+        AC_ival_fortran = AC_ival+1  # convert back to fortran indexing
+        P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
+
     Fortran_debug = 0
     ncomps = 3
     nnodes = 6
@@ -83,7 +104,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         #TODO: removes basis_overlaps
         #TODO: allow lists to be inserted for ivals
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
-            Q_PE, basis_overlap_PE = NumBAT.photoelastic_int_v2(
+            Q_PE = NumBAT.photoelastic_int_v2(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
                 sim_AC_wguide.n_msh_pts, nnodes,
@@ -103,21 +124,21 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
+    # print Q_PE
+    # Q_PE = Q_PE[EM_ival1,EM_ival2,AC_ival]
+    # print Q_PE
+
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
     
-    EM_freq_omega = sim_EM_wguide.omega_EM   # Angular freq in units of Hz
-    AC_freq_Omega = sim_AC_wguide.Omega_AC[AC_ival]   # Angular freq in units of Hz
-    gain = 2*EM_freq_omega*AC_freq_Omega*np.real(Q*np.conj(Q))
+    # Note: sim_EM_wguide.omega_EM if the optical angular freq in units of Hz
+    gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
 
     fudge_factor = 2*np.pi
     gain = gain*fudge_factor
 
-    P1 = sim_EM_wguide.EM_mode_overlap[EM_ival1]
-    P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]
-    P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
     normal_fact = P1*P2*P3
-    SBS_gain = np.real(gain/normal_fact)#/alpha[AC_ival])
+    SBS_gain = np.real(gain/normal_fact)
 
     return SBS_gain, Q_PE, Q_MB, alpha, P1, P3
 
