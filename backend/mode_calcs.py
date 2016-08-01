@@ -33,6 +33,8 @@ class Simmo(object):
         self.k_0 = 2 * np.pi / self.wl_m
         # just off normal incidence to avoid degeneracies
         self.k_pll = np.array([1e-16, 1e-16])
+        speed_c = 299792458
+        self.omega_EM = 2*np.pi*speed_c/self.wl_m # Angular freq in units of Hz
 
 
     def calc_EM_modes(self):
@@ -43,13 +45,15 @@ class Simmo(object):
         sol1 - the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
         """
-        st = self.structure
-        wl = self.wl_m
         self.d_in_m = self.structure.unitcell_x*1e-9
-        self.n_effs = np.array([st.bkg_material.n(wl), st.inc_a_material.n(wl),
-                                st.inc_b_material.n(wl), st.slab_a_material.n(wl),
-                                st.slab_a_bkg_material.n(wl), st.slab_b_material.n(wl),
-                                st.slab_b_bkg_material.n(wl), st.coating_material.n(wl)])
+        self.n_effs = np.array([self.structure.bkg_material.n(self.wl_m), 
+                                self.structure.inc_a_material.n(self.wl_m),
+                                self.structure.inc_b_material.n(self.wl_m), 
+                                self.structure.slab_a_material.n(self.wl_m),
+                                self.structure.slab_a_bkg_material.n(self.wl_m), 
+                                self.structure.slab_b_material.n(self.wl_m),
+                                self.structure.slab_b_bkg_material.n(self.wl_m), 
+                                self.structure.coating_material.n(self.wl_m)])
 
         self.n_effs = self.n_effs[:self.structure.nb_typ_el]
         if self.structure.loss is False:
@@ -324,8 +328,7 @@ class Simmo(object):
             self.Eig_value, self.sol1, self.mode_pol = resm
 
             # FEM Eigenvalue is frequency, rather than angular frequency Omega
-            # Make adjustment to Omega here!
-            self.Eig_value = self.Eig_value*2*np.pi
+            self.Omega_AC = self.Eig_value*2*np.pi
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\
@@ -357,7 +360,7 @@ class Simmo(object):
                 self.num_modes, self.n_msh_el, self.n_msh_pts,
                 nnodes, self.table_nod, self.type_el, self.x_arr,
                 self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
-                self.q_acoustic, self.Eig_value, self.sol1, AC_FEM_debug)
+                self.q_acoustic, self.Omega_AC, self.sol1, AC_FEM_debug)
 
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\

@@ -39,10 +39,10 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 # grad is value of gradient of Lagrange polynomials (1-6) at that node.
 
 
-    speed_c = 299792458
-    EM_freq_omega = 2*np.pi*speed_c/(sim_EM_wguide.wl_m) # Angular freq in units of Hz
-    AC_freq_Omega = sim_AC_wguide.Eig_value[AC_ival] # Angular freq in units of Hz
-
+    EM_ival1_fortran = EM_ival1+1  # convert back to fortran indexing
+    EM_ival2_fortran = EM_ival2+1  # convert back to fortran indexing
+    AC_ival_fortran = AC_ival+1  # convert back to fortran indexing
+    Fortran_debug = 0
     ncomps = 3
     nnodes = 6
     num_EM_modes = len(sim_EM_wguide.Eig_value)
@@ -67,58 +67,35 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         if el_typ+1 in sim_AC_wguide.structure.typ_el_AC:
             relevant_eps_effs.append(sim_EM_wguide.n_effs[el_typ]**2)
 
-
-    Fortran_debug = 0
 ### Calc alpha (loss) Eq. 45
     try:
         alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el,
             sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod,
             sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
-            q_acoustic, sim_AC_wguide.Eig_value, sim_AC_wguide.sol1,
+            q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
             sim_AC_wguide.AC_mode_overlap, Fortran_debug)
-    # Christians values for alpha of first 3 modes
-        # print sim_AC_wguide.AC_mode_overlap
-        # print alpha
-        # print '---------'
-        # print alpha[2]
-        # alpha_2 = 1/98.70e-6
-        # print alpha_2
-        # print alpha_2/alpha[2]
-        # print '---------'
-        # print alpha[0]
-        # alpha_0 = 1/186.52e-6
-        # print alpha_0
-        # print alpha_0/alpha[0]
-        # print '---------'
-        # print alpha[1]
-        # alpha_1 = 1/142.79e-6
-        # print alpha_1
-        # print alpha_1/alpha[1]
-        # print '---------'
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
-
 
 ### Calc Q_photoelastic Eq. 33
     try:
         #TODO: removes basis_overlaps
         #TODO: allow lists to be inserted for ivals
-        EM_ival1 = EM_ival1+1  # convert back to fortran indexing
-        EM_ival2 = EM_ival2+1  # convert back to fortran indexing
-        AC_ival = AC_ival+1  # convert back to fortran indexing
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
             Q_PE, basis_overlap_PE = NumBAT.photoelastic_int_v2(
-                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
-                EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
+                sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, Fortran_debug)
         elif sim_EM_wguide.structure.inc_shape == 'circular':
             Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
-                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
-                EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
+                sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
@@ -126,77 +103,23 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-    # print Q_PE
-    # Q_PE = Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
-    # print Q_PE
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
+    
+    EM_freq_omega = sim_EM_wguide.omega_EM   # Angular freq in units of Hz
+    AC_freq_Omega = sim_AC_wguide.Omega_AC[AC_ival]   # Angular freq in units of Hz
+    gain = 2*EM_freq_omega*AC_freq_Omega*np.real(Q*np.conj(Q))
 
-    gain = 2*2*EM_freq_omega*AC_freq_Omega*np.real(Q*np.conj(Q))
+    fudge_factor = 2*np.pi
+    gain = gain*fudge_factor
 
     P1 = sim_EM_wguide.EM_mode_overlap[EM_ival1]
     P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]
     P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
     normal_fact = P1*P2*P3
-    # print "EM mode 1 power internal (wg)", P1
-    # print "EM mode 1 power quad", sim_EM_wguide.EM_mode_overlap2[EM_ival1]
-    # print "AC mode power", P3
-    gain2 = np.real(gain/normal_fact)
-    alpha_2 = 1/98.70e-6
-    SBS_gain = gain2/alpha_2
-    # # # SBS_gain = gain/alpha[2]
-    # print "SBS_gain", SBS_gain
-    # print "SBS_gain", SBS_gain/(sim_EM_wguide.structure.unitcell_x*1e-9)
-    # print "SBS_gain", SBS_gain/(sim_EM_wguide.structure.inc_a_x*1e-9)
-    # CW_gain = 310.25
-    # # CW_gain = 2464.98
-    # print "factor", CW_gain/SBS_gain
-    # print "factor", np.sqrt(CW_gain/SBS_gain)
-    # print "unit cell", 1./(sim_EM_wguide.structure.unitcell_x*1e-9)
-    # print "wg", 1./(sim_EM_wguide.structure.inc_a_x*1e-9)
-
-    # import time
-    # start = time.time()
-    # P1 = NumBAT.em_mode_energy_int_v2(
-    #     sim_EM_wguide.k_0, sim_EM_wguide.num_modes, sim_EM_wguide.n_msh_el, sim_EM_wguide.n_msh_pts,
-    #     nnodes, sim_EM_wguide.table_nod,
-    #     sim_EM_wguide.x_arr, sim_EM_wguide.Eig_value, sim_EM_wguide.sol1)
-    # elapsed = (time.time() - start)
-    # print elapsed
-    # print "EM mode 1 power v2", P1[0]
-    # start = time.time()
-    # P11 = NumBAT.em_mode_energy_int(
-    #     sim_EM_wguide.k_0, sim_EM_wguide.num_modes, sim_EM_wguide.n_msh_el, sim_EM_wguide.n_msh_pts,
-    #     nnodes, sim_EM_wguide.table_nod,
-    #     sim_EM_wguide.x_arr, sim_EM_wguide.Eig_value, sim_EM_wguide.sol1)
-    # elapsed = (time.time() - start)
-    # print elapsed
-    # print "EM mode 1 power", P11[0]
+    SBS_gain = np.real(gain/normal_fact)#/alpha[AC_ival])
 
     return SBS_gain, Q_PE, Q_MB, alpha, P1, P3
-
-    # num_EM_modes = len(sim_EM_wguide.Eig_value)
-    # n_msh_el_AC = sim_AC_wguide.n_msh_el
-    # trimmed_EM_field = np.zeros((ncomps,nnodes+7,num_EM_modes,n_msh_el_AC), dtype=complex)
-    # for el in range(n_msh_el_AC):
-    #     new_el = sim_AC_wguide.el_convert_tbl[el]
-    #     for ival in range(num_EM_modes):
-    #         for n in range(nnodes+7):
-    #             for x in range(ncomps):
-    #                 trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
-
-    # x_arr2 = sim_AC_wguide.x_arr/(sim_EM_wguide.structure.unitcell_x*1e-9)
-    # P11 = NumBAT.em_mode_energy_int(
-    #     sim_EM_wguide.k_0, sim_AC_wguide.num_modes, 
-    #     sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts,
-    #     nnodes, sim_AC_wguide.table_nod,
-    #     x_arr2, sim_EM_wguide.Eig_value, trimmed_EM_field)
-    # print "EM mode 1 power trimmed", P11[EM_ival1]
-    # normal_fact = P11[EM_ival1]*P11[EM_ival2]*P3
-    # gain2 = gain/normal_fact
-    # SBS_gain = gain2/alpha_2
-    # # SBS_gain = gain2/alpha[2]
-    # print "SBS_gain", SBS_gain
 
 
 

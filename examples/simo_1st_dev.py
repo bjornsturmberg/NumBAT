@@ -49,17 +49,12 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         # mesh_file='rect_acoustic_3.mail')
 
 
-# opt_freq_GHz = np.linspace(11, 25, 50)
-# wl_nms = 2*np.pi*speed_c/opt_freq_GHz
-# gain_array = []
-
-# for wl_nm in wl_nms:
 ### Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 
@@ -69,45 +64,48 @@ print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=None)
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
+# # sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=None)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-print 'Omega of AC wave \n', sim_AC_wguide.Eig_value/(2*np.pi)*1e-9 # GHz
+npzfile = np.load('wguide_data_AC.npz')
+sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
 # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
 # print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
+AC_ival = 2
 
 ### Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide, 
                            sim_AC_wguide, q_acoustic, 
-                           EM_ival1=0, EM_ival2=0, AC_ival=2)
+                           EM_ival1=0, EM_ival2=0, AC_ival=AC_ival)
 
 print "num_EM_modes", num_EM_modes
 print "num_AC_modes", num_AC_modes
 print "lc_bkg", wguide.lc
 print "lc_bkg", wguide.lc2
 print "lc_bkg", wguide.lc3
-print "alpha[2]", alpha[2]
+print "alpha[2]", alpha[AC_ival]
 alpha_2 = 1/98.70e-6
-print "CW_alpha/alpha[2]", alpha_2/alpha[2]
+print "CW_alpha/alpha[2]", alpha_2/alpha[AC_ival]
 print "EM power", P1
 print "AC power", P3
 print "Q_PE", Q_PE
-print "Gain", SBS_gain
-
-    # gain_array.append(np.real(SBS_gain))
+print "Gain", SBS_gain/alpha[AC_ival]
 
 
-# import matplotlib
-# matplotlib.use('pdf')
-# import matplotlib.pyplot as plt
-# plt.figure(figsize=(13,13))
-# plt.clf()
-# # plt.plot(gain_array,opt_freq_GHz,'r',linewidth=3)
-# plt.plot(opt_freq_GHz,gain_array,'r',linewidth=3)
-# plt.savefig('gain.pdf')
-# plt.close()
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as plt
+plt.figure(figsize=(13,13))
+plt.clf()
+
+AC_detuning_range = np.linspace(-1e9, 1e9, 1e3)
+gain_list = SBS_gain*alpha[AC_ival]/(alpha[AC_ival]**2 + AC_detuning_range**2)
+freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_ival] + AC_detuning_range)*1e-9
+
+plt.plot(freq_list_GHz, np.real(gain_list),'r',linewidth=3)
+plt.savefig('gain.pdf')
+plt.close()
