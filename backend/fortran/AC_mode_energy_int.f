@@ -158,9 +158,9 @@ C             Gradient of transverse components of basis function
                     ind_lp = l_eq + 3*(ltest-1)
                     z_tmp1 = phi2_list(itrial) * grad2_mat(k_eq,ltest)
                     coeff_2 = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
-                    z_tmp1 = coeff_1 * coeff_2 * z_tmp1
                     basis_overlap(ind_ip,k_eq,ind_lp) =
-     *                basis_overlap(ind_ip,k_eq,ind_lp) + z_tmp1
+     *                basis_overlap(ind_ip,k_eq,ind_lp) 
+     *                + coeff_1 * coeff_2 * z_tmp1
                   enddo
                 enddo
               enddo
@@ -174,9 +174,9 @@ C             form e^{i*beta*z} phi.
                   z_tmp1 = phi2_list(itrial)
      *                    * phi2_list(ltest) * ii * beta_AC
                   coeff_2 = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
-                  z_tmp1 = coeff_1 * coeff_2 * z_tmp1
                   basis_overlap(ind_ip,k_eq,ind_lp) =
-     *              basis_overlap(ind_ip,k_eq,ind_lp) + z_tmp1
+     *              basis_overlap(ind_ip,k_eq,ind_lp)
+     *                + coeff_1 * coeff_2 * z_tmp1
                 enddo
               enddo
             enddo

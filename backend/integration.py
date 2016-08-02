@@ -90,9 +90,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 ### Calc alpha (loss) Eq. 45
     try:
-        alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el,
-            sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod,
-            sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+        alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, 
+            sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes, 
+            sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
             q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
             sim_AC_wguide.AC_mode_overlap, Fortran_debug)
@@ -123,10 +123,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
-
-    # print Q_PE
-    # Q_PE = Q_PE[EM_ival1,EM_ival2,AC_ival]
-    # print Q_PE
 
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB

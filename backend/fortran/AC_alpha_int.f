@@ -160,7 +160,8 @@ C             Gradient of transverse components of basis function
                   do ltest=1,nnodes0
                     do l_eq=1,3
                       ind_lp = l_eq + 3*(ltest-1)
-                      z_tmp1 = grad2_mat(j_eq,itrial)
+C                 Negative sign due to not doing integration by parts
+                      z_tmp1 = -grad2_mat(j_eq,itrial)
      *                      * grad2_mat(k_eq,ltest)
                       coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                       basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
@@ -176,8 +177,9 @@ C               form e^{i*beta*z} phi.
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
-                    z_tmp1 = grad2_mat(j_eq,itrial)
-     *                      * phi2_list(ltest) * ii * beta_AC
+C                 Sign difference due to not doing integration by parts
+                    z_tmp1 = grad2_mat(j_eq,ltest)
+     *                      * phi2_list(itrial) * ii * beta_AC
                     coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                     basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
      *                basis_overlap(ind_ip,j_eq,k_eq,ind_lp)
@@ -190,6 +192,7 @@ C               form e^{i*beta*z} phi.
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
+C                 Sign difference due to not doing integration by parts
                     z_tmp1 = phi2_list(itrial) * ii * beta_AC
      *                    * grad2_mat(k_eq,ltest)
                     coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
@@ -203,6 +206,7 @@ C               form e^{i*beta*z} phi.
               do ltest=1,nnodes0
                 do l_eq=1,3
                   ind_lp = l_eq + 3*(ltest-1)
+C                 Sign difference due to not doing integration by parts
                   z_tmp1 = -1.0 * beta_AC**2 * phi2_list(itrial)
      *                    * phi2_list(ltest)
                   coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
@@ -229,8 +233,7 @@ C now multiply by specific field values for modes of interest.
                   do j_eq=1,3
                     do k_eq=1,3
                       z_tmp1 = basis_overlap(ind_ip,j_eq,k_eq,ind_lp)
-                      z_tmp1 = Ustar * U * z_tmp1
-                      overlap(ival) = overlap(ival) + z_tmp1
+                      overlap(ival) = overlap(ival) + Ustar * U * z_tmp1
                     enddo
                   enddo
                 enddo
