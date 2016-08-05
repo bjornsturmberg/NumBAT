@@ -99,20 +99,32 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
 
+    # print "dx, dx", np.max(basis_overlap_alpha[:,0,0,:])
+    # print "dy, dx", np.max(basis_overlap_alpha[:,1,0,:])
+    # print "dz, dx", np.max(basis_overlap_alpha[:,2,0,:])
+    # print "dx, dy", np.max(basis_overlap_alpha[:,0,1,:])
+    # print "dy, dy", np.max(basis_overlap_alpha[:,1,1,:])
+    # print "dz, dy", np.max(basis_overlap_alpha[:,2,1,:])
+    # print "dx, dz", np.max(basis_overlap_alpha[:,0,2,:])
+    # print "dy, dz", np.max(basis_overlap_alpha[:,1,2,:])
+    # print "dz, dz", np.max(basis_overlap_alpha[:,2,2,:])
+
+    # print "terms", basis_overlap_alpha[:,1,2,:]
+
 ### Calc Q_photoelastic Eq. 33
     try:
         #TODO: removes basis_overlaps
         #TODO: allow lists to be inserted for ivals
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
-            Q_PE = NumBAT.photoelastic_int_v2(
-                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
-                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
-                sim_AC_wguide.n_msh_pts, nnodes,
-                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-                q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
-                relevant_eps_effs, Fortran_debug)
-        elif sim_EM_wguide.structure.inc_shape == 'circular':
+        #     Q_PE = NumBAT.photoelastic_int_v2(
+        #         sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
+        #         EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
+        #         sim_AC_wguide.n_msh_pts, nnodes,
+        #         sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+        #         sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
+        #         q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
+        #         relevant_eps_effs, Fortran_debug)
+        # elif sim_EM_wguide.structure.inc_shape == 'circular':
             Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
@@ -123,6 +135,11 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
+
+
+    # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
+    # print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
+    # print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
 
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
