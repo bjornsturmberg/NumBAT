@@ -160,10 +160,10 @@ C             Gradient of transverse components of basis function
                   do ltest=1,nnodes0
                     do l_eq=1,3
                       ind_lp = l_eq + 3*(ltest-1)
-C                 Negative sign due to not doing integration by parts
-C                       z_tmp1 = -grad2_mat(j_eq,itrial)
 C                 Ignore int by parts sign
-                      z_tmp1 = grad2_mat(j_eq,itrial)
+C                       z_tmp1 = grad2_mat(j_eq,itrial)
+C                 Negative sign due to not doing integration by parts
+                      z_tmp1 = -grad2_mat(j_eq,itrial)
      *                      * grad2_mat(k_eq,ltest)
                       coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                       basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
@@ -179,10 +179,10 @@ C               form e^{i*beta*z} phi.
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
-C                 Sign difference due to not doing integration by parts
-C                     z_tmp1 = grad2_mat(j_eq,ltest)
 C                 Ignore int by parts sign
-                    z_tmp1 = -grad2_mat(j_eq,ltest)
+C                     z_tmp1 = -grad2_mat(j_eq,ltest)
+C                 Sign difference due to not doing integration by parts
+                    z_tmp1 = grad2_mat(j_eq,ltest)
      *                      * phi2_list(itrial) * ii * beta_AC
                     coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                     basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
@@ -196,10 +196,10 @@ C                 Ignore int by parts sign
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
-C                 Sign difference due to not doing integration by parts
-C                     z_tmp1 = phi2_list(itrial) * ii * beta_AC
 C                 Ignore int by parts sign
-                    z_tmp1 = -phi2_list(itrial) * ii * beta_AC
+C                     z_tmp1 = -phi2_list(itrial) * ii * beta_AC
+C                 Sign difference due to not doing integration by parts
+                    z_tmp1 = phi2_list(itrial) * ii * beta_AC
      *                    * grad2_mat(k_eq,ltest)
                     coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                     basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
@@ -212,10 +212,10 @@ C                 Ignore int by parts sign
               do ltest=1,nnodes0
                 do l_eq=1,3
                   ind_lp = l_eq + 3*(ltest-1)
-C                 Sign difference due to not doing integration by parts
-C                   z_tmp1 = -1.0 * beta_AC**2 * phi2_list(itrial)
 C                 Ignore int by parts sign
-                  z_tmp1 = 1.0 * beta_AC**2 * phi2_list(itrial)
+C                   z_tmp1 = 1.0 * beta_AC**2 * phi2_list(itrial)
+C                 Sign difference due to not doing integration by parts
+                  z_tmp1 = -1.0 * beta_AC**2 * phi2_list(itrial)
      *                    * phi2_list(ltest)
                   coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                   basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =

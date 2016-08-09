@@ -33,6 +33,7 @@ num_AC_modes = 20
 EM_ival1=0
 EM_ival2=0
 AC_ival='All'
+# AC_ival=2
 
 ### Acoustic parameters
 # Inclusion a
@@ -86,18 +87,8 @@ SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide,
 # npzfile = np.load('wguide_data_AC_gain.npz')
 # SBS_gain = npzfile['SBS_gain']
 # alpha = npzfile['alpha']
-
-### TMP TEST
-q_acoustic = 1j*q_acoustic
-### Calculate interaction integrals
-SBS_gain, Q_PE, Q_MB, alpha2, P1, P3 = integration.gain_and_qs(sim_EM_wguide, 
-                           sim_AC_wguide, q_acoustic, 
-                           EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
-
-print alpha
-print alpha2
-print alpha - alpha2
-
+# print alpha
+# print 1./alpha
 
 # # # trim1 = 5
 # # # trim = 13
@@ -158,43 +149,62 @@ print alpha - alpha2
 # # # print "EM power", P1
 # # # print "AC power", P3
 # # # # print "Q_PE", Q_PE
-# # print "Gain", SBS_gain[0,0,2]/alpha[2]
-# # print "Gain", SBS_gain[0,0,2]/alpha_2
-# # print "Gain", SBS_gain[0,0,4]/alpha[4]
-# # print "Gain", SBS_gain[0,0,4]/alpha_4
-# # print "Gain", SBS_gain[0,0,8]/alpha[8]
-# # print "Gain", SBS_gain[0,0,8]/alpha_8
-# # # # print "Gain", SBS_gain[0,0,:]/alpha
-# # # print "Gain", SBS_gain[0,0,AC_ival]/alpha[AC_ival]
+print "Gain", SBS_gain[0,0,2]
+print "Gain", SBS_gain[0,0,4]
+print "Gain", SBS_gain[0,0,8]
 
 
-# # import matplotlib
-# # matplotlib.use('pdf')
-# # import matplotlib.pyplot as plt
-# # plt.figure(figsize=(13,13))
-# # plt.clf()
-# # AC_detuning_range = np.linspace(-2e9, 2e9, 1e3)
-# # # Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
-# # # speed_in_Si = 9620 # m/s 
-# # # LW = speed_in_Si*alpha
-# # phase_v = sim_AC_wguide.Eig_value/q_acoustic # phase velocity as approximation to group velocity
-# # LW = phase_v*alpha
-# # # print LW
-# # for AC_i in range(num_AC_modes):
-# # # for AC_i in range(trim-trim1):
-# #    # AC_i = AC_i + trim1
-# #    gain_list = SBS_gain[EM_ival1,EM_ival2,AC_i]*LW[AC_i]/(LW[AC_i]**2 + AC_detuning_range**2)
-# #    # gain_list = SBS_gain[0,0,AC_i]*alpha[AC_i]/(alpha[AC_i]**2 + AC_detuning_range**2)
-# #    freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + AC_detuning_range)*1e-9
-# #    plt.plot(freq_list_GHz, np.real(gain_list),linewidth=3)
-# # plt.xlim(10,25)
-# # plt.savefig('gain.pdf')
-# # plt.close()
+print SBS_gain[0,0,2]/310.25
+print SBS_gain[0,0,4]/2464.98
+print SBS_gain[0,0,8]/36.55
+
+print alpha[2]/(1./98.70e-6)
+print alpha[4]/(1./27.75e-6)
+print alpha[8]/(1./43.90e-6)
+
+print (310.25) / (1./98.70e-6)
+print SBS_gain[0,0,2]/alpha[2]
 
 
-# # AC_detuning_range = np.linspace(-1e9, 1e9, 1e3)
-# # gain_list = SBS_gain*alpha[AC_ival]/(alpha[AC_ival]**2 + AC_detuning_range**2)
-# # freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_ival] + AC_detuning_range)*1e-9
-# # plt.plot(freq_list_GHz, np.real(gain_list),'r',linewidth=3)
-# # plt.savefig('gain.pdf')
-# # plt.close()
+
+
+# SBS_gain[0,0,2] = 310.25*1e3
+# alpha[2] = 1./98.70e-6
+# SBS_gain[0,0,4] = 2464.98*1e3
+# alpha[4] = 1./27.75e-6
+# print sim_AC_wguide.Eig_value[8]*1e-9
+# SBS_gain[0,0,8] = 36.55*1e3
+# alpha[8] = 1./43.90e-6
+
+# import matplotlib
+# matplotlib.use('pdf')
+# import matplotlib.pyplot as plt
+# plt.figure(figsize=(13,13))
+# plt.clf()
+# tune_range = 2e4
+# AC_detuning_range = np.append(np.linspace(-2, 0, tune_range), np.linspace(0, 2, tune_range)[1:])*1e9
+# # print min(abs(AC_detuning_range))
+# # Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
+# # speed_in_Si = 9620 # m/s 
+# # LW = speed_in_Si*alpha
+# phase_v = sim_AC_wguide.Eig_value/q_acoustic # phase velocity as approximation to group velocity
+# LW = phase_v*alpha
+# # print LW
+# for AC_i in range(num_AC_modes):
+# # for AC_i in range(trim-trim1):
+#    # AC_i = AC_i + trim1
+#    gain_list = SBS_gain[EM_ival1,EM_ival2,AC_i]*LW[AC_i]/(LW[AC_i]**2 + AC_detuning_range**2)
+#    # gain_list = SBS_gain[0,0,AC_i]*alpha[AC_i]/(alpha[AC_i]**2 + AC_detuning_range**2)
+#    freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + AC_detuning_range)*1e-9
+#    plt.plot(freq_list_GHz, np.real(gain_list),linewidth=3)
+# plt.xlim(10,25)
+# plt.savefig('gain.pdf')
+# plt.close()
+
+
+# # # AC_detuning_range = np.linspace(-1e9, 1e9, 1e3)
+# # # gain_list = SBS_gain*alpha[AC_ival]/(alpha[AC_ival]**2 + AC_detuning_range**2)
+# # # freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_ival] + AC_detuning_range)*1e-9
+# # # plt.plot(freq_list_GHz, np.real(gain_list),'r',linewidth=3)
+# # # plt.savefig('gain.pdf')
+# # # plt.close()

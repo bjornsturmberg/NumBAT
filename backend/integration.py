@@ -109,22 +109,26 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print "dy, dz", np.max(basis_overlap_alpha[:,1,2,:])
     # print "dz, dz", np.max(basis_overlap_alpha[:,2,2,:])
 
+    # print "U", np.max(np.imag(sim_AC_wguide.sol1*np.conj(sim_AC_wguide.sol1)[:,:,:,:]))
+    # print 
+
     # print "terms", basis_overlap_alpha[:,1,2,:]
+    # print sim_AC_wguide.AC_mode_overlap
 
 ### Calc Q_photoelastic Eq. 33
     try:
         #TODO: removes basis_overlaps
         #TODO: allow lists to be inserted for ivals
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
-        #     Q_PE = NumBAT.photoelastic_int_v2(
-        #         sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
-        #         EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
-        #         sim_AC_wguide.n_msh_pts, nnodes,
-        #         sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-        #         sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-        #         q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
-        #         relevant_eps_effs, Fortran_debug)
-        # elif sim_EM_wguide.structure.inc_shape == 'circular':
+            Q_PE = NumBAT.photoelastic_int_v2(
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
+                sim_AC_wguide.n_msh_pts, nnodes,
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
+                q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
+                relevant_eps_effs, Fortran_debug)
+        elif sim_EM_wguide.structure.inc_shape == 'circular':
             Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
@@ -147,8 +151,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # Note: sim_EM_wguide.omega_EM if the optical angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
 
-    fudge_factor = 2*np.pi
-    gain = gain*fudge_factor
+    # fudge_factor = 2*np.pi
+    # gain = gain*fudge_factor
 
     normal_fact = P1*P2*P3
     SBS_gain = np.real(gain/normal_fact)

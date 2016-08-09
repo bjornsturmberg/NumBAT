@@ -168,8 +168,6 @@ class Simmo(object):
         sol1 - the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
         """
-        q_acoustic = self.q_acoustic
-        EM_sim = self.EM_sim
         self.d_in_m = self.structure.inc_a_x*1e-9
 
         if self.num_modes < 20:
@@ -192,6 +190,7 @@ class Simmo(object):
         # # (Shift and invert FEM method)
         # # For AC problem shift is a frequency - [shift] = s^-1.
         # relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
+        # relevant_el = 1
         # # relevant_el = relevant_el - 1 # ToDo: fudge factor as removed 1 type!
         # # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
         # shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
@@ -200,7 +199,10 @@ class Simmo(object):
         # # Using acoustic velocity of shear mode pg 215 Auld vol 1.
         # shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][relevant_el]/self.structure.rho[relevant_el]))
         # shift2 = 0.5*self.q_acoustic*shift2
-        # # shift = (shift1 + shift2)/8.
+        # print shift1, shift2
+        # print (shift1 + shift2)/6.
+        # print (shift1 + shift2)/4.
+        #     shift = (shift1 + shift2)/4.
         # # shift = 13.0e9  # used for original test case
         if self.shift_AC_Hz is None:
             shift = 20.0e9  
@@ -209,14 +211,14 @@ class Simmo(object):
 
 
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
-        if EM_sim:
+        if self.EM_sim:
             suplied_geo_flag = 1
-            n_msh_el = EM_sim.n_msh_el
-            n_msh_pts = EM_sim.n_msh_pts
-            type_el = EM_sim.type_el
-            type_nod = EM_sim.type_nod
-            table_nod = EM_sim.table_nod
-            x_arr = EM_sim.x_arr
+            n_msh_el = self.EM_sim.n_msh_el
+            n_msh_pts = self.EM_sim.n_msh_pts
+            type_el = self.EM_sim.type_el
+            type_nod = self.EM_sim.type_nod
+            table_nod = self.EM_sim.table_nod
+            x_arr = self.EM_sim.x_arr
             n_el_kept = 0
             n_msh_pts_AC = 0
             type_el_AC = []
@@ -338,7 +340,7 @@ class Simmo(object):
             plotting.plot_msh(x_arr_AC, 'in')
             plotting.plot_msh(x_arr_out, 'out')
 
-        # if EM_sim is None:
+        # if self.EM_sim is None:
         #     table_nod_out = None
         #     type_el_out = None
         #     x_arr_out = None
