@@ -153,18 +153,17 @@ print "Gain", SBS_gain[0,0,2]
 print "Gain", SBS_gain[0,0,4]
 print "Gain", SBS_gain[0,0,8]
 
-
-print SBS_gain[0,0,2]/310.25
-print SBS_gain[0,0,4]/2464.98
-print SBS_gain[0,0,8]/36.55
+print SBS_gain/alpha[2]/310.25
+print SBS_gain[0,0,2]/alpha[2]/310.25
+print SBS_gain[0,0,4]/alpha[4]/2464.98
+print SBS_gain[0,0,8]/alpha[8]/36.55
+print SBS_gain[0,0,2]/(1./98.70e-6)/310.25
+print SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
+print SBS_gain[0,0,8]/(1./43.90e-6)/36.55
 
 print alpha[2]/(1./98.70e-6)
 print alpha[4]/(1./27.75e-6)
 print alpha[8]/(1./43.90e-6)
-
-print (310.25) / (1./98.70e-6)
-print SBS_gain[0,0,2]/alpha[2]
-
 
 
 
