@@ -49,7 +49,7 @@ cc      integer*8 info_curved, n_curved
 C
 C
 Cf2py intent(in) nval_EM, nval_AC, ival1, ival2, ival3, nb_typ_el
-Cf2py intent(in) nel, npt, nnodes, table_nod, p_tensor, beta_AC , debug
+Cf2py intent(in) nel, npt, nnodes, table_nod, p_tensor, beta_AC, debug
 Cf2py intent(in) type_el, x, soln_EM, soln_AC, eps_lst
 C
 Cf2py depend(table_nod) nnodes, nel

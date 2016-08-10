@@ -117,9 +117,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print "dy, dz", np.max(basis_overlap_alpha[:,1,2,:])
     # print "dz, dz", np.max(basis_overlap_alpha[:,2,2,:])
 
-    # print "U", np.max(np.imag(sim_AC_wguide.sol1*np.conj(sim_AC_wguide.sol1)[:,:,:,:]))
-    # print 
-
     # print "terms", basis_overlap_alpha[:,1,2,:]
     # print sim_AC_wguide.AC_mode_overlap
 
@@ -152,6 +149,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
     # print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
     # print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
+    # print "PE x", np.max(basis_overlap_PE[:,:,:,0])
+    # print "PE y", np.max(basis_overlap_PE[:,:,:,1])
+    # print "PE z", np.max(basis_overlap_PE[:,:,:,2])
 
     # Q_PE[0,0,2] = Q_PE[0,0,2]/0.388837986772
     # Q_PE[0,0,4] = Q_PE[0,0,4]/0.299436272977
