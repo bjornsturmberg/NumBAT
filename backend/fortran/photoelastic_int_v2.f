@@ -3,7 +3,7 @@ C using numerical quadrature.
 C
       subroutine photoelastic_int_v2 (nval_EM, nval_AC, ival1,
      *  ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
-     *  nb_typ_el, p_tensor, beta_AC, soln_EM, soln_AC, eps_lst, 
+     *  nb_typ_el, p_tensor, beta_AC, soln_EM, soln_AC, eps_lst,
      *  debug, overlap)
 c
       implicit none
@@ -115,14 +115,14 @@ cc        if (abs(det_b) .le. 1.0d-8) then
           write(*,*) 'Aborting...'
           stop
         endif
-c       We also need, is the matrix mat_T of the reverse transmation 
+c       We also need, is the matrix mat_T of the reverse transformation
 c                (from reference to current triangle):
 c       mat_T = inverse matrix of de mat_B
         mat_T(1,1) =  mat_B(2,2) / det_b
         mat_T(2,2) =  mat_B(1,1) / det_b
         mat_T(1,2) = -mat_B(1,2) / det_b
         mat_T(2,1) = -mat_B(2,1) / det_b
-c       Note that if grad_i_0 is the gradient on the reference triangle, 
+c       Note that if grad_i_0 is the gradient on the reference triangle,
 c       then the gradient on the actual triangle is:
 c       grad_i  = Transpose(mat_T)*grad_i0
 c
@@ -193,7 +193,7 @@ C If only want overlap of one given combination of EM modes and AC mode.
         if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. ival3 .ge. 0) then
         do itrial=1,nnodes0
           do i_eq=1,3
-            ind_ip = i_eq + 3*(itrial-1)         
+            ind_ip = i_eq + 3*(itrial-1)
             E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
             do jtest=1,nnodes0
               do j_eq=1,3
@@ -221,7 +221,7 @@ C If want overlap of given EM mode 1 and 2 and all AC modes.
         if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. ival3 .eq. -1) then
         do itrial=1,nnodes0
           do i_eq=1,3
-            ind_ip = i_eq + 3*(itrial-1)         
+            ind_ip = i_eq + 3*(itrial-1)
             E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
             do jtest=1,nnodes0
               do j_eq=1,3
@@ -251,7 +251,7 @@ C If want overlap of given EM mode 1 and all EM modes 2 and all AC modes.
         if (ival1 .ge. 0 .and. ival2 .eq. -1 .and. ival3 .eq. -1) then
         do itrial=1,nnodes0
           do i_eq=1,3
-            ind_ip = i_eq + 3*(itrial-1)         
+            ind_ip = i_eq + 3*(itrial-1)
             E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
             do jtest=1,nnodes0
               do j_eq=1,3
@@ -283,7 +283,7 @@ C If want overlap of all EM mode 1, all EM modes 2 and all AC modes.
         if (ival1 .eq. -1 .and. ival2 .eq. -1 .and. ival3 .eq. -1) then
         do itrial=1,nnodes0
           do i_eq=1,3
-            ind_ip = i_eq + 3*(itrial-1)         
+            ind_ip = i_eq + 3*(itrial-1)
             do ival1s = 1,nval_EM
             E1star = conjg(soln_EM(i_eq,itrial,ival1s,iel))
             do jtest=1,nnodes0

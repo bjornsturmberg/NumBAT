@@ -15,7 +15,7 @@ from fortran import NumBAT
 # start = time.time()
 
 speed_c = 299792458
-### Geometric parameters 
+### Geometric parameters
 ## All spacial variables given in nm!
 wl_nm = 1550
 unitcell_x = 2.5*1550
@@ -54,10 +54,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
@@ -69,9 +69,9 @@ q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 print q_acoustic
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, 
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes,
 	EM_sim=sim_EM_wguide, shift_AC_Hz=20e9)
-# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
@@ -82,8 +82,8 @@ print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 
 
 ### Calculate interaction integrals
-SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide, 
-                           sim_AC_wguide, q_acoustic, 
+SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide,
+                           sim_AC_wguide, q_acoustic,
                            EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
 # npzfile = np.load('wguide_data_AC_gain.npz')
@@ -116,7 +116,6 @@ SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide,
 # print "Gain", SBS_gain[0,0,2]/alpha[2]
 # print "Gain", SBS_gain[0,0,4]/alpha[4]
 # print "Gain", SBS_gain[0,0,8]/alpha[8]
-
 
 # print SBS_gain/alpha[2]/310.25
 # print SBS_gain/alpha[4]/2464.98
@@ -173,7 +172,7 @@ print alpha[8]/(1./43.90e-6)
 # AC_detuning_range = np.append(np.linspace(-2, 0, tune_range), np.linspace(0, 2, tune_range)[1:])*1e9
 # # print min(abs(AC_detuning_range))
 # # Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
-# # speed_in_Si = 9620 # m/s 
+# # speed_in_Si = 9620 # m/s
 # # LW = speed_in_Si*alpha
 # phase_v = sim_AC_wguide.Eig_value/q_acoustic # phase velocity as approximation to group velocity
 # LW = phase_v*alpha
@@ -190,9 +189,9 @@ print alpha[8]/(1./43.90e-6)
 # plt.close()
 
 
-# # # AC_detuning_range = np.linspace(-1e9, 1e9, 1e3)
-# # # gain_list = SBS_gain*alpha[AC_ival]/(alpha[AC_ival]**2 + AC_detuning_range**2)
-# # # freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_ival] + AC_detuning_range)*1e-9
-# # # plt.plot(freq_list_GHz, np.real(gain_list),'r',linewidth=3)
-# # # plt.savefig('gain.pdf')
-# # # plt.close()
+# AC_detuning_range = np.linspace(-1e9, 1e9, 1e3)
+# gain_list = SBS_gain*alpha[AC_ival]/(alpha[AC_ival]**2 + AC_detuning_range**2)
+# freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_ival] + AC_detuning_range)*1e-9
+# plt.plot(freq_list_GHz, np.real(gain_list),'r',linewidth=3)
+# plt.savefig('gain.pdf')
+# plt.close()

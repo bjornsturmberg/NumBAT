@@ -2,7 +2,7 @@
     mode_calcs.py is a subroutine of NumBAT that contains methods to
     calculate the EM and Acoustic modes of a structure.
 
-    Copyright (C) 2016  Bjorn Sturmberg, Kokou Dossou 
+    Copyright (C) 2016  Bjorn Sturmberg, Kokou Dossou
 """
 
 import numpy as np
@@ -25,14 +25,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     Calc Qs of a range of selected modes
     Pass in the q_acoustic as this is beta of AC modes
-    
+
     By default considers the interactions between all modes,
     can also specify specific modes.
 
     """
 
 ### Notes about internals of fortran integration
-# Calc overlap of basis functions (and PE tensor and epsilon) 
+# Calc overlap of basis functions (and PE tensor and epsilon)
 # Then use this multiple times for calc of each mode field values
 
 # phi is values of Lagrange polynomials (1-6) at that node.
@@ -91,15 +91,15 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 ### Calc alpha (loss) Eq. 45
     try:
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
-            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes, 
-                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes, 
+            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
+                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
                 q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
                 sim_AC_wguide.AC_mode_overlap)
         elif sim_EM_wguide.structure.inc_shape == 'circular':
-            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, 
-                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes, 
+            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
+                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
                 q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
@@ -127,7 +127,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
             Q_PE = NumBAT.photoelastic_int_v2(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
-                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
                 sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
@@ -136,7 +136,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         elif sim_EM_wguide.structure.inc_shape == 'circular':
             Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
-                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el, 
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
                 sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
@@ -146,12 +146,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
 
-    # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
-    # print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
-    # print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
-    # print "PE x", np.max(basis_overlap_PE[:,:,:,0])
-    # print "PE y", np.max(basis_overlap_PE[:,:,:,1])
-    # print "PE z", np.max(basis_overlap_PE[:,:,:,2])
+    print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
+    print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
+    print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
+    print "PE x", np.max(basis_overlap_PE[:,:,:,0])
+    print "PE y", np.max(basis_overlap_PE[:,:,:,1])
+    print "PE z", np.max(basis_overlap_PE[:,:,:,2])
 
     # Q_PE[0,0,2] = Q_PE[0,0,2]/0.388837986772
     # Q_PE[0,0,4] = Q_PE[0,0,4]/0.299436272977
@@ -166,7 +166,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
-    
+
     # Note: sim_EM_wguide.omega_EM if the optical angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
 
