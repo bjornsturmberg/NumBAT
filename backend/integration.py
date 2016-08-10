@@ -90,12 +90,20 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 ### Calc alpha (loss) Eq. 45
     try:
-        alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, 
-            sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes, 
-            sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-            sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
-            q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
-            sim_AC_wguide.AC_mode_overlap, Fortran_debug)
+        if sim_EM_wguide.structure.inc_shape == 'rectangular':
+            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes, 
+                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes, 
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
+                q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
+                sim_AC_wguide.AC_mode_overlap)
+        elif sim_EM_wguide.structure.inc_shape == 'circular':
+            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, 
+                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes, 
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
+                q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
+                sim_AC_wguide.AC_mode_overlap, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
 
@@ -144,6 +152,17 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
     # print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
     # print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
+
+    # Q_PE[0,0,2] = Q_PE[0,0,2]/0.388837986772
+    # Q_PE[0,0,4] = Q_PE[0,0,4]/0.299436272977
+    # Q_PE[0,0,8] = Q_PE[0,0,8]/0.194040472225
+    # print 1.0/0.388837986772
+    # print 1.0/0.299436272977
+    # print 1.0/0.194040472225
+
+    # print 1.0/0.388837986772 / (1.0/0.299436272977)
+    # print sim_AC_wguide.Omega_AC[2] / sim_AC_wguide.Omega_AC[4]
+
 
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB

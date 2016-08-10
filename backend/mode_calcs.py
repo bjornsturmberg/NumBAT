@@ -364,6 +364,10 @@ class Simmo(object):
                 self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
                 self.q_acoustic, self.Omega_AC, self.sol1, AC_FEM_debug)
 
+            # self.AC_mode_overlap[4] = self.AC_mode_overlap[4]*0.406172825334
+            # self.AC_mode_overlap[8] = self.AC_mode_overlap[8]*0.315371891081
+
+
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\
             "interrupted by keyboard.\n\n"
