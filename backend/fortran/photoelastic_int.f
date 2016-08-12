@@ -28,7 +28,7 @@ c     Local variables
       integer*8 iel, ind_ip, i_eq
       integer*8 jtest, ind_jp, j_eq, k_eq
       integer*8 ltest, ind_lp, l_eq
-      integer*8 itrial, ui
+      integer*8 itrial, ui, ival1s, ival2s, ival3s
       complex*16 eps_lst(nb_typ_el)
       complex*16 z_tmp1, ii
       double precision mat_B(2,2), mat_T(2,2), eps_0

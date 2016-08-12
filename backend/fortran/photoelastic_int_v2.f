@@ -13,7 +13,7 @@ c
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
 c      complex*16 x(2,npt)
-      complex*16 soln_EM(3,nnodes,nval_EM,nel)
+      complex*16 soln_EM(3,nnodes+7,nval_EM,nel)
       complex*16 soln_AC(3,nnodes,nval_AC,nel)
       complex*16 overlap(nval_EM, nval_EM, nval_AC), beta_AC
       complex*16 p_tensor(3,3,3,3,nb_typ_el)
