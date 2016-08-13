@@ -146,12 +146,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
 
-    print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
-    print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
-    print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
-    print "PE x", np.max(basis_overlap_PE[:,:,:,0])
-    print "PE y", np.max(basis_overlap_PE[:,:,:,1])
-    print "PE z", np.max(basis_overlap_PE[:,:,:,2])
+    # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
+    # print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
+    # print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
+    # print "PE x", np.max(basis_overlap_PE[:,:,:,0])
+    # print "PE y", np.max(basis_overlap_PE[:,:,:,1])
+    # print "PE z", np.max(basis_overlap_PE[:,:,:,2])
 
     # Q_PE[0,0,2] = Q_PE[0,0,2]/0.388837986772
     # Q_PE[0,0,4] = Q_PE[0,0,4]/0.299436272977

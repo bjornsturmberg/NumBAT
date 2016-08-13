@@ -31,7 +31,7 @@ num_EM_modes = 20
 num_AC_modes = 20
 
 EM_ival1=0
-EM_ival2=0
+EM_ival2=EM_ival1
 AC_ival='All'
 # AC_ival=2
 
@@ -59,7 +59,7 @@ np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
-# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 
 ### Calculate Acoustic Modes
