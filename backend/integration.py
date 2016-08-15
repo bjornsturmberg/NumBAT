@@ -125,7 +125,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         #TODO: removes basis_overlaps
         #TODO: allow lists to be inserted for ivals
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
-            Q_PE = NumBAT.photoelastic_int_v2(
+            Q_PE, basis_overlap_PE, field_overlap_PE = NumBAT.photoelastic_int_v2(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
                 sim_AC_wguide.n_msh_pts, nnodes,
@@ -145,13 +145,74 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
+    AC_ival_check = 3
+    Q_check, basis_overlap_check = NumBAT.photoelastic_int_check(
+                    sim_AC_wguide.num_modes, AC_ival_check, sim_AC_wguide.n_msh_el,
+                    sim_AC_wguide.n_msh_pts, nnodes,
+                    sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                    sim_AC_wguide.sol1,q_acoustic,Fortran_debug)
 
-    # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
+    print Q_check
+
+    # print np.max(trimmed_EM_field[0, :, 0, :])
+    # print np.max(trimmed_EM_field[1, :, 0, :])
+    # print np.max(trimmed_EM_field[2, :, 0, :])
+    # print np.max(sim_AC_wguide.sol1[0, :, 2, :])
+    # print np.max(sim_AC_wguide.sol1[1, :, 2, :])
+    # print np.max(sim_AC_wguide.sol1[2, :, 2, :])
+    # z_tmpz = np.conj(trimmed_EM_field[0, :, 0, :])*trimmed_EM_field[0, :, 0, :]*np.conj(sim_AC_wguide.sol1[2, :, 2, :])
+    # print np.max(z_tmp1)
+
+    # overlap = 0
+    # nnodes0 = 6
+    # fields_list=[]
+    # for iel in range(n_msh_el_AC):
+    #     for ltest in range(nnodes0):
+    #         l_eq=2
+    #         k_eq=2
+    #         ind_lp = l_eq + 3*(ltest)
+    #         z_tmp1 = basis_overlap_PE[k_eq,ind_lp,iel]
+    #         fields = np.conj(sim_AC_wguide.sol1[l_eq,ltest, 2, iel])
+    #         # fields = 1.0
+    #         fields_list.append(fields)
+    #         overlap += z_tmp1*fields
+
+    # # print z_tmp1
+    # print np.max(basis_overlap_PE[:,:,k_eq,:,:])
+    # print np.max(abs(basis_overlap_PE[:,:,k_eq,:,:]))
+    # print np.max(basis_overlap_PE[:,:,2,:,:])
+    # print 'O', overlap
+    # print np.max(np.abs(basis_overlap_PE))
+    # print np.max(np.abs(fields_list))
+
+
+
+    # # # print "PE dy", np.max(basis_overlap_PE[:,:,1,7:12])
+    # # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
     # print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
     # print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
-    # print "PE x", np.max(basis_overlap_PE[:,:,:,0])
+    # # print "PE x", np.max(basis_overlap_PE[:,:,:,0])
     # print "PE y", np.max(basis_overlap_PE[:,:,:,1])
     # print "PE z", np.max(basis_overlap_PE[:,:,:,2])
+    # print "PE dy", np.max(abs(basis_overlap_PE[:,:,1,:]))
+    # print "PE dz", np.max(abs(basis_overlap_PE[:,:,2,:]))
+    # print "PE y", np.max(abs(basis_overlap_PE[:,:,:,1]))
+    # print "PE z", np.max(abs(basis_overlap_PE[:,:,:,2]))
+
+
+    # print "field ", np.max(field_overlap_PE[:,:,:,:])
+    # print "field ", np.max(np.real(field_overlap_PE[:,:,:,:]))
+    # print "field ", np.max(abs(np.real(field_overlap_PE[:,:,:,:])))
+    # print "field ", np.max(np.imag(field_overlap_PE[:,:,:,:]))
+    # print "field ", np.max(abs(np.imag(field_overlap_PE[:,:,:,:])))
+    # print "field ", np.max(abs(field_overlap_PE[:,:,:,:]))
+    # # print "field x", np.max(field_overlap_PE[:,:,0])
+    # # print "field y", np.max(field_overlap_PE[:,:,1])
+    # # print "field z", np.max(field_overlap_PE[:,:,2])
+    # # print "PE x", np.max(field_overlap_PE[:,:,0])
+    # # print "PE y", np.max(field_overlap_PE[:,:,1])
+    # # print "PE z", np.max(field_overlap_PE[:,:,2])
+
 
     # Q_PE[0,0,2] = Q_PE[0,0,2]/0.388837986772
     # Q_PE[0,0,4] = Q_PE[0,0,4]/0.299436272977

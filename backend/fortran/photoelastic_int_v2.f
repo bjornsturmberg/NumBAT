@@ -4,7 +4,7 @@ C
       subroutine photoelastic_int_v2 (nval_EM, nval_AC, ival1,
      *  ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, p_tensor, beta_AC, soln_EM, soln_AC, eps_lst,
-     *  debug, overlap)
+     *  debug, overlap, basis_overlap_out, field_overlap)
 c
       implicit none
       integer*8 nval_EM, nval_AC, ival1, ival2, ival3
@@ -23,6 +23,8 @@ c     Local variables
       parameter (nnodes0 = 6)
       double precision xel(2,nnodes0)
       complex*16 basis_overlap(3*nnodes0,3*nnodes0,3,3*nnodes0)
+      complex*16 field_overlap(3*nnodes0,3*nnodes0,3*nnodes0,nel)
+      complex*16 basis_overlap_out(3*nnodes0,3*nnodes0,3,3*nnodes0,nel)
       complex*16 E1star, E2, Ustar, eps
       integer*8 i, j, k, l, j1, typ_e
       integer*8 iel, ind_ip, i_eq
@@ -59,7 +61,7 @@ Cf2py depend(soln_EM) nnodes, nval_EM, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(p_tensor) nb_typ_el
 C
-Cf2py intent(out) overlap
+Cf2py intent(out) overlap, basis_overlap_out, field_overlap
 C
 C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
@@ -88,6 +90,29 @@ cccccccccccc
           enddo
         enddo
       enddo
+
+      do i=1,3*nnodes
+        do j=1,3*nnodes
+          do l=1,3*nnodes
+            do iel=1,nel
+                field_overlap(i,j,l,iel) = 0.0d0
+            enddo
+          enddo
+        enddo
+      enddo
+
+      do i=1,3*nnodes
+        do j=1,3*nnodes
+            do l=1,3*nnodes
+              do iel=1,nel
+                do k=1,3
+                basis_overlap_out(i,j,k,l,iel) = 0.0d0
+              enddo
+            enddo
+          enddo
+        enddo
+      enddo
+        
 cccccccccccc
 C Loop over elements - start
 cccccccccccc
@@ -149,9 +174,11 @@ cccccccccc
 cccccccccc
           do itrial=1,nnodes0
             do i_eq=1,3
+C             i_eq=1
               ind_ip = i_eq + 3*(itrial-1)
               do jtest=1,nnodes0
                 do j_eq=1,3
+C                 j_eq=1
                   ind_jp = j_eq + 3*(jtest-1)
 C                 Gradient of transverse components of basis function
                   do k_eq=1,3
@@ -193,18 +220,22 @@ C If only want overlap of one given combination of EM modes and AC mode.
         if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. ival3 .ge. 0) then
         do itrial=1,nnodes0
           do i_eq=1,3
+C           i_eq=1
             ind_ip = i_eq + 3*(itrial-1)
             E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
             do jtest=1,nnodes0
               do j_eq=1,3
+C               j_eq=1
                 ind_jp = j_eq + 3*(jtest-1)
                 E2 = soln_EM(j_eq,jtest,ival2,iel)
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
                     Ustar = conjg(soln_AC(l_eq,ltest,ival3,iel))
+        field_overlap(ind_ip,ind_jp,ind_lp,iel) = E1star * E2 * Ustar
                     do k_eq=1,3
                       z_tmp1 = basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
+        basis_overlap_out(ind_ip,ind_jp,k_eq,ind_lp,iel) = z_tmp1
                       z_tmp1 = E1star * E2 * Ustar * z_tmp1
                       overlap(ival1,ival2,ival3) = z_tmp1 +
      *                                    overlap(ival1,ival2,ival3)
