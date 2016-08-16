@@ -61,15 +61,14 @@ p_11 = 0.121; p_12 = 0.270; p_44 = -0.075
 eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
 bkg_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
-# Inclusion a - Chalc
-s = 4460  # kg/m3
-E = 1.73e10
-v = 0.29
-c_11, c_12, c_44 = isotropic_stiffness(E, v)
-p_11 = 0.314; p_12 = 0.266; p_44 = 0.024
+# Inclusion a - As2S3
+s = 3210  # kg/m3
+c_11 = 2.104e10; c_12 = 8.363e9; c_44 =6.337e9 # Pa
+p_11 = 0.25; p_12 = 0.24; p_44 = 0.005
 eta_11 = 9e-3 ; eta_12 = 7.5e-3 ; eta_44 = 0.75e-3  # Pa s
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
+
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(n_b),
@@ -97,19 +96,14 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
-# As2S3_bulk_velocity = 2595m/s - NOT AsSe!
-# @1550 gives 7.6 GHz as freq in normal waveguides
-shift_Hz = 7.6e9
-# shift_Hz = 6.0e9
-# shift_Hz = shift_Hz/3.
-print 'shift_Hz', shift_Hz
+# As2S3_bulk_velocity = 2595m/s @1550 gives 7.6 GHz as freq in reg waveguides
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, 
    EM_sim=sim_EM_wguide)#, shift_Hz=shift_Hz )
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', n_points=300, xlim=0.6, ylim=0.3)
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', n_points=300)
 
 
 # # import time

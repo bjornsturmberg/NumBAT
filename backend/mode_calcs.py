@@ -22,11 +22,11 @@ class Simmo(object):
         Stores the calculated modes of :Struc: for illumination by :Light:
     """
     def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20,
-                 shift_AC_Hz=None, EM_sim=None):
+                 shift_Hz=None, EM_sim=None):
         self.structure = structure
         self.wl_m = wl_nm*1e-9
         self.q_acoustic = q_acoustic
-        self.shift_AC_Hz = shift_AC_Hz
+        self.shift_Hz = shift_Hz
         self.EM_sim = EM_sim
         self.num_modes = num_modes
         self.mode_pol = None
@@ -77,17 +77,18 @@ class Simmo(object):
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
-        max_n = np.real(self.n_effs).max()
-        # Take real part so that complex conjugate pair Eigenvalues are
-        # equal distance from shift and invert point and therefore both found.
-        confinment_adjust = 1.8/np.sqrt(12)
-        shift = (confinment_adjust*max_n)**2 * self.k_0**2
-        # shift = (1.4)**2 * self.k_0**2
-        # shift = max_n**2 * self.k_0**2 # - self.k_pll[0]**2 - self.k_pll[1]**2
-
+        if self.shift_Hz is None:
+            # Take real part so that complex conjugate pair Eigenvalues are
+            # equal distance from shift and invert point and therefore both found.
+            max_n = np.real(self.n_effs).max()
+            confinment_factor = 1.8/np.sqrt(12) # value from silicon in air
+            shift = (confinment_factor*max_n)**2 * self.k_0**2
+            # n_eff = 1.8
+            # shift = n_eff**2 * self.k_0**2
+        else:
+            shift = self.shift_Hz 
 
         if EM_FEM_debug == 1:
-            print 'shift', shift
             if not os.path.exists("Normed"):
                 os.mkdir("Normed")
             if not os.path.exists("Matrices"):
@@ -189,28 +190,26 @@ class Simmo(object):
         real_max = 2**23
         int_max = 2**22
 
-        # # Calculate where to center the Eigenmode solver around.
-        # # (Shift and invert FEM method)
-        # # For AC problem shift is a frequency - [shift] = s^-1.
-        # relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
-        # relevant_el = 1
-        # # relevant_el = relevant_el - 1 # ToDo: fudge factor as removed 1 type!
-        # # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
-        # shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
-        # # Factor 2 from q_acoustic being twice beta.
-        # shift1 = 0.5*self.q_acoustic*shift1
-        # # Using acoustic velocity of shear mode pg 215 Auld vol 1.
-        # shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][relevant_el]/self.structure.rho[relevant_el]))
-        # shift2 = 0.5*self.q_acoustic*shift2
-        # print shift1, shift2
-        # print (shift1 + shift2)/6.
-        # print (shift1 + shift2)/4.
-        #     shift = (shift1 + shift2)/4.
-        # # shift = 13.0e9  # used for original test case
-        if self.shift_AC_Hz is None:
-            shift = 20.0e9  
+        # Calculate where to center the Eigenmode solver around.
+        # (Shift and invert FEM method)
+        if self.shift_Hz is None:
+            # For AC problem shift is a frequency - [shift] = s^-1.
+            # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
+            v_list = []
+            for el in range(self.structure.nb_typ_el_AC):
+                v_list.append(np.sqrt(self.structure.c_tensor[0,0][el]/self.structure.rho[el]))
+            AC_velocity = np.real(v_list).min()
+            shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            # Increase slightly for difference between bulk and waveguide.
+            shift = 1.05*shift 
+            # Using acoustic velocity of shear mode pg 215 Auld vol 1.
+            # AC_velocity2 = np.real(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
+            # # shift_freq2 = AC_velocity2*0.5*self.q_acoustic/(2.*np.pi)
+            # shift_freq2 = AC_velocity2*self.q_acoustic/(2.*np.pi)
+            # print shift
+            # shift = 20.0e9  # used to get all modes in Rakich Si example
         else:
-            shift = self.shift_AC_Hz 
+            shift = self.shift_Hz 
 
 
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.

@@ -162,19 +162,15 @@ c
             xel(2,inod) = x(2,j)
           enddo
           do inod=1,nnodes
-            do j=1,3
-              sol_el(j,inod) = 0.00
-            enddo
-c           Contribution to the transverse component
-            do jtest=1,nnodes
-              do j_eq=1,3
-                jp = table_nod(jtest,iel)
-                ind_jp = ineq(j_eq,jp)
-                if (ind_jp .gt. 0) then
-                  z_tmp1 = sol_0(ind_jp, ival2)
-                  sol_el(j_eq,inod) = z_tmp1
-                 endif
-              enddo
+            jp = table_nod(inod,iel) 
+            do j_eq=1,3
+              ind_jp = ineq(j_eq,jp)
+              if (ind_jp .gt. 0) then
+                z_tmp1 = sol_0(ind_jp, ival2)
+                sol_el(j_eq,inod) = z_tmp1
+              else
+                sol_el(j_eq,inod) = 0
+              endif
             enddo
             do j=1,3
               z_tmp2 = sol_el(j,inod)
