@@ -42,26 +42,32 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
         P1 = sim_EM_wguide.EM_mode_overlap
+        len_EM1 = len(P1)
     else:
         EM_ival1_fortran = EM_ival1+1  # convert back to fortran indexing
-        P1 = sim_EM_wguide.EM_mode_overlap[EM_ival1]
+        P1 = [sim_EM_wguide.EM_mode_overlap[EM_ival1]]
+        len_EM1 = 1
 
     if EM_ival2 == 'All':
         EM_ival2_fortran = -1
         P2 = sim_EM_wguide.EM_mode_overlap
+        len_EM2 = len(P2)
     else:
         EM_ival2_fortran = EM_ival2+1  # convert back to fortran indexing
-        P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]
+        P2 = [sim_EM_wguide.EM_mode_overlap[EM_ival2]]
+        len_EM2 = 1
 
     if AC_ival == 'All':
         AC_ival_fortran = -1
         # Note: sim_AC_wguide.Omega_AC if the acoustic angular freq in units of Hz
         AC_freq_Omega = sim_AC_wguide.Omega_AC
         P3 = sim_AC_wguide.AC_mode_overlap
+        len_AC = len(P3)
     else:
         AC_freq_Omega = sim_AC_wguide.Omega_AC[AC_ival]
         AC_ival_fortran = AC_ival+1  # convert back to fortran indexing
-        P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
+        P3 = [sim_AC_wguide.AC_mode_overlap[AC_ival]]
+        len_AC = 1
 
     Fortran_debug = 0
     ncomps = 3
@@ -107,6 +113,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
 
+    alpha = np.real(alpha)
     # print "dx, dx", np.max(basis_overlap_alpha[:,0,0,:])
     # print "dy, dx", np.max(basis_overlap_alpha[:,1,0,:])
     # print "dz, dx", np.max(basis_overlap_alpha[:,2,0,:])
@@ -117,13 +124,10 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print "dy, dz", np.max(basis_overlap_alpha[:,1,2,:])
     # print "dz, dz", np.max(basis_overlap_alpha[:,2,2,:])
 
-    # print "terms", basis_overlap_alpha[:,1,2,:]
-    # print sim_AC_wguide.AC_mode_overlap
 
 ### Calc Q_photoelastic Eq. 33
     try:
         #TODO: removes basis_overlaps
-        #TODO: allow lists to be inserted for ivals
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
             Q_PE, basis_overlap_PE, field_overlap_PE = NumBAT.photoelastic_int_v2(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
@@ -145,14 +149,13 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-    AC_ival_check = 3
-    Q_check, basis_overlap_check = NumBAT.photoelastic_int_check(
-                    sim_AC_wguide.num_modes, AC_ival_check, sim_AC_wguide.n_msh_el,
-                    sim_AC_wguide.n_msh_pts, nnodes,
-                    sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-                    sim_AC_wguide.sol1,q_acoustic,Fortran_debug)
-
-    print Q_check
+    # AC_ival_check = 3
+    # Q_check, basis_overlap_check = NumBAT.photoelastic_int_check(
+    #                 sim_AC_wguide.num_modes, AC_ival_check, sim_AC_wguide.n_msh_el,
+    #                 sim_AC_wguide.n_msh_pts, nnodes,
+    #                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+    #                 sim_AC_wguide.sol1,q_acoustic,Fortran_debug)
+    # print Q_check
 
     # print np.max(trimmed_EM_field[0, :, 0, :])
     # print np.max(trimmed_EM_field[1, :, 0, :])
@@ -213,7 +216,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # # print "PE y", np.max(field_overlap_PE[:,:,1])
     # # print "PE z", np.max(field_overlap_PE[:,:,2])
 
-
     # Q_PE[0,0,2] = Q_PE[0,0,2]/0.388837986772
     # Q_PE[0,0,4] = Q_PE[0,0,4]/0.299436272977
     # Q_PE[0,0,8] = Q_PE[0,0,8]/0.194040472225
@@ -221,20 +223,17 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print 1.0/0.299436272977
     # print 1.0/0.194040472225
 
-    # print 1.0/0.388837986772 / (1.0/0.299436272977)
-    # print sim_AC_wguide.Omega_AC[2] / sim_AC_wguide.Omega_AC[4]
-
 
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
-
     # Note: sim_EM_wguide.omega_EM if the optical angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
-
-    # fudge_factor = 2*np.pi
-    # gain = gain*fudge_factor
-
-    normal_fact = P1*P2*P3
+    # normal_fact = P1*P2*P3
+    normal_fact = np.zeros((len_EM1, len_EM2, len_AC), dtype=complex)
+    for i in range(len_EM1):
+        for j in range(len_EM2):
+            for k in range(len_AC):
+                normal_fact[i, j, k] = P1[i]*P2[j]*P3[k]
     SBS_gain = np.real(gain/normal_fact)
 
     return SBS_gain, Q_PE, Q_MB, alpha, P1, P3

@@ -27,11 +27,12 @@ inc_shape = 'rectangular'
 
 ### Optical parameters
 eps = 12.25
-num_EM_modes = 20
+num_EM_modes = 30
 num_AC_modes = 20
 
 EM_ival1=0
 EM_ival2=EM_ival1
+# EM_ival2='All'
 AC_ival='All'
 # AC_ival=2
 
@@ -64,32 +65,46 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 
 ### Calculate Acoustic Modes
 # Backward SBS
-# # Acoustic k has to push optical mode from +ve lightline to -ve, hence factor 2.
-q_acoustic = 2*sim_EM_wguide.Eig_value[0]
-# # Forward (intramode) SBS
+# Acoustic k has to push optical mode from +ve lightline to -ve, hence factor 2.
+q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
+# Forward (intramode) SBS
 # q_acoustic = 0.0
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes,
-	EM_sim=sim_EM_wguide)#, shift_Hz=20e9)
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, 
+# 	num_AC_modes, EM_sim=sim_EM_wguide)#, shift_Hz=20e9)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+npzfile = np.load('wguide_data_AC.npz')
+sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
-# prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
-# prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
-# print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 
 ### Calculate interaction integrals
-SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide,
-                           sim_AC_wguide, q_acoustic,
-                           EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
+SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(
+    sim_EM_wguide, sim_AC_wguide, q_acoustic,
+    EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
 # npzfile = np.load('wguide_data_AC_gain.npz')
 # SBS_gain = npzfile['SBS_gain']
 # alpha = npzfile['alpha']
-# print alpha
-# print 1./alpha
+
+# print "lc", wguide.lc
+# print "lc2", wguide.lc2
+# print "lc3", wguide.lc3
+
+print 'alpha / CW alpha', alpha[2]/(1./98.70e-6)
+print 'alpha / CW alpha', alpha[4]/(1./27.75e-6)
+print 'alpha / CW alpha', alpha[8]/(1./43.90e-6)
+
+print 'SBS_gain / CW gain', SBS_gain[0,:,2]/alpha[2]/310.25
+
+print 'SBS_gain / CW gain', SBS_gain[0,0,2]/alpha[2]/310.25
+print 'SBS_gain / CW gain', SBS_gain[0,0,4]/alpha[4]/2464.98
+print 'SBS_gain / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
+
+print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
+print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
+print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
+
 
 # # # trim1 = 5
 # # # trim = 13
@@ -112,6 +127,10 @@ SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide,
 
 
 
+# print 'Q', Q_PE[0,0,2]
+# print 'Q', Q_PE[0,0,4]
+# print 'Q', Q_PE[0,0,8]
+
 # print "Gain", SBS_gain[0,0,2]/alpha[2]
 # print "Gain", SBS_gain[0,0,4]/alpha[4]
 # print "Gain", SBS_gain[0,0,8]/alpha[8]
@@ -121,36 +140,9 @@ SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide,
 # print SBS_gain/alpha[8]/36.55
 
 
-# print "lc", wguide.lc
-# print "lc2", wguide.lc2
-# print "lc3", wguide.lc3
-
-print 'SBS_gain', SBS_gain[0,0,2]/alpha[2]/310.25
-print 'SBS_gain', SBS_gain[0,0,4]/alpha[4]/2464.98
-print 'SBS_gain', SBS_gain[0,0,8]/alpha[8]/36.55
-
-print 'Q', Q_PE[0,0,2]
-print 'Q', Q_PE[0,0,4]
-print 'Q', Q_PE[0,0,8]
-
 # print 'Q_PE error', np.sqrt(SBS_gain[0,0,2]/(1./98.70e-6)/310.25)
 # print 'Q_PE error', np.sqrt(SBS_gain[0,0,4]/(1./27.75e-6)/2464.98)
 # print 'Q_PE error', np.sqrt(SBS_gain[0,0,8]/(1./43.90e-6)/36.55)
-
-# print SBS_gain[0,0,2]/(1./98.70e-6)/310.25
-# print SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
-# print SBS_gain[0,0,8]/(1./43.90e-6)/36.55
-
-# print 'alpha', alpha[2]
-# print 'alpha', alpha[4]
-# print 'alpha', alpha[8]
-
-# print alpha[2]/(1./98.70e-6)
-# print alpha[4]/(1./27.75e-6)
-# print alpha[8]/(1./43.90e-6)
-# # print (1./98.70e-6)/alpha[2]
-# # print (1./27.75e-6)/alpha[4]
-# # print (1./43.90e-6)/alpha[8]
 
 
 
