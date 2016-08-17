@@ -68,14 +68,16 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
 # Forward (intramode) SBS
 # q_acoustic = 0.0
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, 
-# 	num_AC_modes, EM_sim=sim_EM_wguide)#, shift_Hz=20e9)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, 
+	num_AC_modes, EM_sim=sim_EM_wguide)#, shift_Hz=20e9)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-npzfile = np.load('wguide_data_AC.npz')
-sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
+
+# sim_AC_wguide.sol1[2,:,:,:] = sim_AC_wguide.sol1[2,:,:,:]*1j
 
 ### Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(

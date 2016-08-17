@@ -202,6 +202,12 @@ class Simmo(object):
             shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
             # Increase slightly for difference between bulk and waveguide.
             shift = 1.05*shift 
+            # print shift
+            # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
+            # shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            # print shift
+
+            
             # Using acoustic velocity of shear mode pg 215 Auld vol 1.
             # AC_velocity2 = np.real(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
             # # shift_freq2 = AC_velocity2*0.5*self.q_acoustic/(2.*np.pi)

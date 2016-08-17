@@ -17,20 +17,17 @@ speed_c = 299792458
 ### Geometric parameters 
 ## All spacial variables given in nm!
 wl_nm = 1550
-unitcell_x = 2.5*1550
+unitcell_x = 4.5*1550
 unitcell_y = unitcell_x
 inc_shape = 'rectangular'
-# inc_shape = 'circular'
-inc_a_x = 300
-inc_a_y = 1.05*inc_a_x
-# inc_a_x = 1500
-# inc_a_y = 680
+inc_a_x = 850
+inc_a_y = 680
 
 ### Optical parameters
 n_b = 1.44
 n_i = 2.83
 num_EM_modes = 20
-num_AC_modes = 30
+num_AC_modes = 40
 
 EM_ival1=0
 EM_ival2=0
@@ -83,8 +80,8 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 n_eff = 2.5
 shift_Hz = n_eff**2 * (2*np.pi/(wl_nm*1e-9))**2
 # sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, shift_Hz=shift_Hz)
-# np.savez('wguide_data-chalc', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data-chalc.npz')
+# np.savez('wguide_data-chalc-Blair', sim_EM_wguide=sim_EM_wguide)
+npzfile = np.load('wguide_data-chalc-Blair.npz')
 sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
@@ -97,9 +94,10 @@ q_acoustic = 2*sim_EM_wguide.Eig_value[0]
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
 # As2S3_bulk_velocity = 2595m/s @1550 gives 7.6 GHz as freq in reg waveguides
+shift_Hz = 5.8e9
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, 
-   EM_sim=sim_EM_wguide)#, shift_Hz=shift_Hz )
-np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+   EM_sim=sim_EM_wguide, shift_Hz=shift_Hz )
+# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
