@@ -25,7 +25,7 @@ c     Local variables
       complex*16 basis_overlap(3*nnodes0,3*nnodes0,3,3*nnodes0)
       complex*16 field_overlap(3*nnodes0,3*nnodes0,3*nnodes0,nel)
       complex*16 basis_overlap_out(3*nnodes0,3*nnodes0,3,3*nnodes0,nel)
-      complex*16 E1star, E2, Ustar, eps
+      complex*16 E1star, E2, Ustar
       integer*8 i, j, k, l, j1, typ_e
       integer*8 iel, ind_ip, i_eq
       integer*8 jtest, ind_jp, j_eq, k_eq
@@ -100,7 +100,6 @@ cccccccccccc
           enddo
         enddo
       enddo
-
       do i=1,3*nnodes
         do j=1,3*nnodes
             do l=1,3*nnodes
@@ -112,7 +111,6 @@ cccccccccccc
           enddo
         enddo
       enddo
-        
 cccccccccccc
 C Loop over elements - start
 cccccccccccc
@@ -124,7 +122,6 @@ cccccccccccc
           xel(2,j) = x(2,j1)
         enddo
 cccccccccc
-cccccccc
 c       The geometric transformation (x,y) -> (x_g,y_g) = mat_B*(x,y)^t + (x_0, y_0, z_0)^t
 c       maps the current triangle to the reference triangle.
         do i=1,2
@@ -133,8 +130,7 @@ c       maps the current triangle to the reference triangle.
           enddo
         enddo
         det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-        if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
-cc        if (abs(det_b) .le. 1.0d-8) then
+        if (abs(det_b) .le. 1.0d-22) then
           write(*,*) '?? PE_int_v2: Determinant = 0 :', det_b
           write(*,*) "xel = ", xel
           write(*,*) 'Aborting...'
@@ -156,11 +152,11 @@ c       mat_T_tr = Transpose(mat_T)
         mat_T_tr(2,2) = mat_T(2,2)
         mat_T_tr(1,2) = mat_T(2,1)
         mat_T_tr(2,1) = mat_T(1,2)
-
+C
         call mat_p2_p2_p2 (p2_p2_p2, det_b)
         call mat_p2_p2_p2x (p2_p2_p2x, mat_T_tr, det_b)
         call mat_p2_p2_p2y (p2_p2_p2y, mat_T_tr, det_b)
-
+C
 cccccccccc
         do i=1,3*nnodes
           do j=1,3*nnodes
@@ -198,10 +194,8 @@ C               Gradient of transverse components of basis function
                         stop
                       endif
                       coeff = p_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
-                      eps = eps_lst(typ_e)
-                      zt1 = coeff * eps**2 * zt1
-                      basis_overlap(ind_ip,ind_jp,k_eq,ind_lp) =
-     *                          zt1
+                      zt1 = coeff * eps_lst(typ_e)**2 * zt1
+                      basis_overlap(ind_ip,ind_jp,k_eq,ind_lp) = zt1
                     enddo
                   enddo
                 enddo

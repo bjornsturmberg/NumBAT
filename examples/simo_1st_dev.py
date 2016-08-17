@@ -27,12 +27,11 @@ inc_shape = 'rectangular'
 
 ### Optical parameters
 eps = 12.25
-num_EM_modes = 30
+num_EM_modes = 20
 num_AC_modes = 20
 
 EM_ival1=0
 EM_ival2=EM_ival1
-# EM_ival2='All'
 AC_ival='All'
 # AC_ival=2
 
@@ -95,8 +94,6 @@ print 'alpha / CW alpha', alpha[2]/(1./98.70e-6)
 print 'alpha / CW alpha', alpha[4]/(1./27.75e-6)
 print 'alpha / CW alpha', alpha[8]/(1./43.90e-6)
 
-print 'SBS_gain / CW gain', SBS_gain[0,:,2]/alpha[2]/310.25
-
 print 'SBS_gain / CW gain', SBS_gain[0,0,2]/alpha[2]/310.25
 print 'SBS_gain / CW gain', SBS_gain[0,0,4]/alpha[4]/2464.98
 print 'SBS_gain / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
@@ -104,6 +101,10 @@ print 'SBS_gain / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
 print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
 print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
 print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
+
+# print 'Q_PE error', np.sqrt(SBS_gain[0,0,2]/(1./98.70e-6)/310.25)
+# print 'Q_PE error', np.sqrt(SBS_gain[0,0,4]/(1./27.75e-6)/2464.98)
+# print 'Q_PE error', np.sqrt(SBS_gain[0,0,8]/(1./43.90e-6)/36.55)
 
 
 # # # trim1 = 5
@@ -124,35 +125,6 @@ print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
 # #       print 'B2'
 # #    if sym[0] == -1 and sym[1] == -1 and sym[2] == 1:
 # #       print 'B3'
-
-
-
-# print 'Q', Q_PE[0,0,2]
-# print 'Q', Q_PE[0,0,4]
-# print 'Q', Q_PE[0,0,8]
-
-# print "Gain", SBS_gain[0,0,2]/alpha[2]
-# print "Gain", SBS_gain[0,0,4]/alpha[4]
-# print "Gain", SBS_gain[0,0,8]/alpha[8]
-
-# print SBS_gain/alpha[2]/310.25
-# print SBS_gain/alpha[4]/2464.98
-# print SBS_gain/alpha[8]/36.55
-
-
-# print 'Q_PE error', np.sqrt(SBS_gain[0,0,2]/(1./98.70e-6)/310.25)
-# print 'Q_PE error', np.sqrt(SBS_gain[0,0,4]/(1./27.75e-6)/2464.98)
-# print 'Q_PE error', np.sqrt(SBS_gain[0,0,8]/(1./43.90e-6)/36.55)
-
-
-
-# SBS_gain[0,0,2] = 310.25*1e3
-# alpha[2] = 1./98.70e-6
-# SBS_gain[0,0,4] = 2464.98*1e3
-# alpha[4] = 1./27.75e-6
-# # print sim_AC_wguide.Eig_value[8]*1e-9
-# SBS_gain[0,0,8] = 36.55*1e3
-# alpha[8] = 1./43.90e-6
 
 # import matplotlib
 # matplotlib.use('pdf')

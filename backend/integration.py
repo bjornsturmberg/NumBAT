@@ -38,7 +38,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 # phi is values of Lagrange polynomials (1-6) at that node.
 # grad is value of gradient of Lagrange polynomials (1-6) at that node.
 
-
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
         P1 = sim_EM_wguide.EM_mode_overlap
@@ -188,8 +187,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print np.max(np.abs(basis_overlap_PE))
     # print np.max(np.abs(fields_list))
 
-
-
     # # # print "PE dy", np.max(basis_overlap_PE[:,:,1,7:12])
     # # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
     # print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
@@ -201,7 +198,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print "PE dz", np.max(abs(basis_overlap_PE[:,:,2,:]))
     # print "PE y", np.max(abs(basis_overlap_PE[:,:,:,1]))
     # print "PE z", np.max(abs(basis_overlap_PE[:,:,:,2]))
-
 
     # print "field ", np.max(field_overlap_PE[:,:,:,:])
     # print "field ", np.max(np.real(field_overlap_PE[:,:,:,:]))
@@ -216,24 +212,20 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # # print "PE y", np.max(field_overlap_PE[:,:,1])
     # # print "PE z", np.max(field_overlap_PE[:,:,2])
 
-    # Q_PE[0,0,2] = Q_PE[0,0,2]/0.388837986772
-    # Q_PE[0,0,4] = Q_PE[0,0,4]/0.299436272977
-    # Q_PE[0,0,8] = Q_PE[0,0,8]/0.194040472225
-    # print 1.0/0.388837986772
-    # print 1.0/0.299436272977
-    # print 1.0/0.194040472225
-
+    # Q_PE[0,0,2] = Q_PE[0,0,2]/2.71513937066
+    # Q_PE[0,0,4] = Q_PE[0,0,4]/0.198162768689
+    # Q_PE[0,0,8] = Q_PE[0,0,8]/3.58118055063
 
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
     # Note: sim_EM_wguide.omega_EM if the optical angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
-    # normal_fact = P1*P2*P3
     normal_fact = np.zeros((len_EM1, len_EM2, len_AC), dtype=complex)
     for i in range(len_EM1):
         for j in range(len_EM2):
             for k in range(len_AC):
                 normal_fact[i, j, k] = P1[i]*P2[j]*P3[k]
+    # SBS_gain = gain/normal_fact
     SBS_gain = np.real(gain/normal_fact)
 
     return SBS_gain, Q_PE, Q_MB, alpha, P1, P3
