@@ -196,7 +196,7 @@ C                 form e^{i*beta*z} phi.
                     do l_eq=1,3
                       ind_lp = l_eq + 3*(ltest-1)
                       zt1 = phi2_list(itrial) * phi2_list(jtest)
-     *                        * phi2_list(ltest) * ii * beta_AC
+     *                        * phi2_list(ltest) * -ii * beta_AC
                       coeff_2 = p_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                       eps = eps_lst(typ_e)
                       zt1 = coeff_1 * coeff_2 * eps**2 * zt1

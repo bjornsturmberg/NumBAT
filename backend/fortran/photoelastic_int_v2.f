@@ -185,7 +185,7 @@ C               Gradient of transverse components of basis function
                         zt1 = p2_p2_p2y(itrial,jtest,ltest)
                       elseif ( k_eq .eq. 3) then
                         zt1 = p2_p2_p2(itrial,jtest,ltest)
-                        zt1 = zt1 * ii * beta_AC
+                        zt1 = zt1 * -ii * beta_AC
                       else
                         write(*,*) "--- photoelastic_int_v2: "
                         write(*,*) "k_eq has illegal value:"

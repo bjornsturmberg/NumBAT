@@ -76,6 +76,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
+# sim_AC_wguide.sol1[0,:,4,:] = sim_AC_wguide.sol1[0,:,4,:]*1j
 
 ### Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
@@ -90,14 +91,14 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # print "lc2", wguide.lc2
 # print "lc3", wguide.lc3
 
-# print 'alpha / CW alpha', alpha[0]/(1./186.52e-6)
-# print 'alpha / CW alpha', alpha[1]/(1./142.79e-6)
+print 'alpha / CW alpha', alpha[0]/(1./186.52e-6)
+print 'alpha / CW alpha', alpha[1]/(1./142.79e-6)
 print 'alpha 2 / CW alpha', alpha[2]/(1./98.70e-6)
-# print 'alpha / CW alpha', alpha[3]/(1./203.98e-6)
+print 'alpha / CW alpha', alpha[3]/(1./203.98e-6)
 print 'alpha 4 / CW alpha', alpha[4]/(1./27.75e-6)
-# print 'alpha / CW alpha', alpha[5]/(1./66.69e-6)
-# print 'alpha / CW alpha', alpha[6]/(1./53.06e-6)
-# print 'alpha / CW alpha', alpha[7]/(1./33.01e-6)
+print 'alpha / CW alpha', alpha[5]/(1./66.69e-6)
+print 'alpha / CW alpha', alpha[6]/(1./53.06e-6)
+print 'alpha / CW alpha', alpha[7]/(1./33.01e-6)
 print 'alpha 8 / CW alpha', alpha[8]/(1./43.90e-6)
 # print 'alpha / CW alpha', alpha[9]/(1./74.10e-6)
 
