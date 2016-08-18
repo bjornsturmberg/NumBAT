@@ -1,4 +1,5 @@
-
+C Difference from array_sol_AC.f is that the u_z field is multiplied by i
+C which gives you the correct physical displacement field.
 
 c   sol_0(*,i) : contains the imaginary and real parts of the solution for points such that ineq(i) != 0
 c   sol(i) : contains solution for all points
@@ -172,6 +173,9 @@ c
                 sol_el(j_eq,inod) = 0
               endif
             enddo
+c           The z-compoenent must be multiplied by ii in order to get the un-normalised z-compoenent
+            j_eq=3
+                sol_el(j_eq,inod) = ii * sol_el(j_eq,inod)
             do j=1,3
               z_tmp2 = sol_el(j,inod)
               sol(j,inod,ival,iel) = z_tmp2

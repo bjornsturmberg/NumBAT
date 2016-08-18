@@ -77,10 +77,8 @@ print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 
-# sim_AC_wguide.sol1[2,:,:,:] = sim_AC_wguide.sol1[2,:,:,:]*1j
-
 ### Calculate interaction integrals
-SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(
+SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, q_acoustic,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
@@ -92,17 +90,24 @@ SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(
 # print "lc2", wguide.lc2
 # print "lc3", wguide.lc3
 
-print 'alpha / CW alpha', alpha[2]/(1./98.70e-6)
-print 'alpha / CW alpha', alpha[4]/(1./27.75e-6)
-print 'alpha / CW alpha', alpha[8]/(1./43.90e-6)
+# print 'alpha / CW alpha', alpha[0]/(1./186.52e-6)
+# print 'alpha / CW alpha', alpha[1]/(1./142.79e-6)
+print 'alpha 2 / CW alpha', alpha[2]/(1./98.70e-6)
+# print 'alpha / CW alpha', alpha[3]/(1./203.98e-6)
+print 'alpha 4 / CW alpha', alpha[4]/(1./27.75e-6)
+# print 'alpha / CW alpha', alpha[5]/(1./66.69e-6)
+# print 'alpha / CW alpha', alpha[6]/(1./53.06e-6)
+# print 'alpha / CW alpha', alpha[7]/(1./33.01e-6)
+print 'alpha 8 / CW alpha', alpha[8]/(1./43.90e-6)
+# print 'alpha / CW alpha', alpha[9]/(1./74.10e-6)
 
-print 'SBS_gain / CW gain', SBS_gain[0,0,2]/alpha[2]/310.25
-print 'SBS_gain / CW gain', SBS_gain[0,0,4]/alpha[4]/2464.98
-print 'SBS_gain / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
+print 'SBS_gain 2 / CW gain', SBS_gain[0,0,2]/alpha[2]/310.25
+print 'SBS_gain 4 / CW gain', SBS_gain[0,0,4]/alpha[4]/2464.98
+print 'SBS_gain 8 / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
 
-print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
-print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
-print 'SBS_gain / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
+print 'SBS_gain 2 / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
+print 'SBS_gain 4 / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
+print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
 
 # print 'Q_PE error', np.sqrt(SBS_gain[0,0,2]/(1./98.70e-6)/310.25)
 # print 'Q_PE error', np.sqrt(SBS_gain[0,0,4]/(1./27.75e-6)/2464.98)

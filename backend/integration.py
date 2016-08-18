@@ -38,45 +38,44 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 # phi is values of Lagrange polynomials (1-6) at that node.
 # grad is value of gradient of Lagrange polynomials (1-6) at that node.
 
+
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
-        P1 = sim_EM_wguide.EM_mode_overlap
-        len_EM1 = len(P1)
+        # P1 = sim_EM_wguide.EM_mode_overlap
     else:
         EM_ival1_fortran = EM_ival1+1  # convert back to fortran indexing
-        P1 = [sim_EM_wguide.EM_mode_overlap[EM_ival1]]
-        len_EM1 = 1
+        # P1 = np.zeros(num_modes_EM, dtype=complex)
+        # P1[EM_ival1] = sim_EM_wguide.EM_mode_overlap[EM_ival1]
 
     if EM_ival2 == 'All':
         EM_ival2_fortran = -1
-        P2 = sim_EM_wguide.EM_mode_overlap
-        len_EM2 = len(P2)
+        # P2 = sim_EM_wguide.EM_mode_overlap
     else:
         EM_ival2_fortran = EM_ival2+1  # convert back to fortran indexing
-        P2 = [sim_EM_wguide.EM_mode_overlap[EM_ival2]]
-        len_EM2 = 1
+        # P2 = np.zeros(num_modes_EM, dtype=complex)
+        # P2[EM_ival2] = sim_EM_wguide.EM_mode_overlap[EM_ival2]
 
     if AC_ival == 'All':
         AC_ival_fortran = -1
         # Note: sim_AC_wguide.Omega_AC if the acoustic angular freq in units of Hz
         AC_freq_Omega = sim_AC_wguide.Omega_AC
-        P3 = sim_AC_wguide.AC_mode_overlap
-        len_AC = len(P3)
+        # P3 = sim_AC_wguide.AC_mode_overlap
     else:
         AC_freq_Omega = sim_AC_wguide.Omega_AC[AC_ival]
         AC_ival_fortran = AC_ival+1  # convert back to fortran indexing
-        P3 = [sim_AC_wguide.AC_mode_overlap[AC_ival]]
-        len_AC = 1
+        # P3 = np.zeros(num_modes_AC, dtype=complex)
+        # P3[AC_ival] = sim_AC_wguide.AC_mode_overlap[AC_ival]
 
     Fortran_debug = 0
     ncomps = 3
     nnodes = 6
-    num_EM_modes = len(sim_EM_wguide.Eig_value)
+    num_modes_EM = sim_EM_wguide.num_modes
+    num_modes_AC = sim_AC_wguide.num_modes
     n_msh_el_AC = sim_AC_wguide.n_msh_el
-    trimmed_EM_field = np.zeros((ncomps,nnodes,num_EM_modes,n_msh_el_AC), dtype=complex)
+    trimmed_EM_field = np.zeros((ncomps,nnodes,num_modes_EM,n_msh_el_AC), dtype=complex)
     for el in range(n_msh_el_AC):
         new_el = sim_AC_wguide.el_convert_tbl[el]
-        for ival in range(num_EM_modes):
+        for ival in range(num_modes_EM):
             for n in range(nnodes):
                 for x in range(ncomps):
                     trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
@@ -111,17 +110,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 sim_AC_wguide.AC_mode_overlap, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
-
     alpha = np.real(alpha)
-    # print "dx, dx", np.max(basis_overlap_alpha[:,0,0,:])
-    # print "dy, dx", np.max(basis_overlap_alpha[:,1,0,:])
-    # print "dz, dx", np.max(basis_overlap_alpha[:,2,0,:])
-    # print "dx, dy", np.max(basis_overlap_alpha[:,0,1,:])
-    # print "dy, dy", np.max(basis_overlap_alpha[:,1,1,:])
-    # print "dz, dy", np.max(basis_overlap_alpha[:,2,1,:])
-    # print "dx, dz", np.max(basis_overlap_alpha[:,0,2,:])
-    # print "dy, dz", np.max(basis_overlap_alpha[:,1,2,:])
-    # print "dz, dz", np.max(basis_overlap_alpha[:,2,2,:])
 
 
 ### Calc Q_photoelastic Eq. 33
@@ -156,79 +145,21 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     #                 sim_AC_wguide.sol1,q_acoustic,Fortran_debug)
     # print Q_check
 
-    # print np.max(trimmed_EM_field[0, :, 0, :])
-    # print np.max(trimmed_EM_field[1, :, 0, :])
-    # print np.max(trimmed_EM_field[2, :, 0, :])
-    # print np.max(sim_AC_wguide.sol1[0, :, 2, :])
-    # print np.max(sim_AC_wguide.sol1[1, :, 2, :])
-    # print np.max(sim_AC_wguide.sol1[2, :, 2, :])
-    # z_tmpz = np.conj(trimmed_EM_field[0, :, 0, :])*trimmed_EM_field[0, :, 0, :]*np.conj(sim_AC_wguide.sol1[2, :, 2, :])
-    # print np.max(z_tmp1)
-
-    # overlap = 0
-    # nnodes0 = 6
-    # fields_list=[]
-    # for iel in range(n_msh_el_AC):
-    #     for ltest in range(nnodes0):
-    #         l_eq=2
-    #         k_eq=2
-    #         ind_lp = l_eq + 3*(ltest)
-    #         z_tmp1 = basis_overlap_PE[k_eq,ind_lp,iel]
-    #         fields = np.conj(sim_AC_wguide.sol1[l_eq,ltest, 2, iel])
-    #         # fields = 1.0
-    #         fields_list.append(fields)
-    #         overlap += z_tmp1*fields
-
-    # # print z_tmp1
-    # print np.max(basis_overlap_PE[:,:,k_eq,:,:])
-    # print np.max(abs(basis_overlap_PE[:,:,k_eq,:,:]))
-    # print np.max(basis_overlap_PE[:,:,2,:,:])
-    # print 'O', overlap
-    # print np.max(np.abs(basis_overlap_PE))
-    # print np.max(np.abs(fields_list))
-
-    # # # print "PE dy", np.max(basis_overlap_PE[:,:,1,7:12])
-    # # print "PE dx", np.max(basis_overlap_PE[:,:,0,:])
-    # print "PE dy", np.max(basis_overlap_PE[:,:,1,:])
-    # print "PE dz", np.max(basis_overlap_PE[:,:,2,:])
-    # # print "PE x", np.max(basis_overlap_PE[:,:,:,0])
-    # print "PE y", np.max(basis_overlap_PE[:,:,:,1])
-    # print "PE z", np.max(basis_overlap_PE[:,:,:,2])
-    # print "PE dy", np.max(abs(basis_overlap_PE[:,:,1,:]))
-    # print "PE dz", np.max(abs(basis_overlap_PE[:,:,2,:]))
-    # print "PE y", np.max(abs(basis_overlap_PE[:,:,:,1]))
-    # print "PE z", np.max(abs(basis_overlap_PE[:,:,:,2]))
-
-    # print "field ", np.max(field_overlap_PE[:,:,:,:])
-    # print "field ", np.max(np.real(field_overlap_PE[:,:,:,:]))
-    # print "field ", np.max(abs(np.real(field_overlap_PE[:,:,:,:])))
-    # print "field ", np.max(np.imag(field_overlap_PE[:,:,:,:]))
-    # print "field ", np.max(abs(np.imag(field_overlap_PE[:,:,:,:])))
-    # print "field ", np.max(abs(field_overlap_PE[:,:,:,:]))
-    # # print "field x", np.max(field_overlap_PE[:,:,0])
-    # # print "field y", np.max(field_overlap_PE[:,:,1])
-    # # print "field z", np.max(field_overlap_PE[:,:,2])
-    # # print "PE x", np.max(field_overlap_PE[:,:,0])
-    # # print "PE y", np.max(field_overlap_PE[:,:,1])
-    # # print "PE z", np.max(field_overlap_PE[:,:,2])
-
-    # Q_PE[0,0,2] = Q_PE[0,0,2]/2.71513937066
-    # Q_PE[0,0,4] = Q_PE[0,0,4]/0.198162768689
-    # Q_PE[0,0,8] = Q_PE[0,0,8]/3.58118055063
-
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
     # Note: sim_EM_wguide.omega_EM if the optical angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
-    normal_fact = np.zeros((len_EM1, len_EM2, len_AC), dtype=complex)
-    for i in range(len_EM1):
-        for j in range(len_EM2):
-            for k in range(len_AC):
-                normal_fact[i, j, k] = P1[i]*P2[j]*P3[k]
-    # SBS_gain = gain/normal_fact
+    normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
+    for i in range(num_modes_EM):
+        P1 = sim_EM_wguide.EM_mode_overlap[i]
+        for j in range(num_modes_EM):
+            P2 = sim_EM_wguide.EM_mode_overlap[j]
+            for k in range(num_modes_AC):
+                P3 = sim_AC_wguide.AC_mode_overlap[k]
+                normal_fact[i, j, k] = P1*P2*P3
     SBS_gain = np.real(gain/normal_fact)
 
-    return SBS_gain, Q_PE, Q_MB, alpha, P1, P3
+    return SBS_gain, Q_PE, Q_MB, alpha
 
 
 

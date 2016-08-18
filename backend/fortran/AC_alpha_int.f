@@ -12,7 +12,7 @@ c
       integer*8 type_el(nel), debug
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
-c      complex*16 x(2,npt)
+C       complex*16 x(2,npt)
       complex*16 soln_AC(3,nnodes,nval,nel)
       complex*16 Omega_AC(nval)
       complex*16 beta_AC, AC_mode_overlap(nval)
@@ -160,10 +160,7 @@ C             Gradient of transverse components of basis function
                   do ltest=1,nnodes0
                     do l_eq=1,3
                       ind_lp = l_eq + 3*(ltest-1)
-C                 Ignore int by parts sign
-C                       z_tmp1 = grad2_mat(j_eq,itrial)
-C                 Negative sign due to not doing integration by parts
-                      z_tmp1 = -grad2_mat(j_eq,itrial)
+                      z_tmp1 = grad2_mat(j_eq,itrial)
      *                      * grad2_mat(k_eq,ltest)
                       coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                       basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
@@ -179,11 +176,8 @@ C               form e^{i*beta*z} phi.
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
-C                 Ignore int by parts sign
-C                     z_tmp1 = -grad2_mat(j_eq,ltest)
-C                 Sign difference due to not doing integration by parts
-                    z_tmp1 = grad2_mat(j_eq,ltest)
-     *                      * phi2_list(itrial) * ii * beta_AC
+                    z_tmp1 = grad2_mat(j_eq,itrial)
+     *                      * phi2_list(ltest) * ii * beta_AC
                     coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                     basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
      *                basis_overlap(ind_ip,j_eq,k_eq,ind_lp)
@@ -196,10 +190,7 @@ C                 Sign difference due to not doing integration by parts
                 do ltest=1,nnodes0
                   do l_eq=1,3
                     ind_lp = l_eq + 3*(ltest-1)
-C                 Ignore int by parts sign
-C                     z_tmp1 = -phi2_list(itrial) * ii * beta_AC
-C                 Sign difference due to not doing integration by parts
-                    z_tmp1 = phi2_list(itrial) * ii * beta_AC
+                    z_tmp1 = phi2_list(itrial) * (-ii * beta_AC)
      *                    * grad2_mat(k_eq,ltest)
                     coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                     basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
@@ -212,10 +203,7 @@ C                 Sign difference due to not doing integration by parts
               do ltest=1,nnodes0
                 do l_eq=1,3
                   ind_lp = l_eq + 3*(ltest-1)
-C                 Ignore int by parts sign
-C                   z_tmp1 = 1.0 * beta_AC**2 * phi2_list(itrial)
-C                 Sign difference due to not doing integration by parts
-                  z_tmp1 = -1.0 * beta_AC**2 * phi2_list(itrial)
+                  z_tmp1 = beta_AC**2 * phi2_list(itrial)   !!!!!! -1.0 * 
      *                    * phi2_list(ltest)
                   coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                   basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
@@ -241,7 +229,8 @@ C now multiply by specific field values for modes of interest.
                   do j_eq=1,3
                     do k_eq=1,3
                       z_tmp1 = basis_overlap(ind_ip,j_eq,k_eq,ind_lp)
-                      overlap(ival) = overlap(ival) + Ustar * U * z_tmp1
+                      z_tmp1 = Ustar * U * z_tmp1
+                      overlap(ival) = overlap(ival) + z_tmp1
                     enddo
                   enddo
                 enddo
@@ -255,9 +244,31 @@ cccccccccccc
       enddo
 C Multiply through prefactor
       do i=1,nval
-        z_tmp1 = -1.0 * Omega_AC(i)**2 / AC_mode_overlap(i)
+C         z_tmp1 = -1.0 * Omega_AC(i)**2 / AC_mode_overlap(i)
+C       Flipped sign as assuming did not do integration by parts - going off CW advice.
+        z_tmp1 = Omega_AC(i)**2 / AC_mode_overlap(i)
         overlap(i) = z_tmp1 * overlap(i)
       enddo
+
+C       open (unit=26,file="Output/overlap_alpha.txt")
+C       do i=1,nval
+C         write(26,*) i, Omega_AC(i), abs(overlap(i)), overlap(i), 
+C      *              AC_mode_overlap(i)
+C       enddo
+C       close (unit=26)
+
+C       open (unit=26,file="Output/basis_overlap.txt")
+C       do i=1,3*nnodes
+C         do j=1,3
+C           do k=1,3
+C             do l=1,3*nnodes
+C             write(26,*)  i,j,k,l, basis_overlap(i,j,k,l)
+C             enddo
+C           enddo
+C         enddo
+C       enddo
+C       close (unit=26)
+
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C

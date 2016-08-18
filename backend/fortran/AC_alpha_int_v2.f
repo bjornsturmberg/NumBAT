@@ -12,7 +12,7 @@ c
       integer*8 type_el(nel)
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
-c      complex*16 x(2,npt)
+C       complex*16 x(2,npt)
       complex*16 soln_AC(3,nnodes,nval,nel)
       complex*16 Omega_AC(nval)
       complex*16 beta_AC, AC_mode_overlap(nval)
@@ -26,7 +26,7 @@ c     Local variables
       double precision xel(2,nnodes0)
       complex*16 basis_overlap(3*nnodes0,3,3,3*nnodes0)
       complex*16 U, Ustar
-      integer*8 i, j, j1, typ_e!, k, l
+      integer*8 i, j, j1, typ_e
       integer*8 iel, ind_ip, i_eq, k_eq
       integer*8 ltest, ind_lp, l_eq, j_eq
       integer*8 itrial, ui
@@ -37,7 +37,7 @@ c     Local variables
       double precision mat_B(2,2), mat_T(2,2), mat_T_tr(2,2)
       double precision det_b
 c
-      double precision ZERO, ONE!, r_tmp1
+      double precision ZERO, ONE
       parameter ( ZERO = 0.0D0, ONE = 1.0D0)
       complex*16 coeff
 cc      double precision phi2_list(6), grad2_mat0(2,6)
@@ -46,7 +46,7 @@ C
 C
 Cf2py intent(in) nval, nel, npt, nnodes, table_nod
 Cf2py intent(in) type_el, x, nb_typ_el, eta_tensor, beta_AC 
-Cf2py intent(in) soln_AC, Omega_AC, AC_mode_overlap
+Cf2py intent(in) soln_AC, debug, Omega_AC, AC_mode_overlap
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
@@ -161,8 +161,7 @@ cccccccccccccccccccccc
                       endif
                       coeff = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                       basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =
-     *                            -1.0 * coeff * z_tmp1 
-                      ! -1 to match CW (results in +ve alpha)
+     *                            coeff * z_tmp1
                     enddo
                   enddo
                 enddo
@@ -201,7 +200,9 @@ cccccccccccc
       enddo
 C Multiply through prefactor
       do i=1,nval
-        z_tmp1 = -1.0 * Omega_AC(i)**2 / AC_mode_overlap(i)
+C         z_tmp1 = -1.0 * Omega_AC(i)**2 / AC_mode_overlap(i)
+C       Flipped sign as assuming did not do integration by parts - going off CW advice.
+        z_tmp1 = Omega_AC(i)**2 / AC_mode_overlap(i)
         overlap(i) = z_tmp1 * overlap(i)
       enddo
 

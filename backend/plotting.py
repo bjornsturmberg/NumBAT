@@ -52,6 +52,8 @@ def zeros_int_str(zero_int):
 def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                   EM_AC='EM', pdf_png='png', add_name=''):
     """ Plot EM mode fields.
+    NOTE: z component of EM field needs comes scaled by 1/(i beta), 
+    which must be reintroduced!
 
         Args:
             sim_wguide : A :Struct: instance that has had calc_modes calculated
@@ -60,6 +62,9 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
             n_points  (int): The number of points across unitcell to \
                 interpolate the field onto.
     """
+
+    if EM_AC is not 'EM' and EM_AC is not 'AC':
+        raise ValueError, "EM_AC must be either 'AC' or 'EM'."
 
     plt.clf()
 
@@ -117,7 +122,10 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                 v_y6p[i] = x_arr[i_ex, 1]
                 v_Ex6p[i] = sim_wguide.sol1[0,i_node,ival,i_el]
                 v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
-                v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
+                if EM_AC == 'EM':
+                    v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]*1j*sim_wguide.Eig_value[ival]
+                else:
+                    v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
                 i += 1
 
         v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
@@ -160,10 +168,9 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
         v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
         if EM_AC=='EM':
             v_labels = ["Re(E_x)","Re(E_y)","Re(E_z)","Im(E_x)","Im(E_y)","Im(E_z)","Abs(E)"]
-        elif EM_AC=='AC':
-            v_labels = ["Re(u_x)","Re(u_y)","Re(u_z)","Im(u_x)","Im(u_y)","Im(u_z)","Abs(u)"]
         else:
-            raise ValueError, "EM_AC must be either 'AC' or 'EM'."
+            v_labels = ["Re(u_x)","Re(u_y)","Re(u_z)","Im(u_x)","Im(u_y)","Im(u_z)","Abs(u)"]
+
 
         # field plots
         plt.clf()
@@ -204,7 +211,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                 n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             plt.text(10, 0.3, n_str, fontsize=title_font)
-        elif EM_AC=='AC':
+        else:
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
                 k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
@@ -213,8 +220,6 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                 k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
-        else:
-            raise ValueError, "EM_AC must be either 'AC' or 'EM'."
         plt.text(10, 0.5, k_str, fontsize=title_font)
 
         if not os.path.exists("fields"):
