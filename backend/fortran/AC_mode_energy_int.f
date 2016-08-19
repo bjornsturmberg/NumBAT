@@ -117,22 +117,17 @@ c         xx   = coordinate on the reference triangle
 c         xx_g = coordinate on the actual triangle
 C         phi2_list = values of Lagrange polynomials (1-6) at each local node.
 C         grad2_mat0 = gradient on the reference triangle (P2 element)
-           call phi2_2d_mat(xx, phi2_list, grad2_mat0)
+          call phi2_2d_mat(xx, phi2_list, grad2_mat0)
 c
           if (info_curved .eq. 0) then
 c           Rectilinear element
             call jacobian_p1_2d(xx, xel, nnodes,
      *               xx_g, det, mat_B, mat_T)
-            if(det .le. 0 .and. debug .eq. 2 .and. iq .eq. 1) then
-              write(*,*) "   !!!"
-              write(*,*) "AC_m_en_int: det <= 0: iel, det ", iel, det
-            endif
           else
 c           Isoparametric element
             call jacobian_p2_2d(xx, xel, nnodes, phi2_list,
      *               grad2_mat0, xx_g, det, mat_B, mat_T)
           endif
-C            if(abs(det) .lt. 1.0d-10) then
            if(abs(det) .lt. 1.0d-20) then
              write(*,*)
              write(*,*) "   ???"

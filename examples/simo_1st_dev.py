@@ -78,6 +78,12 @@ print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 
 # sim_AC_wguide.sol1[0,:,4,:] = sim_AC_wguide.sol1[0,:,4,:]*1j
 
+# sim_AC_wguide.AC_mode_overlap[0] = sim_AC_wguide.AC_mode_overlap[0]*2.0541115841
+# sim_AC_wguide.AC_mode_overlap[1] = sim_AC_wguide.AC_mode_overlap[1]*1.62055717426
+# sim_AC_wguide.AC_mode_overlap[2] = sim_AC_wguide.AC_mode_overlap[2]*1.97449348579
+# sim_AC_wguide.AC_mode_overlap[3] = sim_AC_wguide.AC_mode_overlap[3]*1.7819220338
+
+
 ### Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, q_acoustic,
@@ -100,7 +106,6 @@ print 'alpha / CW alpha', alpha[5]/(1./66.69e-6)
 print 'alpha / CW alpha', alpha[6]/(1./53.06e-6)
 print 'alpha / CW alpha', alpha[7]/(1./33.01e-6)
 print 'alpha 8 / CW alpha', alpha[8]/(1./43.90e-6)
-# print 'alpha / CW alpha', alpha[9]/(1./74.10e-6)
 
 print 'SBS_gain 2 / CW gain', SBS_gain[0,0,2]/alpha[2]/310.25
 print 'SBS_gain 4 / CW gain', SBS_gain[0,0,4]/alpha[4]/2464.98
