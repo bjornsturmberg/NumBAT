@@ -126,16 +126,11 @@ c
 c           Rectilinear element
             call jacobian_p1_2d(xx, xel, nnodes,
      *               xx_g, det, mat_B, mat_T)
-            if(det .le. 0 .and. debug .eq. 2 .and. iq .eq. 1) then
-              write(*,*) "   !!!"
-              write(*,*) "AC_alpha_int: det <= 0: iel, det ", iel, det
-            endif
           else
 c           Isoparametric element
             call jacobian_p2_2d(xx, xel, nnodes, phi2_list,
      *               grad2_mat0, xx_g, det, mat_B, mat_T)
           endif
-C            if(abs(det) .lt. 1.0d-10) then
            if(abs(det) .lt. 1.0d-20) then
              write(*,*)
              write(*,*) "   ???"
@@ -203,7 +198,7 @@ C               form e^{i*beta*z} phi.
               do ltest=1,nnodes0
                 do l_eq=1,3
                   ind_lp = l_eq + 3*(ltest-1)
-                  z_tmp1 = beta_AC**2 * phi2_list(itrial)   !!!!!! -1.0 * 
+                  z_tmp1 = beta_AC**2 * phi2_list(itrial)
      *                    * phi2_list(ltest)
                   coeff_2 = eta_tensor(i_eq,j_eq,k_eq,l_eq,typ_e)
                   basis_overlap(ind_ip,j_eq,k_eq,ind_lp) =

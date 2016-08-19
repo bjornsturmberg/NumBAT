@@ -123,7 +123,8 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                 v_Ex6p[i] = sim_wguide.sol1[0,i_node,ival,i_el]
                 v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
                 if EM_AC == 'EM':
-                    v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]*1j*sim_wguide.Eig_value[ival]
+    # Note physical z-comp of EM modes is -i beta E_z, where E_z is FEM output sol
+                    v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]*-1j*sim_wguide.Eig_value[ival]
                 else:
                     v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
                 i += 1

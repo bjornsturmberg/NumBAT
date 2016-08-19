@@ -40,8 +40,6 @@ c
       double precision ZERO, ONE
       parameter ( ZERO = 0.0D0, ONE = 1.0D0)
       complex*16 coeff
-cc      double precision phi2_list(6), grad2_mat0(2,6)
-cc      double precision grad2_mat(2,6)
 C
 C
 Cf2py intent(in) nval, nel, npt, nnodes, table_nod
@@ -93,27 +91,25 @@ cccccccccccc
         enddo
       enddo
       det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-      if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
-cc      if (abs(det_b) .le. 1.0d-8) then
+      if (abs(det_b) .le. 1.0d-22) then
         write(*,*) '?? AC_alpha_int_v2: Determinant = 0 :', det_b
         write(*,*) "xel = ", xel
         write(*,*) 'Aborting...'
         stop
       endif
+C
 c     mat_T = Inverse of mat_B
       mat_T(1,1) = mat_B(2,2) / det_b
       mat_T(2,2) = mat_B(1,1) / det_b
       mat_T(1,2) = -mat_B(1,2) / det_b
       mat_T(2,1) = -mat_B(2,1) / det_b
 c
-c
 c	mat_T_tr = Tanspose(mat_T)
       mat_T_tr(1,1) = mat_T(1,1)
       mat_T_tr(1,2) = mat_T(2,1)
       mat_T_tr(2,1) = mat_T(1,2)
       mat_T_tr(2,2) = mat_T(2,2)
-
-
+C
       call mat_p2_p2(p2_p2, det_b)
       call mat_p2_p2x (p2_p2x, mat_T_tr, det_b)
       call mat_p2_p2y (p2_p2y, mat_T_tr, det_b)
@@ -140,7 +136,6 @@ c                     See Eq. (45) of C. Wolff et al. PRB (2015)
                         z_tmp1 = p2_p2x(ltest,itrial)
                         z_tmp1 = z_tmp1 * (ii * beta_AC)
 cccccccccccccccccccccc
-
                       elseif(j_eq == 2 .and. k_eq == 1) then
                         z_tmp1 = p2x_p2y(ltest,itrial)
                       elseif(j_eq == 2 .and. k_eq == 2) then
@@ -169,7 +164,6 @@ cccccccccccccccccccccc
             enddo
           enddo
 cccccccccc
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 cccccccccc
 C Having calculated overlap of basis functions on element
 C now multiply by specific field values for modes of interest.
