@@ -77,6 +77,24 @@ print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 
+# Try to test with a simple field we know the answer to
+sim_AC_wguide.Omega_AC = np.ones(num_AC_modes)
+sim_AC_wguide.AC_mode_overlap = np.ones(num_AC_modes)
+grad = 1.0
+for el in range(sim_AC_wguide.n_msh_el):
+    for ival in range(num_AC_modes):
+        for n in range(6):
+            local_nod = sim_AC_wguide.table_nod[n][el]-1
+            sim_AC_wguide.sol1[0,n,ival,el] = grad*sim_AC_wguide.x_arr[0,local_nod]
+            sim_AC_wguide.sol1[1,n,ival,el] = grad*sim_AC_wguide.x_arr[1,local_nod]
+
+# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
+
+
+
+
+
+
 ### Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, q_acoustic,
@@ -91,14 +109,17 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # print "lc3", wguide.lc3
 
 print 'alpha', alpha[0]
-print 'alpha', alpha[1]
-print 'alpha', alpha[2]
-print 'alpha', alpha[3]
-print 'alpha', alpha[4]
-print 'alpha', alpha[5]
-print 'alpha', alpha[6]
-print 'alpha', alpha[7]
-print 'alpha', alpha[8]
+area = inc_a_x*inc_a_y*1e-18
+print 'alpha', alpha[0]/area
+# print 'alpha', alpha[0]/p_11
+# print 'alpha', alpha[1]
+# print 'alpha', alpha[2]
+# print 'alpha', alpha[3]
+# print 'alpha', alpha[4]
+# print 'alpha', alpha[5]
+# print 'alpha', alpha[6]
+# print 'alpha', alpha[7]
+# print 'alpha', alpha[8]
 
 # print 'alpha / CW alpha', alpha[0]/(1./186.52e-6)
 # print 'alpha / CW alpha', alpha[1]/(1./142.79e-6)
