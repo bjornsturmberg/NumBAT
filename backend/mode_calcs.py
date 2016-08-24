@@ -363,14 +363,18 @@ class Simmo(object):
 ### Calc unnormalised power in each AC mode Eq. 18.
         try:
             nnodes = 6
-            # if self.structure.inc_shape == 'rectangular':
-
-            # elif self.structure.inc_shape == 'circular':
-            self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
-                self.num_modes, self.n_msh_el, self.n_msh_pts,
-                nnodes, self.table_nod, self.type_el, self.x_arr,
-                self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
-                self.q_acoustic, self.Omega_AC, self.sol1, AC_FEM_debug)
+            if self.structure.inc_shape == 'rectangular':
+                self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v2(
+                    self.num_modes, self.n_msh_el, self.n_msh_pts,
+                    nnodes, self.table_nod, self.type_el, self.x_arr,
+                    self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+                    self.q_acoustic, self.Omega_AC, self.sol1)
+            elif self.structure.inc_shape == 'circular':
+                self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
+                    self.num_modes, self.n_msh_el, self.n_msh_pts,
+                    nnodes, self.table_nod, self.type_el, self.x_arr,
+                    self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+                    self.q_acoustic, self.Omega_AC, self.sol1, AC_FEM_debug)
 
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\
