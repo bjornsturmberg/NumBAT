@@ -113,44 +113,36 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     alpha = np.real(alpha)
 
 
-# ### Calc Q_photoelastic Eq. 33
-#     try:
-#         #TODO: removes basis_overlaps
-#         if sim_EM_wguide.structure.inc_shape == 'rectangular':
-#             Q_PE, basis_overlap_PE, field_overlap_PE = NumBAT.photoelastic_int_v2(
-#                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
-#                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
-#                 sim_AC_wguide.n_msh_pts, nnodes,
-#                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-#                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-#                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
-#                 relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
-#         elif sim_EM_wguide.structure.inc_shape == 'circular':
-#             Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
-#                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
-#                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
-#                 sim_AC_wguide.n_msh_pts, nnodes,
-#                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-#                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-#                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
-#                 relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
-#     except KeyboardInterrupt:
-#         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
-
-    # AC_ival_check = 3
-    # Q_check, basis_overlap_check = NumBAT.photoelastic_int_check(
-    #                 sim_AC_wguide.num_modes, AC_ival_check, sim_AC_wguide.n_msh_el,
-    #                 sim_AC_wguide.n_msh_pts, nnodes,
-    #                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-    #                 sim_AC_wguide.sol1,q_acoustic,Fortran_debug)
-    # print Q_check
+### Calc Q_photoelastic Eq. 33
+    try:
+        #TODO: removes basis_overlaps
+        if sim_EM_wguide.structure.inc_shape == 'rectangular':
+            Q_PE, basis_overlap_PE, field_overlap_PE = NumBAT.photoelastic_int_v2(
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
+                sim_AC_wguide.n_msh_pts, nnodes,
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
+                q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
+                relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
+        elif sim_EM_wguide.structure.inc_shape == 'circular':
+            Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
+                sim_AC_wguide.n_msh_pts, nnodes,
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
+                q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
+                relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
+    except KeyboardInterrupt:
+        print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
     # print Q_PE[0,0,2]
     # print Q_PE2[0,0,2]
-    Q_PE=0
+    # Q_PE=0
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
-    # Note: sim_EM_wguide.omega_EM if the optical angular freq in units of Hz
+    # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
     normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
     for i in range(num_modes_EM):
