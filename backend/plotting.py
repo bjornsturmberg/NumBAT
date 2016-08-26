@@ -197,6 +197,38 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
             cbar = plt.colorbar(im, cax=cax)
             cbar.ax.tick_params(labelsize=title_font-10)
 
+        q_step = 100
+        v_x_q = v_x.reshape(n_pts_x,n_pts_y)
+        v_y_q = v_y.reshape(n_pts_x,n_pts_y)
+        v_x_q = v_x_q[0::q_step,0::q_step]
+        v_y_q = v_y_q[0::q_step,0::q_step]
+        m_ReEx_q = m_ReEx[0::q_step,0::q_step]
+        m_ReEy_q = m_ReEy[0::q_step,0::q_step]
+        m_ImEx_q = m_ImEx[0::q_step,0::q_step]
+        m_ImEy_q = m_ImEy[0::q_step,0::q_step]
+        ax = plt.subplot(3,3,i_p+2)
+        plt.quiver(v_x_q, v_y_q, (m_ReEx_q+m_ImEx_q), (m_ReEy_q+m_ImEy_q),      # data
+                   np.sqrt(np.real((m_ReEx_q+1j*m_ImEx_q)*(m_ReEx_q-1j*m_ImEx_q)+(m_ReEy_q+1j*m_ImEy_q)*(m_ReEy_q-1j*m_ImEy_q))),  #colour the arrows based on this array
+                   cmap='inferno',     # colour map
+                   pivot='mid',
+                   headlength=5)        # length of the arrows
+        # no ticks
+        ax.set_aspect('equal')
+        plt.xticks([])
+        plt.yticks([])
+        # limits
+        if xlim:
+            ax.set_xlim(xlim*n_points,(1-xlim)*n_points)
+        if ylim:
+            ax.set_ylim(ylim*n_points,(1-ylim)*n_points)
+        # titles
+        plt.title('Transverse',fontsize=title_font)
+        # divider = make_axes_locatable(ax)
+        # cax = divider.append_axes("right", size="5%", pad=0.1)
+        # cbar = plt.colorbar(im, cax=cax)
+
+
+
         if EM_AC=='EM':
             n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_m / (2*np.pi)
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
@@ -211,8 +243,9 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                     'im_k' : np.imag(sim_wguide.Eig_value[ival])}
                 n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
-            plt.text(10, 0.3, n_str, fontsize=title_font)
+            # plt.text(10, 0.3, n_str, fontsize=title_font)
         else:
+            n_str = ''
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
                 k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
@@ -221,7 +254,8 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                 k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
-        plt.text(10, 0.5, k_str, fontsize=title_font)
+        # plt.text(10, 0.5, k_str, fontsize=title_font)
+        plt.suptitle(k_str + n_str, fontsize=title_font)
 
         if not os.path.exists("fields"):
             os.mkdir("fields")

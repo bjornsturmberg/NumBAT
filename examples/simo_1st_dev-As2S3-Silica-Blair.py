@@ -77,13 +77,13 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 ### Calculate Electromagnetic Modes
-n_eff = 2.5
+n_eff = 2.24
 shift_Hz = n_eff**2 * (2*np.pi/(wl_nm*1e-9))**2
 # sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, shift_Hz=shift_Hz)
 # np.savez('wguide_data-chalc-Blair', sim_EM_wguide=sim_EM_wguide)
 npzfile = np.load('wguide_data-chalc-Blair.npz')
 sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-# print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
+print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 
@@ -91,19 +91,21 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # Backward SBS
 # Acoustic k has to push optical mode from +ve lightline to -ve, hence factor 2.
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]
+print q_acoustic
+q_acoustic = 2*n_eff*2*np.pi/(wl_nm*1e-9)
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
 # As2S3_bulk_velocity = 2595m/s @1550 gives 7.6 GHz as freq in reg waveguides
 shift_Hz = 5.8e9
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, 
-   EM_sim=sim_EM_wguide, shift_Hz=shift_Hz )
+   EM_sim=sim_EM_wguide)#, shift_Hz=shift_Hz )
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 # sim_AC_wguide.sol1[2,:,:,:] = sim_AC_wguide.sol1[2,:,:,:]*1j
-plotting.plt_mode_fields(sim_AC_wguide, xlim=0.4, ylim=0.4, EM_AC='AC')
+# plotting.plt_mode_fields(sim_AC_wguide, xlim=0.4, ylim=0.4, EM_AC='AC')
 
 
 # # import time
@@ -119,24 +121,24 @@ plotting.plt_mode_fields(sim_AC_wguide, xlim=0.4, ylim=0.4, EM_AC='AC')
 # # SBS_gain = npzfile['SBS_gain']
 # # alpha = npzfile['alpha']
 
-# # # trim1 = 5
-# # # trim = 13
-# # syms = integration.symmetries(sim_AC_wguide)
-# # # for i in range(trim-trim1):
-# # for i in range(num_AC_modes):
-# #    # i = i+trim1
-# #    sym = syms[i]
-# #    print 'Res freq', sim_AC_wguide.Eig_value[i]*1e-9
-# #    print 'SES gain', SBS_gain[0,0,i]/alpha[i]
-# #    print 'alpha', alpha[i]
-# #    if sym[0] == 1 and sym[1] == 1 and sym[2] == 1:
-# #       print 'A'
-# #    if sym[0] == -1 and sym[1] == 1 and sym[2] == -1:
-# #       print 'B1'
-# #    if sym[0] == 1 and sym[1] == -1 and sym[2] == -1:
-# #       print 'B2'
-# #    if sym[0] == -1 and sym[1] == -1 and sym[2] == 1:
-# #       print 'B3'
+# # trim1 = 5
+# # trim = 13
+# syms = integration.symmetries(sim_AC_wguide)
+# # for i in range(trim-trim1):
+# for i in range(num_AC_modes):
+#    # i = i+trim1
+#    sym = syms[i]
+#    print 'Res freq', sim_AC_wguide.Eig_value[i]*1e-9
+#    # print 'SES gain', SBS_gain[0,0,i]/alpha[i]
+#    # print 'alpha', alpha[i]
+#    if sym[0] == 1 and sym[1] == 1 and sym[2] == 1:
+#       print 'A'
+#    if sym[0] == -1 and sym[1] == 1 and sym[2] == -1:
+#       print 'B1'
+#    if sym[0] == 1 and sym[1] == -1 and sym[2] == -1:
+#       print 'B2'
+#    if sym[0] == -1 and sym[1] == -1 and sym[2] == 1:
+#       print 'B3'
 
 # # print "Gain", SBS_gain[0,0,AC_ival]/alpha[AC_ival]
 
