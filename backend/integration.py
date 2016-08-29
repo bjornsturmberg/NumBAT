@@ -15,7 +15,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 # import materials
 # import objects
 # import mode_calcs
-# import plotting
+import plotting
 from fortran import NumBAT
 
 

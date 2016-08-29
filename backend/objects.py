@@ -212,6 +212,8 @@ class Struct(object):
                 os.mkdir("Bloch_fields")
             if not os.path.exists("Bloch_fields/PDF"):
                 os.mkdir("Bloch_fields/PDF")
+            if not os.path.exists("AC_fields"):
+                os.mkdir("AC_fields")
         else: self.plotting_fields = 0
         self.plot_real = plot_real
         self.plot_imag = plot_imag

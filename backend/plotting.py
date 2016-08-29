@@ -83,7 +83,8 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
     v_y=np.zeros(n_pts_x*n_pts_y)
     i=0
     for x in np.linspace(x_min,x_max,n_pts_x):
-        for y in np.linspace(y_min,y_max,n_pts_y):
+        # for y in np.linspace(y_min,y_max,n_pts_y):
+        for y in np.linspace(y_max,y_min,n_pts_y):
             v_x[i] = x
             v_y[i] = y
             i+=1
@@ -124,7 +125,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                 v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
                 if EM_AC == 'EM':
     # Note physical z-comp of EM modes is -i beta E_z, where E_z is FEM output sol
-                    v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]*-1j*sim_wguide.Eig_value[ival]
+                    v_Ez6p[i] = -1j*sim_wguide.Eig_value[ival]*sim_wguide.sol1[2,i_node,ival,i_el]
                 else:
                     v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
                 i += 1
@@ -207,9 +208,12 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
         m_ImEx_q = m_ImEx[0::q_step,0::q_step]
         m_ImEy_q = m_ImEy[0::q_step,0::q_step]
         ax = plt.subplot(3,3,i_p+2)
-        plt.quiver(v_x_q, v_y_q, (m_ReEx_q+m_ImEx_q), (m_ReEy_q+m_ImEy_q),      # data
-                   np.sqrt(np.real((m_ReEx_q+1j*m_ImEx_q)*(m_ReEx_q-1j*m_ImEx_q)+(m_ReEy_q+1j*m_ImEy_q)*(m_ReEy_q-1j*m_ImEy_q))),  #colour the arrows based on this array
-                   cmap='inferno',     # colour map
+        plt.quiver(v_x_q, v_y_q, 
+        # np.ones(np.shape(m_ReEy_q)), (m_ReEy_q+m_ImEy_q),      # data
+        (m_ReEx_q+m_ImEx_q), (m_ReEy_q+m_ImEy_q),      # data
+                   np.sqrt(np.real((m_ReEx_q+1j*m_ImEx_q)*(m_ReEx_q-1j*m_ImEx_q)
+                   +(m_ReEy_q+1j*m_ImEy_q)*(m_ReEy_q-1j*m_ImEy_q))),  #colour the arrows based on this array
+                   cmap='inferno', linewidths=(0.2,), edgecolors=('k'),     # colour map
                    pivot='mid',
                    headlength=5)        # length of the arrows
         # no ticks
@@ -255,7 +259,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
                     {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
         # plt.text(10, 0.5, k_str, fontsize=title_font)
-        plt.suptitle(k_str + n_str, fontsize=title_font)
+        plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
 
         if not os.path.exists("fields"):
             os.mkdir("fields")

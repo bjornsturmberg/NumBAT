@@ -361,17 +361,23 @@ class Simmo(object):
         self.type_el = type_el_out
         self.x_arr = x_arr_out
 
-        self.sol1[0,:,2,:] = 1*self.sol1[0,:,2,:] 
-        self.sol1[1,:,2,:] = -1*self.sol1[1,:,2,:] 
-        self.sol1[2,:,2,:] = -1*self.sol1[2,:,2,:]
+        # self.sol1[0,:,2,:] = 1*self.sol1[0,:,2,:] 
+        # self.sol1[1,:,2,:] = -1*self.sol1[1,:,2,:] 
+        # self.sol1[2,:,0,:] = -1*self.sol1[2,:,0,:]
+        # self.sol1[2,:,1,:] = -1*self.sol1[2,:,1,:]
+        # self.sol1[2,:,2,:] = -1*self.sol1[2,:,2,:]
+        # self.sol1[2,:,3,:] = -1*self.sol1[2,:,3,:]
+        # self.sol1[2,:,5,:] = -1*self.sol1[2,:,5,:]
+        # self.sol1[2,:,6,:] = -1*self.sol1[2,:,6,:]
+        # self.sol1[2,:,7,:] = -1*self.sol1[2,:,7,:]
 
-        self.sol1[0,:,4,:] = -1*self.sol1[0,:,4,:] 
-        self.sol1[1,:,4,:] = 1*self.sol1[1,:,4,:] 
-        self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:] 
+        # self.sol1[0,:,4,:] = -1*self.sol1[0,:,4,:] 
+        # self.sol1[1,:,4,:] = 1*self.sol1[1,:,4,:] 
+        # self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:] 
         
-        self.sol1[0,:,8,:] = -1*self.sol1[0,:,8,:] 
-        self.sol1[1,:,8,:] = 1*self.sol1[1,:,8,:] 
-        self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:] 
+        # self.sol1[0,:,8,:] = -1*self.sol1[0,:,8,:] 
+        # self.sol1[1,:,8,:] = 1*self.sol1[1,:,8,:] 
+        # self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:] 
 
 
 ### Calc unnormalised power in each AC mode Eq. 18.

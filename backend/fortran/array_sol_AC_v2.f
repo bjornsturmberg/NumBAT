@@ -181,6 +181,8 @@ c           The z-compoenent must be multiplied by ii in order to get the un-nor
               sol(j,inod,ival,iel) = z_tmp2
               if (abs(z_sol_max) .lt. abs(z_tmp2)) then
                 z_sol_max = z_tmp2
+c               We want to normalise such the the z-component is purely imaginary complex number
+                if (j == 3) z_sol_max = - ii * z_sol_max
                 i_sol_max = table_nod(inod,iel)
                 i_component = j
               endif
