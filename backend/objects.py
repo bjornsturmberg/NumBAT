@@ -221,9 +221,9 @@ class Struct(object):
         self.plot_field_conc = plot_field_conc
         # Order must match msh templates!
         el_conv_table = {}
-        acoustic_props = [bkg_AC, inc_a_AC, slab_a_AC, slab_a_bkg_AC, slab_b_AC,
-                          slab_b_bkg_AC]
-        i = j = 1
+        acoustic_props = [bkg_AC, inc_a_AC, slab_a_bkg_AC, slab_a_AC, slab_b_bkg_AC, slab_b_AC]
+        i = 1
+        j = 1
         for matter in acoustic_props:
             if matter != None:
                 el_conv_table[i] = j

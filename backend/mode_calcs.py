@@ -190,6 +190,9 @@ class Simmo(object):
         real_max = 2**23
         int_max = 2**22
 
+        q_acoustic_FEM = self.q_acoustic
+        q_acoustic_FEM = -1*self.q_acoustic
+
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
         if self.shift_Hz is None:
@@ -199,20 +202,20 @@ class Simmo(object):
             for el in range(self.structure.nb_typ_el_AC):
                 v_list.append(np.sqrt(self.structure.c_tensor[0,0][el]/self.structure.rho[el]))
             AC_velocity = np.real(v_list).min()
-            shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            shift = np.real(AC_velocity*q_acoustic_FEM/(2.*np.pi))
             # Increase slightly for difference between bulk and waveguide.
             shift = 1.05*shift 
             # print AC_velocity
             # print shift
             # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
-            # shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            # shift = np.real(AC_velocity*q_acoustic_FEM/(2.*np.pi))
             # print shift
 
 
             # Using acoustic velocity of shear mode pg 215 Auld vol 1.
             # AC_velocity2 = np.real(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
-            # # shift_freq2 = AC_velocity2*0.5*self.q_acoustic/(2.*np.pi)
-            # shift_freq2 = AC_velocity2*self.q_acoustic/(2.*np.pi)
+            # # shift_freq2 = AC_velocity2*0.5*q_acoustic_FEM/(2.*np.pi)
+            # shift_freq2 = AC_velocity2*q_acoustic_FEM/(2.*np.pi)
             # print shift
             # shift = 20.0e9  # used to get all modes in Rakich Si example
         else:
@@ -327,7 +330,7 @@ class Simmo(object):
 
         try:
             resm = NumBAT.calc_ac_modes(
-                self.q_acoustic, self.num_modes,
+                q_acoustic_FEM, self.num_modes,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el_AC,
                 self.structure.c_tensor, self.structure.rho,
@@ -370,14 +373,15 @@ class Simmo(object):
         # self.sol1[2,:,5,:] = -1*self.sol1[2,:,5,:]
         # self.sol1[2,:,6,:] = -1*self.sol1[2,:,6,:]
         # self.sol1[2,:,7,:] = -1*self.sol1[2,:,7,:]
+        # self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:]
 
         # self.sol1[0,:,4,:] = -1*self.sol1[0,:,4,:] 
-        # self.sol1[1,:,4,:] = 1*self.sol1[1,:,4,:] 
-        # self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:] 
+        # self.sol1[1,:,4,:] = -1*self.sol1[1,:,4,:] 
+        # # # self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:] 
         
-        # self.sol1[0,:,8,:] = -1*self.sol1[0,:,8,:] 
-        # self.sol1[1,:,8,:] = 1*self.sol1[1,:,8,:] 
-        # self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:] 
+        # # self.sol1[0,:,8,:] = -1*self.sol1[0,:,8,:] 
+        # self.sol1[1,:,8,:] = -1*self.sol1[1,:,8,:] 
+        # # self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:] 
 
 
 ### Calc unnormalised power in each AC mode Eq. 18.

@@ -101,8 +101,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # sim_AC_wguide.AC_mode_overlap[6] = sim_AC_wguide.AC_mode_overlap[6]*1.06616883215
     # sim_AC_wguide.AC_mode_overlap[7] = sim_AC_wguide.AC_mode_overlap[7]*0.917209648528
     # sim_AC_wguide.AC_mode_overlap[8] = sim_AC_wguide.AC_mode_overlap[8]*1.01503248635
-
-    # q_acoustic = -q_acoustic
     
 ### Calc alpha (loss) Eq. 45
     try:

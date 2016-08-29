@@ -48,10 +48,9 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.1, lc2=20.0, lc3=20.0,
-                        make_mesh_now=True)#, plotting_fields=True, plot_imag=1)#,
+                        lc_bkg=0.1, lc2=20.0, lc3=20.0)
+                        # make_mesh_now=True)#, plotting_fields=True, plot_imag=1)#,
                         # mesh_file='rect_acoustic_3.mail')
-
 
 ### Calculate Electromagnetic Modes
 # sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
@@ -60,6 +59,7 @@ npzfile = np.load('wguide_data.npz')
 sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+# plotting.plt_mode_fields(sim_EM_wguide, EM_AC='EM')
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.45, ylim=0.45, EM_AC='EM')
 
 
@@ -70,12 +70,12 @@ q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
 # Forward (intramode) SBS
 # q_acoustic = 0.0
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, 
-	num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=18e9)
+    num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=18e9)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')#, add_name='flipped')
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', add_name='best-q')
 
 
 # # Try to test with a simple field we know the answer to
