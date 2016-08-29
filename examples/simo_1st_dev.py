@@ -69,12 +69,12 @@ q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
 # Forward (intramode) SBS
 # q_acoustic = 0.0
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, 
-	num_AC_modes, EM_sim=sim_EM_wguide)#, shift_Hz=20e9)
+	num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=18e9)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', add_name='flipped')
 
 
 # # Try to test with a simple field we know the answer to
@@ -110,10 +110,14 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # print "lc2", wguide.lc2
 # print "lc3", wguide.lc3
 
+<<<<<<< HEAD
 print 'alpha', alpha[0]
 area = inc_a_x*inc_a_y*1e-18
 print 'alpha', alpha[0]/area
 # print 'alpha', alpha[0]/p_11
+=======
+# print 'alpha', alpha[0]
+>>>>>>> MQ_tmp
 # print 'alpha', alpha[1]
 # print 'alpha', alpha[2]
 # print 'alpha', alpha[3]
@@ -133,6 +137,7 @@ print 'alpha / CW alpha', alpha[6]/(1./53.06e-6)
 print 'alpha / CW alpha', alpha[7]/(1./33.01e-6)
 print 'alpha 8 / CW alpha', alpha[8]/(1./43.90e-6)
 
+<<<<<<< HEAD
 # print 'SBS_gain 2 / CW gain', SBS_gain[0,0,2]/alpha[2]/310.25
 # print 'SBS_gain 4 / CW gain', SBS_gain[0,0,4]/alpha[4]/2464.98
 # print 'SBS_gain 8 / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
@@ -140,6 +145,15 @@ print 'alpha 8 / CW alpha', alpha[8]/(1./43.90e-6)
 # print 'SBS_gain 2 / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
 # print 'SBS_gain 4 / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
 # print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
+=======
+print 'SBS_gain 2 / CW gain', SBS_gain[0,0,2]/alpha[2]/310.25
+print 'SBS_gain 4 / CW gain', SBS_gain[0,0,4]/alpha[4]/2464.98
+print 'SBS_gain 8 / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
+
+print 'SBS_gain 2 / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
+print 'SBS_gain 4 / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
+print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
+>>>>>>> MQ_tmp
 
 # # print 'Q_PE error', np.sqrt(SBS_gain[0,0,2]/(1./98.70e-6)/310.25)
 # # print 'Q_PE error', np.sqrt(SBS_gain[0,0,4]/(1./27.75e-6)/2464.98)

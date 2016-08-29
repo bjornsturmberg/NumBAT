@@ -91,10 +91,10 @@ c
       character bmat*1, which*2
 
 c      data bmat/'G'/
-      data which/'SR'/
+C       data which/'SR'/
 c      data which/'SM'/
       data bmat/'I'/
-C      data which/'LM'/
+      data which/'LM'/
 c
       integer*8 ui, debug
 c      common/imp/ui, debug

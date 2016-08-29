@@ -202,6 +202,7 @@ class Simmo(object):
             shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
             # Increase slightly for difference between bulk and waveguide.
             shift = 1.05*shift 
+            # print AC_velocity
             # print shift
             # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
             # shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
@@ -359,6 +360,19 @@ class Simmo(object):
         self.table_nod = table_nod_out
         self.type_el = type_el_out
         self.x_arr = x_arr_out
+
+        self.sol1[0,:,2,:] = 1*self.sol1[0,:,2,:] 
+        self.sol1[1,:,2,:] = -1*self.sol1[1,:,2,:] 
+        self.sol1[2,:,2,:] = -1*self.sol1[2,:,2,:]
+
+        self.sol1[0,:,4,:] = -1*self.sol1[0,:,4,:] 
+        self.sol1[1,:,4,:] = 1*self.sol1[1,:,4,:] 
+        self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:] 
+        
+        self.sol1[0,:,8,:] = -1*self.sol1[0,:,8,:] 
+        self.sol1[1,:,8,:] = 1*self.sol1[1,:,8,:] 
+        self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:] 
+
 
 ### Calc unnormalised power in each AC mode Eq. 18.
         try:
