@@ -190,8 +190,6 @@ class Simmo(object):
         real_max = 2**23
         int_max = 2**22
 
-        q_acoustic_FEM = self.q_acoustic
-        q_acoustic_FEM = -1*self.q_acoustic
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -202,20 +200,20 @@ class Simmo(object):
             for el in range(self.structure.nb_typ_el_AC):
                 v_list.append(np.sqrt(self.structure.c_tensor[0,0][el]/self.structure.rho[el]))
             AC_velocity = np.real(v_list).min()
-            shift = np.real(AC_velocity*q_acoustic_FEM/(2.*np.pi))
+            shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
             # Increase slightly for difference between bulk and waveguide.
             shift = 1.05*shift 
             # print AC_velocity
             # print shift
             # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
-            # shift = np.real(AC_velocity*q_acoustic_FEM/(2.*np.pi))
+            # shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
             # print shift
 
 
             # Using acoustic velocity of shear mode pg 215 Auld vol 1.
             # AC_velocity2 = np.real(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
-            # # shift_freq2 = AC_velocity2*0.5*q_acoustic_FEM/(2.*np.pi)
-            # shift_freq2 = AC_velocity2*q_acoustic_FEM/(2.*np.pi)
+            # # shift_freq2 = AC_velocity2*0.5*self.q_acoustic/(2.*np.pi)
+            # shift_freq2 = AC_velocity2*self.q_acoustic/(2.*np.pi)
             # print shift
             # shift = 20.0e9  # used to get all modes in Rakich Si example
         else:
@@ -328,6 +326,10 @@ class Simmo(object):
             if not os.path.exists("Matrices"):
                 os.mkdir("Matrices")
 
+
+        q_acoustic_FEM = self.q_acoustic
+        q_acoustic_FEM = -1*self.q_acoustic
+
         try:
             resm = NumBAT.calc_ac_modes(
                 q_acoustic_FEM, self.num_modes,
@@ -364,11 +366,15 @@ class Simmo(object):
         self.type_el = type_el_out
         self.x_arr = x_arr_out
 
-        # self.sol1[0,:,2,:] = 1*self.sol1[0,:,2,:] 
-        # self.sol1[1,:,2,:] = -1*self.sol1[1,:,2,:] 
+        # self.sol1[0,:,4,:] = -1j*self.sol1[0,:,4,:] 
+        # self.sol1[1,:,4,:] = -1j*self.sol1[1,:,4,:] 
+        # self.sol1[2,:,4,:] = -1j*self.sol1[2,:,4,:]
+        # self.sol1[0,:,2,:] = 1j*self.sol1[0,:,2,:] 
+        # self.sol1[1,:,2,:] = 1j*self.sol1[1,:,2,:] 
         # self.sol1[2,:,0,:] = -1*self.sol1[2,:,0,:]
         # self.sol1[2,:,1,:] = -1*self.sol1[2,:,1,:]
         # self.sol1[2,:,2,:] = -1*self.sol1[2,:,2,:]
+        # self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:]
         # self.sol1[2,:,3,:] = -1*self.sol1[2,:,3,:]
         # self.sol1[2,:,5,:] = -1*self.sol1[2,:,5,:]
         # self.sol1[2,:,6,:] = -1*self.sol1[2,:,6,:]
@@ -393,6 +399,7 @@ class Simmo(object):
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
                     self.q_acoustic, self.Omega_AC, self.sol1)
+                    # q_acoustic_FEM, self.Omega_AC, self.sol1)
             elif self.structure.inc_shape == 'circular':
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
