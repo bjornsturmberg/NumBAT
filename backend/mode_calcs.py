@@ -328,7 +328,7 @@ class Simmo(object):
 
 
         q_acoustic_FEM = self.q_acoustic
-        q_acoustic_FEM = -1*self.q_acoustic
+        # q_acoustic_FEM = -1*self.q_acoustic
 
         try:
             resm = NumBAT.calc_ac_modes(

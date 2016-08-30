@@ -75,7 +75,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', add_name='best-q')
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')#, add_name='best-q')
 
 
 # # Try to test with a simple field we know the answer to
