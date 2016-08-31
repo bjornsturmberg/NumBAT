@@ -262,7 +262,7 @@ class Struct(object):
                 c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ][3]
                 c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ][3]
 
-                p_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ][4]
+                p_tensor[0,0,0,0,k_typ] = 0#acoustic_props[k_typ][4]
                 p_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ][4]
                 p_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ][4]
                 p_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ][5]

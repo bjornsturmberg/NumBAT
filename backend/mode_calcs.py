@@ -326,13 +326,9 @@ class Simmo(object):
             if not os.path.exists("Matrices"):
                 os.mkdir("Matrices")
 
-
-        q_acoustic_FEM = self.q_acoustic
-        # q_acoustic_FEM = -1*self.q_acoustic
-
         try:
             resm = NumBAT.calc_ac_modes(
-                q_acoustic_FEM, self.num_modes,
+                self.q_acoustic, self.num_modes,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el_AC,
                 self.structure.c_tensor, self.structure.rho,
@@ -399,7 +395,6 @@ class Simmo(object):
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
                     self.q_acoustic, self.Omega_AC, self.sol1)
-                    # q_acoustic_FEM, self.Omega_AC, self.sol1)
             elif self.structure.inc_shape == 'circular':
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
