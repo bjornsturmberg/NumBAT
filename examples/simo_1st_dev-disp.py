@@ -49,18 +49,14 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
                         # lc_bkg=0.2, lc2=20.0, lc3=20.0)#,
-                        lc_bkg=0.2, lc2=50.0, lc3=70.0)#,
-                        # lc_bkg=0.2, lc2=100.0, lc3=150.0)#,
-                        # lc_bkg=0.3, lc2=150.0, lc3=200.0)#,
-                        # make_mesh_now=False, plotting_fields=False,
-                        # mesh_file='rect_acoustic_3.mail')
+                        lc_bkg=0.2, lc2=50.0, lc3=70.0)
 
 
 ### Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
@@ -69,20 +65,6 @@ sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 # Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
 # Backward SBS
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]
-# # Forward (intramode) SBS
-# q_acoustic = 0.0
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, EM_sim=sim_EM_wguide)
-# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
-
-# prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
-# prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
-# print 'Omega of AC wave \n', prop_AC_modes*1e-9/(2*np.pi*8.54e3/inc_a_x) # GHz
-
-# integration.symmetries(sim_EM_wguide)
 
 import matplotlib
 matplotlib.use('pdf')
@@ -92,12 +74,13 @@ plt.clf()
 plt.figure(figsize=(13,13))
 ax = plt.subplot(1,1,1)
 for q_ac in np.linspace(0.0,q_acoustic,20):
-# for q_ac in np.linspace(q_acoustic/2.,0,1):
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_ac, num_AC_modes, EM_sim=sim_EM_wguide)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
     # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.imag(x)) < 1e-0])
     # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value])
     # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
+    # print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
+    # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
     sym_list = integration.symmetries(sim_AC_wguide)
 
     # prop_AC_modes_allowed = integration.allowed_symmetries(sim_AC_wguide)
@@ -106,13 +89,13 @@ for q_ac in np.linspace(0.0,q_acoustic,20):
         # plt.plot(q_ac/q_acoustic, Om, marks[i%len(marks)])
         plt.plot(q_ac/q_acoustic, Om, 'ok')
         if sym_list[i][0] == 1 and sym_list[i][1] == 1 and sym_list[i][2] == 1:
-            plt.plot(q_ac/q_acoustic, Om, 'or')
+            plt.plot(np.real(q_ac/q_acoustic), Om, 'or')
         if sym_list[i][0] == -1 and sym_list[i][1] == 1 and sym_list[i][2] == -1:
-            plt.plot(q_ac/q_acoustic, Om, 'vc')
+            plt.plot(np.real(q_ac/q_acoustic), Om, 'vc')
         if sym_list[i][0] == 1 and sym_list[i][1] == -1 and sym_list[i][2] == -1:
-            plt.plot(q_ac/q_acoustic, Om, 'sb')
+            plt.plot(np.real(q_ac/q_acoustic), Om, 'sb')
         if sym_list[i][0] == -1 and sym_list[i][1] == -1 and sym_list[i][2] == 1:
-            plt.plot(q_ac/q_acoustic, Om, '^g')
+            plt.plot(np.real(q_ac/q_acoustic), Om, '^g')
     ax.set_ylim(0,20)
     ax.set_xlim(0,1)
 plt.savefig('disp.pdf', bbox_inches='tight')

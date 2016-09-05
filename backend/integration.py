@@ -2,7 +2,7 @@
     mode_calcs.py is a subroutine of NumBAT that contains methods to
     calculate the EM and Acoustic modes of a structure.
 
-    Copyright (C) 2016  Bjorn Sturmberg, Kokou Dossou 
+    Copyright (C) 2016  Bjorn Sturmberg, Kokou Dossou
 """
 
 import numpy as np
@@ -15,41 +15,67 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 # import materials
 # import objects
 # import mode_calcs
-# import plotting
+import plotting
 from fortran import NumBAT
 
 
 def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
-                EM_ival1='All', EM_ival2='All', AC_ival='All'):
+                EM_ival1=0, EM_ival2=0, AC_ival=0):
     """ Calculate interaction integrals and SBS gain.
 
     Calc Qs of a range of selected modes
     Pass in the q_acoustic as this is beta of AC modes
-    
+
     By default considers the interactions between all modes,
     can also specify specific modes.
 
     """
 
 ### Notes about internals of fortran integration
-# Calc overlap of basis functions (and PE tensor and epsilon) 
+# Calc overlap of basis functions (and PE tensor and epsilon)
 # Then use this multiple times for calc of each mode field values
 
 # phi is values of Lagrange polynomials (1-6) at that node.
 # grad is value of gradient of Lagrange polynomials (1-6) at that node.
 
 
-    speed_c = 299792458
-    opt_freq = 2*np.pi*speed_c/(sim_EM_wguide.wl_nm*1e-9) # In units of Hz
+    if EM_ival1 == 'All':
+        EM_ival1_fortran = -1
+        # P1 = sim_EM_wguide.EM_mode_overlap
+    else:
+        EM_ival1_fortran = EM_ival1+1  # convert back to fortran indexing
+        # P1 = np.zeros(num_modes_EM, dtype=complex)
+        # P1[EM_ival1] = sim_EM_wguide.EM_mode_overlap[EM_ival1]
 
+    if EM_ival2 == 'All':
+        EM_ival2_fortran = -1
+        # P2 = sim_EM_wguide.EM_mode_overlap
+    else:
+        EM_ival2_fortran = EM_ival2+1  # convert back to fortran indexing
+        # P2 = np.zeros(num_modes_EM, dtype=complex)
+        # P2[EM_ival2] = sim_EM_wguide.EM_mode_overlap[EM_ival2]
+
+    if AC_ival == 'All':
+        AC_ival_fortran = -1
+        # Note: sim_AC_wguide.Omega_AC if the acoustic angular freq in units of Hz
+        AC_freq_Omega = sim_AC_wguide.Omega_AC
+        # P3 = sim_AC_wguide.AC_mode_overlap
+    else:
+        AC_freq_Omega = sim_AC_wguide.Omega_AC[AC_ival]
+        AC_ival_fortran = AC_ival+1  # convert back to fortran indexing
+        # P3 = np.zeros(num_modes_AC, dtype=complex)
+        # P3[AC_ival] = sim_AC_wguide.AC_mode_overlap[AC_ival]
+
+    Fortran_debug = 0
     ncomps = 3
     nnodes = 6
-    num_EM_modes = len(sim_EM_wguide.Eig_value)
+    num_modes_EM = sim_EM_wguide.num_modes
+    num_modes_AC = sim_AC_wguide.num_modes
     n_msh_el_AC = sim_AC_wguide.n_msh_el
-    trimmed_EM_field = np.zeros((ncomps,nnodes,num_EM_modes,n_msh_el_AC), dtype=complex)
+    trimmed_EM_field = np.zeros((ncomps,nnodes,num_modes_EM,n_msh_el_AC), dtype=complex)
     for el in range(n_msh_el_AC):
         new_el = sim_AC_wguide.el_convert_tbl[el]
-        for ival in range(num_EM_modes):
+        for ival in range(num_modes_EM):
             for n in range(nnodes):
                 for x in range(ncomps):
                     trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
@@ -66,126 +92,89 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         if el_typ+1 in sim_AC_wguide.structure.typ_el_AC:
             relevant_eps_effs.append(sim_EM_wguide.n_effs[el_typ]**2)
 
-
-    Fortran_debug = 0
+    # sim_AC_wguide.AC_mode_overlap[0] = sim_AC_wguide.AC_mode_overlap[0]*2.0541115841
+    # sim_AC_wguide.AC_mode_overlap[1] = sim_AC_wguide.AC_mode_overlap[1]*1.62055717426
+    # sim_AC_wguide.AC_mode_overlap[2] = sim_AC_wguide.AC_mode_overlap[2]*1.97449348579
+    # sim_AC_wguide.AC_mode_overlap[3] = sim_AC_wguide.AC_mode_overlap[3]*1.7819220338
+    # sim_AC_wguide.AC_mode_overlap[4] = sim_AC_wguide.AC_mode_overlap[4]*1.05417483114
+    # sim_AC_wguide.AC_mode_overlap[5] = sim_AC_wguide.AC_mode_overlap[5]*1.59968666271
+    # sim_AC_wguide.AC_mode_overlap[6] = sim_AC_wguide.AC_mode_overlap[6]*1.06616883215
+    # sim_AC_wguide.AC_mode_overlap[7] = sim_AC_wguide.AC_mode_overlap[7]*0.917209648528
+    # sim_AC_wguide.AC_mode_overlap[8] = sim_AC_wguide.AC_mode_overlap[8]*1.01503248635
+    
 ### Calc alpha (loss) Eq. 45
     try:
-        alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes, sim_AC_wguide.n_msh_el,
-            sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod,
-            sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-            sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
-            q_acoustic, sim_AC_wguide.Eig_value, sim_AC_wguide.sol1,
-            sim_AC_wguide.AC_mode_overlap, Fortran_debug)
-    # Christians values for alpha of first 3 modes
-        # print sim_AC_wguide.AC_mode_overlap
-        # print alpha
-        # print '---------'
-        # print alpha[2]
-        # alpha_2 = 1/98.70e-6
-        # print alpha_2
-        # print alpha_2/alpha[2]
-        # print '---------'
-        # print alpha[0]
-        # alpha_0 = 1/186.52e-6
-        # print alpha_0
-        # print alpha_0/alpha[0]
-        # print '---------'
-        # print alpha[1]
-        # alpha_1 = 1/142.79e-6
-        # print alpha_1
-        # print alpha_1/alpha[1]
-        # print '---------'
+        if sim_EM_wguide.structure.inc_shape == 'rectangular':
+            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
+                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
+                q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
+                sim_AC_wguide.AC_mode_overlap)
+        elif sim_EM_wguide.structure.inc_shape == 'circular':
+            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
+                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
+                q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
+                sim_AC_wguide.AC_mode_overlap, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
+    alpha = np.real(alpha)
+
+    # alpha[0] = alpha[0]/2.0541115841
+    # alpha[1] = alpha[1]/1.62055717426
+    # alpha[2] = alpha[2]/1.97449348579
+    # alpha[3] = alpha[3]/1.7819220338
+    # alpha[4] = alpha[4]/1.05417483114
+    # alpha[5] = alpha[5]/1.59968666271
+    # alpha[6] = alpha[6]/1.06616883215
+    # alpha[7] = alpha[7]/0.917209648528
+    # alpha[8] = alpha[8]/1.01503248635
 
 
 ### Calc Q_photoelastic Eq. 33
     try:
         #TODO: removes basis_overlaps
-        #TODO: allow lists to be inserted for ivals
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
-            Q_PE, basis_overlap_PE = NumBAT.photoelastic_int_v2(
-                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
-                EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+            Q_PE, basis_overlap_PE, field_overlap_PE = NumBAT.photoelastic_int_v2(
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
+                sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
-                relevant_eps_effs, Fortran_debug)
+                relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
         elif sim_EM_wguide.structure.inc_shape == 'circular':
             Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
-                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1,
-                EM_ival2, AC_ival, sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
+                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
+                sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
-                relevant_eps_effs, Fortran_debug)
+                relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-    print Q_PE
-    # Q_PE = Q_PE/(sim_EM_wguide.structure.inc_a_x*1e-9*sim_EM_wguide.structure.inc_a_y*1e-9)
+    # print Q_PE[0,0,2]
+    # print Q_PE2[0,0,2]
+    # Q_PE=0
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
-
-    gain = 2*opt_freq*sim_AC_wguide.Eig_value[AC_ival]*np.real(Q*np.conj(Q))
-    P1 = sim_EM_wguide.EM_mode_overlap[EM_ival1]
-    P2 = sim_EM_wguide.EM_mode_overlap[EM_ival2]
-    P3 = sim_AC_wguide.AC_mode_overlap[AC_ival]
-    normal_fact = P1*P2*P3
-    print "EM mode 1 power internal (wg)", P1
-    print "AC mode power", P3
-    gain2 = np.real(gain/normal_fact)
-    alpha_2 = 1/98.70e-6
-    SBS_gain = gain2/alpha_2
-    # # SBS_gain = gain/alpha[2]
-    print "SBS_gain", SBS_gain
-    CW_gain = 310.25
-    # CW_gain = 2464.98
-    print "factor", CW_gain/SBS_gain
-    print "factor", np.sqrt(CW_gain/SBS_gain)
-
-    # import time
-    # start = time.time()
-    # P1 = NumBAT.em_mode_energy_int_v2(
-    #     sim_EM_wguide.k_0, sim_EM_wguide.num_modes, sim_EM_wguide.n_msh_el, sim_EM_wguide.n_msh_pts,
-    #     nnodes, sim_EM_wguide.table_nod,
-    #     sim_EM_wguide.x_arr, sim_EM_wguide.Eig_value, sim_EM_wguide.sol1)
-    # elapsed = (time.time() - start)
-    # print elapsed
-    # print "EM mode 1 power v2", P1[0]
-    # start = time.time()
-    # P11 = NumBAT.em_mode_energy_int(
-    #     sim_EM_wguide.k_0, sim_EM_wguide.num_modes, sim_EM_wguide.n_msh_el, sim_EM_wguide.n_msh_pts,
-    #     nnodes, sim_EM_wguide.table_nod,
-    #     sim_EM_wguide.x_arr, sim_EM_wguide.Eig_value, sim_EM_wguide.sol1)
-    # elapsed = (time.time() - start)
-    # print elapsed
-    # print "EM mode 1 power", P11[0]
+    # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
+    gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
+    normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
+    for i in range(num_modes_EM):
+        P1 = sim_EM_wguide.EM_mode_overlap[i]
+        for j in range(num_modes_EM):
+            P2 = sim_EM_wguide.EM_mode_overlap[j]
+            for k in range(num_modes_AC):
+                P3 = sim_AC_wguide.AC_mode_overlap[k]
+                normal_fact[i, j, k] = P1*P2*P3
+    SBS_gain = np.real(gain/normal_fact)
 
     return SBS_gain, Q_PE, Q_MB, alpha
-
-    # num_EM_modes = len(sim_EM_wguide.Eig_value)
-    # n_msh_el_AC = sim_AC_wguide.n_msh_el
-    # trimmed_EM_field = np.zeros((ncomps,nnodes+7,num_EM_modes,n_msh_el_AC), dtype=complex)
-    # for el in range(n_msh_el_AC):
-    #     new_el = sim_AC_wguide.el_convert_tbl[el]
-    #     for ival in range(num_EM_modes):
-    #         for n in range(nnodes+7):
-    #             for x in range(ncomps):
-    #                 trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
-
-    # x_arr2 = sim_AC_wguide.x_arr/(sim_EM_wguide.structure.unitcell_x*1e-9)
-    # P11 = NumBAT.em_mode_energy_int(
-    #     sim_EM_wguide.k_0, sim_AC_wguide.num_modes, 
-    #     sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts,
-    #     nnodes, sim_AC_wguide.table_nod,
-    #     x_arr2, sim_EM_wguide.Eig_value, trimmed_EM_field)
-    # print "EM mode 1 power trimmed", P11[EM_ival1]
-    # normal_fact = P11[EM_ival1]*P11[EM_ival2]*P3
-    # gain2 = gain/normal_fact
-    # SBS_gain = gain2/alpha_2
-    # # SBS_gain = gain2/alpha[2]
-    # print "SBS_gain", SBS_gain
 
 
 
@@ -369,7 +358,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 
 #### Categorise modes by their symmetries #############################################
-def symmetries(sim_wguide, n_points=100):
+def symmetries(sim_wguide, n_points=10):
     """ Plot EM mode fields.
 
         Args:
@@ -410,15 +399,13 @@ def symmetries(sim_wguide, n_points=100):
 
     sym_list = []
 
-    # for ival in [0]:
-    # for ival in [3]:
     for ival in range(len(sim_wguide.Eig_value)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
         v_Ex6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
         v_Ey6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
-        v_Ez6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
+        # v_Ez6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
         v_triang6p = []
 
         i = 0
@@ -440,7 +427,7 @@ def symmetries(sim_wguide, n_points=100):
                 v_y6p[i] = x_arr[i_ex, 1]
                 v_Ex6p[i] = mode_fields[0,i_node,ival,i_el]
                 v_Ey6p[i] = mode_fields[1,i_node,ival,i_el]
-                v_Ez6p[i] = mode_fields[2,i_node,ival,i_el]
+                # v_Ez6p[i] = mode_fields[2,i_node,ival,i_el]
                 i += 1
 
         # dense triangulation with unique points
@@ -463,20 +450,20 @@ def symmetries(sim_wguide, n_points=100):
         ImEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.imag,trifinder=finder)
         ReEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.real,trifinder=finder)
         ImEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.imag,trifinder=finder)
-        ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
-        ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
+        # ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
+        # ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
 
         ### plotting
         # interpolated fields
         m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_Ex = m_ReEx + 1j*m_ImEx
         m_Ey = m_ReEy + 1j*m_ImEy
-        m_Ez = m_ReEz + 1j*m_ImEz
+        # m_Ez = m_ReEz + 1j*m_ImEz
 
         m_Ex_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         m_Ex_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
@@ -484,31 +471,31 @@ def symmetries(sim_wguide, n_points=100):
         m_Ey_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         m_Ey_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         m_Ey_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
-        m_Ez_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
-        m_Ez_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
-        m_Ez_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        # m_Ez_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        # m_Ez_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
+        # m_Ez_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         Ex_sigma_y = 0
         Ey_sigma_y = 0
-        Ez_sigma_y = 0
+        # Ez_sigma_y = 0
         Ex_sigma_x = 0
         Ey_sigma_x = 0
-        Ez_sigma_x = 0
+        # Ez_sigma_x = 0
         Ex_C_2 = 0
         Ey_C_2 = 0
-        Ez_C_2 = 0
+        # Ez_C_2 = 0
         # max_E = max(np.max(np.abs(m_Ex)), np.max(np.abs(m_Ey)), np.max(np.abs(m_Ez)))
 
         for ix in range(n_pts_x):
             for iy in range(n_pts_y):
                 m_Ex_ymirror[ix,iy] = (m_Ex[ix,n_pts_y-iy-1])
                 m_Ey_ymirror[ix,iy] = -1*(m_Ey[ix,n_pts_y-iy-1])
-                m_Ez_ymirror[ix,iy] = m_Ez[ix,n_pts_y-iy-1]
+                # m_Ez_ymirror[ix,iy] = m_Ez[ix,n_pts_y-iy-1]
                 m_Ex_xmirror[ix,iy] = -1*(m_Ex[n_pts_x-ix-1,iy])
                 m_Ey_xmirror[ix,iy] = (m_Ey[n_pts_x-ix-1,iy])
-                m_Ez_xmirror[ix,iy] = m_Ez[n_pts_x-ix-1,iy]
+                # m_Ez_xmirror[ix,iy] = m_Ez[n_pts_x-ix-1,iy]
                 m_Ex_rotated[ix,iy] = -1*(m_Ex[n_pts_x-ix-1,n_pts_y-iy-1])
                 m_Ey_rotated[ix,iy] = -1*(m_Ey[n_pts_x-ix-1,n_pts_y-iy-1])
-                m_Ez_rotated[ix,iy] = m_Ez[n_pts_x-ix-1,iy]
+                # m_Ez_rotated[ix,iy] = m_Ez[n_pts_x-ix-1,iy]
                 # Ex_sigma_y += np.abs(m_Ex[ix,iy] - m_Ex_ymirror[ix,iy])/max_E
                 # Ey_sigma_y += np.abs(m_Ey[ix,iy] - m_Ey_ymirror[ix,iy])/max_E
                 # Ez_sigma_y += np.abs(m_Ez[ix,iy] - m_Ez_ymirror[ix,iy])/max_E
@@ -521,21 +508,21 @@ def symmetries(sim_wguide, n_points=100):
 
         Ex_sigma_y = np.sum(np.abs(m_Ex - m_Ex_ymirror))
         Ey_sigma_y = np.sum(np.abs(m_Ey - m_Ey_ymirror))
-        Ez_sigma_y = np.sum(np.abs(m_Ez - m_Ez_ymirror))
+        # Ez_sigma_y = np.sum(np.abs(m_Ez - m_Ez_ymirror))
         Ex_sigma_x = np.sum(np.abs(m_Ex - m_Ex_xmirror))
         Ey_sigma_x = np.sum(np.abs(m_Ey - m_Ey_xmirror))
-        Ez_sigma_x = np.sum(np.abs(m_Ez - m_Ez_xmirror))
+        # Ez_sigma_x = np.sum(np.abs(m_Ez - m_Ez_xmirror))
         Ex_C_2 = np.sum(np.abs(m_Ex - m_Ex_rotated))
         Ey_C_2 = np.sum(np.abs(m_Ey - m_Ey_rotated))
-        Ez_C_2 = np.sum(np.abs(m_Ez - m_Ez_rotated))
-        sigma_y = (Ex_sigma_y + Ey_sigma_y + Ez_sigma_y)/(n_pts_x*n_pts_y)
-        sigma_x = (Ex_sigma_x + Ey_sigma_x + Ez_sigma_x)/(n_pts_x*n_pts_y)
-        C_2 = (Ex_C_2 + Ey_C_2 + Ez_C_2)/(n_pts_x*n_pts_y)
-        # print 'C_2', C_2
-        # print 'sigma_y', sigma_y
-        # print 'sigma_x', sigma_x
+        # Ez_C_2 = np.sum(np.abs(m_Ez - m_Ez_rotated))
+        # sigma_y = (Ex_sigma_y + Ey_sigma_y + Ez_sigma_y)/(n_pts_x*n_pts_y)
+        # sigma_x = (Ex_sigma_x + Ey_sigma_x + Ez_sigma_x)/(n_pts_x*n_pts_y)
+        # C_2 = (Ex_C_2 + Ey_C_2 + Ez_C_2)/(n_pts_x*n_pts_y)
+        sigma_y = (Ex_sigma_y + Ey_sigma_y)/(n_pts_x*n_pts_y)
+        sigma_x = (Ex_sigma_x + Ey_sigma_x)/(n_pts_x*n_pts_y)
+        C_2 = (Ex_C_2 + Ey_C_2)/(n_pts_x*n_pts_y)
 
-        if abs(C_2) > 0.1:
+        if abs(C_2) > 0.2:
             C_2_print = -1
         else:
             C_2_print = 1
@@ -547,9 +534,14 @@ def symmetries(sim_wguide, n_points=100):
             sigma_x_print = -1
         else:
             sigma_x_print = 1
+        # print '------'
+        # print ival
         # print 'C_2', C_2_print
-        # print 'sigma_y', sigma_y_print
+        # print 'C_2', C_2
         # print 'sigma_x', sigma_x_print
+        # print 'sigma_x', sigma_x
+        # print 'sigma_y', sigma_y_print
+        # print 'sigma_y', sigma_y
         sym_list.append([C_2_print, sigma_y_print, sigma_x_print])
 
         # v_plots = [np.real(m_Ex_ymirror),np.real(m_Ey_ymirror),np.real(m_Ez_ymirror),

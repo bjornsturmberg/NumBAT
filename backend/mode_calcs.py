@@ -22,30 +22,19 @@ class Simmo(object):
         Stores the calculated modes of :Struc: for illumination by :Light:
     """
     def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20,
-                 shift_AC_Hz=None, EM_sim=None):
+                 shift_Hz=None, EM_sim=None):
         self.structure = structure
-        self.wl_nm = wl_nm
+        self.wl_m = wl_nm*1e-9
         self.q_acoustic = q_acoustic
-        self.shift_AC_Hz = shift_AC_Hz
+        self.shift_Hz = shift_Hz
         self.EM_sim = EM_sim
         self.num_modes = num_modes
         self.mode_pol = None
+        self.k_0 = 2 * np.pi / self.wl_m
         # just off normal incidence to avoid degeneracies
         self.k_pll = np.array([1e-16, 1e-16])
-        self.k_0 = 2 * np.pi / (self.wl_nm*1e-9)
-
-
-    def k_pll_norm(self):
-        return self.k_pll * self.structure.unitcell_x
-
-
-    def wl_norm(self):
-        """ Return normalised wavelength (wl/unitcell_x). """
-        wl = self.wl_nm / self.structure.unitcell_x
-        # Avoid Wood Anomalies
-        if self.wl_nm % self.structure.unitcell_x == 0:
-            wl += 1e-10
-        return wl
+        speed_c = 299792458
+        self.omega_EM = 2*np.pi*speed_c/self.wl_m # Angular freq in units of Hz
 
 
     def calc_EM_modes(self):
@@ -56,12 +45,15 @@ class Simmo(object):
         sol1 - the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
         """
-        st = self.structure
-        wl = self.wl_nm
-        self.n_effs = np.array([st.bkg_material.n(wl), st.inc_a_material.n(wl),
-                                st.inc_b_material.n(wl), st.slab_a_material.n(wl),
-                                st.slab_a_bkg_material.n(wl), st.slab_b_material.n(wl),
-                                st.slab_b_bkg_material.n(wl), st.coating_material.n(wl)])
+        self.d_in_m = self.structure.unitcell_x*1e-9
+        self.n_effs = np.array([self.structure.bkg_material.n(self.wl_m), 
+                                self.structure.inc_a_material.n(self.wl_m),
+                                self.structure.inc_b_material.n(self.wl_m), 
+                                self.structure.slab_a_material.n(self.wl_m),
+                                self.structure.slab_a_bkg_material.n(self.wl_m), 
+                                self.structure.slab_b_material.n(self.wl_m),
+                                self.structure.slab_b_bkg_material.n(self.wl_m), 
+                                self.structure.coating_material.n(self.wl_m)])
 
         self.n_effs = self.n_effs[:self.structure.nb_typ_el]
         if self.structure.loss is False:
@@ -80,20 +72,23 @@ class Simmo(object):
         # In theory could do some python-based preprocessing
         # on the mesh file to work out RAM requirements
         cmplx_max = 2**27  # 30
-        real_max = 2**23
-        int_max = 2**22
+        real_max = 2**24
+        int_max = 2**23
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
-        max_n = np.real(self.n_effs).max()
-        # Take real part so that complex conjugate pair Eigenvalues are
-        # equal distance from shift and invert point and therefore both found.
-        k_0_norm = 2 * np.pi / self.wl_norm()
-        shift = 1.1*max_n**2 * k_0_norm**2  \
-            - self.k_pll_norm()[0]**2 - self.k_pll_norm()[1]**2
+        if self.shift_Hz is None:
+            # Take real part so that complex conjugate pair Eigenvalues are
+            # equal distance from shift and invert point and therefore both found.
+            max_n = np.real(self.n_effs).max()
+            confinment_factor = 1.8/np.sqrt(12) # value from silicon in air
+            shift = (confinment_factor*max_n)**2 * self.k_0**2
+            # n_eff = 1.8
+            # shift = n_eff**2 * self.k_0**2
+        else:
+            shift = self.shift_Hz 
 
         if EM_FEM_debug == 1:
-            print 'shift', shift
             if not os.path.exists("Normed"):
                 os.mkdir("Normed")
             if not os.path.exists("Matrices"):
@@ -106,23 +101,16 @@ class Simmo(object):
 
         try:
             resm = NumBAT.calc_em_modes(
-                self.wl_norm(), self.num_modes,
+                self.wl_m, self.num_modes,
                 EM_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el, self.n_effs,
-                self.k_pll_norm(), shift, self.E_H_field, i_cond, itermax,
+                self.k_pll, self.d_in_m, shift, self.E_H_field, i_cond, itermax,
                 self.structure.plotting_fields, self.structure.plot_real,
                 self.structure.plot_imag, self.structure.plot_abs,
                 cmplx_max, real_max, int_max)
 
             self.Eig_value, self.sol1, self.mode_pol, \
             self.table_nod, self.type_el, self.type_nod, self.x_arr = resm
-
-            # Make natural units 1/m
-            self.Eig_value = self.Eig_value/(self.structure.unitcell_x*1e-9)
-            # self.sol1 = self.sol1/(self.structure.unitcell_x*1e-9)
-            # area = self.structure.unitcell_x*1e-9 * self.structure.unitcell_y*1e-9
-            # area = self.structure.unitcell_x * self.structure.unitcell_y
-            # area_norm = area/self.structure.unitcell_x**2
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_EM_modes",\
@@ -153,7 +141,6 @@ class Simmo(object):
                 #     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                 #     nnodes, self.table_nod,
                 #     self.x_arr, self.Eig_value, self.sol1)
-
             elif self.structure.inc_shape == 'circular':
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
@@ -185,12 +172,7 @@ class Simmo(object):
         sol1 - the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
         """
-        st = self.structure
-        wl = self.wl_nm
-        q_acoustic = self.q_acoustic
-        EM_sim = self.EM_sim
         self.d_in_m = self.structure.inc_a_x*1e-9
-        orig_unitcell_x = self.structure.unitcell_x*1e-9
 
         if self.num_modes < 20:
             self.num_modes = 20
@@ -208,35 +190,45 @@ class Simmo(object):
         real_max = 2**23
         int_max = 2**22
 
-        # # Calculate where to center the Eigenmode solver around.
-        # # (Shift and invert FEM method)
-        # # For AC problem shift is a frequency - [shift] = s^-1.
-        # relevant_el = 1 - 1 # adjust gmsh indexing el = 1,2,...
-        # # relevant_el = relevant_el - 1 # ToDo: fudge factor as removed 1 type!
-        # # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
-        # shift1 = np.real(np.sqrt(self.structure.c_tensor[0,0][relevant_el]/self.structure.rho[relevant_el]))
-        # # Factor 2 from q_acoustic being twice beta.
-        # shift1 = 0.5*self.q_acoustic*shift1
-        # # Using acoustic velocity of shear mode pg 215 Auld vol 1.
-        # shift2 = np.real(np.sqrt(self.structure.c_tensor[3,3][relevant_el]/self.structure.rho[relevant_el]))
-        # shift2 = 0.5*self.q_acoustic*shift2
-        # # shift = (shift1 + shift2)/8.
-        # # shift = 13.0e9  # used for original test case
-        if self.shift_AC_Hz is None:
-            shift = 20.0e9  
+
+        # Calculate where to center the Eigenmode solver around.
+        # (Shift and invert FEM method)
+        if self.shift_Hz is None:
+            # For AC problem shift is a frequency - [shift] = s^-1.
+            # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
+            v_list = []
+            for el in range(self.structure.nb_typ_el_AC):
+                v_list.append(np.sqrt(self.structure.c_tensor[0,0][el]/self.structure.rho[el]))
+            AC_velocity = np.real(v_list).min()
+            shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            # Increase slightly for difference between bulk and waveguide.
+            shift = 1.05*shift 
+            # print AC_velocity
+            # print shift
+            # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
+            # shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            # print shift
+
+
+            # Using acoustic velocity of shear mode pg 215 Auld vol 1.
+            # AC_velocity2 = np.real(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
+            # # shift_freq2 = AC_velocity2*0.5*self.q_acoustic/(2.*np.pi)
+            # shift_freq2 = AC_velocity2*self.q_acoustic/(2.*np.pi)
+            # print shift
+            # shift = 20.0e9  # used to get all modes in Rakich Si example
         else:
-            shift = self.shift_AC_Hz 
+            shift = self.shift_Hz 
 
 
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
-        if EM_sim:
+        if self.EM_sim:
             suplied_geo_flag = 1
-            n_msh_el = EM_sim.n_msh_el
-            n_msh_pts = EM_sim.n_msh_pts
-            type_el = EM_sim.type_el
-            type_nod = EM_sim.type_nod
-            table_nod = EM_sim.table_nod
-            x_arr = EM_sim.x_arr
+            n_msh_el = self.EM_sim.n_msh_el
+            n_msh_pts = self.EM_sim.n_msh_pts
+            type_el = self.EM_sim.type_el
+            type_nod = self.EM_sim.type_nod
+            table_nod = self.EM_sim.table_nod
+            x_arr = self.EM_sim.x_arr
             n_el_kept = 0
             n_msh_pts_AC = 0
             type_el_AC = []
@@ -278,8 +270,8 @@ class Simmo(object):
             x_arr_AC = np.zeros((2,n_msh_pts_AC))
             for node in unique_nodes:
                 # Note x_arr needs to be adjust back to fortran indexing
-                x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1])*orig_unitcell_x
-                x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])*orig_unitcell_x
+                x_arr_AC[0,node_convert_tbl[node]] = (x_arr[0,node-1])
+                x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])
 
             self.el_convert_tbl = el_convert_tbl
             self.node_convert_tbl = node_convert_tbl
@@ -336,7 +328,7 @@ class Simmo(object):
 
         try:
             resm = NumBAT.calc_ac_modes(
-                self.wl_norm(), self.q_acoustic, self.num_modes,
+                self.q_acoustic, self.num_modes,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el_AC,
                 self.structure.c_tensor, self.structure.rho,
@@ -348,11 +340,7 @@ class Simmo(object):
             self.Eig_value, self.sol1, self.mode_pol = resm
 
             # FEM Eigenvalue is frequency, rather than angular frequency Omega
-            # Make adjustment to Omega here!
-            self.Eig_value = self.Eig_value*2*np.pi
-
-            # # Make natural units GHz
-            # self.Eig_value = self.Eig_value*1e-9
+            self.Omega_AC = self.Eig_value*2*np.pi
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\
@@ -362,7 +350,7 @@ class Simmo(object):
             plotting.plot_msh(x_arr_AC, 'in')
             plotting.plot_msh(x_arr_out, 'out')
 
-        # if EM_sim is None:
+        # if self.EM_sim is None:
         #     table_nod_out = None
         #     type_el_out = None
         #     x_arr_out = None
@@ -374,29 +362,46 @@ class Simmo(object):
         self.type_el = type_el_out
         self.x_arr = x_arr_out
 
+        # self.sol1[0,:,4,:] = -1j*self.sol1[0,:,4,:] 
+        # self.sol1[1,:,4,:] = -1j*self.sol1[1,:,4,:] 
+        # self.sol1[2,:,4,:] = -1j*self.sol1[2,:,4,:]
+        # self.sol1[0,:,2,:] = 1j*self.sol1[0,:,2,:] 
+        # self.sol1[1,:,2,:] = 1j*self.sol1[1,:,2,:] 
+        # self.sol1[2,:,0,:] = -1*self.sol1[2,:,0,:]
+        # self.sol1[2,:,1,:] = -1*self.sol1[2,:,1,:]
+        # self.sol1[2,:,2,:] = -1*self.sol1[2,:,2,:]
+        # self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:]
+        # self.sol1[2,:,3,:] = -1*self.sol1[2,:,3,:]
+        # self.sol1[2,:,5,:] = -1*self.sol1[2,:,5,:]
+        # self.sol1[2,:,6,:] = -1*self.sol1[2,:,6,:]
+        # self.sol1[2,:,7,:] = -1*self.sol1[2,:,7,:]
+        # self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:]
+
+        # self.sol1[0,:,4,:] = -1*self.sol1[0,:,4,:] 
+        # self.sol1[1,:,4,:] = -1*self.sol1[1,:,4,:] 
+        # # # self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:] 
+        
+        # # self.sol1[0,:,8,:] = -1*self.sol1[0,:,8,:] 
+        # self.sol1[1,:,8,:] = -1*self.sol1[1,:,8,:] 
+        # # self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:] 
+
+
 ### Calc unnormalised power in each AC mode Eq. 18.
         try:
             nnodes = 6
-            # if self.structure.inc_shape == 'rectangular':
-
-            # elif self.structure.inc_shape == 'circular':
-            self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
-                self.num_modes, self.n_msh_el, self.n_msh_pts,
-                nnodes, self.table_nod, self.type_el, self.x_arr,
-                self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
-                self.q_acoustic, self.Eig_value, self.sol1, AC_FEM_debug)
+            if self.structure.inc_shape == 'rectangular':
+                self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v2(
+                    self.num_modes, self.n_msh_el, self.n_msh_pts,
+                    nnodes, self.table_nod, self.type_el, self.x_arr,
+                    self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+                    self.q_acoustic, self.Omega_AC, self.sol1)
+            elif self.structure.inc_shape == 'circular':
+                self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
+                    self.num_modes, self.n_msh_el, self.n_msh_pts,
+                    nnodes, self.table_nod, self.type_el, self.x_arr,
+                    self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+                    self.q_acoustic, self.Omega_AC, self.sol1, AC_FEM_debug)
 
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\
             "interrupted by keyboard.\n\n"
-
-        # x_tmp = []
-        # y_tmp = []
-        # for i in np.arange(self.n_msh_pts):
-        #     x_tmp.append(self.x_arr[0,i])
-        #     y_tmp.append(self.x_arr[1,i])
-        # x_min = np.min(x_tmp); x_max=np.max(x_tmp)
-        # y_min = np.min(y_tmp); y_max=np.max(y_tmp)
-        # area = abs((x_max-x_min)*(y_max-y_min))
-        # print "AC FEM area", area
-        # self.AC_mode_overlap = self.AC_mode_overlap*area

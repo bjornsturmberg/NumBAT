@@ -5,7 +5,8 @@ c
 c***********************************************************************
 c
       subroutine mat_el (xel, beta, c_tensor_el, rho_el,
-     *  mat_K, mat_M, debug)
+     *  mat_K, mat_M)
+c     *  mat_M, mat_K)
 c
 c***********************************************************************
 c
@@ -21,7 +22,7 @@ c     Local variables
       double precision p2x_p2x(6,6), p2y_p2y(6,6), p2x_p2y(6,6)
       double precision mat_B(2,2), mat_T(2,2), mat_T_tr(2,2)
       double precision det_b
-      complex*16 ii, z_tmp1, z_tmp2
+      complex*16 ii, z_tmp1
       integer*8 i, j, i_p, j_p, i_xyz,  j_xyz
       integer*8 debug
 
@@ -32,6 +33,7 @@ c
 c
 ccccccccccccccccccccccccccccccccccccccc
 c
+      debug = 0
 
 c  ii = sqrt(-1)
       ii = dcmplx(0.0d0, 1.0d0)
@@ -42,7 +44,7 @@ c  ii = sqrt(-1)
         enddo
       enddo
       det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-      if (abs(det_b) .le. 1.0d-18) then  ! TEMPORARY CHANGE
+      if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
 cc      if (abs(det_b) .le. 1.0d-8) then
         write(*,*) '?? mat_el: Determinant = 0 :', det_b
         write(*,*) "xel = ", xel
@@ -92,8 +94,11 @@ c     Integral [rho * P(i) * P(i)]
       enddo
 c
 c=================  Construction of the matrix mat_K =================
-c     Integral [c_tensor * P_k(i) * P_k(i)], where k=x,y,z (derivative with respect to x, y or z)
-c     Only the non-zero component 6-component strain vector S_i are used  ###########
+c     Integral [K_{ij} = Gradient_s(conjg(P_k(i))) x c_tensor x Gradient_s(P_k(j))], where k=x,y,z
+c     Reference: see Eqs. (7) and (8) in:
+c     A.-C. Hladky-Hennion
+c     "Finite element analysis of the propagation of acoustic waves in waveguides," 
+c     Journal of Sound and Vibration, vol. 194, no. 2, pp. 119-136, 1996. 
       do i=1,6
         do i_xyz=1,3
           i_p = 3*(i-1) + i_xyz
@@ -101,58 +106,58 @@ c     Only the non-zero component 6-component strain vector S_i are used  ######
             j_xyz = i_xyz
             j_p = 3*(j-1) + j_xyz
             if (i_xyz == 1) then
-c             Overlap: row 1 of the 6-component strain vector  ###########
+c             Overlap: row 1 of [C]*[B] ###########
               z_tmp1 = p2x_p2x(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(j,i) * (-beta) * ii
+              z_tmp1 = p2_p2x(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 5  of the 6-component strain vector  ###########
-              z_tmp1 = p2_p2x(i,j) * beta * ii
+c             Overlap: row 5 of [C]*[B]  ###########
+              z_tmp1 = p2_p2x(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2_p2(i,j) * beta**2
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(i,j) * beta * ii
+              z_tmp1 = p2_p2y(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 6 of the 6-component strain vector  ###########
+c             Overlap: row 6 of [C]*[B]  ###########
               z_tmp1 = p2x_p2y(j,i)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(j,i) * (-beta) * ii
+              z_tmp1 = p2_p2y(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2y_p2y(j,i)
+              z_tmp1 = p2y_p2y(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 2) then
-c             Overlap: row 2 of the 6-component strain vector  ###########
-              z_tmp1 = p2y_p2y(j,i)
+c             Overlap: row 2 of [C]*[B]  ###########
+              z_tmp1 = p2y_p2y(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(j,i) * (-beta) * ii
+              z_tmp1 = p2_p2y(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(j,i)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 4 of the 6-component strain vector  ###########
-              z_tmp1 = p2_p2y(i,j) * beta * ii
+c             Overlap: row 4 of [C]*[B]  ###########
+              z_tmp1 = p2_p2y(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2_p2(i,j) * beta**2
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(i,j) * beta * ii
+              z_tmp1 = p2_p2x(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 6 of the 6-component strain vector  ###########
+c             Overlap: row 6 of [C]*[B]  ###########
               z_tmp1 = p2x_p2y(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
@@ -163,18 +168,18 @@ c             Overlap: row 6 of the 6-component strain vector  ###########
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 3) then
-c             Overlap: row 3 of the 6-component strain vector  ###########
+c             Overlap: column 3 of [C]*[B]  ###########
               z_tmp1 = p2_p2(i,j) * beta**2
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(i,j) * beta * ii
+              z_tmp1 = p2_p2y(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(i,j) * beta * ii
+              z_tmp1 = p2_p2x(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 4 of the 6-component strain vector  ###########
-              z_tmp1 = p2_p2y(j,i) * beta * (-ii)
+c             Overlap: row 4 of [C]*[B]  ###########
+              z_tmp1 = p2_p2y(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2y_p2y(i,j)
@@ -183,8 +188,8 @@ c             Overlap: row 4 of the 6-component strain vector  ###########
               z_tmp1 = p2x_p2y(j,i)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 5 of the 6-component strain vector  ###########
-              z_tmp1 = p2_p2x(j,i) * beta * (-ii)
+c             Overlap: row 5 of [C]*[B]  ###########
+              z_tmp1 = p2_p2x(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,i_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(i,j)
@@ -202,111 +207,111 @@ c             Overlap: row 5 of the 6-component strain vector  ###########
           i_p = 3*(i-1) + i_xyz
           do j=1,6
             if (i_xyz == 1) then
-c             Overlap: row 1 of the 6-component strain vector  ###########
+c             Overlap: row 1 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2y(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(j,i) * (-beta) * ii
+              z_tmp1 = p2_p2x(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2x(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 5 of the 6-component strain vector  ###########
+c             Overlap: row 5 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
-              z_tmp1 = p2_p2y(i,j) * beta * ii
+              z_tmp1 = p2_p2y(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2_p2(i,j) * beta**2
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(i,j) * beta * ii
+              z_tmp1 = p2_p2x(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 6 of the 6-component strain vector  ###########
+c             Overlap: row 6 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2y_p2y(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(j,i) * (-beta) * ii
+              z_tmp1 = p2_p2y(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(j,i)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 2) then
-c             Overlap: row 2 of the 6-component strain vector  ###########
+c             Overlap: row 2 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
-              z_tmp1 = p2_p2y(j,i) * beta
+              z_tmp1 = p2_p2y(j,i) * (-beta)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2y_p2y(j,i) * ii
+              z_tmp1 = p2y_p2y(i,j) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(j,i) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 4 of the 6-component strain vector  ###########
+c             Overlap: row 4 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2(i,j) * beta**2 * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(i,j) * (-beta)
+              z_tmp1 = p2_p2y(i,j) * beta
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(j,i) * (-beta)
+              z_tmp1 = p2_p2x(i,j) * beta
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 6 of the 6-component strain vector  ###########
+c             Overlap: row 6 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
-              z_tmp1 = p2_p2x(j,i) * beta
+              z_tmp1 = p2_p2x(j,i) * (-beta)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(i,j) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2x_p2x(j,i) * ii
+              z_tmp1 = p2x_p2x(i,j) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 3) then
-c             Overlap: row 3 of the 6-component strain vector  ###########
+c             Overlap: row 3 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
-              z_tmp1 = p2_p2x(i,j) * beta
+              z_tmp1 = p2_p2x(i,j) * (-beta)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2_p2(i,j) * (-beta**2) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(i,j) * beta
+              z_tmp1 = p2_p2y(i,j) * (-beta)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 4 of the 6-component strain vector  ###########
+c             Overlap: row 4 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2y(j,i) * (-ii)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(j,i) * (-beta**2)
+              z_tmp1 = p2_p2y(j,i) * beta
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2y_p2y(i,j) * (-ii)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 5 of the 6-component strain vector  ###########
+c             Overlap: row 5 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2x(i,j) * (-ii)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(j,i) * (-beta)
+              z_tmp1 = p2_p2x(j,i) * beta
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(i,j) * (-ii)
@@ -321,10 +326,10 @@ c             Overlap: row 5 of the 6-component strain vector  ###########
           i_p = 3*(i-1) + i_xyz
           do j=1,6
             if (i_xyz == 1) then
-c             Overlap: row 1 of the 6-component strain vector  ###########
+c             Overlap: row 1 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
-              z_tmp1 = p2_p2x(j,i) * beta
+              z_tmp1 = p2_p2x(j,i) * (-beta)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(i,j) * ii
@@ -333,22 +338,22 @@ c             Overlap: row 1 of the 6-component strain vector  ###########
               z_tmp1 = p2x_p2x(i,j) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 5 of the 6-component strain vector  ###########
+c             Overlap: row 5 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2(i,j) * beta**2 * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(i,j) * (-beta)
+              z_tmp1 = p2_p2y(i,j) * beta
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(i,j) * (-beta)
+              z_tmp1 = p2_p2x(i,j) * beta
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 6 of the 6-component strain vector  ###########
+c             Overlap: row 6 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
-              z_tmp1 = p2_p2y(j,i) * beta
+              z_tmp1 = p2_p2y(j,i) * (-beta)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2y_p2y(i,j) * ii
@@ -358,74 +363,74 @@ c             Overlap: row 6 of the 6-component strain vector  ###########
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 2) then
-c             Overlap: row 2 of the 6-component strain vector  ###########
+c             Overlap: row 2 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2y(j,i)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(j,i) * (-beta) * ii
+              z_tmp1 = p2_p2y(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2y_p2y(j,i)
+              z_tmp1 = p2y_p2y(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 4 of the 6-component strain vector  ###########
+c             Overlap: row 4 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
-              z_tmp1 = p2_p2x(i,j) * beta * ii
+              z_tmp1 = p2_p2x(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2_p2(i,j) * beta**2
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(i,j) * beta * ii
+              z_tmp1 = p2_p2y(i,j) * (-beta) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 6 of the 6-component strain vector  ###########
+c             Overlap: row 6 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2x(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(j,i) * (-beta) * ii
+              z_tmp1 = p2_p2x(j,i) * beta * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,5)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(i,j)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 3) then
-c             Overlap: row 3 of the 6-component strain vector  ###########
+c             Overlap: row 3 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
-              z_tmp1 = p2_p2y(i,j) * beta
+              z_tmp1 = p2_p2y(i,j) * (-beta)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2_p2(i,j) * (-beta**2) * ii
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(i,j) * beta
+              z_tmp1 = p2_p2x(i,j) * (-beta)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 4 of the 6-component strain vector  ###########
+c             Overlap: row 4 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2y_p2y(i,j) * (-ii)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2y(j,i) * (-beta)
+              z_tmp1 = p2_p2y(j,i) * beta
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2y(j,i) * (-ii)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,6)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-c             Overlap: row 5 of the 6-component strain vector  ###########
+c             Overlap: row 5 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2y(i,j) * (-ii)
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,j_xyz)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
-              z_tmp1 = p2_p2x(j,i) * (-beta)
+              z_tmp1 = p2_p2x(j,i) * beta
               z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,4)
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
               z_tmp1 = p2x_p2x(i,j) * (-ii)
@@ -481,6 +486,11 @@ cc
         enddo
         close(4)
       endif
+
+cc      write(*,*)
+cc      write(*,*) "mat_el: Aborting..."
+cc      stop
+
 c
       return
       end

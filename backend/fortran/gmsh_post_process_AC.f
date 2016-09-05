@@ -59,8 +59,8 @@ c
 
       q_average = 0      ! q_average : at a discontinuity, use average value if q_average = 1
       plot_real = 1      ! plot_real : plot real part if plot_real = 1
-      plot_imag = 0      ! plot_imag : plot real part if plot_imag = 1
-      plot_abs  = 0      ! plot_abs  : plot absolute values of each component if plot_abs = 1
+      plot_imag = 1      ! plot_imag : plot real part if plot_imag = 1
+      plot_abs  = 1      ! plot_abs  : plot absolute values of each component if plot_abs = 1
 
 c
       if ( nnodes .ne. 6 ) then

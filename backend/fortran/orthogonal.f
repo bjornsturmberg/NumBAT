@@ -133,7 +133,8 @@ c           Isoparametric element
             call jacobian_p2_2d(xx, xel, nnodes, phi2_list, 
      *               grad2_mat0, xx_g, det, mat_B, mat_T)
           endif
-           if(abs(det) .lt. 1.0d-10) then
+C            if(abs(det) .lt. 1.0d-10) then
+           if(abs(det) .lt. 1.0d-20) then
              write(*,*)
              write(*,*) "   ???"
              write(*,*) "orthogonal: det = 0 : iel, det = ", iel, det

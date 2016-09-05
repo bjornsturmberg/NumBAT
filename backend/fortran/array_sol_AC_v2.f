@@ -1,4 +1,5 @@
-
+C Difference from array_sol_AC.f is that the u_z field is multiplied by i
+C which gives you the correct physical displacement field.
 
 c   sol_0(*,i) : contains the imaginary and real parts of the solution for points such that ineq(i) != 0
 c   sol(i) : contains solution for all points
@@ -162,25 +163,26 @@ c
             xel(2,inod) = x(2,j)
           enddo
           do inod=1,nnodes
-            do j=1,3
-              sol_el(j,inod) = 0.00
+            jp = table_nod(inod,iel) 
+            do j_eq=1,3
+              ind_jp = ineq(j_eq,jp)
+              if (ind_jp .gt. 0) then
+                z_tmp1 = sol_0(ind_jp, ival2)
+                sol_el(j_eq,inod) = z_tmp1
+              else
+                sol_el(j_eq,inod) = 0
+              endif
             enddo
-c           Contribution to the transverse component
-            do jtest=1,nnodes
-              do j_eq=1,3
-                jp = table_nod(jtest,iel)
-                ind_jp = ineq(j_eq,jp)
-                if (ind_jp .gt. 0) then
-                  z_tmp1 = sol_0(ind_jp, ival2)
-                  sol_el(j_eq,inod) = z_tmp1
-                 endif
-              enddo
-            enddo
+c           The z-compoenent must be multiplied by ii in order to get the un-normalised z-compoenent
+            j_eq=3
+                sol_el(j_eq,inod) = ii * sol_el(j_eq,inod)
             do j=1,3
               z_tmp2 = sol_el(j,inod)
               sol(j,inod,ival,iel) = z_tmp2
               if (abs(z_sol_max) .lt. abs(z_tmp2)) then
                 z_sol_max = z_tmp2
+c               We want to normalise such the the z-component is purely imaginary complex number
+                if (j == 3) z_sol_max = - ii * z_sol_max
                 i_sol_max = table_nod(inod,iel)
                 i_component = j
               endif

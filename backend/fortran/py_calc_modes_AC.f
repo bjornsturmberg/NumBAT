@@ -1,6 +1,6 @@
       subroutine calc_AC_modes(
 c     Explicit inputs
-     *    lambda, beta_in, nval,
+     *    beta_in, nval,
      *    debug, mesh_file, npt, nel,
      *    nb_typ_el,  c_tensor, rho, d_in_m, shift,
      *    i_cond, itermax, tol,
@@ -65,7 +65,6 @@ C     ! Number of nodes per element
       integer*8 type_nod(npt), type_el(nel), table_nod(nnodes, nel)
 
       double precision pi
-      double precision lambda
       double precision lat_vecs(2,2)
       double precision lx, ly, d_in_m
 
@@ -101,7 +100,7 @@ C       complex*16, target :: sol1(3,nnodes+7,nval,nel)
       complex*16, target :: beta1(nval)
       complex*16 mode_pol(4,nval)
 
-Cf2py intent(in) lambda, beta_in, nval
+Cf2py intent(in) beta_in, nval
 Cf2py intent(in) debug, mesh_file, npt, nel
 Cf2py intent(in) d_in_m, shift
 Cf2py intent(in) i_cond, itermax, tol
@@ -388,11 +387,9 @@ c       (but valpr.f will change the CSC indexing to 0-based indexing)
 C#####################  End FEM PRE-PROCESSING  #########################
 C
       write(ui,*)
-      write(ui,*) "---------------------------------------",
-     *     "-------"
-      write(ui,*) " AC FEM, wavelength : ", lambda, " (d)"
-      write(ui,*) "---------------------------------------",
-     *     "-------"
+      write(ui,*) "----------------------------------------------"
+      write(ui,*) " AC FEM, q_acoustic : ", real(beta_in), "1/m?"
+      write(ui,*) "----------------------------------------------"
       write(ui,*)
 
       if (debug .eq. 1) then
@@ -460,8 +457,8 @@ C
       endif
       if(debug .eq. 1) then
         write(ui,*)
-        write(ui,*) "lambda, 1/lambda = ", lambda, 1.0d0/lambda
-        write(ui,*) "sqrt(shift)/(2*pi) = ", sqrt(shift) / (2.0d0 * pi)
+C         write(ui,*) "lambda, 1/lambda = ", lambda, 1.0d0/lambda
+C         write(ui,*) "sqrt(shift)/(2*pi) = ", sqrt(shift) / (2.0d0 * pi)
         do i=1,nval
           write(ui,"(i4,2(g22.14),2(g18.10))") i,
      *       beta1(i)

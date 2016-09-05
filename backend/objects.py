@@ -212,6 +212,8 @@ class Struct(object):
                 os.mkdir("Bloch_fields")
             if not os.path.exists("Bloch_fields/PDF"):
                 os.mkdir("Bloch_fields/PDF")
+            if not os.path.exists("AC_fields"):
+                os.mkdir("AC_fields")
         else: self.plotting_fields = 0
         self.plot_real = plot_real
         self.plot_imag = plot_imag
@@ -219,9 +221,9 @@ class Struct(object):
         self.plot_field_conc = plot_field_conc
         # Order must match msh templates!
         el_conv_table = {}
-        acoustic_props = [bkg_AC, inc_a_AC, slab_a_AC, slab_a_bkg_AC, slab_b_AC,
-                          slab_b_bkg_AC]
-        i = j = 1
+        acoustic_props = [bkg_AC, inc_a_AC, slab_a_bkg_AC, slab_a_AC, slab_b_bkg_AC, slab_b_AC]
+        i = 1
+        j = 1
         for matter in acoustic_props:
             if matter != None:
                 el_conv_table[i] = j
@@ -260,7 +262,7 @@ class Struct(object):
                 c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ][3]
                 c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ][3]
 
-                p_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ][4]
+                p_tensor[0,0,0,0,k_typ] = 0#acoustic_props[k_typ][4]
                 p_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ][4]
                 p_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ][4]
                 p_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ][5]
@@ -443,7 +445,7 @@ class Struct(object):
             os.system(gmsh_cmd)
 
 
-    def calc_EM_modes(self, wl_nm, num_modes, **args):
+    def calc_EM_modes(self, wl_nm, num_modes, shift_Hz=None, **args):
         """ Run a simulation to find the Struct's EM modes.
 
             Args:
@@ -454,14 +456,14 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo = Simmo(self, wl_nm, num_modes=num_modes)
+        simmo = Simmo(self, wl_nm, num_modes=num_modes, shift_Hz=shift_Hz)
 
         simmo.calc_EM_modes(**args)
         return simmo
 
 
     def calc_AC_modes(self, wl_nm, q_acoustic, num_modes, 
-                      shift_AC_Hz=None, EM_sim=None, **args):
+                      shift_Hz=None, EM_sim=None, **args):
         """ Run a simulation to find the Struct's acoustic modes.
 
             Args:
@@ -473,7 +475,7 @@ class Struct(object):
                 :Simmo: object
         """
         simmo_AC = Simmo(self, wl_nm, q_acoustic=q_acoustic, 
-                         num_modes=num_modes, shift_AC_Hz=shift_AC_Hz,
+                         num_modes=num_modes, shift_Hz=shift_Hz,
                          EM_sim=EM_sim)
 
         simmo_AC.calc_AC_modes(**args)
