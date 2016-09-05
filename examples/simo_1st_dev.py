@@ -57,13 +57,13 @@ s = 2330  # kg/m3
 c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
 p_11 = -0.044; p_12 = 0.017; p_44 = -0.051
 # Rakich PRX
-p_11 = 0.09; p_12 = -0.017; p_44 = -0.054
+# p_11 = 0.09; p_12 = -0.017; p_44 = -0.054
 # E = 170e9
 # v = 0.28
 # c_11, c_12, c_44 = isotropic_stiffness(E, v)
 # Mike Smith OL
 # c_11 = 165.6e9; c_12 = 63.9e9; c_44 = 79.5e9
-# p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
+p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
 eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 620e-6  # Pa s
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
@@ -174,6 +174,10 @@ print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.
 # SBS_gain[0,0,11] = SBS_gain[0,0,11]/2.
 # SBS_gain[0,0,8] = SBS_gain[0,0,8]*4
 
+# SBS_gain[0,0,2] = (1./98.70e-6)*310.25
+# SBS_gain[0,0,4] = (1./27.75e-6)*2464.98
+# SBS_gain[0,0,8] = (1./43.90e-6)*36.55
+
 
 # # # # trim1 = 5
 # # # # trim = 13
@@ -207,7 +211,7 @@ AC_detuning_range = np.append(np.linspace(-2, 0, tune_range), np.linspace(0, 2, 
 # LW = speed_in_Si*alpha
 phase_v = sim_AC_wguide.Eig_value/q_acoustic # phase velocity as approximation to group velocity
 LW = phase_v*alpha
-# print LW
+# LW = np.ones(len(alpha))
 for AC_i in range(num_AC_modes):
 # for AC_i in range(trim-trim1):
    # AC_i = AC_i + trim1
