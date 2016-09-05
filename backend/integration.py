@@ -80,24 +80,13 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 for x in range(ncomps):
                     trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
 
-    trimmed_EM_field[0,:,0,10:20] = 0.0
-
-    sim_EM_wguide.sol1 = trimmed_EM_field
-    sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el
-    sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts
-    sim_EM_wguide.type_el = sim_AC_wguide.type_el
-    sim_EM_wguide.table_nod = sim_AC_wguide.table_nod
-    # print sim_AC_wguide.node_convert_tbl
-    # new_el = sim_AC_wguide.node_convert_tbl[1760]
-    # print np.shape(sim_EM_wguide.x_arr)
-    # print sim_EM_wguide.x_arr[0,1760-1]
-    # print sim_EM_wguide.x_arr[1,1760-1]
-    sim_EM_wguide.x_arr = sim_AC_wguide.x_arr
-    # print np.shape(sim_EM_wguide.x_arr)
-    # print n_msh_el_AC
-    # print sim_EM_wguide.x_arr[0,new_el]
-    # print sim_EM_wguide.x_arr[1,new_el]
-    plotting.plt_mode_fields(sim_EM_wguide, EM_AC='EM', add_name='trim')
+    # sim_EM_wguide.sol1 = trimmed_EM_field
+    # sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el
+    # sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts
+    # sim_EM_wguide.type_el = sim_AC_wguide.type_el
+    # sim_EM_wguide.table_nod = sim_AC_wguide.table_nod
+    # sim_EM_wguide.x_arr = sim_AC_wguide.x_arr
+    # plotting.plt_mode_fields(sim_EM_wguide, EM_AC='EM', add_name='trim')
 
     relevant_eps_effs =[]
     for el_typ in range(sim_EM_wguide.structure.nb_typ_el):
