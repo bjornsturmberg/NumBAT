@@ -49,7 +49,7 @@ def zeros_int_str(zero_int):
 
 
 #### Standard plotting of spectra #############################################
-def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
+def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim=None,
                   EM_AC='EM', pdf_png='png', add_name=''):
     """ Plot EM mode fields.
     NOTE: z component of EM field needs comes scaled by 1/(i beta), 
@@ -173,6 +173,10 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
         else:
             v_labels = ["Re(u_x)","Re(u_y)","Re(u_z)","Im(u_x)","Im(u_y)","Im(u_z)","Abs(u)"]
 
+        # print ''
+        # for comp in v_plots:
+        #     print np.max(comp)
+        # print ''
 
         # field plots
         plt.clf()
@@ -189,7 +193,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
             if xlim:
                 ax.set_xlim(xlim*n_points,(1-xlim)*n_points)
             if ylim:
-                ax.set_ylim(ylim*n_points,(1-ylim)*n_points)
+                ax.set_ylim((1-ylim)*n_points,ylim*n_points)
             # titles
             plt.title(v_labels[i_p],fontsize=title_font)
             # colorbar
@@ -198,18 +202,16 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
             cbar = plt.colorbar(im, cax=cax)
             cbar.ax.tick_params(labelsize=title_font-10)
 
-        q_step = 100
         v_x_q = v_x.reshape(n_pts_x,n_pts_y)
         v_y_q = v_y.reshape(n_pts_x,n_pts_y)
-        v_x_q = v_x_q[0::q_step,0::q_step]
-        v_y_q = v_y_q[0::q_step,0::q_step]
-        m_ReEx_q = m_ReEx[0::q_step,0::q_step]
-        m_ReEy_q = m_ReEy[0::q_step,0::q_step]
-        m_ImEx_q = m_ImEx[0::q_step,0::q_step]
-        m_ImEy_q = m_ImEy[0::q_step,0::q_step]
+        v_x_q = v_x_q[0::quiver_steps,0::quiver_steps]
+        v_y_q = v_y_q[0::quiver_steps,0::quiver_steps]
+        m_ReEx_q = m_ReEx[0::quiver_steps,0::quiver_steps]
+        m_ReEy_q = m_ReEy[0::quiver_steps,0::quiver_steps]
+        m_ImEx_q = m_ImEx[0::quiver_steps,0::quiver_steps]
+        m_ImEy_q = m_ImEy[0::quiver_steps,0::quiver_steps]
         ax = plt.subplot(3,3,i_p+2)
         plt.quiver(v_x_q, v_y_q, 
-        # np.ones(np.shape(m_ReEy_q)), (m_ReEy_q+m_ImEy_q),      # data
         (m_ReEx_q+m_ImEx_q), (m_ReEy_q+m_ImEy_q),      # data
                    np.sqrt(np.real((m_ReEx_q+1j*m_ImEx_q)*(m_ReEx_q-1j*m_ImEx_q)
                    +(m_ReEy_q+1j*m_ImEy_q)*(m_ReEy_q-1j*m_ImEy_q))),  #colour the arrows based on this array
@@ -221,16 +223,18 @@ def plt_mode_fields(sim_wguide, n_points=1000, xlim=None, ylim=None,
         plt.xticks([])
         plt.yticks([])
         # limits
+        axes = plt.gca()
+        xmin, xmax = axes.get_xlim()
+        ymin, ymax = axes.get_ylim()
         if xlim:
-            ax.set_xlim(xlim*n_points,(1-xlim)*n_points)
+            ax.set_xlim(xlim*xmax,(1-xlim)*xmax)
         if ylim:
-            ax.set_ylim(ylim*n_points,(1-ylim)*n_points)
+            ax.set_ylim((1-ylim)*ymin, ylim*ymin)
         # titles
         plt.title('Transverse',fontsize=title_font)
         # divider = make_axes_locatable(ax)
         # cax = divider.append_axes("right", size="5%", pad=0.1)
         # cbar = plt.colorbar(im, cax=cax)
-
 
 
         if EM_AC=='EM':

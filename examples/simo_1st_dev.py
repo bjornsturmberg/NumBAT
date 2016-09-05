@@ -64,7 +64,7 @@ p_11 = -0.044; p_12 = 0.017; p_44 = -0.051
 # Mike Smith OL
 # c_11 = 165.6e9; c_12 = 63.9e9; c_44 = 79.5e9
 p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 620e-6  # Pa s
+eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 620e-6  # Pa 
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
@@ -82,7 +82,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 npzfile = np.load('wguide_data.npz')
 sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
-# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+# sim_EM_wguide.sol1 = np.zeros(np.shape(sim_EM_wguide.sol1))
+# sim_EM_wguide.sol1[0,:,0,2000:2100] = 1
+# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')#, 
+    # n_points=1000, quiver_steps=10)
 # plotting.plt_mode_fields(sim_EM_wguide, EM_AC='EM')
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.45, ylim=0.45, EM_AC='EM')
 
@@ -98,7 +101,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
+# print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')#, add_name='best-q')
 
 
@@ -177,6 +180,11 @@ print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.
 # SBS_gain[0,0,2] = (1./98.70e-6)*310.25
 # SBS_gain[0,0,4] = (1./27.75e-6)*2464.98
 # SBS_gain[0,0,8] = (1./43.90e-6)*36.55
+
+# SBS_gain = np.zeros(np.shape(SBS_gain))
+# SBS_gain[0,0,2] = 310.25
+# SBS_gain[0,0,4] = 2464.98
+# SBS_gain[0,0,8] = 36.55
 
 
 # # # # trim1 = 5
