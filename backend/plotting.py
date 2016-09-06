@@ -52,7 +52,7 @@ def zeros_int_str(zero_int):
 def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim=None,
                   EM_AC='EM', pdf_png='png', add_name=''):
     """ Plot EM mode fields.
-    NOTE: z component of EM field needs comes scaled by 1/(i beta), 
+    NOTE: z component of EM field needs comes scaled by 1/(i beta),
     which must be reintroduced!
 
         Args:
@@ -211,7 +211,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         m_ImEx_q = m_ImEx[0::quiver_steps,0::quiver_steps]
         m_ImEy_q = m_ImEy[0::quiver_steps,0::quiver_steps]
         ax = plt.subplot(3,3,i_p+2)
-        plt.quiver(v_x_q, v_y_q, 
+        plt.quiver(v_x_q, v_y_q,
         (m_ReEx_q+m_ImEx_q), (m_ReEy_q+m_ImEy_q),      # data
                    np.sqrt(np.real((m_ReEx_q+1j*m_ImEx_q)*(m_ReEx_q-1j*m_ImEx_q)
                    +(m_ReEy_q+1j*m_ImEy_q)*(m_ReEy_q-1j*m_ImEy_q))),  #colour the arrows based on this array
@@ -269,7 +269,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
             os.mkdir("fields")
         if pdf_png=='png':
             plt.savefig('fields/%(s)s_field_%(i)i%(add)s.png' %
-                {'s' : EM_AC, 'i' : ival, 'add' : add_name}) 
+                {'s' : EM_AC, 'i' : ival, 'add' : add_name})
                 #, bbox_inches='tight') - this caused error in Q calc... ?
         elif pdf_png=='pdf':
             plt.savefig('fields/%(s)s_field_%(i)i%(add)s.pdf' %
