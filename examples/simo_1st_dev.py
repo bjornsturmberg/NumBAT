@@ -37,21 +37,21 @@ EM_ival2=EM_ival1
 AC_ival='All'
 # AC_ival=2
 
-# ### Acoustic parameters
-# def isotropic_stiffness(E, v):
-#    """
-#    Calculate the stiffness matrix components of isotropic
-#    materials, given the two free parameters:
-#    E: Youngs_modulus
-#    v: Poisson_ratio
+### Acoustic parameters
+def isotropic_stiffness(E, v):
+   """
+   Calculate the stiffness matrix components of isotropic
+   materials, given the two free parameters:
+   E: Youngs_modulus
+   v: Poisson_ratio
 
-#    Ref: http://www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
-#    """
-#    c_11 = E*(1-v)/((1+v)*(1-2*v))
-#    c_12 = c_11
-#    c_44 = E*(1-2*v)/((1+v)*(1-2*v))
+   Ref: http://www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
+   """
+   c_11 = E*(1-v)/((1+v)*(1-2*v))
+   c_12 = E*v/((1+v)*(1-2*v))
+   c_44 = E*(1-2*v)/((1+v)*(1-2*v))
 
-#    return c_11, c_12, c_44
+   return c_11, c_12, c_44
 
 ### Acoustic parameters
 # Inclusion a
@@ -62,6 +62,8 @@ eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 620e-6  # Pa
 # E = 170e9
 # v = 0.28
 # c_11, c_12, c_44 = isotropic_stiffness(E, v)
+# p_11 = 0.09; p_12 = -0.017; p_44 = -0.051
+# # print c_11, c_12, c_44
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
@@ -69,21 +71,18 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.1, lc2=20.0, lc3=20.0)
+                        lc_bkg=0.1, lc2=40.0, lc3=20.0)
                         # make_mesh_now=True)#, plotting_fields=True, plot_imag=1)#,
                         # mesh_file='rect_acoustic_3.mail')
 
 ### Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
-# sim_EM_wguide.sol1 = np.zeros(np.shape(sim_EM_wguide.sol1))
-# sim_EM_wguide.sol1[0,:,0,2000:2100] = 1
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')#,
     # n_points=1000, quiver_steps=10)
-# plotting.plt_mode_fields(sim_EM_wguide, EM_AC='EM')
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.45, ylim=0.45, EM_AC='EM')
 
 
@@ -93,11 +92,11 @@ print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
 # Forward (intramode) SBS
 # q_acoustic = 0.0
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
-    num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)# shift_Hz=18e9)
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
+#     num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)# shift_Hz=18e9)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+npzfile = np.load('wguide_data_AC.npz')
+sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')#, add_name='best-q')
 
@@ -134,6 +133,10 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # SBS_gain = npzfile['SBS_gain']
 # alpha = npzfile['alpha']
 
+# Q_Rakich = 1000
+# alpha = sim_AC_wguide.Omega_AC/(2*Q_Rakich)
+# print SBS_gain[0,0,:]#/alpha
+
 # print "lc", wguide.lc
 # print "lc2", wguide.lc2
 # print "lc3", wguide.lc3
@@ -150,7 +153,7 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # print 'alpha', alpha[6]
 # print 'alpha', alpha[7]
 # print 'alpha', alpha[8]
-print SBS_gain[0,0,2]/SBS_gain[0,0,4]
+# print SBS_gain[0,0,2]/SBS_gain[0,0,4]
 
 
 print 'alpha / CW alpha', alpha[0]/(1./186.52e-6)
