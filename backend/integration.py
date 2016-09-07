@@ -40,30 +40,16 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
-        # P1 = sim_EM_wguide.EM_mode_overlap
     else:
         EM_ival1_fortran = EM_ival1+1  # convert back to fortran indexing
-        # P1 = np.zeros(num_modes_EM, dtype=complex)
-        # P1[EM_ival1] = sim_EM_wguide.EM_mode_overlap[EM_ival1]
-
     if EM_ival2 == 'All':
         EM_ival2_fortran = -1
-        # P2 = sim_EM_wguide.EM_mode_overlap
     else:
         EM_ival2_fortran = EM_ival2+1  # convert back to fortran indexing
-        # P2 = np.zeros(num_modes_EM, dtype=complex)
-        # P2[EM_ival2] = sim_EM_wguide.EM_mode_overlap[EM_ival2]
-
     if AC_ival == 'All':
         AC_ival_fortran = -1
-        # Note: sim_AC_wguide.Omega_AC if the acoustic angular freq in units of Hz
-        AC_freq_Omega = sim_AC_wguide.Omega_AC
-        # P3 = sim_AC_wguide.AC_mode_overlap
     else:
-        AC_freq_Omega = sim_AC_wguide.Omega_AC[AC_ival]
         AC_ival_fortran = AC_ival+1  # convert back to fortran indexing
-        # P3 = np.zeros(num_modes_AC, dtype=complex)
-        # P3[AC_ival] = sim_AC_wguide.AC_mode_overlap[AC_ival]
 
     Fortran_debug = 0
     ncomps = 3
@@ -78,7 +64,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
             for n in range(nnodes):
                 for x in range(ncomps):
                     trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
-
     # sim_EM_wguide.sol1 = trimmed_EM_field
     # sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el
     # sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts
@@ -91,16 +76,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     for el_typ in range(sim_EM_wguide.structure.nb_typ_el):
         if el_typ+1 in sim_AC_wguide.structure.typ_el_AC:
             relevant_eps_effs.append(sim_EM_wguide.n_effs[el_typ]**2)
-
-    # sim_AC_wguide.AC_mode_overlap[0] = sim_AC_wguide.AC_mode_overlap[0]*2.0541115841
-    # sim_AC_wguide.AC_mode_overlap[1] = sim_AC_wguide.AC_mode_overlap[1]*1.62055717426
-    # sim_AC_wguide.AC_mode_overlap[2] = sim_AC_wguide.AC_mode_overlap[2]*1.97449348579
-    # sim_AC_wguide.AC_mode_overlap[3] = sim_AC_wguide.AC_mode_overlap[3]*1.7819220338
-    # sim_AC_wguide.AC_mode_overlap[4] = sim_AC_wguide.AC_mode_overlap[4]*1.05417483114
-    # sim_AC_wguide.AC_mode_overlap[5] = sim_AC_wguide.AC_mode_overlap[5]*1.59968666271
-    # sim_AC_wguide.AC_mode_overlap[6] = sim_AC_wguide.AC_mode_overlap[6]*1.06616883215
-    # sim_AC_wguide.AC_mode_overlap[7] = sim_AC_wguide.AC_mode_overlap[7]*0.917209648528
-    # sim_AC_wguide.AC_mode_overlap[8] = sim_AC_wguide.AC_mode_overlap[8]*1.01503248635
 
 ### Calc alpha (loss) Eq. 45
     try:
@@ -121,8 +96,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
     alpha = np.real(alpha)
-
-
 
 
 ### Calc Q_photoelastic Eq. 33
@@ -149,131 +122,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-    n_points = 100
-    x_tmp = []
-    y_tmp = []
-    for i in np.arange(sim_AC_wguide.n_msh_pts):
-        x_tmp.append(sim_AC_wguide.x_arr[0,i])
-        y_tmp.append(sim_AC_wguide.x_arr[1,i])
-    x_min = np.min(x_tmp); x_max=np.max(x_tmp)
-    y_min = np.min(y_tmp); y_max=np.max(y_tmp)
-    area = abs((x_max-x_min)*(y_max-y_min))
-    n_pts_x = int(n_points*abs(x_max-x_min)/np.sqrt(area))
-    n_pts_y = int(n_points*abs(y_max-y_min)/np.sqrt(area))
-    v_x=np.zeros(n_pts_x*n_pts_y)
-    v_y=np.zeros(n_pts_x*n_pts_y)
-    i=0
-    for x in np.linspace(x_min,x_max,n_pts_x):
-        # for y in np.linspace(y_min,y_max,n_pts_y):
-        for y in np.linspace(y_max,y_min,n_pts_y):
-            v_x[i] = x
-            v_y[i] = y
-            i+=1
-    v_x = np.array(v_x)
-    v_y = np.array(v_y)
-
-    # unrolling data for the interpolators
-    table_nod = sim_AC_wguide.table_nod.T
-    x_arr = sim_AC_wguide.x_arr.T
-
-    for ival in [0]:
-        # dense triangulation with multiple points
-        v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
-        v_y6p = np.zeros(6*sim_AC_wguide.n_msh_el)
-        v_Ex6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        v_Ey6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        v_Ez6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        v_triang6p = []
-
-        i = 0
-        for i_el in np.arange(sim_AC_wguide.n_msh_el):
-            # triangles
-            idx = np.arange(6*i_el, 6*(i_el+1))
-            triangles = [[idx[0], idx[3], idx[5]],
-                         [idx[1], idx[4], idx[3]],
-                         [idx[2], idx[5], idx[4]],
-                         [idx[3], idx[4], idx[5]]]
-            v_triang6p.extend(triangles)
-
-            for i_node in np.arange(6):
-                # index for the coordinates
-                i_ex = table_nod[i_el, i_node]-1
-                # values
-                v_x6p[i] = x_arr[i_ex, 0]
-                v_y6p[i] = x_arr[i_ex, 1]
-                v_Ex6p[i] = sim_EM_wguide.sol1[0,i_node,ival,i_el]
-                v_Ey6p[i] = sim_EM_wguide.sol1[1,i_node,ival,i_el]
-                v_Ez6p[i] = -1j*sim_EM_wguide.Eig_value[ival]*sim_EM_wguide.sol1[2,i_node,ival,i_el]
-                i += 1
-
-        v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
-                        np.abs(v_Ey6p)**2 +
-                        np.abs(v_Ez6p)**2)
-
-    eta = np.zeros(len(sim_AC_wguide.Eig_value), dtype=np.complex128)
-    for ival in range(len(sim_AC_wguide.Eig_value)):
-        # dense triangulation with multiple points
-        AC_v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
-        AC_v_y6p = np.zeros(6*sim_AC_wguide.n_msh_el)
-        AC_v_Ex6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        AC_v_Ey6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        AC_v_Ez6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        AC_v_triang6p = []
-
-        i = 0
-        for i_el in np.arange(sim_AC_wguide.n_msh_el):
-            # triangles
-            idx = np.arange(6*i_el, 6*(i_el+1))
-            triangles = [[idx[0], idx[3], idx[5]],
-                         [idx[1], idx[4], idx[3]],
-                         [idx[2], idx[5], idx[4]],
-                         [idx[3], idx[4], idx[5]]]
-            AC_v_triang6p.extend(triangles)
-
-            for i_node in np.arange(6):
-                # index for the coordinates
-                i_ex = table_nod[i_el, i_node]-1
-                # values
-                AC_v_x6p[i] = x_arr[i_ex, 0]
-                AC_v_y6p[i] = x_arr[i_ex, 1]
-                AC_v_Ex6p[i] = sim_AC_wguide.sol1[0,i_node,ival,i_el]
-                AC_v_Ey6p[i] = sim_AC_wguide.sol1[1,i_node,ival,i_el]
-                AC_v_Ez6p[i] = sim_AC_wguide.sol1[2,i_node,ival,i_el]
-                i += 1
-
-        AC_v_E6p = np.sqrt(np.abs(AC_v_Ex6p)**2 +
-                        np.abs(AC_v_Ey6p)**2 +
-                        np.abs(AC_v_Ez6p)**2)
-
-
-        # Scalar calc from Poulton Josa 2013
-
-        top = np.abs(np.sum(v_E6p*np.conj(v_E6p)*AC_v_E6p)/(n_pts_x*n_pts_y))**2
-        bot = np.sum(v_E6p*np.conj(v_E6p)/(n_pts_x*n_pts_y))**2 * np.sum(np.abs(AC_v_E6p)/(n_pts_x*n_pts_y))**2
-        eta[ival] = top/bot
-        # print eta
-
-    # # Power normalise
-    # speed_c = 299792458
-    # omega_p = 2.0*np.pi/(1550*1e-9)
-    # n = np.sqrt(12.25)
-    # s = 2330
-    # p_12 = 0.017
-    # V_L = 8440
-    # Q = 1000
-    # prefactor = omega_p**2*n**7*p_12**2*Q/(speed_c**3*s*V_L*sim_AC_wguide.Omega_AC)
-    # print eta*(314.7e-9*0.9*314.7e-9)
-    # print prefactor
-    # # print prefactor*eta
-
 
     # print Q_PE[0,0,2]
-    # print Q_PE2[0,0,2]
     # Q_PE=0
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
     # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
-    gain = 2*sim_EM_wguide.omega_EM*AC_freq_Omega*np.real(Q*np.conj(Q))
+    # Note: sim_AC_wguide.Omega_AC is the acoustic angular freq in units of Hz
+    gain = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q*np.conj(Q))
     normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
     for i in range(num_modes_EM):
         P1 = sim_EM_wguide.EM_mode_overlap[i]
@@ -285,6 +141,123 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     SBS_gain = np.real(gain/normal_fact)
 
     return SBS_gain, Q_PE, Q_MB, alpha
+
+    # n_points = 100
+    # x_tmp = []
+    # y_tmp = []
+    # for i in np.arange(sim_AC_wguide.n_msh_pts):
+    #     x_tmp.append(sim_AC_wguide.x_arr[0,i])
+    #     y_tmp.append(sim_AC_wguide.x_arr[1,i])
+    # x_min = np.min(x_tmp); x_max=np.max(x_tmp)
+    # y_min = np.min(y_tmp); y_max=np.max(y_tmp)
+    # area = abs((x_max-x_min)*(y_max-y_min))
+    # n_pts_x = int(n_points*abs(x_max-x_min)/np.sqrt(area))
+    # n_pts_y = int(n_points*abs(y_max-y_min)/np.sqrt(area))
+    # v_x=np.zeros(n_pts_x*n_pts_y)
+    # v_y=np.zeros(n_pts_x*n_pts_y)
+    # i=0
+    # for x in np.linspace(x_min,x_max,n_pts_x):
+    #     # for y in np.linspace(y_min,y_max,n_pts_y):
+    #     for y in np.linspace(y_max,y_min,n_pts_y):
+    #         v_x[i] = x
+    #         v_y[i] = y
+    #         i+=1
+    # v_x = np.array(v_x)
+    # v_y = np.array(v_y)
+
+    # # unrolling data for the interpolators
+    # table_nod = sim_AC_wguide.table_nod.T
+    # x_arr = sim_AC_wguide.x_arr.T
+
+    # for ival in [0]:
+    #     # dense triangulation with multiple points
+    #     v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
+    #     v_y6p = np.zeros(6*sim_AC_wguide.n_msh_el)
+    #     v_Ex6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+    #     v_Ey6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+    #     v_Ez6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+    #     v_triang6p = []
+
+    #     i = 0
+    #     for i_el in np.arange(sim_AC_wguide.n_msh_el):
+    #         # triangles
+    #         idx = np.arange(6*i_el, 6*(i_el+1))
+    #         triangles = [[idx[0], idx[3], idx[5]],
+    #                      [idx[1], idx[4], idx[3]],
+    #                      [idx[2], idx[5], idx[4]],
+    #                      [idx[3], idx[4], idx[5]]]
+    #         v_triang6p.extend(triangles)
+
+    #         for i_node in np.arange(6):
+    #             # index for the coordinates
+    #             i_ex = table_nod[i_el, i_node]-1
+    #             # values
+    #             v_x6p[i] = x_arr[i_ex, 0]
+    #             v_y6p[i] = x_arr[i_ex, 1]
+    #             v_Ex6p[i] = sim_EM_wguide.sol1[0,i_node,ival,i_el]
+    #             v_Ey6p[i] = sim_EM_wguide.sol1[1,i_node,ival,i_el]
+    #             v_Ez6p[i] = -1j*sim_EM_wguide.Eig_value[ival]*sim_EM_wguide.sol1[2,i_node,ival,i_el]
+    #             i += 1
+
+    #     v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
+    #                     np.abs(v_Ey6p)**2 +
+    #                     np.abs(v_Ez6p)**2)
+
+    # eta = np.zeros(len(sim_AC_wguide.Eig_value), dtype=np.complex128)
+    # for ival in range(len(sim_AC_wguide.Eig_value)):
+    #     # dense triangulation with multiple points
+    #     AC_v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
+    #     AC_v_y6p = np.zeros(6*sim_AC_wguide.n_msh_el)
+    #     AC_v_Ex6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+    #     AC_v_Ey6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+    #     AC_v_Ez6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+    #     AC_v_triang6p = []
+
+    #     i = 0
+    #     for i_el in np.arange(sim_AC_wguide.n_msh_el):
+    #         # triangles
+    #         idx = np.arange(6*i_el, 6*(i_el+1))
+    #         triangles = [[idx[0], idx[3], idx[5]],
+    #                      [idx[1], idx[4], idx[3]],
+    #                      [idx[2], idx[5], idx[4]],
+    #                      [idx[3], idx[4], idx[5]]]
+    #         AC_v_triang6p.extend(triangles)
+
+    #         for i_node in np.arange(6):
+    #             # index for the coordinates
+    #             i_ex = table_nod[i_el, i_node]-1
+    #             # values
+    #             AC_v_x6p[i] = x_arr[i_ex, 0]
+    #             AC_v_y6p[i] = x_arr[i_ex, 1]
+    #             AC_v_Ex6p[i] = sim_AC_wguide.sol1[0,i_node,ival,i_el]
+    #             AC_v_Ey6p[i] = sim_AC_wguide.sol1[1,i_node,ival,i_el]
+    #             AC_v_Ez6p[i] = sim_AC_wguide.sol1[2,i_node,ival,i_el]
+    #             i += 1
+
+    #     AC_v_E6p = np.sqrt(np.abs(AC_v_Ex6p)**2 +
+    #                     np.abs(AC_v_Ey6p)**2 +
+    #                     np.abs(AC_v_Ez6p)**2)
+
+
+    #     # Scalar calc from Poulton Josa 2013
+
+    #     top = np.abs(np.sum(v_E6p*np.conj(v_E6p)*AC_v_E6p)/(n_pts_x*n_pts_y))**2
+    #     bot = np.sum(v_E6p*np.conj(v_E6p)/(n_pts_x*n_pts_y))**2 * np.sum(np.abs(AC_v_E6p)/(n_pts_x*n_pts_y))**2
+    #     eta[ival] = top/bot
+    #     # print eta
+
+    # # # Power normalise
+    # # speed_c = 299792458
+    # # omega_p = 2.0*np.pi/(1550*1e-9)
+    # # n = np.sqrt(12.25)
+    # # s = 2330
+    # # p_12 = 0.017
+    # # V_L = 8440
+    # # Q = 1000
+    # # prefactor = omega_p**2*n**7*p_12**2*Q/(speed_c**3*s*V_L*sim_AC_wguide.Omega_AC)
+    # # print eta*(314.7e-9*0.9*314.7e-9)
+    # # print prefactor
+    # # # print prefactor*eta
 
 
 
