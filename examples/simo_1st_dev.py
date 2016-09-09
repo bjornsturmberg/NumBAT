@@ -58,7 +58,7 @@ def isotropic_stiffness(E, v):
 s = 2330  # kg/m3
 c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
 p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 620e-6  # Pa
+eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 # E = 170e9
 # v = 0.28
 # c_11, c_12, c_44 = isotropic_stiffness(E, v)
@@ -90,6 +90,7 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # Backward SBS
 # Acoustic k has to push optical mode from +ve lightline to -ve, hence factor 2.
 q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
+# print q_acoustic*inc_a_x*1e-9/np.pi
 # Forward (intramode) SBS
 # q_acoustic = 0.0
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
@@ -131,8 +132,16 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 
 
 # Q_Rakich = 1000
-# alpha = sim_AC_wguide.Omega_AC/(2*Q_Rakich)
-# print SBS_gain[0,0,:]#/alpha
+# alpha_Rakich = sim_AC_wguide.Omega_AC/(2*Q_Rakich)
+# # print SBS_gain[0,0,:]#/alpha
+
+# print 310.25*(1./98.70e-6)/alpha_Rakich[2]
+# print 2464.98*(1./27.75e-6)/alpha_Rakich[4]
+# print 36.55*(1./43.90e-6)/alpha_Rakich[8]
+
+# print 1307.0*2*(1./98.70e-6)/(2*np.pi*12.34e9)
+# print "Q", sim_AC_wguide.Omega_AC/(2*alpha)
+
 
 # print 'alpha / CW alpha', alpha[0]/(1./186.52e-6)
 # print 'alpha / CW alpha', alpha[1]/(1./142.79e-6)

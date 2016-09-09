@@ -96,7 +96,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
     alpha = np.real(alpha)
-
+    # print alpha
+    # alpha2 = np.real(alpha2)
+    # print (alpha2 - alpha)/alpha2
 
 ### Calc Q_photoelastic Eq. 33
     try:

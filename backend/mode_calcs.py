@@ -7,7 +7,6 @@
 
 import numpy as np
 import sys
-# from scipy import sqrt
 import os
 sys.path.append("../backend/")
 
@@ -362,40 +361,26 @@ class Simmo(object):
         self.type_el = type_el_out
         self.x_arr = x_arr_out
 
-        # self.sol1[0,:,4,:] = -1j*self.sol1[0,:,4,:] 
-        # self.sol1[1,:,4,:] = -1j*self.sol1[1,:,4,:] 
-        # self.sol1[2,:,4,:] = -1j*self.sol1[2,:,4,:]
-        # self.sol1[0,:,2,:] = 1j*self.sol1[0,:,2,:] 
-        # self.sol1[1,:,2,:] = 1j*self.sol1[1,:,2,:] 
-        # self.sol1[2,:,0,:] = -1*self.sol1[2,:,0,:]
-        # self.sol1[2,:,1,:] = -1*self.sol1[2,:,1,:]
-        # self.sol1[2,:,2,:] = -1*self.sol1[2,:,2,:]
-        # self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:]
-        # self.sol1[2,:,3,:] = -1*self.sol1[2,:,3,:]
-        # self.sol1[2,:,5,:] = -1*self.sol1[2,:,5,:]
-        # self.sol1[2,:,6,:] = -1*self.sol1[2,:,6,:]
-        # self.sol1[2,:,7,:] = -1*self.sol1[2,:,7,:]
-        # self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:]
-
-        # self.sol1[0,:,4,:] = -1*self.sol1[0,:,4,:] 
-        # self.sol1[1,:,4,:] = -1*self.sol1[1,:,4,:] 
-        # # # self.sol1[2,:,4,:] = -1*self.sol1[2,:,4,:] 
-        
-        # # self.sol1[0,:,8,:] = -1*self.sol1[0,:,8,:] 
-        # self.sol1[1,:,8,:] = -1*self.sol1[1,:,8,:] 
-        # # self.sol1[2,:,8,:] = -1*self.sol1[2,:,8,:] 
-
-
 ### Calc unnormalised power in each AC mode Eq. 18.
         try:
             nnodes = 6
+            # import time
+            # start = time.time()
             if self.structure.inc_shape == 'rectangular':
-                self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v2(
+            # Integration following KD 9/9/16 notes. 
+                self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v4(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
-                    self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+                    self.structure.nb_typ_el_AC, self.structure.c_tensor, 
                     self.q_acoustic, self.Omega_AC, self.sol1)
+            #     self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v2(
+            ## Integration using analytically evaluated basis function integrals.
+            #         self.num_modes, self.n_msh_el, self.n_msh_pts,
+            #         nnodes, self.table_nod, self.type_el, self.x_arr,
+            #         self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+            #         self.q_acoustic, self.Omega_AC, self.sol1)
             elif self.structure.inc_shape == 'circular':
+            # Integration by quadrature.
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
