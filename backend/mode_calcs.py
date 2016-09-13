@@ -390,3 +390,5 @@ class Simmo(object):
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\
             "interrupted by keyboard.\n\n"
+
+        # print (self.AC_mode_overlap2-self.AC_mode_overlap)/self.AC_mode_overlap2

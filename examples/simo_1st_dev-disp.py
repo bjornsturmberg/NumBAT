@@ -49,7 +49,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
                         # lc_bkg=0.2, lc2=20.0, lc3=20.0)#,
-                        lc_bkg=0.2, lc2=50.0, lc3=70.0)
+                        lc_bkg=0.1, lc2=30.0, lc3=20.0)
 
 
 ### Calculate Electromagnetic Modes
@@ -71,7 +71,7 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 # marks = ['ok','ob','or','og','oc','om','^k','^b','^r','^g','^c','^m','sk','sb','sr','sg','sc','sm']
 plt.clf()
-plt.figure(figsize=(13,13))
+plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)
 for q_ac in np.linspace(0.0,q_acoustic,20):
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_ac, num_AC_modes, EM_sim=sim_EM_wguide)
@@ -98,5 +98,7 @@ for q_ac in np.linspace(0.0,q_acoustic,20):
             plt.plot(np.real(q_ac/q_acoustic), Om, '^g')
     ax.set_ylim(0,20)
     ax.set_xlim(0,1)
+plt.xlabel(r'Axial wavevector (normalised)', fontsize=16)
+plt.ylabel(r'Frequency (GHz)', fontsize=16)
 plt.savefig('disp.pdf', bbox_inches='tight')
 plt.close()

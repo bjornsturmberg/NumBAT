@@ -142,6 +142,9 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # print 1307.0*2*(1./98.70e-6)/(2*np.pi*12.34e9)
 # print "Q", sim_AC_wguide.Omega_AC/(2*alpha)
 
+print 'lc_bkg = ', wguide.lc
+print 'lc_2 = ', wguide.lc2
+print 'lc_3 = ', wguide.lc3
 
 # print 'alpha / CW alpha', alpha[0]/(1./186.52e-6)
 # print 'alpha / CW alpha', alpha[1]/(1./142.79e-6)
