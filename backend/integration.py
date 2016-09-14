@@ -37,6 +37,10 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 # phi is values of Lagrange polynomials (1-6) at that node.
 # grad is value of gradient of Lagrange polynomials (1-6) at that node.
+# i variables refer to E field
+# j variables refer to H field
+# ww weight function
+# coeff numerical integration
 
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
