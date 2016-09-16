@@ -95,8 +95,8 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
     table_nod = sim_wguide.table_nod.T
     x_arr = sim_wguide.x_arr.T
 
-    # for ival in [0]:
-    for ival in range(len(sim_wguide.Eig_value)):
+    for ival in [0]:
+    # for ival in range(len(sim_wguide.Eig_value)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
@@ -165,7 +165,20 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+
+        xy = zip(v_x6p, v_y6p)
+        grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
+        from scipy import interpolate
+        m_ImEz = interpolate.griddata(xy, v_Ez6p.imag, (grid_x, grid_y), method='linear')
+        m_ImEz = m_ImEz.reshape(n_pts_x,n_pts_y)
+
+
+
+
+
+
+
         m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
         v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
         if EM_AC=='EM':
