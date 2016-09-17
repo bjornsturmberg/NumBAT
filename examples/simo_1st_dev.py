@@ -99,7 +99,7 @@ q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
 npzfile = np.load('wguide_data_AC.npz')
 sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', add_name='dels')
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', add_name='dels')
 
 
 # # Try to test with a simple field we know the answer to

@@ -133,84 +133,61 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
                         np.abs(v_Ey6p)**2 +
                         np.abs(v_Ez6p)**2)
 
-        # dense triangulation with unique points
-        v_triang1p = []
-        for i_el in np.arange(sim_wguide.n_msh_el):
-            # triangles
-            triangles = [[table_nod[i_el,0]-1,table_nod[i_el,3]-1,table_nod[i_el,5]-1],
-                         [table_nod[i_el,1]-1,table_nod[i_el,4]-1,table_nod[i_el,3]-1],
-                         [table_nod[i_el,2]-1,table_nod[i_el,5]-1,table_nod[i_el,4]-1],
-                         [table_nod[i_el,3]-1,table_nod[i_el,4]-1,table_nod[i_el,5]-1]]
-            v_triang1p.extend(triangles)
+        ### Interpolate onto triangular grid - honest to FEM elements
+        # # dense triangulation with unique points
+        # v_triang1p = []
+        # for i_el in np.arange(sim_wguide.n_msh_el):
+        #     # triangles
+        #     triangles = [[table_nod[i_el,0]-1,table_nod[i_el,3]-1,table_nod[i_el,5]-1],
+        #                  [table_nod[i_el,1]-1,table_nod[i_el,4]-1,table_nod[i_el,3]-1],
+        #                  [table_nod[i_el,2]-1,table_nod[i_el,5]-1,table_nod[i_el,4]-1],
+        #                  [table_nod[i_el,3]-1,table_nod[i_el,4]-1,table_nod[i_el,5]-1]]
+        #     v_triang1p.extend(triangles)
 
-        # triangulations
-        triang6p = matplotlib.tri.Triangulation(v_x6p,v_y6p,v_triang6p)
-        triang1p = matplotlib.tri.Triangulation(x_arr[:,0],x_arr[:,1],v_triang1p)
+        # # triangulations
+        # triang6p = matplotlib.tri.Triangulation(v_x6p,v_y6p,v_triang6p)
+        # triang1p = matplotlib.tri.Triangulation(x_arr[:,0],x_arr[:,1],v_triang1p)
 
-        # building interpolators: triang1p for the finder, triang6p for the values
-        finder = matplotlib.tri.TrapezoidMapTriFinder(triang1p)
-        ReEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.real,trifinder=finder)
-        ImEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.imag,trifinder=finder)
-        ReEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.real,trifinder=finder)
-        ImEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.imag,trifinder=finder)
-        ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
-        ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
-        AbsE = matplotlib.tri.LinearTriInterpolator(triang6p,v_E6p,trifinder=finder)
+        # # building interpolators: triang1p for the finder, triang6p for the values
+        # finder = matplotlib.tri.TrapezoidMapTriFinder(triang1p)
+        # ReEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.real,trifinder=finder)
+        # ImEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.imag,trifinder=finder)
+        # ReEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.real,trifinder=finder)
+        # ImEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.imag,trifinder=finder)
+        # ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
+        # ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
+        # AbsE = matplotlib.tri.LinearTriInterpolator(triang6p,v_E6p,trifinder=finder)
 
-        ### plotting
-        # interpolated fields
-        m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # ### plotting
+        # # interpolated fields
+        # m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
 
-        # xy = zip(v_x6p, v_y6p)
-        # grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
-        # from scipy import interpolate
-        # m_ReEx = interpolate.griddata(xy, v_Ex6p.real, (grid_x, grid_y), method='linear')
-        # m_ReEy = interpolate.griddata(xy, v_Ey6p.real, (grid_x, grid_y), method='linear')
-        # m_ReEz = interpolate.griddata(xy, v_Ez6p.real, (grid_x, grid_y), method='linear')
-        # m_ImEx = interpolate.griddata(xy, v_Ex6p.imag, (grid_x, grid_y), method='linear')
-        # m_ImEy = interpolate.griddata(xy, v_Ey6p.imag, (grid_x, grid_y), method='linear')
-        # m_ImEz = interpolate.griddata(xy, v_Ez6p.imag, (grid_x, grid_y), method='linear')
-        # dx = grid_x[-1,0] - grid_x[-2,0]
-        # dy = grid_y[0,-1] - grid_y[0,-2]
-        # # print dx, dy
-        # m_Ex = m_ReEx + 1j*m_ImEx
-        # m_Ey = m_ReEy + 1j*m_ImEy
-        # m_Ez = m_ReEz + 1j*m_ImEz
-        # m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
-        # m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
-        # m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
-        # del_x_Ex = np.gradient(m_Ex, dx, axis=0)
-        # del_y_Ex = np.gradient(m_Ex, dy, axis=1)
-        # del_x_Ey = np.gradient(m_Ey, dx, axis=0)
-        # del_y_Ey = np.gradient(m_Ey, dy, axis=1)
-        # del_x_Ez = np.gradient(m_Ez, dx, axis=0)
-        # del_y_Ez = np.gradient(m_Ez, dy, axis=1)
-        # del_x_Ex_star = np.gradient(np.conj(m_Ex), dx, axis=0)
-        # del_y_Ex_star = np.gradient(np.conj(m_Ex), dy, axis=1)
-        # del_x_Ey_star = np.gradient(np.conj(m_Ey), dx, axis=0)
-        # del_y_Ey_star = np.gradient(np.conj(m_Ey), dy, axis=1)
-        # del_x_Ez_star = np.gradient(np.conj(m_Ez), dx, axis=0)
-        # del_y_Ez_star = np.gradient(np.conj(m_Ez), dy, axis=1)
-        # del_z_Ex = 1j*sim_wguide.q_acoustic*m_Ex
-        # del_z_Ey = 1j*sim_wguide.q_acoustic*m_Ey
-        # del_z_Ez = 1j*sim_wguide.q_acoustic*m_Ez
-        # del_z_Ex_star = -1j*sim_wguide.q_acoustic*np.conj(m_Ex)
-        # del_z_Ey_star = -1j*sim_wguide.q_acoustic*np.conj(m_Ey)
-        # del_z_Ez_star = -1j*sim_wguide.q_acoustic*np.conj(m_Ez)
-
-        # del_mat = np.array([[del_x_Ex, del_x_Ey, del_x_Ez], [del_y_Ex, del_y_Ey, del_y_Ez], [del_z_Ex, del_z_Ey, del_z_Ez]])
-        # del_mat_star = np.array([[del_x_Ex_star, del_x_Ey_star, del_x_Ez_star], [del_y_Ex_star, del_y_Ey_star, del_y_Ez_star], [del_z_Ex_star, del_z_Ey_star, del_z_Ez_star]])
-
-
-
-        m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        ### Interpolate onto rectangular Cartesian grid
+        xy = zip(v_x6p, v_y6p)
+        grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
+        from scipy import interpolate
+        m_ReEx = interpolate.griddata(xy, v_Ex6p.real, (grid_x, grid_y), method='linear')
+        m_ReEy = interpolate.griddata(xy, v_Ey6p.real, (grid_x, grid_y), method='linear')
+        m_ReEz = interpolate.griddata(xy, v_Ez6p.real, (grid_x, grid_y), method='linear')
+        m_ImEx = interpolate.griddata(xy, v_Ex6p.imag, (grid_x, grid_y), method='linear')
+        m_ImEy = interpolate.griddata(xy, v_Ey6p.imag, (grid_x, grid_y), method='linear')
+        m_ImEz = interpolate.griddata(xy, v_Ez6p.imag, (grid_x, grid_y), method='linear')
+        m_AbsE = interpolate.griddata(xy, v_E6p.real, (grid_x, grid_y), method='linear')
+        dx = grid_x[-1,0] - grid_x[-2,0]
+        dy = grid_y[0,-1] - grid_y[0,-2]
+        m_Ex = m_ReEx + 1j*m_ImEx
+        m_Ey = m_ReEy + 1j*m_ImEy
+        m_Ez = m_ReEz + 1j*m_ImEz
+        m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
+        m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
+        m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
+        m_AbsE = m_AbsE.reshape(n_pts_x,n_pts_y)
         v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
-        # v_plots = [del_x_Ex.real,del_x_Ey.real,del_x_Ez.real,del_x_Ex.imag,del_x_Ey.imag,del_x_Ez.imag,del_z_Ez.real]
         if EM_AC=='EM':
             v_labels = ["Re(E_x)","Re(E_y)","Re(E_z)","Im(E_x)","Im(E_y)","Im(E_z)","Abs(E)"]
         else:
@@ -320,6 +297,63 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         else:
             raise ValueError, "pdf_png must be either 'png' or 'pdf'."
         plt.close()
+
+
+        if EM_AC=='AC':
+            del_x_Ex = np.gradient(m_Ex, dx, axis=0)
+            del_y_Ex = np.gradient(m_Ex, dy, axis=1)
+            del_x_Ey = np.gradient(m_Ey, dx, axis=0)
+            del_y_Ey = np.gradient(m_Ey, dy, axis=1)
+            del_x_Ez = np.gradient(m_Ez, dx, axis=0)
+            del_y_Ez = np.gradient(m_Ez, dy, axis=1)
+            del_z_Ex = 1j*sim_wguide.q_acoustic*m_Ex
+            del_z_Ey = 1j*sim_wguide.q_acoustic*m_Ey
+            del_z_Ez = 1j*sim_wguide.q_acoustic*m_Ez
+            del_mat = np.array([[del_x_Ex, del_x_Ey, del_x_Ez, del_y_Ex, del_y_Ey, del_y_Ez, del_z_Ex, del_z_Ey, del_z_Ez]])
+            del_mat = np.abs(del_mat)
+            v_labels = ["Abs(S_xx)","Abs(S_xy)","Abs(S_xz)","Abs(S_yx)","Abs(S_yy)","Abs(S_yz)","Abs(S_zx)","Abs(S_zy)","Abs(S_zz)"]
+
+            # field plots
+            plt.clf()
+            plt.figure(figsize=(13,13))
+            for i_p,plot in enumerate(del_mat):
+                ax = plt.subplot(3,3,i_p+1)
+                im = plt.imshow(plot.T,cmap='inferno');
+                # no ticks
+                plt.xticks([])
+                plt.yticks([])
+                # limits
+                if xlim:
+                    ax.set_xlim(xlim*n_points,(1-xlim)*n_points)
+                if ylim:
+                    ax.set_ylim((1-ylim)*n_points,ylim*n_points)
+                # titles
+                plt.title(v_labels[i_p],fontsize=title_font)
+                # colorbar
+                divider = make_axes_locatable(ax)
+                cax = divider.append_axes("right", size="5%", pad=0.1)
+                cbar = plt.colorbar(im, cax=cax)
+                cbar.ax.tick_params(labelsize=title_font-10)
+
+            n_str = ''
+            if np.imag(sim_wguide.Eig_value[ival]) < 0:
+                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
+            else:
+                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
+                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
+            plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
+
+            if pdf_png=='png':
+                plt.savefig('fields/%(s)s_S_field_%(i)i%(add)s.png' %
+                    {'s' : EM_AC, 'i' : ival, 'add' : add_name})
+            elif pdf_png=='pdf':
+                plt.savefig('fields/%(s)s_S_field_%(i)i%(add)s.pdf' %
+                    {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
+            plt.close()
+
 
 
 #### Plot mesh #############################################
