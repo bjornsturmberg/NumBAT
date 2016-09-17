@@ -95,8 +95,8 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
     table_nod = sim_wguide.table_nod.T
     x_arr = sim_wguide.x_arr.T
 
-    for ival in [0]:
-    # for ival in range(len(sim_wguide.Eig_value)):
+    # for ival in [0]:
+    for ival in range(len(sim_wguide.Eig_value)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
@@ -165,7 +165,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
 
         xy = zip(v_x6p, v_y6p)
         grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
@@ -176,25 +176,42 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         m_ImEx = interpolate.griddata(xy, v_Ex6p.imag, (grid_x, grid_y), method='linear')
         m_ImEy = interpolate.griddata(xy, v_Ey6p.imag, (grid_x, grid_y), method='linear')
         m_ImEz = interpolate.griddata(xy, v_Ez6p.imag, (grid_x, grid_y), method='linear')
-        # m_Ex = m_ReEx + 1j*m_ImEx
-        # m_Ey = m_ReEy + 1j*m_ImEy
-        # m_Ez = m_ReEz + 1j*m_ImEz
-        # m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
-        # m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
-        # m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
-        # dx = grid_x[-1,0] - grid_x[-2,0]
-        # dy = grid_y[0,-1] - grid_y[0,-2]
-        # # print dx, dy
-        # del_x_Ex = np.gradient(m_Ez.imag, dy, axis=0)
+        dx = grid_x[-1,0] - grid_x[-2,0]
+        dy = grid_y[0,-1] - grid_y[0,-2]
+        # print dx, dy
+        m_Ex = m_ReEx + 1j*m_ImEx
+        m_Ey = m_ReEy + 1j*m_ImEy
+        m_Ez = m_ReEz + 1j*m_ImEz
+        m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
+        m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
+        m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
+        del_x_Ex = np.gradient(m_Ex, dx, axis=0)
+        del_y_Ex = np.gradient(m_Ex, dy, axis=1)
+        del_x_Ey = np.gradient(m_Ey, dx, axis=0)
+        del_y_Ey = np.gradient(m_Ey, dy, axis=1)
+        del_x_Ez = np.gradient(m_Ez, dx, axis=0)
+        del_y_Ez = np.gradient(m_Ez, dy, axis=1)
+        del_x_Ex_star = np.gradient(np.conj(m_Ex), dx, axis=0)
+        del_y_Ex_star = np.gradient(np.conj(m_Ex), dy, axis=1)
+        del_x_Ey_star = np.gradient(np.conj(m_Ey), dx, axis=0)
+        del_y_Ey_star = np.gradient(np.conj(m_Ey), dy, axis=1)
+        del_x_Ez_star = np.gradient(np.conj(m_Ez), dx, axis=0)
+        del_y_Ez_star = np.gradient(np.conj(m_Ez), dy, axis=1)
+        del_z_Ex = 1j*sim_wguide.q_acoustic*m_Ex
+        del_z_Ey = 1j*sim_wguide.q_acoustic*m_Ey
+        del_z_Ez = 1j*sim_wguide.q_acoustic*m_Ez
+        del_z_Ex_star = -1j*sim_wguide.q_acoustic*np.conj(m_Ex)
+        del_z_Ey_star = -1j*sim_wguide.q_acoustic*np.conj(m_Ey)
+        del_z_Ez_star = -1j*sim_wguide.q_acoustic*np.conj(m_Ez)
+
+        del_mat = np.array([[del_x_Ex, del_x_Ey, del_x_Ez], [del_y_Ex, del_y_Ey, del_y_Ez], [del_z_Ex, del_z_Ey, del_z_Ez]])
+        del_mat_star = np.array([[del_x_Ex_star, del_x_Ey_star, del_x_Ez_star], [del_y_Ex_star, del_y_Ey_star, del_y_Ez_star], [del_z_Ex_star, del_z_Ey_star, del_z_Ez_star]])
 
 
 
-
-
-
-
-        m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
+        # m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
+        v_plots = [del_x_Ex.real,del_x_Ey.real,del_x_Ez.real,del_x_Ex.imag,del_x_Ey.imag,del_x_Ez.imag,del_z_Ez.real]
         if EM_AC=='EM':
             v_labels = ["Re(E_x)","Re(E_y)","Re(E_z)","Im(E_x)","Im(E_y)","Im(E_z)","Abs(E)"]
         else:
