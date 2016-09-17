@@ -462,7 +462,7 @@ class Struct(object):
         return simmo
 
 
-    def calc_AC_modes(self, wl_nm, q_acoustic, num_modes, 
+    def calc_AC_modes(self, wl_nm, q_acoustic, num_modes,
                       shift_Hz=None, EM_sim=None, **args):
         """ Run a simulation to find the Struct's acoustic modes.
 
@@ -474,7 +474,7 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo_AC = Simmo(self, wl_nm, q_acoustic=q_acoustic, 
+        simmo_AC = Simmo(self, wl_nm, q_acoustic=q_acoustic,
                          num_modes=num_modes, shift_Hz=shift_Hz,
                          EM_sim=EM_sim)
 

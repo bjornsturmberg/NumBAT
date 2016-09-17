@@ -42,6 +42,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 # ww weight function
 # coeff numerical integration
 
+    # sim_AC_wguide.structure.eta_tensor[:,:,:,:] = 0
+    # sim_AC_wguide.structure.eta_tensor[1,1,1,1] = 1
+
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
     else:
@@ -148,6 +151,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 
     n_points = 100
+    # field mapping
     x_tmp = []
     y_tmp = []
     for i in np.arange(sim_AC_wguide.n_msh_pts):
@@ -174,106 +178,101 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     table_nod = sim_AC_wguide.table_nod.T
     x_arr = sim_AC_wguide.x_arr.T
 
+    alpha_py = np.zeros(len(sim_AC_wguide.Eig_value))
+    F = np.zeros(len(sim_AC_wguide.Eig_value))
     # for ival in [0]:
-    #     # dense triangulation with multiple points
-    #     v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
-    #     v_y6p = np.zeros(6*sim_AC_wguide.n_msh_el)
-    #     v_Ex6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-    #     v_Ey6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-    #     v_Ez6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-    #     v_triang6p = []
-
-    #     i = 0
-    #     for i_el in np.arange(sim_AC_wguide.n_msh_el):
-    #         # triangles
-    #         idx = np.arange(6*i_el, 6*(i_el+1))
-    #         triangles = [[idx[0], idx[3], idx[5]],
-    #                      [idx[1], idx[4], idx[3]],
-    #                      [idx[2], idx[5], idx[4]],
-    #                      [idx[3], idx[4], idx[5]]]
-    #         v_triang6p.extend(triangles)
-
-    #         for i_node in np.arange(6):
-    #             # index for the coordinates
-    #             i_ex = table_nod[i_el, i_node]-1
-    #             # values
-    #             v_x6p[i] = x_arr[i_ex, 0]
-    #             v_y6p[i] = x_arr[i_ex, 1]
-    #             v_Ex6p[i] = sim_EM_wguide.sol1[0,i_node,ival,i_el]
-    #             v_Ey6p[i] = sim_EM_wguide.sol1[1,i_node,ival,i_el]
-    #             v_Ez6p[i] = -1j*sim_EM_wguide.Eig_value[ival]*sim_EM_wguide.sol1[2,i_node,ival,i_el]
-    #             i += 1
-
-    #     v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
-    #                     np.abs(v_Ey6p)**2 +
-    #                     np.abs(v_Ez6p)**2)
-
-    eta = np.zeros(len(sim_AC_wguide.Eig_value), dtype=np.complex128)
     for ival in range(len(sim_AC_wguide.Eig_value)):
         # dense triangulation with multiple points
-        AC_v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
-        AC_v_y6p = np.zeros(6*sim_AC_wguide.n_msh_el)
-        AC_v_Ex6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        AC_v_Ey6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        AC_v_Ez6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
-        AC_v_triang6p = []
+        v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
+        v_y6p = np.zeros(6*sim_AC_wguide.n_msh_el)
+        v_Ex6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+        v_Ey6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+        v_Ez6p = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
+        v_triang6p = []
 
         i = 0
         for i_el in np.arange(sim_AC_wguide.n_msh_el):
-            # triangles
-            idx = np.arange(6*i_el, 6*(i_el+1))
-            triangles = [[idx[0], idx[3], idx[5]],
-                         [idx[1], idx[4], idx[3]],
-                         [idx[2], idx[5], idx[4]],
-                         [idx[3], idx[4], idx[5]]]
-            AC_v_triang6p.extend(triangles)
-
             for i_node in np.arange(6):
                 # index for the coordinates
                 i_ex = table_nod[i_el, i_node]-1
                 # values
-                AC_v_x6p[i] = x_arr[i_ex, 0]
-                AC_v_y6p[i] = x_arr[i_ex, 1]
-                AC_v_Ex6p[i] = sim_AC_wguide.sol1[0,i_node,ival,i_el]
-                AC_v_Ey6p[i] = sim_AC_wguide.sol1[1,i_node,ival,i_el]
-                AC_v_Ez6p[i] = sim_AC_wguide.sol1[2,i_node,ival,i_el]
+                v_x6p[i] = x_arr[i_ex, 0]
+                v_y6p[i] = x_arr[i_ex, 1]
+                v_Ex6p[i] = sim_AC_wguide.sol1[0,i_node,ival,i_el]
+                v_Ey6p[i] = sim_AC_wguide.sol1[1,i_node,ival,i_el]
+                v_Ez6p[i] = sim_AC_wguide.sol1[2,i_node,ival,i_el]
                 i += 1
 
-        # dense triangulation with unique points
-        AC_v_triang1p = []
-        for i_el in np.arange(sim_AC_wguide.n_msh_el):
-            # triangles
-            triangles = [[table_nod[i_el,0]-1,table_nod[i_el,3]-1,table_nod[i_el,5]-1],
-                         [table_nod[i_el,1]-1,table_nod[i_el,4]-1,table_nod[i_el,3]-1],
-                         [table_nod[i_el,2]-1,table_nod[i_el,5]-1,table_nod[i_el,4]-1],
-                         [table_nod[i_el,3]-1,table_nod[i_el,4]-1,table_nod[i_el,5]-1]]
-            AC_v_triang1p.extend(triangles)
+        xy = zip(v_x6p, v_y6p)
+        grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
+        from scipy import interpolate
+        m_ReEx = interpolate.griddata(xy, v_Ex6p.real, (grid_x, grid_y), method='linear')
+        m_ReEy = interpolate.griddata(xy, v_Ey6p.real, (grid_x, grid_y), method='linear')
+        m_ReEz = interpolate.griddata(xy, v_Ez6p.real, (grid_x, grid_y), method='linear')
+        m_ImEx = interpolate.griddata(xy, v_Ex6p.imag, (grid_x, grid_y), method='linear')
+        m_ImEy = interpolate.griddata(xy, v_Ey6p.imag, (grid_x, grid_y), method='linear')
+        m_ImEz = interpolate.griddata(xy, v_Ez6p.imag, (grid_x, grid_y), method='linear')
+        m_Ex = m_ReEx + 1j*m_ImEx
+        m_Ey = m_ReEy + 1j*m_ImEy
+        m_Ez = m_ReEz + 1j*m_ImEz
+        m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
+        m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
+        m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
 
-        # triangulations
-        triang6p = matplotlib.tri.Triangulation(AC_v_x6p,AC_v_y6p,AC_v_triang6p)
-        triang1p = matplotlib.tri.Triangulation(x_arr[:,0],x_arr[:,1],AC_v_triang1p)
+        dx = grid_x[-1,0] - grid_x[-2,0]
+        dy = grid_y[0,-1] - grid_y[0,-2]
+        # print dx, dy
+        del_x_Ex = np.gradient(m_Ex, dx, axis=0)
+        del_y_Ex = np.gradient(m_Ex, dy, axis=1)
+        del_x_Ey = np.gradient(m_Ey, dx, axis=0)
+        del_y_Ey = np.gradient(m_Ey, dy, axis=1)
+        del_x_Ez = np.gradient(m_Ez, dx, axis=0)
+        del_y_Ez = np.gradient(m_Ez, dy, axis=1)
+        del_x_Ex_star = np.gradient(np.conj(m_Ex), dx, axis=0)
+        del_y_Ex_star = np.gradient(np.conj(m_Ex), dy, axis=1)
+        del_x_Ey_star = np.gradient(np.conj(m_Ey), dx, axis=0)
+        del_y_Ey_star = np.gradient(np.conj(m_Ey), dy, axis=1)
+        del_x_Ez_star = np.gradient(np.conj(m_Ez), dx, axis=0)
+        del_y_Ez_star = np.gradient(np.conj(m_Ez), dy, axis=1)
+        del_z_Ex = 1j*q_acoustic*m_Ex
+        del_z_Ey = 1j*q_acoustic*m_Ey
+        del_z_Ez = 1j*q_acoustic*m_Ez
+        del_z_Ex_star = -1j*q_acoustic*np.conj(m_Ex)
+        del_z_Ey_star = -1j*q_acoustic*np.conj(m_Ey)
+        del_z_Ez_star = -1j*q_acoustic*np.conj(m_Ez)
 
-        # building interpolators: triang1p for the finder, triang6p for the values
-        finder = matplotlib.tri.TrapezoidMapTriFinder(triang1p)
-        AC_ReEx = matplotlib.tri.LinearTriInterpolator(triang6p,AC_v_Ex6p.real,trifinder=finder)
-        AC_ImEx = matplotlib.tri.LinearTriInterpolator(triang6p,AC_v_Ex6p.imag,trifinder=finder)
-        AC_ReEy = matplotlib.tri.LinearTriInterpolator(triang6p,AC_v_Ey6p.real,trifinder=finder)
-        AC_ImEy = matplotlib.tri.LinearTriInterpolator(triang6p,AC_v_Ey6p.imag,trifinder=finder)
-        AC_ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,AC_v_Ez6p.real,trifinder=finder)
-        AC_ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,AC_v_Ez6p.imag,trifinder=finder)
+        del_mat = np.array([[del_x_Ex, del_x_Ey, del_x_Ez], [del_y_Ex, del_y_Ey, del_y_Ez], [del_z_Ex, del_z_Ey, del_z_Ez]])
+        del_mat_star = np.array([[del_x_Ex_star, del_x_Ey_star, del_x_Ez_star], [del_y_Ex_star, del_y_Ey_star, del_y_Ez_star], [del_z_Ex_star, del_z_Ey_star, del_z_Ez_star]])
 
-        ### plotting
-        # interpolated fields
-        AC_m_ReEx = AC_ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        AC_m_ReEy = AC_ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        AC_m_ReEz = AC_ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        AC_m_ImEx = AC_ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        AC_m_ImEy = AC_ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        AC_m_ImEz = AC_ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        for i in range(3):
+            for j in range(3):
+                for k in range(3):
+                    for l in range(3):
+                        # print np.shape(del_mat[i,j])
+                        integrand = del_mat[i,j]*del_mat_star[k,l]*sim_AC_wguide.structure.eta_tensor[i,j,k,l]
+                        # do a 1-D integral over every row
+                        #-----------------------------------
+                        I = np.zeros( n_pts_x )
+                        for r in range(n_pts_x):
+                            I[r] = np.trapz( np.real(integrand[r,:]), dx=dy )
+                        # then an integral over the result
+                        #-----------------------------------
+                        F[ival] += np.trapz( np.real(I), dx=dx )
+                        # Adding imag comp
+                        I = np.zeros( n_pts_x )
+                        for r in range(n_pts_x):
+                            I[r] = np.trapz( np.imag(integrand[r,:]), dx=dy )
+                        F[ival] += np.trapz( np.imag(I), dx=dx )
+
+    alpha_py = F*sim_AC_wguide.Omega_AC**2/sim_AC_wguide.AC_mode_overlap
+    alpha_py = np.real(alpha_py)
+
+    print alpha
+    print alpha_py
+    print (alpha_py.real - alpha)/alpha
 
 
 
-    print np.shape(AC_m_ImEz)
     return SBS_gain, Q_PE, Q_MB, alpha
 
 

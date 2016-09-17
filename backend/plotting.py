@@ -170,8 +170,22 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         xy = zip(v_x6p, v_y6p)
         grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
         from scipy import interpolate
+        m_ReEx = interpolate.griddata(xy, v_Ex6p.real, (grid_x, grid_y), method='linear')
+        m_ReEy = interpolate.griddata(xy, v_Ey6p.real, (grid_x, grid_y), method='linear')
+        m_ReEz = interpolate.griddata(xy, v_Ez6p.real, (grid_x, grid_y), method='linear')
+        m_ImEx = interpolate.griddata(xy, v_Ex6p.imag, (grid_x, grid_y), method='linear')
+        m_ImEy = interpolate.griddata(xy, v_Ey6p.imag, (grid_x, grid_y), method='linear')
         m_ImEz = interpolate.griddata(xy, v_Ez6p.imag, (grid_x, grid_y), method='linear')
-        m_ImEz = m_ImEz.reshape(n_pts_x,n_pts_y)
+        # m_Ex = m_ReEx + 1j*m_ImEx
+        # m_Ey = m_ReEy + 1j*m_ImEy
+        # m_Ez = m_ReEz + 1j*m_ImEz
+        # m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
+        # m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
+        # m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
+        # dx = grid_x[-1,0] - grid_x[-2,0]
+        # dy = grid_y[0,-1] - grid_y[0,-2]
+        # # print dx, dy
+        # del_x_Ex = np.gradient(m_Ez.imag, dy, axis=0)
 
 
 
