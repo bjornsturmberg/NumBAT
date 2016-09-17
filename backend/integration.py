@@ -275,7 +275,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                         I[r] = np.trapz( np.imag(integrand_AC[r,:]), dx=dy )
                     F_AC[ival] += 1j*np.trapz( I, dx=dx )
                     for j in range(3):
-                        # TODO: check switch of del and del star
                         integrand = del_mat[i,j]*del_mat_star[k,l]*sim_AC_wguide.structure.eta_tensor[i,j,k,l]
                         # do a 1-D integral over every row
                         I = np.zeros( n_pts_x )
@@ -292,10 +291,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
                         integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*np.conj(E_mat[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
                         I = np.zeros( n_pts_x )
-                        # if k == 2:
-                        #     for r in range(n_pts_x):
-                        #         I[r] = np.trapz( np.imag(integrand_PE[r,:]), dx=dy )
-                        # else:
                         for r in range(n_pts_x):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
                         F_PE[ival] += np.trapz( I, dx=dx )
@@ -304,38 +299,28 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                             I[r] = np.trapz( np.imag(integrand_PE[r,:]), dx=dy )
                         F_PE[ival] += 1j*np.trapz( I, dx=dx )
 
-
-    alpha_py = F*sim_AC_wguide.Omega_AC**2/sim_AC_wguide.AC_mode_overlap
-    alpha_py = np.real(alpha_py)
-
     AC_py = -2j*F_AC*sim_AC_wguide.Omega_AC
     # print AC_py
     # print sim_AC_wguide.AC_mode_overlap
     print (AC_py-sim_AC_wguide.AC_mode_overlap)/sim_AC_wguide.AC_mode_overlap
 
-
+    alpha_py = F*sim_AC_wguide.Omega_AC**2/sim_AC_wguide.AC_mode_overlap
+    alpha_py = np.real(alpha_py)
     # print alpha
     # print alpha_py
     print (alpha_py.real - alpha)/alpha
 
     eps_0 = 8.854187817e-12
     Q_PE_py = F_PE*eps_0
-
     print Q_PE[0,0,:]
     print Q_PE_py
-    print np.abs((Q_PE_py - Q_PE[0,0,:])/Q_PE[0,0,:])
-    # print (Q_PE_py.real - Q_PE[0,0,:].real)/Q_PE[0,0,:].real
-    # print (Q_PE_py.imag - Q_PE[0,0,:].imag)/Q_PE[0,0,:].imag
+    print np.abs((Q_PE_py - Q_PE[0,0,:])/np.max(Q_PE[0,0,:]))
 
-    # for ac in range(len(Q_PE_py)):
-    #     Q_PE[0,0,ac] = Q_PE_py[ac]
-    # alpha = alpha_py
+    for ac in range(len(Q_PE_py)):
+        Q_PE[0,0,ac] = Q_PE_py[ac]
+    alpha = alpha_py
 
 
-
-
-
-    # print Q_PE[0,0,2]
     # Q_PE=0
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
     Q = Q_PE + Q_MB
