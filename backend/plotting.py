@@ -10,6 +10,7 @@ import numpy as np
 from scipy import sqrt
 import subprocess
 from matplotlib.mlab import griddata
+from scipy import interpolate
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
@@ -83,7 +84,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
     v_y=np.zeros(n_pts_x*n_pts_y)
     i=0
     for x in np.linspace(x_min,x_max,n_pts_x):
-        for y in np.linspace(y_max,y_min,n_pts_y):
+        for y in np.linspace(y_min,y_max,n_pts_y):
             v_x[i] = x
             v_y[i] = y
             i+=1
@@ -133,7 +134,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
                         np.abs(v_Ey6p)**2 +
                         np.abs(v_Ez6p)**2)
 
-        ### Interpolate onto triangular grid - honest to FEM elements
+        # ### Interpolate onto triangular grid - honest to FEM elements
         # # dense triangulation with unique points
         # v_triang1p = []
         # for i_el in np.arange(sim_wguide.n_msh_el):
@@ -157,8 +158,6 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         # ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
         # ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
         # AbsE = matplotlib.tri.LinearTriInterpolator(triang6p,v_E6p,trifinder=finder)
-
-        # ### plotting
         # # interpolated fields
         # m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
         # m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
@@ -166,11 +165,12 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         # m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
         # m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
         # m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        # m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
+
 
         ### Interpolate onto rectangular Cartesian grid
         xy = zip(v_x6p, v_y6p)
         grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
-        from scipy import interpolate
         m_ReEx = interpolate.griddata(xy, v_Ex6p.real, (grid_x, grid_y), method='linear')
         m_ReEy = interpolate.griddata(xy, v_Ey6p.real, (grid_x, grid_y), method='linear')
         m_ReEz = interpolate.griddata(xy, v_Ez6p.real, (grid_x, grid_y), method='linear')
@@ -187,7 +187,9 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
         m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
         m_AbsE = m_AbsE.reshape(n_pts_x,n_pts_y)
-        v_plots = [m_ReEx,m_ReEy,m_ReEz,m_ImEx,m_ImEy,m_ImEz,m_AbsE]
+
+        # Flip y order as imshow has origin at top left
+        v_plots = [m_ReEx[:,::-1],m_ReEy[:,::-1],m_ReEz[:,::-1],m_ImEx[:,::-1],m_ImEy[:,::-1],m_ImEz[:,::-1],m_AbsE[:,::-1]]
         if EM_AC=='EM':
             v_labels = ["Re(E_x)","Re(E_y)","Re(E_z)","Im(E_x)","Im(E_y)","Im(E_z)","Abs(E)"]
         else:
@@ -200,7 +202,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
 
         # field plots
         plt.clf()
-        plt.figure(figsize=(13,13))
+        fig = plt.figure(figsize=(15,15))
         for i_p,plot in enumerate(v_plots):
             ax = plt.subplot(3,3,i_p+1)
             # im = plt.imshow(plot.T,cmap='viridis');
@@ -215,7 +217,7 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
             if ylim:
                 ax.set_ylim((1-ylim)*n_points,ylim*n_points)
             # titles
-            plt.title(v_labels[i_p],fontsize=title_font)
+            plt.title(v_labels[i_p],fontsize=title_font-4)
             # colorbar
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.1)
@@ -251,11 +253,10 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         if ylim:
             ax.set_ylim((1-ylim)*ymin, ylim*ymin)
         # titles
-        plt.title('Transverse',fontsize=title_font)
+        plt.title('Transverse',fontsize=title_font-4)
         # divider = make_axes_locatable(ax)
         # cax = divider.append_axes("right", size="5%", pad=0.1)
         # cbar = plt.colorbar(im, cax=cax)
-
 
         if EM_AC=='EM':
             n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_m / (2*np.pi)
@@ -283,7 +284,9 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
                     {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
         # plt.text(10, 0.5, k_str, fontsize=title_font)
-        plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
+        plt.suptitle(k_str + '   ' + n_str+"\n", fontsize=title_font)
+        # plt.tight_layout(pad=2.5, w_pad=0.5, h_pad=1.0)
+        fig.set_tight_layout(True)
 
         if not os.path.exists("fields"):
             os.mkdir("fields")
@@ -309,15 +312,16 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
             del_z_Ex = 1j*sim_wguide.q_acoustic*m_Ex
             del_z_Ey = 1j*sim_wguide.q_acoustic*m_Ey
             del_z_Ez = 1j*sim_wguide.q_acoustic*m_Ez
-            del_mat = np.array([[del_x_Ex, del_x_Ey, del_x_Ez, del_y_Ex, del_y_Ey, del_y_Ez, del_z_Ex, del_z_Ey, del_z_Ez]])
-            del_mat = np.abs(del_mat)
-            v_labels = ["Abs(S_xx)","Abs(S_xy)","Abs(S_xz)","Abs(S_yx)","Abs(S_yy)","Abs(S_yz)","Abs(S_zx)","Abs(S_zy)","Abs(S_zz)"]
+
+            # Flip y order as imshow has origin at top left
+            del_mat = np.array([del_x_Ex[:,::-1].real, del_x_Ey[:,::-1].real, del_x_Ez[:,::-1].real, del_x_Ex[:,::-1].imag, del_x_Ey[:,::-1].imag, del_x_Ez[:,::-1].imag, del_y_Ex[:,::-1].real, del_y_Ey[:,::-1].real, del_y_Ez[:,::-1].real, del_y_Ex[:,::-1].imag, del_y_Ey[:,::-1].imag, del_y_Ez[:,::-1].imag, del_z_Ex[:,::-1].real, del_z_Ey[:,::-1].real, del_z_Ez[:,::-1].real, del_z_Ex[:,::-1].imag, del_z_Ey[:,::-1].imag, del_z_Ez[:,::-1].imag])
+            v_labels = ["Re(S_xx)","Re(S_xy)","Re(S_xz)","Im(S_xx)","Im(S_xy)","Im(S_xz)","Re(S_yx)","Re(S_yy)","Re(S_yz)","Im(S_yx)","Im(S_yy)","Im(S_yz)","Re(S_zx)","Re(S_zy)","Re(S_zz)","Im(S_zx)","Im(S_zy)","Im(S_zz)"]
 
             # field plots
             plt.clf()
-            plt.figure(figsize=(13,13))
+            fig = plt.figure(figsize=(15,30))
             for i_p,plot in enumerate(del_mat):
-                ax = plt.subplot(3,3,i_p+1)
+                ax = plt.subplot(6,3,i_p+1)
                 im = plt.imshow(plot.T,cmap='inferno');
                 # no ticks
                 plt.xticks([])
@@ -328,13 +332,14 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
                 if ylim:
                     ax.set_ylim((1-ylim)*n_points,ylim*n_points)
                 # titles
-                plt.title(v_labels[i_p],fontsize=title_font)
+                plt.title(v_labels[i_p],fontsize=title_font-4)
                 # colorbar
                 divider = make_axes_locatable(ax)
                 cax = divider.append_axes("right", size="5%", pad=0.1)
-                cbar = plt.colorbar(im, cax=cax)
+                cbar = plt.colorbar(im, cax=cax, format='%.2e')
                 cbar.ax.tick_params(labelsize=title_font-10)
-
+            # plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+            fig.set_tight_layout(True)
             n_str = ''
             if np.imag(sim_wguide.Eig_value[ival]) < 0:
                 k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
