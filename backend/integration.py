@@ -6,6 +6,7 @@
 """
 
 import numpy as np
+from scipy import interpolate
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
@@ -75,7 +76,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
             for n in range(nnodes):
                 for x in range(ncomps):
                     trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
-                    # trimmed_EM_field[x,n,ival,el] = 1
     # sim_EM_wguide.sol1 = trimmed_EM_field
     # sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el
     # sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts
@@ -108,9 +108,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
     alpha = np.real(alpha)
-    # print alpha
-    # alpha2 = np.real(alpha2)
-    # print (alpha2 - alpha)/alpha2
+
 
 ### Calc Q_photoelastic Eq. 33
     try:
@@ -136,10 +134,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
-
-
-
-    from scipy import interpolate
+### Calc AC mode energy, alpha, Q_photoelastic in python
+    # Note: only picking a single EM mode
+    ival_E=0
     n_points = 100
     # field mapping
     x_tmp = []
@@ -184,8 +181,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         v_Ez6p_E = np.zeros(6*sim_AC_wguide.n_msh_el, dtype=np.complex128)
         v_triang6p = []
 
-        ival_E=0
-
         i = 0
         for i_el in np.arange(sim_AC_wguide.n_msh_el):
             for i_node in np.arange(6):
@@ -216,6 +211,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
         m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
         m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
+        u_mat = np.array([m_Ex, m_Ey, m_Ez])
         m_ReEx_E = interpolate.griddata(xy, v_Ex6p_E.real, (grid_x, grid_y), method='cubic')
         m_ReEy_E = interpolate.griddata(xy, v_Ey6p_E.real, (grid_x, grid_y), method='cubic')
         m_ReEz_E = interpolate.griddata(xy, v_Ez6p_E.real, (grid_x, grid_y), method='cubic')
@@ -225,18 +221,13 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         m_Ex_E = m_ReEx_E + 1j*m_ImEx_E
         m_Ey_E = m_ReEy_E + 1j*m_ImEy_E
         m_Ez_E = -1j*sim_EM_wguide.Eig_value[ival_E]*(m_ReEz_E + 1j*m_ImEz_E)
-        # m_Ez_E = sim_EM_wguide.Eig_value[ival_E]*(m_ReEz_E + 1j*m_ImEz_E)
-        # m_Ez_E = m_ReEz_E + 1j*m_ImEz_E
         m_Ex_E = m_Ex_E.reshape(n_pts_x,n_pts_y)
         m_Ey_E = m_Ey_E.reshape(n_pts_x,n_pts_y)
         m_Ez_E = m_Ez_E.reshape(n_pts_x,n_pts_y)
         E_mat = np.array([m_Ex_E, m_Ey_E, m_Ez_E])
 
-        u_mat = np.array([m_Ex, m_Ey, m_Ez])
-
         dx = grid_x[-1,0] - grid_x[-2,0]
         dy = grid_y[0,-1] - grid_y[0,-2]
-        # print dx, dy
         del_x_Ex = np.gradient(m_Ex, dx, axis=0)
         del_y_Ex = np.gradient(m_Ex, dy, axis=1)
         del_x_Ey = np.gradient(m_Ey, dx, axis=0)
