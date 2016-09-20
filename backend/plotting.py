@@ -50,7 +50,7 @@ def zeros_int_str(zero_int):
 
 
 #### Standard plotting of spectra #############################################
-def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim=None,
+def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=None,
                   EM_AC='EM', pdf_png='png', add_name=''):
     """ Plot EM mode fields.
     NOTE: z component of EM field needs comes scaled by 1/(i beta),
@@ -80,6 +80,8 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
     area = abs((x_max-x_min)*(y_max-y_min))
     n_pts_x = int(n_points*abs(x_max-x_min)/np.sqrt(area))
     n_pts_y = int(n_points*abs(y_max-y_min)/np.sqrt(area))
+    # n_pts_x = 100
+    # n_pts_y = 100
     v_x=np.zeros(n_pts_x*n_pts_y)
     v_y=np.zeros(n_pts_x*n_pts_y)
     i=0
@@ -187,6 +189,89 @@ def plt_mode_fields(sim_wguide, n_points=1000, quiver_steps=100, xlim=None, ylim
         m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
         m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
         m_AbsE = m_AbsE.reshape(n_pts_x,n_pts_y)
+
+        m_ReEx = np.real(m_Ex)
+        m_ReEy = np.real(m_Ey)
+        m_ReEz = np.real(m_Ez)
+        m_ImEx = np.imag(m_Ex)
+        m_ImEy = np.imag(m_Ey)
+        m_ImEz = np.imag(m_Ez)
+
+        # # Load CW Comsol fields
+        # import csv
+        # with open('ac_mode_1-5.dat', 'rb') as csvfile:
+        #     spamreader = csv.reader(csvfile, delimiter=' ')#, quotechar='|')
+        #     for header_rows in range(9):
+        #         spamreader.next()
+        #     x_coord = []; y_coord = []
+        #     u0_x = []; u0_y = []; u0_z = [] 
+        #     u1_x = []; u1_y = []; u1_z = []
+        #     u2_x = []; u2_y = []; u2_z = []
+        #     u3_x = []; u3_y = []; u3_z = []
+        #     for row in spamreader:
+        #         row = filter(None, row)
+        #         row = [float(x) for x in row]
+        #         x_coord.append(row[0])
+        #         y_coord.append(row[1])
+        #         u0_x.append(row[2] + 1j*row[3])
+        #         u0_y.append(row[4] + 1j*row[5])
+        #         u0_z.append(row[6] + 1j*row[7])
+        #         u1_x.append(row[8] + 1j*row[9])
+        #         u1_y.append(row[10] + 1j*row[11])
+        #         u1_z.append(row[12] + 1j*row[13])
+        #         u2_x.append(row[14] + 1j*row[15])
+        #         u2_y.append(row[16] + 1j*row[17])
+        #         u2_z.append(row[18] + 1j*row[19])
+        #         u3_x.append(row[20] + 1j*row[21])
+        #         u3_y.append(row[22] + 1j*row[23])
+        #         u3_z.append(row[24] + 1j*row[25])
+
+        # u0_x = np.array(u0_x).reshape(100,100)
+        # u0_y = np.array(u0_y).reshape(100,100)
+        # u0_z = np.array(u0_z).reshape(100,100)
+        # u1_x = np.array(u1_x).reshape(100,100)
+        # u1_y = np.array(u1_y).reshape(100,100)
+        # u1_z = np.array(u1_z).reshape(100,100)
+        # u2_x = np.array(u2_x).reshape(100,100)
+        # u2_y = np.array(u2_y).reshape(100,100)
+        # u2_z = np.array(u2_z).reshape(100,100)
+        # u3_x = np.array(u3_x).reshape(100,100)
+        # u3_y = np.array(u3_y).reshape(100,100)
+        # u3_z = np.array(u3_z).reshape(100,100)
+
+        # # Normalise in same way to NumBAT
+        # u0_x = u0_x/np.max(abs(u0_z))
+        # u0_y = u0_y/np.max(abs(u0_z))
+        # u0_z = u0_z/np.max(abs(u0_z))
+        # u1_x = u1_x/np.max(abs(u1_y))
+        # u1_y = u1_y/np.max(abs(u1_y))
+        # u1_z = u1_z/np.max(abs(u1_y))
+        # u2_x = u2_x/np.max(abs(u2_x))
+        # u2_y = u2_y/np.max(abs(u2_x))
+        # u2_z = u2_z/np.max(abs(u2_x))
+        # u3_x = u3_x/np.max(abs(u3_y))
+        # u3_y = u3_y/np.max(abs(u3_y))
+        # u3_z = u3_z/np.max(abs(u3_y))
+
+        # u0_x = np.swapaxes(u0_x,0,1)
+        # u0_y = np.swapaxes(u0_y,0,1)
+        # u0_z = np.swapaxes(u0_z,0,1)
+        # u1_x = np.swapaxes(u1_x,0,1)
+        # u1_y = np.swapaxes(u1_y,0,1)
+        # u1_z = np.swapaxes(u1_z,0,1)
+        # u2_x = np.swapaxes(u2_x,0,1)
+        # u2_y = np.swapaxes(u2_y,0,1)
+        # u2_z = np.swapaxes(u2_z,0,1)
+        # u3_x = np.swapaxes(u3_x,0,1)
+        # u3_y = np.swapaxes(u3_y,0,1)
+        # u3_z = np.swapaxes(u3_z,0,1)
+
+        # m_ReEx = m_ReEx-np.real(u0_x)
+        # m_ReEy = m_ReEy-np.real(u0_y)
+        # m_ReEz = m_ReEz-np.real(u0_z)
+        # m_ImEx = m_ImEx-np.imag(u0_x)
+        # m_ImEy = m_ImEy-np.imag(u0_y)
+        # m_ImEz = m_ImEz-np.imag(u0_z)
 
         # Flip y order as imshow has origin at top left
         v_plots = [m_ReEx[:,::-1],m_ReEy[:,::-1],m_ReEz[:,::-1],m_ImEx[:,::-1],m_ImEy[:,::-1],m_ImEz[:,::-1],m_AbsE[:,::-1]]

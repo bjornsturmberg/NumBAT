@@ -93,13 +93,13 @@ q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
 # print q_acoustic*inc_a_x*1e-9/np.pi
 # Forward (intramode) SBS
 # q_acoustic = 0.0
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
-#     num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)# shift_Hz=18e9)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
+    num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)# shift_Hz=18e9)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-npzfile = np.load('wguide_data_AC.npz')
-sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', add_name='dels')
+# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')#, add_name='-check')
 
 
 # # Try to test with a simple field we know the answer to
@@ -163,9 +163,14 @@ print 'SBS_gain 2 / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310
 print 'SBS_gain 4 / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
 print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
 
-# SBS_gain[0,0,2] = (1./98.70e-6)*310.25
-# SBS_gain[0,0,4] = (1./27.75e-6)*2464.98
-# SBS_gain[0,0,8] = (1./43.90e-6)*36.55
+SBS_gain[0,0,2] = (1./98.70e-6)*310.25
+SBS_gain[0,0,4] = (1./27.75e-6)*2464.98
+SBS_gain[0,0,8] = (1./43.90e-6)*36.55
+
+alpha = sim_AC_wguide.Omega_AC/1000
+print alpha[2]*310.25
+print alpha[4]*2464.98
+print alpha[8]*36.55
 
 import matplotlib
 matplotlib.use('pdf')
