@@ -49,6 +49,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # sim_AC_wguide.structure.p_tensor[0,0,0,2] = 1
     # sim_AC_wguide.structure.p_tensor[:,:,0,0] = 1
     # sim_AC_wguide.structure.p_tensor[:,:,0,2] = 1
+    # sim_AC_wguide.structure.eta_tensor[0,0,1,1,0] = 0
+    # sim_AC_wguide.structure.eta_tensor[0,0,2,2,0] = 0
+    # sim_AC_wguide.structure.eta_tensor[1,1,0,0,0] = 0
+    # sim_AC_wguide.structure.eta_tensor[1,1,2,2,0] = 0
+    # sim_AC_wguide.structure.eta_tensor[2,2,0,0,0] = 0
+    # sim_AC_wguide.structure.eta_tensor[2,2,1,1,0] = 0
 
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
@@ -144,7 +150,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         for header_rows in range(9):
             spamreader.next()
         x_coord = []; y_coord = []
-        u0_x = []; u0_y = []; u0_z = [] 
+        u0_x = []; u0_y = []; u0_z = []
         u1_x = []; u1_y = []; u1_z = []
         u2_x = []; u2_y = []; u2_z = []
         u3_x = []; u3_y = []; u3_z = []
@@ -409,7 +415,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                         I[r] = np.trapz( np.imag(integrand_AC[r,:]), dx=dy )
                     F_AC_CW[ival] += 1j*np.trapz( I, dx=dx )
                 ### CW - end
- 
+
                     for j in range(3):
                         integrand = del_mat[i,j]*del_mat_star[k,l]*sim_AC_wguide.structure.eta_tensor[i,j,k,l]
                         # do a 1-D integral over every row
