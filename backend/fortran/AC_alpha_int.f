@@ -4,7 +4,7 @@ C
       subroutine AC_alpha_int (nval, 
      *  nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, eta_tensor, beta_AC, Omega_AC, soln_AC,
-     *  AC_mode_overlap, debug, overlap, basis_overlap)
+     *  AC_mode_overlap, debug, overlap)
 c
       implicit none
       integer*8 nval, ival
@@ -59,7 +59,7 @@ Cf2py depend(eta_tensor) nb_typ_el
 Cf2py depend(Omega_AC) nval
 Cf2py depend(AC_mode_overlap) nval
 C
-Cf2py intent(out) overlap, basis_overlap
+Cf2py intent(out) overlap
 C
 C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC

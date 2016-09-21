@@ -43,19 +43,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 # ww weight function
 # coeff numerical integration
 
-    # sim_AC_wguide.structure.p_tensor[:,:,:,:] = 0
-    # sim_AC_wguide.structure.p_tensor[0,0,2,2] = 1
-    # sim_AC_wguide.structure.p_tensor[0,0,0,1] = 1
-    # sim_AC_wguide.structure.p_tensor[0,0,0,2] = 1
-    # sim_AC_wguide.structure.p_tensor[:,:,0,0] = 1
-    # sim_AC_wguide.structure.p_tensor[:,:,0,2] = 1
-    # sim_AC_wguide.structure.eta_tensor[0,0,1,1,0] = 0
-    # sim_AC_wguide.structure.eta_tensor[0,0,2,2,0] = 0
-    # sim_AC_wguide.structure.eta_tensor[1,1,0,0,0] = 0
-    # sim_AC_wguide.structure.eta_tensor[1,1,2,2,0] = 0
-    # sim_AC_wguide.structure.eta_tensor[2,2,0,0,0] = 0
-    # sim_AC_wguide.structure.eta_tensor[2,2,1,1,0] = 0
-
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
     else:
@@ -98,14 +85,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 ### Calc alpha (loss) Eq. 45
     try:
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
-            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
+            alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
                 sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
                 q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
                 sim_AC_wguide.AC_mode_overlap)
         elif sim_EM_wguide.structure.inc_shape == 'circular':
-            alpha, basis_overlap_alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
+            alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
                 sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
@@ -563,16 +550,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     print "Q_PE_CW", Q_PE_py_CW[0,0,:]
     print "Q_PE/Q_PE_py", Q_PE[0,0,:]/Q_PE_py[0,0,:]
     print "Q_PE_py/Q_PE_CW", Q_PE_py[0,0,:]/Q_PE_py_CW[0,0,:]
-    # print np.abs((Q_PE_py[0,0,:] - Q_PE[0,0,:])/np.max(Q_PE[0,0,:]))
-    # print np.abs((Q_PE_py[0,0,:] - Q_PE_py_CW[0,0,:])/np.max(Q_PE[0,0,:]))
-
-    # for E in E_mat:
-    #     print ''
-    #     print np.max(abs(np.real(E)))
-    #     print np.max(abs(np.imag(E)))
-    #     print np.max(abs(np.imag(E*np.conj(E))))
-    #     print np.max(abs(np.imag(E*(E))))
-    #     print ''
 
     P1_CW = 1.954501164316765E-14
 
