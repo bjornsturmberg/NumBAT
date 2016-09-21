@@ -142,23 +142,23 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # print 1307.0*2*(1./98.70e-6)/(2*np.pi*12.34e9)
 # print "Q", sim_AC_wguide.Omega_AC/(2*alpha)
 
-print 'lc_bkg = ', wguide.lc
-print 'lc_2 = ', wguide.lc2
-print 'lc_3 = ', wguide.lc3
+# print 'lc_bkg = ', wguide.lc
+# print 'lc_2 = ', wguide.lc2
+# print 'lc_3 = ', wguide.lc3
 
 # print 'alpha 2 / CW alpha', alpha[2]/(1./98.70e-6)
 # print 'alpha 4 / CW alpha', alpha[4]/(1./27.75e-6)
 # print 'alpha 8 / CW alpha', alpha[8]/(1./43.90e-6)
 
-print 'SBS_gain 2', SBS_gain[0,0,2]/alpha[2]
-print 'SBS_gain 4', SBS_gain[0,0,4]/alpha[4]
-print 'SBS_gain 8', SBS_gain[0,0,8]/alpha[8]
-print 'SBS_gain 2 / CW gain', SBS_gain[0,0,2]/alpha[2]/1141#310.25
-print 'SBS_gain 4 / CW gain', SBS_gain[0,0,4]/alpha[4]/6000#2464.98
-print 'SBS_gain 8 / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
-print 'SBS_gain 2 / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
-print 'SBS_gain 4 / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
-print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
+# print 'SBS_gain 2', SBS_gain[0,0,2]/alpha[2]
+# print 'SBS_gain 4', SBS_gain[0,0,4]/alpha[4]
+# print 'SBS_gain 8', SBS_gain[0,0,8]/alpha[8]
+# print 'SBS_gain 2 / CW gain', SBS_gain[0,0,2]/alpha[2]/1141#310.25
+# print 'SBS_gain 4 / CW gain', SBS_gain[0,0,4]/alpha[4]/6000#2464.98
+# print 'SBS_gain 8 / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
+# print 'SBS_gain 2 / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
+# print 'SBS_gain 4 / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
+# print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
 
 # SBS_gain[0,0,2] = (1./98.70e-6)*310.25
 # SBS_gain[0,0,4] = (1./27.75e-6)*2464.98

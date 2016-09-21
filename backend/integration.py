@@ -233,6 +233,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     E_y_CW = np.swapaxes(E_y_CW,0,1)
     E_z_CW = np.swapaxes(E_z_CW,0,1)
     E_mat_CW = np.array([E_x_CW,E_y_CW,E_z_CW])
+    # E_mat_CW = np.array([np.zeros(np.shape(E_z_CW)),E_y_CW,E_z_CW])
+    # E_mat_CW = np.array([np.zeros(np.shape(E_z_CW)),np.zeros(np.shape(E_z_CW)),np.zeros(np.shape(E_z_CW))])
+    # E_mat_CW_2 = np.array([E_x_CW,E_y_CW,E_z_CW])
+    # E_mat_CW_2 = np.array([np.zeros(np.shape(E_z_CW)),E_y_CW,E_z_CW])
+    # E_mat_CW_2 = np.array([np.zeros(np.shape(E_z_CW)),np.zeros(np.shape(E_z_CW)),np.zeros(np.shape(E_z_CW))])
+    # print np.max(abs(E_mat_CW[0]))
+    # print np.max(abs(E_mat_CW[1]))
+    # print np.max(abs(E_mat_CW[2]))
 
     # with open('ac_stress_viscstress.dat', 'rb') as csvfile:
     #     spamreader = csv.reader(csvfile, delimiter=' ')#, quotechar='|')
@@ -508,16 +516,23 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                             I[r] = np.trapz( np.imag(integrand[r,:]), dx=dy )
                         F_CW[ival] += 1j*np.trapz( I, dx=dx )
 
-                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*np.conj(E_mat[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
+                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*np.conj(E_mat_CW[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
                         integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*E_mat_CW[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
                         I = np.zeros( n_pts_x )
                         for r in range(n_pts_x):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
                         F_PE_CW[i,j,ival] += np.trapz( I, dx=dx )
+                        # print F_PE_CW[i,j,ival]
                         I = np.zeros( n_pts_x )
                         for r in range(n_pts_x):
                             I[r] = np.trapz( np.imag(integrand_PE[r,:]), dx=dy )
                         F_PE_CW[i,j,ival] += 1j*np.trapz( I, dx=dx )
+                        # print F_PE_CW[i,j,ival]
+                        # print i,j
+                        # print sim_AC_wguide.structure.p_tensor[i,j,k,l]
+                        # print np.max(abs(E_mat_CW[i]))
+                        # print j
+                        # print np.max(abs(E_mat_CW[j]))
                 ### CW - end
 
 
@@ -533,12 +548,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     alpha_py_CW = F_CW*sim_AC_wguide.Omega_AC**2/AC_py_CW
     alpha_py = np.real(alpha_py)
     alpha_py_CW = np.real(alpha_py_CW)
-    print F_CW
-    print "alpha", alpha
-    print "alpha_py", alpha_py
-    print "alpha_py_CW", alpha_py_CW
-    print "alpha/alpha_py", alpha/alpha_py
-    print "alpha_py/alpha_py_CW", alpha_py/alpha_py_CW
+    # print F_CW
+    # print "alpha", alpha
+    # print "alpha_py", alpha_py
+    # print "alpha_py_CW", alpha_py_CW
+    # print "alpha/alpha_py", alpha/alpha_py
+    # print "alpha_py/alpha_py_CW", alpha_py/alpha_py_CW
 
     eps_0 = 8.854187817e-12
     Q_PE_py = F_PE*eps_0
@@ -587,11 +602,11 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     SBS_gain_py = np.real(gain_py/normal_fact_py)
     SBS_gain_CW = np.real(gain_CW/normal_fact_CW)
 
-    print "SBS_gain", SBS_gain[0,0,:]
-    print "SBS_gain_py", SBS_gain_py[0,0,:]
-    print "SBS_gain_CW", SBS_gain_CW[0,0,:]
-    print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
-    print "gain ratio CW", SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
+    print "SBS_gain", SBS_gain[0,0,:]/alpha
+    print "SBS_gain_py", SBS_gain_py[0,0,:]/alpha_py
+    print "SBS_gain_CW", SBS_gain_CW[0,0,:]/alpha_py_CW
+    # print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
+    # print "gain ratio CW", SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
 
     return SBS_gain, Q_PE, Q_MB, alpha
     # return SBS_gain_py, Q_PE, Q_MB, alpha_py
