@@ -194,23 +194,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     u4_y = np.array(u4_y).reshape(100,100)
     u4_z = np.array(u4_z).reshape(100,100)
 
-    # # Normalise in same way to NumBAT
-    # u0_x = u0_x/np.max(abs(u0_z))
-    # u0_y = u0_y/np.max(abs(u0_z))
-    # u0_z = u0_z/np.max(abs(u0_z))
-    # u1_x = u1_x/np.max(abs(u1_y))
-    # u1_y = u1_y/np.max(abs(u1_y))
-    # u1_z = u1_z/np.max(abs(u1_y))
-    # u2_x = u2_x/np.max(abs(u2_x))
-    # u2_y = u2_y/np.max(abs(u2_x))
-    # u2_z = u2_z/np.max(abs(u2_x))
-    # u3_x = u3_x/np.max(abs(u3_y))
-    # u3_y = u3_y/np.max(abs(u3_y))
-    # u3_z = u3_z/np.max(abs(u3_y))
-    # u4_x = u4_x/np.max(abs(u4_y))
-    # u4_y = u4_y/np.max(abs(u4_y))
-    # u4_z = u4_z/np.max(abs(u4_y))
-
     x_coord = np.swapaxes(x_coord,0,1)
     y_coord = np.swapaxes(y_coord,0,1)
     u0_x = np.swapaxes(u0_x,0,1)
@@ -230,6 +213,76 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     u4_z = np.swapaxes(u4_z,0,1)
 
     CW_mat = np.array([[u0_x, u0_y, u0_z],[u1_x, u1_y, u1_z],[u2_x, u2_y, u2_z],[u3_x, u3_y, u3_z],[u4_x, u4_y, u4_z]])
+
+
+    with open('opt_mode_closeup.dat', 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=' ')#, quotechar='|')
+        for header_rows in range(9):
+            spamreader.next()
+        E_x_CW = []; E_y_CW = []; E_z_CW = []
+        for row in spamreader:
+            row = filter(None, row)
+            row = [float(x) for x in row]
+            E_x_CW.append(row[2] + 1j*row[3])
+            E_y_CW.append(row[4] + 1j*row[5])
+            E_z_CW.append(row[6] + 1j*row[7])
+    E_x_CW = np.array(E_x_CW).reshape(100,100)
+    E_y_CW = np.array(E_y_CW).reshape(100,100)
+    E_z_CW = np.array(E_z_CW).reshape(100,100)
+    E_x_CW = np.swapaxes(E_x_CW,0,1)
+    E_y_CW = np.swapaxes(E_y_CW,0,1)
+    E_z_CW = np.swapaxes(E_z_CW,0,1)
+    E_mat_CW = np.array([E_x_CW,E_y_CW,E_z_CW])
+
+    # with open('ac_stress_viscstress.dat', 'rb') as csvfile:
+    #     spamreader = csv.reader(csvfile, delimiter=' ')#, quotechar='|')
+    #     for header_rows in range(9):
+    #         spamreader.next()
+    #     S4_1 = []; S4_2 = []; S4_3 = []
+    #     S4_4 = []; S4_5 = []; S4_6 = []
+    #     T4_1 = []; T4_2 = []; T4_3 = []
+    #     T4_4 = []; T4_5 = []; T4_6 = []
+    #     for row in spamreader:
+    #         row = filter(None, row)
+    #         row = [float(x) for x in row]
+    #         S4_1.append(row[2] + 1j*row[3])
+    #         S4_2.append(row[4] + 1j*row[5])
+    #         S4_3.append(row[6] + 1j*row[7])
+    #         S4_4.append(row[8] + 1j*row[9])
+    #         S4_5.append(row[10] + 1j*row[11])
+    #         S4_6.append(row[12] + 1j*row[13])
+    #         T4_1.append(row[12+2] +  1j*row[12+3])
+    #         T4_2.append(row[12+4] +  1j*row[12+5])
+    #         T4_3.append(row[12+6] +  1j*row[12+7])
+    #         T4_4.append(row[12+8] +  1j*row[12+9])
+    #         T4_5.append(row[12+10] + 1j*row[12+11])
+    #         T4_6.append(row[12+12] + 1j*row[12+13])
+
+    # S4_1 = np.array(S4_1).reshape(100,100)
+    # S4_2 = np.array(S4_2).reshape(100,100)
+    # S4_3 = np.array(S4_3).reshape(100,100)
+    # S4_4 = np.array(S4_4).reshape(100,100)
+    # S4_5 = np.array(S4_5).reshape(100,100)
+    # S4_6 = np.array(S4_6).reshape(100,100)
+    # S4_1 = np.swapaxes(S4_1,0,1)
+    # S4_2 = np.swapaxes(S4_2,0,1)
+    # S4_3 = np.swapaxes(S4_3,0,1)
+    # S4_4 = np.swapaxes(S4_4,0,1)
+    # S4_5 = np.swapaxes(S4_5,0,1)
+    # S4_6 = np.swapaxes(S4_6,0,1)
+    # T4_1 = np.array(T4_1).reshape(100,100)
+    # T4_2 = np.array(T4_2).reshape(100,100)
+    # T4_3 = np.array(T4_3).reshape(100,100)
+    # T4_4 = np.array(T4_4).reshape(100,100)
+    # T4_5 = np.array(T4_5).reshape(100,100)
+    # T4_6 = np.array(T4_6).reshape(100,100)
+    # T4_1 = np.swapaxes(T4_1,0,1)
+    # T4_2 = np.swapaxes(T4_2,0,1)
+    # T4_3 = np.swapaxes(T4_3,0,1)
+    # T4_4 = np.swapaxes(T4_4,0,1)
+    # T4_5 = np.swapaxes(T4_5,0,1)
+    # T4_6 = np.swapaxes(T4_6,0,1)
+
 
 
 
@@ -272,7 +325,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     F_AC_CW = np.zeros(len(sim_AC_wguide.Eig_value), dtype=np.complex128)
     F_PE_CW = np.zeros((len(sim_EM_wguide.Eig_value),len(sim_EM_wguide.Eig_value),len(sim_AC_wguide.Eig_value)), dtype=np.complex128)
     # for ival in [0]:
-    # for ival in [0,1,2,3,4]:
+    # for ival in [4]:
     for ival in range(len(sim_AC_wguide.Eig_value)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
@@ -430,8 +483,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                             I[r] = np.trapz( np.imag(integrand[r,:]), dx=dy )
                         F[ival] += 1j*np.trapz( I, dx=dx )
 
-                        integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*np.conj(E_mat[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
-                        # integrand_PE = relevant_eps_effs[0]**2 *sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
+                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*np.conj(E_mat[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
+                        integrand_PE = 2*relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
                         I = np.zeros( n_pts_x )
                         for r in range(n_pts_x):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
@@ -455,8 +508,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                             I[r] = np.trapz( np.imag(integrand[r,:]), dx=dy )
                         F_CW[ival] += 1j*np.trapz( I, dx=dx )
 
-                        integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*np.conj(E_mat[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
-                        # integrand_PE = relevant_eps_effs[0]**2 *sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
+                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*np.conj(E_mat[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
+                        integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*E_mat_CW[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
                         I = np.zeros( n_pts_x )
                         for r in range(n_pts_x):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
@@ -476,8 +529,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print (AC_py-sim_AC_wguide.AC_mode_overlap)/sim_AC_wguide.AC_mode_overlap
     # print (AC_py-AC_py_CW)/sim_AC_wguide.AC_mode_overlap
 
-    # alpha_py = F*sim_AC_wguide.Omega_AC**2/sim_AC_wguide.AC_mode_overlap
-    # alpha_py_CW = F_CW*sim_AC_wguide.Omega_AC**2/sim_AC_wguide.AC_mode_overlap
     alpha_py = F*sim_AC_wguide.Omega_AC**2/AC_py
     alpha_py_CW = F_CW*sim_AC_wguide.Omega_AC**2/AC_py_CW
     alpha_py = np.real(alpha_py)
@@ -488,19 +539,27 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     print "alpha_py_CW", alpha_py_CW
     print "alpha/alpha_py", alpha/alpha_py
     print "alpha_py/alpha_py_CW", alpha_py/alpha_py_CW
-    # print (alpha_py - alpha)/alpha
-    # print (alpha_py - alpha_py_CW)/alpha
 
     eps_0 = 8.854187817e-12
     Q_PE_py = F_PE*eps_0
     Q_PE_py_CW = F_PE_CW*eps_0
-    # print Q_PE[0,0,:]
-    # print "Q_PE", Q_PE_py
-    # print "Q_PE_CW", Q_PE_py_CW
-    # print np.abs((Q_PE_py - Q_PE[0,0,:])/np.max(Q_PE[0,0,:]))
-    # print np.abs((Q_PE_py - Q_PE_py_CW)/np.max(Q_PE[0,0,:]))
+    print "Q_PE", Q_PE[0,0,:]
+    print "Q_PE_py", Q_PE_py[0,0,:]
+    print "Q_PE_CW", Q_PE_py_CW[0,0,:]
+    print "Q_PE/Q_PE_py", Q_PE[0,0,:]/Q_PE_py[0,0,:]
+    print "Q_PE_py/Q_PE_CW", Q_PE_py[0,0,:]/Q_PE_py_CW[0,0,:]
+    # print np.abs((Q_PE_py[0,0,:] - Q_PE[0,0,:])/np.max(Q_PE[0,0,:]))
+    # print np.abs((Q_PE_py[0,0,:] - Q_PE_py_CW[0,0,:])/np.max(Q_PE[0,0,:]))
 
+    # for E in E_mat:
+    #     print ''
+    #     print np.max(abs(np.real(E)))
+    #     print np.max(abs(np.imag(E)))
+    #     print np.max(abs(np.imag(E*np.conj(E))))
+    #     print np.max(abs(np.imag(E*(E))))
+    #     print ''
 
+    P1_CW = 1.954501164316765E-14
 
     # Q_PE=0
     Q_MB = 0.0 # Haven't implemented Moving Boundary integral (but nor did Rakich)
@@ -523,7 +582,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 P3_CW = AC_py_CW[k]
                 normal_fact[i, j, k] = P1*P2*P3
                 normal_fact_py[i, j, k] = P1*P2*P3_py
-                normal_fact_CW[i, j, k] = P1*P2*P3_CW
+                normal_fact_CW[i, j, k] = P1_CW*P1_CW*P3_CW
     SBS_gain = np.real(gain/normal_fact)
     SBS_gain_py = np.real(gain_py/normal_fact_py)
     SBS_gain_CW = np.real(gain_CW/normal_fact_CW)
@@ -534,8 +593,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
     print "gain ratio CW", SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
 
-    # return SBS_gain, Q_PE, Q_MB, alpha
-    return SBS_gain_py, Q_PE, Q_MB, alpha_py
+    return SBS_gain, Q_PE, Q_MB, alpha
+    # return SBS_gain_py, Q_PE, Q_MB, alpha_py
     # return SBS_gain_CW, Q_PE, Q_MB, alpha_py_CW
 
 
