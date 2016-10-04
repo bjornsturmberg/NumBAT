@@ -285,6 +285,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # Note: only picking a single EM mode
     ival_E=0
     n_points = 100
+    n_pts_x_CW = 100
     # field mapping
     x_tmp = []
     y_tmp = []
@@ -453,13 +454,13 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 ### CW - start
                     integrand_AC = np.conj(u_mat_CW[i])*del_mat_CW[k,l]*sim_AC_wguide.structure.c_tensor_z[i,k,l]
                     # do a 1-D integral over every row
-                    I = np.zeros( n_pts_x )
-                    for r in range(n_pts_x):
+                    I = np.zeros( n_pts_x_CW )
+                    for r in range(n_pts_x_CW):
                         I[r] = np.trapz( np.real(integrand_AC[r,:]), dx=dy )
                     # then an integral over the result
                     F_AC_CW[ival] += np.trapz( I, dx=dx )
-                    I = np.zeros( n_pts_x )
-                    for r in range(n_pts_x):
+                    I = np.zeros( n_pts_x_CW )
+                    for r in range(n_pts_x_CW):
                         I[r] = np.trapz( np.imag(integrand_AC[r,:]), dx=dy )
                     F_AC_CW[ival] += 1j*np.trapz( I, dx=dx )
                 ### CW - end
@@ -492,26 +493,27 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 ### CW - start
                         integrand = del_mat_CW[i,j]*del_mat_CW_star[k,l]*sim_AC_wguide.structure.eta_tensor[i,j,k,l]
                         # do a 1-D integral over every row
-                        I = np.zeros( n_pts_x )
-                        for r in range(n_pts_x):
+                        I = np.zeros( n_pts_x_CW )
+                        for r in range(n_pts_x_CW):
                             I[r] = np.trapz( np.real(integrand[r,:]), dx=dy )
                         # then an integral over the result
                         F_CW[ival] += np.trapz( I, dx=dx )
                         # # Adding imag comp
-                        I = np.zeros( n_pts_x )
-                        for r in range(n_pts_x):
+                        I = np.zeros( n_pts_x_CW )
+                        for r in range(n_pts_x_CW):
                             I[r] = np.trapz( np.imag(integrand[r,:]), dx=dy )
                         F_CW[ival] += 1j*np.trapz( I, dx=dx )
 
                         # integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*np.conj(E_mat_CW[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
                         integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*E_mat_CW[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
-                        I = np.zeros( n_pts_x )
-                        for r in range(n_pts_x):
+                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
+                        I = np.zeros( n_pts_x_CW )
+                        for r in range(n_pts_x_CW):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
                         F_PE_CW[i,j,ival] += np.trapz( I, dx=dx )
                         # print F_PE_CW[i,j,ival]
-                        I = np.zeros( n_pts_x )
-                        for r in range(n_pts_x):
+                        I = np.zeros( n_pts_x_CW )
+                        for r in range(n_pts_x_CW):
                             I[r] = np.trapz( np.imag(integrand_PE[r,:]), dx=dy )
                         F_PE_CW[i,j,ival] += 1j*np.trapz( I, dx=dx )
                         # print F_PE_CW[i,j,ival]
@@ -545,11 +547,11 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     eps_0 = 8.854187817e-12
     Q_PE_py = F_PE*eps_0
     Q_PE_py_CW = F_PE_CW*eps_0
+    # Note: doesn't make sense to compare Q_PE as not normalised to power in AC or EM modes
     print "Q_PE", Q_PE[0,0,:]
     print "Q_PE_py", Q_PE_py[0,0,:]
     print "Q_PE_CW", Q_PE_py_CW[0,0,:]
-    print "Q_PE/Q_PE_py", Q_PE[0,0,:]/Q_PE_py[0,0,:]
-    print "Q_PE_py/Q_PE_CW", Q_PE_py[0,0,:]/Q_PE_py_CW[0,0,:]
+    print "Q_PE-Q_PE_py/Q_PE", (Q_PE[0,0,:]-Q_PE_py[0,0,:])/Q_PE[0,0,:]
 
     P1_CW = 1.954501164316765E-14
 
@@ -575,6 +577,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 normal_fact[i, j, k] = P1*P2*P3
                 normal_fact_py[i, j, k] = P1*P2*P3_py
                 normal_fact_CW[i, j, k] = P1_CW*P1_CW*P3_CW
+                # normal_fact_CW[i, j, k] = P1*P1*P3_CW
     SBS_gain = np.real(gain/normal_fact)
     SBS_gain_py = np.real(gain_py/normal_fact_py)
     SBS_gain_CW = np.real(gain_CW/normal_fact_CW)
