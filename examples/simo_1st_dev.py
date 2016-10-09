@@ -93,11 +93,11 @@ q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
 # print q_acoustic*inc_a_x*1e-9/np.pi
 # Forward (intramode) SBS
 # q_acoustic = 0.0
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
-#     num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)# shift_Hz=18e9)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
+    num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)# shift_Hz=18e9)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-npzfile = np.load('wguide_data_AC.npz')
-sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')#, add_name='-check')
 
@@ -158,25 +158,25 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
 
 
-import matplotlib
-matplotlib.use('pdf')
-import matplotlib.pyplot as plt
-plt.figure(figsize=(13,13))
-plt.clf()
-tune_range = 2e4
-AC_detuning_range = np.append(np.linspace(-2, 0, tune_range), np.linspace(0, 2, tune_range)[1:])*1e9
-# print min(abs(AC_detuning_range))
-# Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
-# speed_in_Si = 9620 # m/s
-# LW = speed_in_Si*alpha
-phase_v = sim_AC_wguide.Eig_value/q_acoustic # phase velocity as approximation to group velocity
-LW = phase_v*alpha
-# LW = np.ones(len(alpha))
-for AC_i in range(num_AC_modes):
-   gain_list = SBS_gain[EM_ival1,EM_ival2,AC_i]*LW[AC_i]/(LW[AC_i]**2 + AC_detuning_range**2)
-   # gain_list = SBS_gain[0,0,AC_i]*alpha[AC_i]/(alpha[AC_i]**2 + AC_detuning_range**2)
-   freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + AC_detuning_range)*1e-9
-   plt.plot(freq_list_GHz, np.real(gain_list),linewidth=3)
-plt.xlim(10,25)
-plt.savefig('gain.pdf')
-plt.close()
+# import matplotlib
+# matplotlib.use('pdf')
+# import matplotlib.pyplot as plt
+# plt.figure(figsize=(13,13))
+# plt.clf()
+# tune_range = 2e4
+# AC_detuning_range = np.append(np.linspace(-2, 0, tune_range), np.linspace(0, 2, tune_range)[1:])*1e9
+# # print min(abs(AC_detuning_range))
+# # Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
+# # speed_in_Si = 9620 # m/s
+# # LW = speed_in_Si*alpha
+# phase_v = sim_AC_wguide.Eig_value/q_acoustic # phase velocity as approximation to group velocity
+# LW = phase_v*alpha
+# # LW = np.ones(len(alpha))
+# for AC_i in range(num_AC_modes):
+#    gain_list = SBS_gain[EM_ival1,EM_ival2,AC_i]*LW[AC_i]/(LW[AC_i]**2 + AC_detuning_range**2)
+#    # gain_list = SBS_gain[0,0,AC_i]*alpha[AC_i]/(alpha[AC_i]**2 + AC_detuning_range**2)
+#    freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + AC_detuning_range)*1e-9
+#    plt.plot(freq_list_GHz, np.real(gain_list),linewidth=3)
+# plt.xlim(10,25)
+# plt.savefig('gain.pdf')
+# plt.close()

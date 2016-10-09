@@ -115,8 +115,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
-        elif sim_EM_wguide.structure.inc_shape == 'circular':
-            Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
+        # elif sim_EM_wguide.structure.inc_shape == 'circular':
+            Q_PE2, basis_overlap_PE = NumBAT.photoelastic_int(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
                 sim_AC_wguide.n_msh_pts, nnodes,
@@ -480,15 +480,15 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                         F[ival] += 1j*np.trapz( I, dx=dx )
 
                         # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*np.conj(E_mat[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
-                        integrand_PE = 2*relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
+                        integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
                         I = np.zeros( n_pts_x )
                         for r in range(n_pts_x):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
-                        F_PE[i,j,ival] += np.trapz( I, dx=dx )
+                        F_PE[ival_E,ival_E,ival] += np.trapz( I, dx=dx )
                         I = np.zeros( n_pts_x )
                         for r in range(n_pts_x):
                             I[r] = np.trapz( np.imag(integrand_PE[r,:]), dx=dy )
-                        F_PE[i,j,ival] += 1j*np.trapz( I, dx=dx )
+                        F_PE[ival_E,ival_E,ival] += 1j*np.trapz( I, dx=dx )
 
                 ### CW - start
                         integrand = del_mat_CW[i,j]*del_mat_CW_star[k,l]*sim_AC_wguide.structure.eta_tensor[i,j,k,l]
@@ -510,12 +510,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                         I = np.zeros( n_pts_x_CW )
                         for r in range(n_pts_x_CW):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
-                        F_PE_CW[i,j,ival] += np.trapz( I, dx=dx )
+                        F_PE_CW[ival_E,ival_E,ival] += np.trapz( I, dx=dx )
                         # print F_PE_CW[i,j,ival]
                         I = np.zeros( n_pts_x_CW )
                         for r in range(n_pts_x_CW):
                             I[r] = np.trapz( np.imag(integrand_PE[r,:]), dx=dy )
-                        F_PE_CW[i,j,ival] += 1j*np.trapz( I, dx=dx )
+                        F_PE_CW[ival_E,ival_E,ival] += 1j*np.trapz( I, dx=dx )
                         # print F_PE_CW[i,j,ival]
                         # print i,j
                         # print sim_AC_wguide.structure.p_tensor[i,j,k,l]
@@ -548,10 +548,11 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     Q_PE_py = F_PE*eps_0
     Q_PE_py_CW = F_PE_CW*eps_0
     # Note: doesn't make sense to compare Q_PE as not normalised to power in AC or EM modes
-    print "Q_PE", Q_PE[0,0,:]
-    print "Q_PE_py", Q_PE_py[0,0,:]
-    print "Q_PE_CW", Q_PE_py_CW[0,0,:]
-    print "Q_PE-Q_PE_py/Q_PE", (Q_PE[0,0,:]-Q_PE_py[0,0,:])/Q_PE[0,0,:]
+    # print "Q_PE", abs(Q_PE[0,0,2]), abs(Q_PE[0,0,4]), abs(Q_PE[0,0,8])
+    # print "Q_PE_py", abs(Q_PE_py[0,0,2]), abs(Q_PE_py[0,0,4]), abs(Q_PE_py[0,0,8]) 
+    # print "Q_PE_py/Q_PE", abs(Q_PE_py[0,0,2]/Q_PE[0,0,2]), abs(Q_PE_py[0,0,4]/Q_PE[0,0,4]), abs(Q_PE_py[0,0,8]/Q_PE[0,0,8]) 
+    # print "Q_PE_CW", Q_PE_py_CW[0,0,:]
+    # print "Q_PE-Q_PE_py/Q_PE", (Q_PE[0,0,:]-Q_PE_py[0,0,:])/Q_PE[0,0,:]
 
     P1_CW = 1.954501164316765E-14
 
@@ -587,6 +588,16 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     print "SBS_gain_CW", SBS_gain_CW[0,0,:]/alpha_py_CW
     # print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
     # print "gain ratio CW", SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
+
+    # print SBS_gain[0,0,4]/SBS_gain[0,0,2]
+    # print SBS_gain_CW[0,0,4]/SBS_gain_CW[0,0,2]
+    # print (2464.98/27.75e-6) / (310.25/98.70e-6)
+    print ''
+    # print SBS_gain[0,0,8]/SBS_gain[0,0,2]
+    # print SBS_gain_CW[0,0,8]/SBS_gain_CW[0,0,2]
+    # print (36.55/43.90e-6) / (310.25/98.70e-6)
+    # print SBS_gain[0,0,:]/SBS_gain[0,0,2]
+    # print SBS_gain_py[0,0,:]/SBS_gain_py[0,0,2]
 
     return SBS_gain, Q_PE, Q_MB, alpha
     # return SBS_gain_py, Q_PE, Q_MB, alpha_py
