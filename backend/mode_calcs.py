@@ -145,6 +145,8 @@ class Simmo(object):
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_value, self.sol1)
+            # Bring Kokou's def into line with CW formulation.
+            self.EM_mode_overlap = 2.0*self.EM_mode_overlap 
 
         except KeyboardInterrupt:
             print "\n\n FEM routine EM_mode_energy_int",\

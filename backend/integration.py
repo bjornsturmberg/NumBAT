@@ -320,8 +320,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     F_CW = np.zeros(len(sim_AC_wguide.Eig_value), dtype=np.complex128)
     F_AC_CW = np.zeros(len(sim_AC_wguide.Eig_value), dtype=np.complex128)
     F_PE_CW = np.zeros((len(sim_EM_wguide.Eig_value),len(sim_EM_wguide.Eig_value),len(sim_AC_wguide.Eig_value)), dtype=np.complex128)
-    # for ival in [0]:
-    # for ival in [4]:
     for ival in range(len(sim_AC_wguide.Eig_value)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_AC_wguide.n_msh_el)
@@ -409,8 +407,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
             u_mat_CW = CW_mat[ival]
             dx_CW = x_coord[-1,0] - x_coord[-2,0]
             dy_CW = y_coord[0,-1] - y_coord[0,-2]
-            # print "CW", dx_CW
-            # print "CW", dy_CW
             del_x_CWx = np.gradient(CW_mat[ival][0], dx_CW, axis=0)
             del_y_CWx = np.gradient(CW_mat[ival][0], dy_CW, axis=1)
             del_x_CWy = np.gradient(CW_mat[ival][1], dx_CW, axis=0)
@@ -504,7 +500,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                             I[r] = np.trapz( np.imag(integrand[r,:]), dx=dy )
                         F_CW[ival] += 1j*np.trapz( I, dx=dx )
 
-                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*np.conj(E_mat_CW[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
                         integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*E_mat_CW[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
                         # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
                         I = np.zeros( n_pts_x_CW )
@@ -583,6 +578,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     SBS_gain_py = np.real(gain_py/normal_fact_py)
     SBS_gain_CW = np.real(gain_CW/normal_fact_CW)
 
+    print SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
+
     print "SBS_gain", SBS_gain[0,0,:]/alpha
     print "SBS_gain_py", SBS_gain_py[0,0,:]/alpha_py
     print "SBS_gain_CW", SBS_gain_CW[0,0,:]/alpha_py_CW
@@ -592,7 +589,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print SBS_gain[0,0,4]/SBS_gain[0,0,2]
     # print SBS_gain_CW[0,0,4]/SBS_gain_CW[0,0,2]
     # print (2464.98/27.75e-6) / (310.25/98.70e-6)
-    print ''
+    # print ''
     # print SBS_gain[0,0,8]/SBS_gain[0,0,2]
     # print SBS_gain_CW[0,0,8]/SBS_gain_CW[0,0,2]
     # print (36.55/43.90e-6) / (310.25/98.70e-6)
