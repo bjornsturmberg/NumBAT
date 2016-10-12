@@ -500,8 +500,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                             I[r] = np.trapz( np.imag(integrand[r,:]), dx=dy )
                         F_CW[ival] += 1j*np.trapz( I, dx=dx )
 
-                        integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*E_mat_CW[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
-                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
+                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*E_mat_CW[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
+                        integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*E_mat_CW[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW[k,l]
+                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat_CW[j]*np.conj(E_mat_CW[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_CW_star[k,l]
                         I = np.zeros( n_pts_x_CW )
                         for r in range(n_pts_x_CW):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
@@ -533,7 +534,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     alpha_py = np.real(alpha_py)
     alpha_py_CW = np.real(alpha_py_CW)
     # print F_CW
-    # print "alpha", alpha
+    print "alpha", alpha
+    print "Q", np.real(sim_AC_wguide.Omega_AC/(2*alpha))
     # print "alpha_py", alpha_py
     # print "alpha_py_CW", alpha_py_CW
     # print "alpha/alpha_py", alpha/alpha_py
@@ -544,9 +546,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     Q_PE_py_CW = F_PE_CW*eps_0
     # Note: doesn't make sense to compare Q_PE as not normalised to power in AC or EM modes
     # print "Q_PE", abs(Q_PE[0,0,2]), abs(Q_PE[0,0,4]), abs(Q_PE[0,0,8])
-    # print "Q_PE_py", abs(Q_PE_py[0,0,2]), abs(Q_PE_py[0,0,4]), abs(Q_PE_py[0,0,8]) 
-    # print "Q_PE_py/Q_PE", abs(Q_PE_py[0,0,2]/Q_PE[0,0,2]), abs(Q_PE_py[0,0,4]/Q_PE[0,0,4]), abs(Q_PE_py[0,0,8]/Q_PE[0,0,8]) 
-    # print "Q_PE_CW", Q_PE_py_CW[0,0,:]
+    # print "Q_PE_py", abs(Q_PE_py[0,0,2]), abs(Q_PE_py[0,0,4]), abs(Q_PE_py[0,0,8])
+    # print "Q_PE_py/Q_PE", abs(Q_PE_py[0,0,2]/Q_PE[0,0,2]), abs(Q_PE_py[0,0,4]/Q_PE[0,0,4]), abs(Q_PE_py[0,0,8]/Q_PE[0,0,8])
+    print "Q_PE_CW", (np.abs(Q_PE_py_CW[0,0,2])/np.abs(-2.192796680655183E-17 -6.472501717467121e-16*1j))**2
+    print 4406.24992/1152.95
+    print "Q_PE_CW", (np.abs(Q_PE_py_CW[0,0,4])/np.abs(1.6163118558905356E-18-1.9121353344053444e-15*1j))**2
+    print 8389.992/6333.18
     # print "Q_PE-Q_PE_py/Q_PE", (Q_PE[0,0,:]-Q_PE_py[0,0,:])/Q_PE[0,0,:]
 
     P1_CW = 1.954501164316765E-14
@@ -578,13 +583,13 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     SBS_gain_py = np.real(gain_py/normal_fact_py)
     SBS_gain_CW = np.real(gain_CW/normal_fact_CW)
 
-    print SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
+    # print SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
 
     print "SBS_gain", SBS_gain[0,0,:]/alpha
     print "SBS_gain_py", SBS_gain_py[0,0,:]/alpha_py
     print "SBS_gain_CW", SBS_gain_CW[0,0,:]/alpha_py_CW
-    # print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
-    # print "gain ratio CW", SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
+    print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
+    print "gain ratio CW", SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
 
     # print SBS_gain[0,0,4]/SBS_gain[0,0,2]
     # print SBS_gain_CW[0,0,4]/SBS_gain_CW[0,0,2]
