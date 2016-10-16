@@ -115,8 +115,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
-        # elif sim_EM_wguide.structure.inc_shape == 'circular':
-            Q_PE2, basis_overlap_PE = NumBAT.photoelastic_int(
+        elif sim_EM_wguide.structure.inc_shape == 'circular':
+            Q_PE, basis_overlap_PE = NumBAT.photoelastic_int(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
                 sim_AC_wguide.n_msh_pts, nnodes,
@@ -476,7 +476,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                         F[ival] += 1j*np.trapz( I, dx=dx )
 
                         # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*np.conj(E_mat[i])*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
-                        integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
+                        # integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat_star[k,l]
+                        integrand_PE = relevant_eps_effs[0]**2 * E_mat[j]*E_mat[i]*sim_AC_wguide.structure.p_tensor[i,j,k,l]*del_mat[k,l]
                         I = np.zeros( n_pts_x )
                         for r in range(n_pts_x):
                             I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
