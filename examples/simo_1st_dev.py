@@ -102,23 +102,6 @@ print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')#, add_name='-check')
 
 
-# # Try to test with a simple field we know the answer to
-# sim_AC_wguide.Omega_AC = np.ones(num_AC_modes)
-# sim_AC_wguide.AC_mode_overlap = np.ones(num_AC_modes)
-# grad = 1.0
-# for el in range(sim_AC_wguide.n_msh_el):
-#     for ival in range(num_AC_modes):
-#         for n in range(6):
-#             local_nod = sim_AC_wguide.table_nod[n][el]-1
-#             # sim_AC_wguide.sol1[0,n,ival,el] = grad*sim_AC_wguide.x_arr[0,local_nod]
-#             # sim_AC_wguide.sol1[1,n,ival,el] = grad*sim_AC_wguide.x_arr[0,local_nod]
-#             # sim_AC_wguide.sol1[2,n,ival,el] = grad*sim_AC_wguide.x_arr[0,local_nod]
-#             sim_AC_wguide.sol1[0,n,ival,el] = 0.0
-#             sim_AC_wguide.sol1[1,n,ival,el] = 0.0
-#             sim_AC_wguide.sol1[2,n,ival,el] = 1.0
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
-
-
 ### Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, q_acoustic,
@@ -129,33 +112,7 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
 # alpha = npzfile['alpha']
 
 
-
-
-# Q_Rakich = 1000
-# alpha_Rakich = sim_AC_wguide.Omega_AC/(2*Q_Rakich)
-# alpha = alpha_Rakich
-# print alpha
-
-# print 310.25*(1./98.70e-6)/alpha_Rakich[2]
-# print 2464.98*(1./27.75e-6)/alpha_Rakich[4]
-# print 36.55*(1./43.90e-6)/alpha_Rakich[8]
-
-# print 1307.0*2*(1./98.70e-6)/(2*np.pi*12.34e9)
-# print "Q", sim_AC_wguide.Omega_AC/(2*alpha)
-
-# print 'lc_bkg = ', wguide.lc
-# print 'lc_2 = ', wguide.lc2
-# print 'lc_3 = ', wguide.lc3
-
-# print 'SBS_gain 2', SBS_gain[0,0,2]/alpha[2]
-# print 'SBS_gain 4', SBS_gain[0,0,4]/alpha[4]
-# print 'SBS_gain 8', SBS_gain[0,0,8]/alpha[8]
-# print 'SBS_gain 2 / CW gain', SBS_gain[0,0,2]/alpha[2]/1141#310.25
-# print 'SBS_gain 4 / CW gain', SBS_gain[0,0,4]/alpha[4]/6000#2464.98
-# print 'SBS_gain 8 / CW gain', SBS_gain[0,0,8]/alpha[8]/36.55
-# print 'SBS_gain 2 / CW gain (using CW alpha)', SBS_gain[0,0,2]/(1./98.70e-6)/310.25
-# print 'SBS_gain 4 / CW gain (using CW alpha)', SBS_gain[0,0,4]/(1./27.75e-6)/2464.98
-# print 'SBS_gain 8 / CW gain (using CW alpha)', SBS_gain[0,0,8]/(1./43.90e-6)/36.55
+print "SBS_gain", SBS_gain[0,0,:]/alpha
 
 
 # import matplotlib

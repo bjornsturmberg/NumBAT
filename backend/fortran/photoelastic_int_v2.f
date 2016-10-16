@@ -4,7 +4,7 @@ C
       subroutine photoelastic_int_v2 (nval_EM, nval_AC, ival1,
      *  ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, p_tensor, beta_AC, soln_EM, soln_AC, eps_lst,
-     *  betas_EM, debug, overlap, basis_overlap_out, field_overlap)
+     *  betas_EM, debug, overlap)
 c
       implicit none
       integer*8 nval_EM, nval_AC, ival1, ival2, ival3
@@ -24,8 +24,6 @@ c     Local variables
       parameter (nnodes0 = 6)
       double precision xel(2,nnodes0)
       complex*16 basis_overlap(3*nnodes0,3*nnodes0,3,3*nnodes0)
-      complex*16 field_overlap(3*nnodes0,3*nnodes0,3*nnodes0,nel)
-      complex*16 basis_overlap_out(3*nnodes0,3*nnodes0,3,3*nnodes0,nel)
       complex*16 E1star, E2, Ustar
       integer*8 i, j, k, l, j1, typ_e
       integer*8 iel, ind_ip, i_eq
@@ -62,8 +60,7 @@ Cf2py depend(soln_EM) nnodes, nval_EM, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(p_tensor) nb_typ_el
 C
-Cf2py intent(out) overlap, basis_overlap_out, field_overlap
-C
+Cf2py intent(out) overlap
 C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
@@ -92,26 +89,6 @@ cccccccccccc
         enddo
       enddo
 
-      do i=1,3*nnodes
-        do j=1,3*nnodes
-          do l=1,3*nnodes
-            do iel=1,nel
-                field_overlap(i,j,l,iel) = 0.0d0
-            enddo
-          enddo
-        enddo
-      enddo
-      do i=1,3*nnodes
-        do j=1,3*nnodes
-            do l=1,3*nnodes
-              do iel=1,nel
-                do k=1,3
-                basis_overlap_out(i,j,k,l,iel) = 0.0d0
-              enddo
-            enddo
-          enddo
-        enddo
-      enddo
 cccccccccccc
 C Loop over elements - start
 cccccccccccc
