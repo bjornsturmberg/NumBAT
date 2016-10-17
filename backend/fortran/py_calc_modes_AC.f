@@ -388,7 +388,7 @@ C#####################  End FEM PRE-PROCESSING  #########################
 C
       write(ui,*)
       write(ui,*) "----------------------------------------------"
-      write(ui,*) " AC FEM, q_acoustic : ", real(beta_in), "1/m?"
+      write(ui,*) " AC FEM, q_acoustic : ", real(beta_in), "1/m"
       write(ui,*) "----------------------------------------------"
       write(ui,*)
 
