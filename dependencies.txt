@@ -1,0 +1,11 @@
+python-numpy
+python-scipy
+python-matplotlib
+python-nose
+gfortran
+make
+gmsh
+libatlas-dev
+libblas-dev
+liblapack-dev
+libsuitesparse-dev
