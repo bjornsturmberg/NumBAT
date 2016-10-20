@@ -62,6 +62,10 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
         Keyword Args:
             n_points  (int): The number of points across unitcell to \
                 interpolate the field onto.
+
+            xlim  (float): Limit plotted xrange to xlim:(1-xlim) of unitcell
+
+            ylim  (float): Limit plotted yrange to ylim:(1-ylim) of unitcell
     """
 
     if EM_AC is not 'EM' and EM_AC is not 'AC':
@@ -204,7 +208,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
         #     for header_rows in range(9):
         #         spamreader.next()
         #     x_coord = []; y_coord = []
-        #     u0_x = []; u0_y = []; u0_z = [] 
+        #     u0_x = []; u0_y = []; u0_z = []
         #     u1_x = []; u1_y = []; u1_z = []
         #     u2_x = []; u2_y = []; u2_z = []
         #     u3_x = []; u3_y = []; u3_z = []
