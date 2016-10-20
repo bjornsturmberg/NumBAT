@@ -47,13 +47,13 @@ AC_ival='All'
 # Acoustic Parameters
 # Density
 s = 2330  # kg/m3
-#
+# Stiffness tensor components
 c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
-#
+# Photoelastic tensor components
 p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
-#
+# Acoustic loss tensor components
 eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
-# Put acoustic params together for convenience.
+# Put acoustic parameters together for convenience.
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
@@ -78,7 +78,7 @@ plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 # Backward SBS
 # AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
 q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
-print 'AC wavenumber (1/m)', q_acoustic
+print 'AC wavenumber (1/m) \n', q_acoustic
 # Forward (intramode) SBS
 # EM modes on same lightline.
 # q_acoustic = 0.0
@@ -100,4 +100,4 @@ SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, q_acoustic,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.
-print "SBS_gain", SBS_gain[EM_ival1,EM_ival2,:]/alpha
+print "SBS_gain \n", SBS_gain[EM_ival1,EM_ival2,:]/alpha
