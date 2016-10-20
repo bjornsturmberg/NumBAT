@@ -17,7 +17,7 @@ from fortran import NumBAT
 class Simmo(object):
     """ Interaction of one :Light: object with one :Struc: object.
 
-        Inherits knowledge of :Struc:, :Light: objects
+        Inherits knowledge of :Struc:, :Light: objects.
         Stores the calculated modes of :Struc: for illumination by :Light:
     """
     def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20,
@@ -45,13 +45,13 @@ class Simmo(object):
                [field comp, node nu on element, Eig value, el nu]
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
-        self.n_effs = np.array([self.structure.bkg_material.n(self.wl_m), 
+        self.n_effs = np.array([self.structure.bkg_material.n(self.wl_m),
                                 self.structure.inc_a_material.n(self.wl_m),
-                                self.structure.inc_b_material.n(self.wl_m), 
+                                self.structure.inc_b_material.n(self.wl_m),
                                 self.structure.slab_a_material.n(self.wl_m),
-                                self.structure.slab_a_bkg_material.n(self.wl_m), 
+                                self.structure.slab_a_bkg_material.n(self.wl_m),
                                 self.structure.slab_b_material.n(self.wl_m),
-                                self.structure.slab_b_bkg_material.n(self.wl_m), 
+                                self.structure.slab_b_bkg_material.n(self.wl_m),
                                 self.structure.coating_material.n(self.wl_m)])
 
         self.n_effs = self.n_effs[:self.structure.nb_typ_el]
@@ -85,7 +85,7 @@ class Simmo(object):
             # n_eff = 1.8
             # shift = n_eff**2 * self.k_0**2
         else:
-            shift = self.shift_Hz 
+            shift = self.shift_Hz
 
         if EM_FEM_debug == 1:
             if not os.path.exists("Normed"):
@@ -146,7 +146,7 @@ class Simmo(object):
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_value, self.sol1)
             # Bring Kokou's def into line with CW formulation.
-            self.EM_mode_overlap = 2.0*self.EM_mode_overlap 
+            self.EM_mode_overlap = 2.0*self.EM_mode_overlap
 
         except KeyboardInterrupt:
             print "\n\n FEM routine EM_mode_energy_int",\
@@ -203,7 +203,7 @@ class Simmo(object):
             AC_velocity = np.real(v_list).min()
             shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
             # Increase slightly for difference between bulk and waveguide.
-            shift = 1.05*shift 
+            shift = 1.05*shift
             # print AC_velocity
             # print shift
             # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
@@ -218,7 +218,7 @@ class Simmo(object):
             # print shift
             # shift = 20.0e9  # used to get all modes in Rakich Si example
         else:
-            shift = self.shift_Hz 
+            shift = self.shift_Hz
 
 
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
@@ -369,24 +369,24 @@ class Simmo(object):
             # import time
             # start = time.time()
             if self.structure.inc_shape == 'rectangular':
-            # Integration following KD 9/9/16 notes. 
+            # Integration following KD 9/9/16 notes.
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v4(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
-                    self.structure.nb_typ_el_AC, self.structure.c_tensor, 
+                    self.structure.nb_typ_el_AC, self.structure.c_tensor,
                     self.q_acoustic, self.Omega_AC, self.sol1)
             #     self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v2(
             ## Integration using analytically evaluated basis function integrals.
             #         self.num_modes, self.n_msh_el, self.n_msh_pts,
             #         nnodes, self.table_nod, self.type_el, self.x_arr,
-            #         self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+            #         self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
             #         self.q_acoustic, self.Omega_AC, self.sol1)
             elif self.structure.inc_shape == 'circular':
             # Integration by quadrature.
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
-                    self.structure.nb_typ_el_AC, self.structure.c_tensor_z, 
+                    self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
                     self.q_acoustic, self.Omega_AC, self.sol1, AC_FEM_debug)
 
         except KeyboardInterrupt:
