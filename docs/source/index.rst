@@ -51,6 +51,7 @@ Python Backend
     objects
     materials
     mode_calcs
+    integration
     plotting
 
 ==================
