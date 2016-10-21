@@ -16,7 +16,7 @@ Note that the area of the unit cell must always be unity! This has been assumed 
 FEM Errors
 -----------
 
-There are 2 errors that can be easily triggered within the Fortran FEM routines. These both cause them to simulation to abort and the terminal to be unresponsive (until you kill python or the screen session as described in :ref:`screen_sesh`).
+There are 2 errors that can be easily triggered within the Fortran FEM routines. These both cause them to simulation to abort and the terminal to be unresponsive (until you kill python or the screen session).
 
 The first of these is ::
 

@@ -1,5 +1,5 @@
 integration module
-================
+==================
 
 .. automodule:: integration
     :members:

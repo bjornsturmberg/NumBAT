@@ -27,7 +27,7 @@ where we have accessed the docstring of the Light class from objects.py
 
 In the remainder of this chapter we go through a number of example simo.py files.
 
-Another tip to mention before diving into the examples is running simulations within :ref:`screen_sesh`. These allow you to disconnect from the terminal instance and are discusses in :ref:`screen_sesh`.
+Another tip to mention before diving into the examples is running simulations within screen seshions, which allow you to disconnect from servers leaving them to continue your processes.
 
 .. raw:: latex
 
