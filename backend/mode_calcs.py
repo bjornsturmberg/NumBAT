@@ -235,6 +235,7 @@ class Simmo(object):
             type_el_AC = []
             table_nod_AC_tmp = np.zeros(np.shape(table_nod))
             el_convert_tbl = {}
+            el_convert_tbl_inv = {}
             node_convert_tbl = {}
             if AC_FEM_debug == 1:
                 plotting.plot_msh(x_arr, 'orig')
@@ -243,6 +244,7 @@ class Simmo(object):
                 if type_el[el] in self.structure.typ_el_AC:
                     type_el_AC.append(self.structure.typ_el_AC[type_el[el]])
                     el_convert_tbl[n_el_kept] = el
+                    el_convert_tbl_inv[el] = n_el_kept
                     for i in range(6):
                         # Leaves node numbering untouched
                         table_nod_AC_tmp[i][n_el_kept] = table_nod[i][el]
@@ -275,6 +277,7 @@ class Simmo(object):
                 x_arr_AC[1,node_convert_tbl[node]] = (x_arr[1,node-1])
 
             self.el_convert_tbl = el_convert_tbl
+            self.el_convert_tbl_inv = el_convert_tbl_inv
             self.node_convert_tbl = node_convert_tbl
 
 
