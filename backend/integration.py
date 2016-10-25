@@ -486,7 +486,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     ### Calc Q_moving_boundary Eq. 41
     from collections import Counter
-    Q_MB = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC))
+    Q_MB = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
 
     eps_0 = 8.854187817e-12
 
@@ -518,7 +518,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     interface_nodes = list(set(interface_nodes))
     edge_els_multi_nodes = [k for (k,v) in Counter(edge_el_list).iteritems() if v > 1]
 
-    nu_int_pts = 0
     eps_list = [sim_EM_wguide.structure.bkg_material.n(sim_EM_wguide.wl_m), 
                 sim_EM_wguide.structure.inc_a_material.n(sim_EM_wguide.wl_m), 
                 sim_EM_wguide.structure.inc_b_material.n(sim_EM_wguide.wl_m), 
@@ -539,10 +538,15 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # for el in [edge_els_multi_nodes[0]]:
         AC_el = sim_AC_wguide.el_convert_tbl_inv[el]
         # Below also works
-        # print (key for key,tst in sim_AC_wguide.el_convert_tbl.items() if tst==el).next()
+        # AC_el = (key for key,tst in sim_AC_wguide.el_convert_tbl.items() if tst==el).next()
         # print el
         # print AC_el
         # print sim_AC_wguide.el_convert_tbl[AC_el]
+
+        contour_dr = []
+        contour_vals = []
+        first_seg = True
+        integrand = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
         # These are all possible edge line segments.
         for [n0,n1] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
             node0 = table_nod[n0][el]
@@ -614,55 +618,67 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 eps_b = eps_list[type_el_b-1] # adjust for fortran indexing
 
                 ### Calc integrand on line segment
-                dr = np.array([x2-x1, y2-y1, 0.0])
+                dr = np.array([x2-x1, y2-y1])
                 abs_dr = np.sqrt(dr[0]**2 + dr[1]**2)
+                contour_dr.append(abs_dr)
+                second_node = False
+                pause_node = True
                 for n in [n0, n1]:
-                    EM_ival1 = EM_ival2 = 0
-                    for AC_ival in range(num_modes_AC):
-                        # E-fields
-                        e1_x = sim_EM_wguide.sol1[0,n,EM_ival1,el]
-                        e1_y = sim_EM_wguide.sol1[1,n,EM_ival1,el]
-                        e1_z = sim_EM_wguide.sol1[2,n,EM_ival1,el]
-                        e2_x = sim_EM_wguide.sol1[0,n,EM_ival2,el]
-                        e2_y = sim_EM_wguide.sol1[1,n,EM_ival2,el]
-                        e2_z = sim_EM_wguide.sol1[2,n,EM_ival2,el]
-                        d1_x = e1_x*eps_a
-                        d1_y = e1_y*eps_a
-                        d1_z = e1_z*eps_a
-                        d2_x = e2_x*eps_a
-                        d2_y = e2_y*eps_a
-                        d2_z = e2_z*eps_a
-                        # Displacement fields
-                        AC_ival = 2
-                        u_x = sim_AC_wguide.sol1[0,n,AC_ival,AC_el]
-                        u_y = sim_AC_wguide.sol1[1,n,AC_ival,AC_el]
-                        u_z = sim_AC_wguide.sol1[2,n,AC_ival,AC_el]
+                    if first_seg is True or second_node is True:
+                        EM_ival1 = EM_ival2 = 0
+                        for AC_ival in range(num_modes_AC):
+                            # E-fields
+                            e1_x = sim_EM_wguide.sol1[0,n,EM_ival1,el]
+                            e1_y = sim_EM_wguide.sol1[1,n,EM_ival1,el]
+                            e1_z = sim_EM_wguide.sol1[2,n,EM_ival1,el]
+                            e2_x = sim_EM_wguide.sol1[0,n,EM_ival2,el]
+                            e2_y = sim_EM_wguide.sol1[1,n,EM_ival2,el]
+                            e2_z = sim_EM_wguide.sol1[2,n,EM_ival2,el]
+                            d1_x = e1_x*eps_a*eps_0
+                            d1_y = e1_y*eps_a*eps_0
+                            d1_z = e1_z*eps_a*eps_0
+                            d2_x = e2_x*eps_a*eps_0
+                            d2_y = e2_y*eps_a*eps_0
+                            d2_z = e2_z*eps_a*eps_0
+                            # Displacement fields
+                            u_x = sim_AC_wguide.sol1[0,n,AC_ival,AC_el]
+                            u_y = sim_AC_wguide.sol1[1,n,AC_ival,AC_el]
+                            u_z = sim_AC_wguide.sol1[2,n,AC_ival,AC_el]
 
-                        u_n = u_x*n_vec_norm[0] + u_y*n_vec_norm[1]
-                        # n_vec_norm[2] = 0 # z-comp!
-                        # n_cross_e1 = np.array([n_vec_norm[1]*e1_z - n_vec_norm[2]*e1_y],
-                        #     [-n_vec_norm[0]*e1_z + n_vec_norm[2]*e1_x],
-                        #     [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x])
-                        n_cross_e1 = np.array([[n_vec_norm[1]*e1_z],
-                            [-n_vec_norm[0]*e1_z],
-                            [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x]])
-                        n_cross_e2 = np.array([[n_vec_norm[1]*e2_z],
-                            [-n_vec_norm[0]*e2_z],
-                            [n_vec_norm[0]*e2_y - n_vec_norm[1]*e2_x]])
-                        inter_term1 = (eps_a - eps_b)*eps_0*np.conj(n_cross_e1)*n_cross_e2
+                            u_n = np.conj(u_x)*n_vec_norm[0] + np.conj(u_y)*n_vec_norm[1]
+                            # n_vec_norm[2] = 0 # z-comp!
+                            # n_cross_e1 = np.array([n_vec_norm[1]*e1_z - n_vec_norm[2]*e1_y],
+                            #     [-n_vec_norm[0]*e1_z + n_vec_norm[2]*e1_x],
+                            #     [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x])
+                            n_cross_e1 = np.array([[n_vec_norm[1]*e1_z],
+                                [-n_vec_norm[0]*e1_z],
+                                [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x]])
+                            n_cross_e2 = np.array([[n_vec_norm[1]*e2_z],
+                                [-n_vec_norm[0]*e2_z],
+                                [n_vec_norm[0]*e2_y - n_vec_norm[1]*e2_x]])
+                            # inter_term1 = (eps_a - eps_b)*eps_0*np.dot(np.conj(n_cross_e1).T,n_cross_e2)[0][0]
+                            inter_term1 = (eps_a - eps_b)*eps_0*np.vdot(n_cross_e1,n_cross_e2)
+                            # print inter_term1
+                            n_dot_d1 = n_vec_norm[0]*d1_x + n_vec_norm[1]*d1_y
+                            n_dot_d2 = n_vec_norm[0]*d2_x + n_vec_norm[1]*d2_y
+                            inter_term2 = (1./eps_b - 1./eps_a)*(1./eps_0)*np.conj(n_dot_d1)*n_dot_d2
+                            # print inter_term2
+                            integrand[EM_ival1,EM_ival2,AC_ival] = u_n*(inter_term1 - inter_term2)
+                        contour_vals.append(integrand)
+                    second_node = True
+                first_seg = False
+        contour_r = [0,contour_dr[0],np.sum(contour_dr)]
+        for AC_ival in range(num_modes_AC):
+            reshape_c_vals = []
+            for i in range(3):
+                reshape_c_vals.append(contour_vals[i][EM_ival1,EM_ival2,AC_ival])
+            Q_MB[EM_ival1,EM_ival2,AC_ival] += np.trapz(reshape_c_vals, x=contour_r)
 
-                        n_dot_d1 = n_vec_norm[0]*d1_x + n_vec_norm[1]*d1_y
-                        n_dot_d2 = n_vec_norm[0]*d2_x + n_vec_norm[1]*d2_y
-                        inter_term2 = (1./eps_b - 1./eps_a)*(1./eps_0)*np.conj(n_dot_d1)*n_dot_d2
-                        integrand = u_n*(inter_term1 - inter_term2)
-                        print integrand*abs_dr/2.0
-                        Q_MB[EM_ival1,EM_ival2,AC_ival] += integrand*abs_dr/2.0
-                    nu_int_pts += 1
-    Q_MB = Q_MB/nu_int_pts
-    print Q_MB
+    # print Q_MB[0,0,:]
+    # print Q_PE[0,0,2]
+    Q = Q_MB
 
-    # Q_MB = 0.0 # Haven't implemented Moving Boundary integral
-    Q = Q_PE + Q_MB
+    # Q = Q_PE + Q_MB
     # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
     # Note: sim_AC_wguide.Omega_AC is the acoustic angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q*np.conj(Q))
@@ -687,7 +703,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # SBS_gain_py = np.real(gain_py/normal_fact_py)
     # SBS_gain_CW = np.real(gain_CW/normal_fact_CW)
 
-    # print "SBS_gain", SBS_gain[0,0,:]/alpha
+    print "MB_gain_ratio", SBS_gain[0,0,2]/alpha[2]/1632.18
     # print "SBS_gain_py", SBS_gain_py[0,0,:]/alpha_py
     # print "SBS_gain_CW", SBS_gain_CW[0,0,:]/alpha_py_CW
     # print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
