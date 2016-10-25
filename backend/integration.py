@@ -534,6 +534,10 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     test1 = [0,0]
     test2 = [0,0]
     test3 = [0,0]
+    x_list = []
+    y_list = []
+    nx_list = []
+    ny_list = []
     for el in edge_els_multi_nodes:
     # for el in [edge_els_multi_nodes[0]]:
         AC_el = sim_AC_wguide.el_convert_tbl_inv[el]
@@ -558,14 +562,17 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 x2 = x_arr[0,table_nod[n1][el] - 1]
                 y2 = x_arr[1,table_nod[n1][el] - 1]
                 # coordinates of non-vertex nodes, used to test orientation
-                xt1 = x_arr[0,table_nod[3][el] - 1]
-                yt1 = x_arr[1,table_nod[3][el] - 1]
+                nodes_all = np.array([0, 1, 2, 3, 4, 5])
+                nodes_rel = np.array([n0, n1])
+                nodes_test = np.setdiff1d(nodes_all,nodes_rel)
+                xt1 = x_arr[0,table_nod[nodes_test[0]][el] - 1]
+                yt1 = x_arr[1,table_nod[nodes_test[0]][el] - 1]
                 t1 = np.array([xt1,yt1])
-                xt2 = x_arr[0,table_nod[4][el] - 1]
-                yt2 = x_arr[1,table_nod[4][el] - 1]
+                xt2 = x_arr[0,table_nod[nodes_test[1]][el] - 1]
+                yt2 = x_arr[1,table_nod[nodes_test[1]][el] - 1]
                 t2 = np.array([xt2,yt2])
-                xt3 = x_arr[0,table_nod[5][el] - 1]
-                yt3 = x_arr[1,table_nod[5][el] - 1]
+                xt3 = x_arr[0,table_nod[nodes_test[2]][el] - 1]
+                yt3 = x_arr[1,table_nod[nodes_test[2]][el] - 1]
                 t3 = np.array([xt3,yt3])
                 for i in [0, 1]:
                     t = test_orient[i]
@@ -579,24 +586,38 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 orient = 0
                 if test1[0] < test1[1]:
                     orient += 1
-                elif test1[0] > test1[1]:
+                # elif test1[0] > test1[1]:
+                else:
                     orient -= 1
                 if test2[0] < test2[1]:
                     orient += 1
-                elif test2[0] > test2[1]:
+                # elif test2[0] > test2[1]:
+                else:
                     orient -= 1
                 if test3[0] < test3[1]:
                     orient += 1
-                elif test3[0] > test3[1]:
+                # elif test3[0] > test3[1]:
+                else:
                     orient -= 1
                 if orient > 0:
                     normal_vec = [-1*(y2-y1), (x2-x1)]
-                elif orient < 0:
-                    normal_vec = [(y2-y1), -1*(x2-x1)]
+                # elif orient < 0:
                 else:
-                    raise Warning, \
-                    'Cannot find orientation of normal vector'
+                    normal_vec = [(y2-y1), -1*(x2-x1)]
+                # else:
+                #     raise Warning, \
+                #     'Cannot find orientation of normal vector'
                 n_vec_norm = normal_vec/np.linalg.norm(normal_vec)
+                x_list.append(x2)
+                y_list.append(y2)
+                nx_list.append(n_vec_norm[0])
+                ny_list.append(n_vec_norm[1])
+
+                # if y1 < -2e-6:
+                # if y1 > -1.8e-6:
+                #     print "t1", test1[0]-test1[1]
+                #     print "t2", test2[0]-test2[1]
+                #     print "t3", test3[0]-test3[1]
 
                 # Find el on other side of interface and its epsilon
                 all_el_w_node0 = np.where(table_nod[:] == node0)
@@ -647,16 +668,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
                             u_n = np.conj(u_x)*n_vec_norm[0] + np.conj(u_y)*n_vec_norm[1]
                             # n_vec_norm[2] = 0 # z-comp!
-                            # n_cross_e1 = np.array([n_vec_norm[1]*e1_z - n_vec_norm[2]*e1_y],
-                            #     [-n_vec_norm[0]*e1_z + n_vec_norm[2]*e1_x],
-                            #     [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x])
                             n_cross_e1 = np.array([[n_vec_norm[1]*e1_z],
                                 [-n_vec_norm[0]*e1_z],
                                 [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x]])
                             n_cross_e2 = np.array([[n_vec_norm[1]*e2_z],
                                 [-n_vec_norm[0]*e2_z],
                                 [n_vec_norm[0]*e2_y - n_vec_norm[1]*e2_x]])
-                            # inter_term1 = (eps_a - eps_b)*eps_0*np.dot(np.conj(n_cross_e1).T,n_cross_e2)[0][0]
                             inter_term1 = (eps_a - eps_b)*eps_0*np.vdot(n_cross_e1,n_cross_e2)
                             # print inter_term1
                             n_dot_d1 = n_vec_norm[0]*d1_x + n_vec_norm[1]*d1_y
@@ -708,6 +725,23 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print "SBS_gain_CW", SBS_gain_CW[0,0,:]/alpha_py_CW
     # print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
     # print "gain ratio CW", SBS_gain_CW[0,0,:]/SBS_gain[0,0,:]
+
+
+
+    nx_list = np.array(nx_list)
+    ny_list = np.array(ny_list)
+    plt.clf()
+    plt.figure(figsize=(13,13))
+    ax = plt.subplot(1,1,1)
+    # for node in range(np.shape(x_arr)[1]):
+    plt.plot(x_list, y_list, 'o')
+    plt.plot(x_list+nx_list*15e-9, y_list+ny_list[1]*15e-9, 'xr')
+    ax.set_aspect('equal')
+    # ax.set_xlim(0,1000e-9)
+    # ax.set_ylim(-1000e-9,0)
+    plt.savefig('msh_%(add)s.png' %
+        {'add' : el}, bbox_inches='tight')
+    plt.close()
 
     return SBS_gain, Q_PE, Q_MB, alpha
 
