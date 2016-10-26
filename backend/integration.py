@@ -633,7 +633,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 abs_dr = np.sqrt(dr[0]**2 + dr[1]**2)
                 contour_dr.append(abs_dr)
                 second_node = False
-                pause_node = True
                 for n in [n0, n1]:
                     if first_seg is True or second_node is True:
                         EM_ival1 = EM_ival2 = 0
