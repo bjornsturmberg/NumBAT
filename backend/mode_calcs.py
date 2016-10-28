@@ -15,10 +15,7 @@ from fortran import NumBAT
 
 
 class Simmo(object):
-    """ Interaction of one :Light: object with one :Struc: object.
-
-        Inherits knowledge of :Struc:, :Light: objects.
-        Stores the calculated modes of :Struc: for illumination by :Light:
+    """ Calculates the modes of a :Struc: object at a wavelength of wl_nm.
     """
     def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20,
                  shift_Hz=None, EM_sim=None):
@@ -39,9 +36,11 @@ class Simmo(object):
     def calc_EM_modes(self):
         """ Run a Fortran FEM calculation to find the optical modes.
 
-        Most important outputs are
-        Eig_value - a 1d array of Eigenvalues (propagation constants) in [1/m]
-        sol1 - the associated Eigenvectors, ie. the fields, stored as
+        Returns a :Simmo: object that now has these key values:
+
+        Eig_value: a 1d array of Eigenvalues (propagation constants) in [1/m]
+
+        sol1: the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
@@ -132,15 +131,18 @@ class Simmo(object):
         try:
             nnodes = 6
             if self.structure.inc_shape == 'rectangular':
-                # self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_wg(
-                #     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
-                #     nnodes, self.table_nod,
-                #     self.x_arr, self.Eig_value, self.sol1, self.type_el)
+            ## Integration using analytically evaluated basis function integrals. Fast.
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_value, self.sol1)
+            # Only calculate energy in waveguide region
+                # self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_wg(
+                #     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
+                #     nnodes, self.table_nod,
+                #     self.x_arr, self.Eig_value, self.sol1, self.type_el)
             elif self.structure.inc_shape == 'circular':
+            # Integration by quadrature. Slowest.
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
@@ -168,9 +170,11 @@ class Simmo(object):
     def calc_AC_modes(self):
         """ Run a Fortran FEM calculation to find the acoustic modes.
 
-        Most important outputs are
-        Eig_value - a 1d array of Eigenvalues
-        sol1 - the associated Eigenvectors, ie. the fields, stored as
+        Returns a :Simmo: object that now has these key values:
+
+        Eig_value: a 1d array of Eigenvalues (frequencies) in [1/s]
+
+        sol1: the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
         """
         self.d_in_m = self.structure.inc_a_x*1e-9
@@ -372,20 +376,20 @@ class Simmo(object):
             # import time
             # start = time.time()
             if self.structure.inc_shape == 'rectangular':
-            # Integration following KD 9/9/16 notes.
+            # Integration following KD 9/9/16 notes. Fastest!
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v4(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor,
                     self.q_acoustic, self.Omega_AC, self.sol1)
+            ## Integration using analytically evaluated basis function integrals. Fast.
             #     self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v2(
-            ## Integration using analytically evaluated basis function integrals.
             #         self.num_modes, self.n_msh_el, self.n_msh_pts,
             #         nnodes, self.table_nod, self.type_el, self.x_arr,
             #         self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
             #         self.q_acoustic, self.Omega_AC, self.sol1)
             elif self.structure.inc_shape == 'circular':
-            # Integration by quadrature.
+            # Integration by quadrature. Slowest.
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
@@ -395,5 +399,3 @@ class Simmo(object):
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\
             "interrupted by keyboard.\n\n"
-
-        # print (self.AC_mode_overlap2-self.AC_mode_overlap)/self.AC_mode_overlap2

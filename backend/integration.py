@@ -21,37 +21,62 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 EM_ival1=0, EM_ival2=0, AC_ival=0):
     """ Calculate interaction integrals and SBS gain.
 
-    Calc Qs of a range of selected modes
-    Pass in the q_acoustic as this is beta of AC modes
+        Implements Eqs. 33, 41, 45 of 
+        Wolff et al. PRA 92, 013836 (2015) doi/10.1103/PhysRevA.92.013836
+        These are for Q_photoelastic, Q_moving_boundary, and the Acoustic loss 
+        "alpha" respectively. 
 
-    By default considers the interactions between all modes,
-    can also specify specific modes.
+        Args:
+            sim_EM_wguide  (:Simmo: object): Contains all info on EM modes
 
+            sim_AC_wguide  (:Simmo: object): Contains all info on AC modes
+
+            q_acoustic  (float): Propagation constant of acoustic modes.
+
+        Keyword Args:
+            EM_ival1  (int/string): Specify mode number of EM mode 1 (pump mode)
+                to calculate interactions for.
+                Numbering is python index so runs from 0 to num_EM_modes-1, 
+                with 0 being fundamental mode (largest prop constant).
+                Can also set to 'All' to include all modes.
+
+            EM_ival2  (int/string): Specify mode number of EM mode 2 (stokes mode)
+                to calculate interactions for.
+                Numbering is python index so runs from 0 to num_EM_modes-1, 
+                with 0 being fundamental mode (largest prop constant).
+                Can also set to 'All' to include all modes.
+
+            AC_ival  (int/string): Specify mode number of AC mode
+                to calculate interactions for.
+                Numbering is python index so runs from 0 to num_AC_modes-1, 
+                with 0 being fundamental mode (largest prop constant).
+                Can also set to 'All' to include all modes.
     """
 
-### Notes about internals of fortran integration
-# Calc overlap of basis functions (and PE tensor and epsilon)
-# Then use this multiple times for calc of each mode field values
+    # Notes about internals of fortran integration
+    # Calc overlap of basis functions (and PE tensor and epsilon)
+    # Then use this multiple times for calc of each mode field values
 
-# phi is values of Lagrange polynomials (1-6) at that node.
-# grad is value of gradient of Lagrange polynomials (1-6) at that node.
-# i variables refer to E field
-# j variables refer to H field
-# ww weight function
-# coeff numerical integration
+    # phi is values of Lagrange polynomials (1-6) at that node.
+    # grad is value of gradient of Lagrange polynomials (1-6) at that node.
+    # i variables refer to E field
+    # j variables refer to H field
+    # ww weight function
+    # coeff numerical integration
+
 
     if EM_ival1 == 'All':
         EM_ival1_fortran = -1
     else:
-        EM_ival1_fortran = EM_ival1+1  # convert back to fortran indexing
+        EM_ival1_fortran = EM_ival1+1  # convert back to Fortran indexing
     if EM_ival2 == 'All':
         EM_ival2_fortran = -1
     else:
-        EM_ival2_fortran = EM_ival2+1  # convert back to fortran indexing
+        EM_ival2_fortran = EM_ival2+1  # convert back to Fortran indexing
     if AC_ival == 'All':
         AC_ival_fortran = -1
     else:
-        AC_ival_fortran = AC_ival+1  # convert back to fortran indexing
+        AC_ival_fortran = AC_ival+1  # convert back to Fortran indexing
 
     Fortran_debug = 0
     ncomps = 3
@@ -79,7 +104,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         if el_typ+1 in sim_AC_wguide.structure.typ_el_AC:
             relevant_eps_effs.append(sim_EM_wguide.n_effs[el_typ]**2)
 
-### Calc alpha (loss) Eq. 45
+    # Calc alpha (loss) Eq. 45
     try:
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
             alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
@@ -100,7 +125,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     alpha = np.real(alpha)
 
 
-### Calc Q_photoelastic Eq. 33
+    # Calc Q_photoelastic Eq. 33
     try:
         if sim_EM_wguide.structure.inc_shape == 'rectangular':
             Q_PE = NumBAT.photoelastic_int_v2(
@@ -484,7 +509,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # Q_PE_py_CW = F_PE_CW*eps_0
 
 
-    ### Calc Q_moving_boundary Eq. 41
+    # Calc Q_moving_boundary Eq. 41
     from collections import Counter
     Q_MB = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
 

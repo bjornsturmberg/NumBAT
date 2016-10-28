@@ -71,7 +71,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.2, lc2=10.0, lc3=10.0)
+                        lc_bkg=0.7, lc2=1.0, lc3=1.0)
                         # make_mesh_now=True)#, plotting_fields=True, plot_imag=1)#,
                         # mesh_file='rect_acoustic_3.mail')
 

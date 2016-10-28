@@ -18,7 +18,7 @@ from fortran import NumBAT
 # q_acoustic: acoustic wavenumber
 
 # Geometric Parameters - all in nm.
-wl_nm = 1550
+wl_nm = 1550 # Wavelength of EM wave in vacuum.
 # Unit cell must be large to ensure fields are zero at boundary.
 unitcell_x = 2.5*1550
 unitcell_y = unitcell_x

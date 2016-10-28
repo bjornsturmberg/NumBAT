@@ -14,7 +14,7 @@ from fortran import NumBAT
 
 msh_location = '../backend/fortran/msh/'
 
-# # Acknowledgements
+# # Acknowledgments
 # print '\n##################################################################\n'\
 #     + 'NumBAT is brought to you by Bjorn Sturmberg, Kokou Dossou, \n' \
 #     + 'and Christian Wolff, with support from the ARC \n' \
@@ -47,12 +47,12 @@ class Struct(object):
                 directly below the inclusion.
 
             slab_b_x  (float): The horizontal diameter in nm of the slab \
-                seperated from the inclusion by slab_a.
+                separated from the inclusion by slab_a.
 
             slab_b_y  (float): The vertical diameter in nm of the slab \
-                seperated from the inclusion by slab_a.
+                separated from the inclusion by slab_a.
 
-            two_inc_sep  (float): Seperation between edges of inclusions in nm.
+            two_inc_sep  (float): Separation between edges of inclusions in nm.
 
             incs_y_offset  (float): Vertical offset between centers of \
                 inclusions in nm.
@@ -88,7 +88,7 @@ class Struct(object):
                 existence of mesh with same parameter. This is used to make \
                 mesh with equal period etc. but different lc refinement.
 
-            mesh_file  (str): If using a set premade mesh give its name \
+            mesh_file  (str): If using a set pre-made mesh give its name \
                 including .mail if 2D_array (eg. 600_60.mail), or .txt if \
                 1D_array. It must be located in backend/fortran/msh/
 
@@ -313,6 +313,10 @@ class Struct(object):
 
 
     def make_mesh(self):
+    """ Take the paremeters specified in python and make a Gmsh FEM mesh.
+        Creates a .geo and .msh file, then uses Fortran conv_gmsh routine
+        to convert .msh into .mail, which will be used in NumBAT FEM routine.
+    """
         if self.inc_shape in ['circular', 'rectangular']:
             if self.slab_b_x is not None:
                 if self.coating_y is None and self.inc_b_x is None:
@@ -449,9 +453,15 @@ class Struct(object):
         """ Run a simulation to find the Struct's EM modes.
 
             Args:
-                light  (Light instance): Represents incident light.
+                wl_nm  (float): Wavelength of EM wave in vacuum.
 
-                args  (dict): Options to pass to :Simmo.calc_modes:.
+                num_modes  (int): Number of EM modes to solve for.
+
+            Keyword Args:
+                shift_Hz  (float): Guesstimated frequency of modes,
+                    will be origin of FEM search. NumBAT will make 
+                    an educated guess if shift_Hz=None.
+                    (Technically the shift and invert parameter).
 
             Returns:
                 :Simmo: object
@@ -467,9 +477,21 @@ class Struct(object):
         """ Run a simulation to find the Struct's acoustic modes.
 
             Args:
-                light  (Light instance): Represents incident light.
+                wl_nm  (float): Wavelength of AC wave in vacuum.
 
-                args  (dict): Options to pass to :Simmo.calc_modes:.
+                num_modes  (int): Number of AC modes to solve for.
+
+            Keyword Args:
+                shift_Hz  (float): Guesstimated frequency of modes,
+                    will be origin of FEM search. NumBAT will make 
+                    an educated guess if shift_Hz=None.
+                    (Technically the shift and invert parameter).
+
+                EM_sim  (:Simmo: object): Typically an acoustic 
+                    simulation follows on from an optical one.
+                    Supply the EM :Simmo: object so the AC FEM mesh
+                    can be constructed from this.
+                    This is done by removing vacuum regions.
 
             Returns:
                 :Simmo: object
