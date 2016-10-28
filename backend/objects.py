@@ -313,10 +313,10 @@ class Struct(object):
 
 
     def make_mesh(self):
-    """ Take the paremeters specified in python and make a Gmsh FEM mesh.
-        Creates a .geo and .msh file, then uses Fortran conv_gmsh routine
-        to convert .msh into .mail, which will be used in NumBAT FEM routine.
-    """
+        """ Take the parameters specified in python and make a Gmsh FEM mesh.
+            Creates a .geo and .msh file, then uses Fortran conv_gmsh routine
+            to convert .msh into .mail, which is used in NumBAT FEM routine.
+        """
         if self.inc_shape in ['circular', 'rectangular']:
             if self.slab_b_x is not None:
                 if self.coating_y is None and self.inc_b_x is None:
@@ -459,7 +459,7 @@ class Struct(object):
 
             Keyword Args:
                 shift_Hz  (float): Guesstimated frequency of modes,
-                    will be origin of FEM search. NumBAT will make 
+                    will be origin of FEM search. NumBAT will make
                     an educated guess if shift_Hz=None.
                     (Technically the shift and invert parameter).
 
@@ -483,11 +483,11 @@ class Struct(object):
 
             Keyword Args:
                 shift_Hz  (float): Guesstimated frequency of modes,
-                    will be origin of FEM search. NumBAT will make 
+                    will be origin of FEM search. NumBAT will make
                     an educated guess if shift_Hz=None.
                     (Technically the shift and invert parameter).
 
-                EM_sim  (:Simmo: object): Typically an acoustic 
+                EM_sim  (:Simmo: object): Typically an acoustic
                     simulation follows on from an optical one.
                     Supply the EM :Simmo: object so the AC FEM mesh
                     can be constructed from this.
