@@ -708,8 +708,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # print Q_MB[0,0,:]
     # print Q_PE[0,0,2]
     Q = Q_MB
-
+    Q = Q_PE
     # Q = Q_PE + Q_MB
+    
     # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
     # Note: sim_AC_wguide.Omega_AC is the acoustic angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q*np.conj(Q))

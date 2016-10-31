@@ -73,7 +73,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         loss=False, 
                         bkg_AC=bkg_AC_props,
                         inc_a_AC=inc_a_AC_props,
-                        lc_bkg=0.1, lc2=20.0, lc3=20.0)
+                        lc_bkg=0.1, lc2=10.0, lc3=10.0)
 
 
 ### Calculate Electromagnetic Modes
@@ -91,56 +91,35 @@ print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # Backward SBS
 # Acoustic k has to push optical mode from +ve lightline to -ve, hence factor 2.
 q_acoustic = 2*sim_EM_wguide.Eig_value[0]
-print q_acoustic
+print "q_acoustic FEM", q_acoustic
 q_acoustic = 2*n_eff*2*np.pi/(wl_nm*1e-9)
+print "q_acoustic Blair", q_acoustic
 # # Forward (intramode) SBS
 # q_acoustic = 0.0
 # As2S3_bulk_velocity = 2595m/s @1550 gives 7.6 GHz as freq in reg waveguides
 shift_Hz = 5.8e9
+print shift_Hz
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, 
    EM_sim=sim_EM_wguide)#, shift_Hz=shift_Hz )
-# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
-# sim_AC_wguide.sol1[2,:,:,:] = sim_AC_wguide.sol1[2,:,:,:]*1j
-# plotting.plt_mode_fields(sim_AC_wguide, xlim=0.4, ylim=0.4, EM_AC='AC')
 
 
-# # import time
-# # start = time.time()
-# ### Calculate interaction integrals
-# SBS_gain, Q_PE, Q_MB, alpha, P1, P3 = integration.gain_and_qs(sim_EM_wguide, 
-#                            sim_AC_wguide, q_acoustic, 
-#                            EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
-# # elapsed = (time.time() - start)
-# # print 'TIME', elapsed
+### Calculate interaction integrals
+SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
+    sim_EM_wguide, sim_AC_wguide, q_acoustic,
+    EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
-# # npzfile = np.load('wguide_data_AC_gain.npz')
-# # SBS_gain = npzfile['SBS_gain']
-# # alpha = npzfile['alpha']
+# npzfile = np.load('wguide_data_AC_gain.npz')
+# SBS_gain = npzfile['SBS_gain']
+# alpha = npzfile['alpha']
 
-# # trim1 = 5
-# # trim = 13
-# syms = integration.symmetries(sim_AC_wguide)
-# # for i in range(trim-trim1):
-# for i in range(num_AC_modes):
-#    # i = i+trim1
-#    sym = syms[i]
-#    print 'Res freq', sim_AC_wguide.Eig_value[i]*1e-9
-#    # print 'SES gain', SBS_gain[0,0,i]/alpha[i]
-#    # print 'alpha', alpha[i]
-#    if sym[0] == 1 and sym[1] == 1 and sym[2] == 1:
-#       print 'A'
-#    if sym[0] == -1 and sym[1] == 1 and sym[2] == -1:
-#       print 'B1'
-#    if sym[0] == 1 and sym[1] == -1 and sym[2] == -1:
-#       print 'B2'
-#    if sym[0] == -1 and sym[1] == -1 and sym[2] == 1:
-#       print 'B3'
 
-# # print "Gain", SBS_gain[0,0,AC_ival]/alpha[AC_ival]
+print "SBS_gain", SBS_gain[0,0,:]/alpha
+
 
 
 # import matplotlib

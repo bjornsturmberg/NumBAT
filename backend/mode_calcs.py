@@ -80,9 +80,8 @@ class Simmo(object):
             # equal distance from shift and invert point and therefore both found.
             max_n = np.real(self.n_effs).max()
             confinment_factor = 1.8/np.sqrt(12) # value from silicon in air
+            # shift = n_eff**2 * k_0**2
             shift = (confinment_factor*max_n)**2 * self.k_0**2
-            # n_eff = 1.8
-            # shift = n_eff**2 * self.k_0**2
         else:
             shift = self.shift_Hz
 
@@ -199,28 +198,26 @@ class Simmo(object):
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
         if self.shift_Hz is None:
-            # For AC problem shift is a frequency - [shift] = s^-1.
-            # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
+            # For AC problem shift is a frequency; [shift] = s^-1.
             v_list = []
             for el in range(self.structure.nb_typ_el_AC):
+                # Using acoustic velocity of longitudinal mode pg 215 Auld vol 1.
                 v_list.append(np.sqrt(self.structure.c_tensor[0,0][el]/self.structure.rho[el]))
-            AC_velocity = np.real(v_list).min()
+                # # Using acoustic velocity of shear mode pg 215 Auld vol 1.
+                # v_list.append(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
+            AC_velocity = 2595
+            print "AC_velocity", AC_velocity
             shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
-            # Increase slightly for difference between bulk and waveguide.
-            shift = 1.05*shift
-            # print AC_velocity
-            # print shift
+            print "shift", shift
+            AC_velocity = np.real(v_list).min()
+            print "AC_velocity", AC_velocity
+            shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            print "shift", shift
+            shift = 0.95*shift
+            print "shift", shift
             # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
             # shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
             # print shift
-
-
-            # Using acoustic velocity of shear mode pg 215 Auld vol 1.
-            # AC_velocity2 = np.real(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
-            # # shift_freq2 = AC_velocity2*0.5*self.q_acoustic/(2.*np.pi)
-            # shift_freq2 = AC_velocity2*self.q_acoustic/(2.*np.pi)
-            # print shift
-            # shift = 20.0e9  # used to get all modes in Rakich Si example
         else:
             shift = self.shift_Hz
 
