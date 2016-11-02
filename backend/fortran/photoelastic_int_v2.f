@@ -1,5 +1,5 @@
-C Calculate the overlap integral of two EM modes and an AC mode
-C using numerical quadrature.
+C Calculate the overlap integral of two EM modes and an AC mode using
+C analytic expressions for basis function overlaps on linear elements.
 C
       subroutine photoelastic_int_v2 (nval_EM, nval_AC, ival1,
      *  ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
@@ -59,6 +59,7 @@ Cf2py depend(x) npt
 Cf2py depend(soln_EM) nnodes, nval_EM, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(p_tensor) nb_typ_el
+Cf2py depend(eps_lst) nb_typ_el
 C
 Cf2py intent(out) overlap
 C
@@ -223,7 +224,7 @@ C                       Ustar = conjg(soln_AC(l_eq,ltest,ival3,iel))
           enddo
 C
 C If want overlap of given EM mode 1 and 2 and all AC modes.
-        else if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. 
+        else if (ival1 .ge. 0 .and. ival2 .ge. 0 .and.
      *                                           ival3 .eq. -1) then
           do itrial=1,nnodes0
             do i_eq=1,3
@@ -261,7 +262,7 @@ C                         Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
           enddo
 C
 C If want overlap of given EM mode 1 and all EM modes 2 and all AC modes.
-        else if (ival1 .ge. 0 .and. ival2 .eq. -1 .and. 
+        else if (ival1 .ge. 0 .and. ival2 .eq. -1 .and.
      *                                            ival3 .eq. -1) then
           do itrial=1,nnodes0
             do i_eq=1,3
@@ -301,7 +302,7 @@ C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
           enddo
 C
 C If want overlap of given EM mode 2 and all EM modes 1 and all AC modes.
-        else if (ival1 .eq. -1 .and. ival2 .ge. 0 .and. 
+        else if (ival1 .eq. -1 .and. ival2 .ge. 0 .and.
      *                                            ival3 .eq. -1) then
           do itrial=1,nnodes0
             do i_eq=1,3
@@ -341,7 +342,7 @@ C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
           enddo
 C
 C If want overlap of all EM mode 1, all EM modes 2 and all AC modes.
-        else if (ival1 .eq. -1 .and. ival2 .eq. -1 .and. 
+        else if (ival1 .eq. -1 .and. ival2 .eq. -1 .and.
      *                                             ival3 .eq. -1) then
           do itrial=1,nnodes0
             do i_eq=1,3
@@ -383,7 +384,7 @@ C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
         enddo
 C
 C If want overlap of all EM mode 1, all EM modes 2 and one AC mode.
-        else if (ival1 .eq. -1 .and. ival2 .eq. -1 .and. 
+        else if (ival1 .eq. -1 .and. ival2 .eq. -1 .and.
      *                                             ival3 .ge. 0) then
           do itrial=1,nnodes0
             do i_eq=1,3

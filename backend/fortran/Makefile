@@ -8,7 +8,7 @@ SUBROUTINES_FOR_PYTHON = conv_gmsh.f py_calc_modes.f \
 	EM_mode_energy_int.f photoelastic_int.f photoelastic_int_v2.f \
 	AC_mode_energy_int.f AC_mode_energy_int_v2.f AC_mode_energy_int_v4.f\
 	AC_alpha_int.f AC_alpha_int_v2.f \
-	photoelastic_int_check.f
+	photoelastic_int_check.f, moving_boundary
 
 LIB_LOCATION = lib
 UMFPACK_NAME = umf4_f77zwrapper64.o

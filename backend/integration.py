@@ -21,10 +21,10 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 EM_ival1=0, EM_ival2=0, AC_ival=0):
     """ Calculate interaction integrals and SBS gain.
 
-        Implements Eqs. 33, 41, 45 of 
+        Implements Eqs. 33, 41, 45 of
         Wolff et al. PRA 92, 013836 (2015) doi/10.1103/PhysRevA.92.013836
-        These are for Q_photoelastic, Q_moving_boundary, and the Acoustic loss 
-        "alpha" respectively. 
+        These are for Q_photoelastic, Q_moving_boundary, and the Acoustic loss
+        "alpha" respectively.
 
         Args:
             sim_EM_wguide  (:Simmo: object): Contains all info on EM modes
@@ -36,19 +36,19 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         Keyword Args:
             EM_ival1  (int/string): Specify mode number of EM mode 1 (pump mode)
                 to calculate interactions for.
-                Numbering is python index so runs from 0 to num_EM_modes-1, 
+                Numbering is python index so runs from 0 to num_EM_modes-1,
                 with 0 being fundamental mode (largest prop constant).
                 Can also set to 'All' to include all modes.
 
             EM_ival2  (int/string): Specify mode number of EM mode 2 (stokes mode)
                 to calculate interactions for.
-                Numbering is python index so runs from 0 to num_EM_modes-1, 
+                Numbering is python index so runs from 0 to num_EM_modes-1,
                 with 0 being fundamental mode (largest prop constant).
                 Can also set to 'All' to include all modes.
 
             AC_ival  (int/string): Specify mode number of AC mode
                 to calculate interactions for.
-                Numbering is python index so runs from 0 to num_AC_modes-1, 
+                Numbering is python index so runs from 0 to num_AC_modes-1,
                 with 0 being fundamental mode (largest prop constant).
                 Can also set to 'All' to include all modes.
     """
@@ -510,16 +510,32 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 
     # Calc Q_moving_boundary Eq. 41
-    from collections import Counter
-    Q_MB = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
+    typ_select_in = 2
+    typ_select_out = 1
+    try:
+        Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
+            sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,
+            AC_ival_fortran, sim_AC_wguide.n_msh_el,
+            sim_AC_wguide.n_msh_pts, nnodes,
+            sim_AC_wguide.table_nod, sim_AC_wguide.type_el,
+            sim_AC_wguide.x_arr,
+            sim_EM_wguide.structure.nb_typ_el, typ_select_in,  typ_select_out,
+            trimmed_EM_field, sim_AC_wguide.sol1,
+            relevant_eps_effs, Fortran_debug)
+    except KeyboardInterrupt:
+        print "\n\n Routine moving_boundary interrupted by keyboard.\n\n"
 
-    eps_0 = 8.854187817e-12
+
+    from collections import Counter
 
     n_msh_el = sim_EM_wguide.n_msh_el
     type_el = sim_EM_wguide.type_el
     table_nod = sim_EM_wguide.table_nod
     n_msh_pts = sim_EM_wguide.n_msh_pts
     x_arr = sim_EM_wguide.x_arr
+
+    eps_0 = 8.854187817e-12
+    Q_MB = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
 
     ### Find nodes that are in elements of various types
     ### and find elements that have multiple nodes of various types
@@ -710,7 +726,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     Q = Q_MB
     Q = Q_PE
     # Q = Q_PE + Q_MB
-    
+
     # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
     # Note: sim_AC_wguide.Omega_AC is the acoustic angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q*np.conj(Q))
