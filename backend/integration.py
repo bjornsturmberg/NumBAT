@@ -510,8 +510,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
 
     # Calc Q_moving_boundary Eq. 41
-    typ_select_in = 2
-    typ_select_out = 1
+    typ_select_in = 1
+    typ_select_out = 0
     try:
         Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
             sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,
@@ -519,212 +519,212 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
             sim_AC_wguide.n_msh_pts, nnodes,
             sim_AC_wguide.table_nod, sim_AC_wguide.type_el,
             sim_AC_wguide.x_arr,
-            sim_EM_wguide.structure.nb_typ_el, typ_select_in,  typ_select_out,
+            sim_EM_wguide.structure.nb_typ_el, typ_select_in, typ_select_out,
             trimmed_EM_field, sim_AC_wguide.sol1,
             relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine moving_boundary interrupted by keyboard.\n\n"
 
 
-    from collections import Counter
+    # from collections import Counter
 
-    n_msh_el = sim_EM_wguide.n_msh_el
-    type_el = sim_EM_wguide.type_el
-    table_nod = sim_EM_wguide.table_nod
-    n_msh_pts = sim_EM_wguide.n_msh_pts
-    x_arr = sim_EM_wguide.x_arr
+    # n_msh_el = sim_EM_wguide.n_msh_el
+    # type_el = sim_EM_wguide.type_el
+    # table_nod = sim_EM_wguide.table_nod
+    # n_msh_pts = sim_EM_wguide.n_msh_pts
+    # x_arr = sim_EM_wguide.x_arr
 
-    eps_0 = 8.854187817e-12
-    Q_MB = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
+    # eps_0 = 8.854187817e-12
+    # Q_MB = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
 
-    ### Find nodes that are in elements of various types
-    ### and find elements that have multiple nodes of various types
-    ### ie. are not single vertices on an interface.
-    node_array = -1*np.ones(n_msh_pts)
-    interface_nodes = []
-    edge_el_list = []
-    for el in range(n_msh_el):
-        el_type = type_el[el]
-        for i in range(6):
-            node = table_nod[i][el]
-            # Check if first time seen this node
-            if node_array[node - 1] == -1: # adjust to python indexing
-                node_array[node - 1] = el_type
-            else:
-                if node_array[node - 1] != el_type:
-                    interface_nodes.append(node)
-                    ## line below is redundant because elements sorted by type w type 1 first
-                    # if el_type is not bkg_el_type:
-                    edge_el_list.append(el)
-    interface_nodes = list(set(interface_nodes))
-    edge_els_multi_nodes = [k for (k,v) in Counter(edge_el_list).iteritems() if v > 1]
+    # ### Find nodes that are in elements of various types
+    # ### and find elements that have multiple nodes of various types
+    # ### ie. are not single vertices on an interface.
+    # node_array = -1*np.ones(n_msh_pts)
+    # interface_nodes = []
+    # edge_el_list = []
+    # for el in range(n_msh_el):
+    #     el_type = type_el[el]
+    #     for i in range(6):
+    #         node = table_nod[i][el]
+    #         # Check if first time seen this node
+    #         if node_array[node - 1] == -1: # adjust to python indexing
+    #             node_array[node - 1] = el_type
+    #         else:
+    #             if node_array[node - 1] != el_type:
+    #                 interface_nodes.append(node)
+    #                 ## line below is redundant because elements sorted by type w type 1 first
+    #                 # if el_type is not bkg_el_type:
+    #                 edge_el_list.append(el)
+    # interface_nodes = list(set(interface_nodes))
+    # edge_els_multi_nodes = [k for (k,v) in Counter(edge_el_list).iteritems() if v > 1]
 
-    eps_list = [sim_EM_wguide.structure.bkg_material.n(sim_EM_wguide.wl_m),
-                sim_EM_wguide.structure.inc_a_material.n(sim_EM_wguide.wl_m),
-                sim_EM_wguide.structure.inc_b_material.n(sim_EM_wguide.wl_m),
-                sim_EM_wguide.structure.slab_a_material.n(sim_EM_wguide.wl_m),
-                sim_EM_wguide.structure.slab_a_bkg_material.n(sim_EM_wguide.wl_m),
-                sim_EM_wguide.structure.slab_b_material.n(sim_EM_wguide.wl_m),
-                sim_EM_wguide.structure.slab_b_bkg_material.n(sim_EM_wguide.wl_m),
-                sim_EM_wguide.structure.coating_material.n(sim_EM_wguide.wl_m)]
-    # Line below may be overkill?
-    if sim_EM_wguide.structure.loss is False:
-        eps_list = np.real(eps_list)
+    # eps_list = [sim_EM_wguide.structure.bkg_material.n(sim_EM_wguide.wl_m),
+    #             sim_EM_wguide.structure.inc_a_material.n(sim_EM_wguide.wl_m),
+    #             sim_EM_wguide.structure.inc_b_material.n(sim_EM_wguide.wl_m),
+    #             sim_EM_wguide.structure.slab_a_material.n(sim_EM_wguide.wl_m),
+    #             sim_EM_wguide.structure.slab_a_bkg_material.n(sim_EM_wguide.wl_m),
+    #             sim_EM_wguide.structure.slab_b_material.n(sim_EM_wguide.wl_m),
+    #             sim_EM_wguide.structure.slab_b_bkg_material.n(sim_EM_wguide.wl_m),
+    #             sim_EM_wguide.structure.coating_material.n(sim_EM_wguide.wl_m)]
+    # # Line below may be overkill?
+    # if sim_EM_wguide.structure.loss is False:
+    #     eps_list = np.real(eps_list)
 
-    test_orient = [1,-1]
-    test1 = [0,0]
-    test2 = [0,0]
-    test3 = [0,0]
-    # x_list = []
-    # y_list = []
-    # x2_list = []
-    # y2_list = []
-    # nx_list = []
-    # ny_list = []
-    for el in edge_els_multi_nodes:
-        AC_el = sim_AC_wguide.el_convert_tbl_inv[el]
-        # Below also works
-        # AC_el = (key for key,tst in sim_AC_wguide.el_convert_tbl.items() if tst==el).next()
-        # print el
-        # print AC_el
-        # print sim_AC_wguide.el_convert_tbl[AC_el]
+    # test_orient = [1,-1]
+    # test1 = [0,0]
+    # test2 = [0,0]
+    # test3 = [0,0]
+    # # x_list = []
+    # # y_list = []
+    # # x2_list = []
+    # # y2_list = []
+    # # nx_list = []
+    # # ny_list = []
+    # for el in edge_els_multi_nodes:
+    #     AC_el = sim_AC_wguide.el_convert_tbl_inv[el]
+    #     # Below also works
+    #     # AC_el = (key for key,tst in sim_AC_wguide.el_convert_tbl.items() if tst==el).next()
+    #     # print el
+    #     # print AC_el
+    #     # print sim_AC_wguide.el_convert_tbl[AC_el]
 
-        contour_dr = []
-        contour_vals = []
-        first_seg = True
-        integrand = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
-        # These are all possible edge line segments.
-        for [n0,n1] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
-            node0 = table_nod[n0][el]
-            node1 = table_nod[n1][el]
-            if node0 in interface_nodes and node1 in interface_nodes:
-                # coordinates of line seg. nodes
-                x1 = x_arr[0,table_nod[n0][el] - 1]
-                y1 = x_arr[1,table_nod[n0][el] - 1]
-                x2 = x_arr[0,table_nod[n1][el] - 1]
-                y2 = x_arr[1,table_nod[n1][el] - 1]
-                # coordinates of non-vertex nodes, used to test orientation
-                nodes_all = np.array([0, 1, 2, 3, 4, 5])
-                nodes_rel = np.array([n0, n1])
-                nodes_test = np.setdiff1d(nodes_all,nodes_rel)
-                xt1 = x_arr[0,table_nod[nodes_test[0]][el] - 1]
-                yt1 = x_arr[1,table_nod[nodes_test[0]][el] - 1]
-                t1 = np.array([xt1,yt1])
-                xt2 = x_arr[0,table_nod[nodes_test[1]][el] - 1]
-                yt2 = x_arr[1,table_nod[nodes_test[1]][el] - 1]
-                t2 = np.array([xt2,yt2])
-                xt3 = x_arr[0,table_nod[nodes_test[2]][el] - 1]
-                yt3 = x_arr[1,table_nod[nodes_test[2]][el] - 1]
-                t3 = np.array([xt3,yt3])
-                for i in [0, 1]:
-                    t = test_orient[i]
-                    normal_vec = [t*(y2-y1), -1*t*(x2-x1)]
-                    # start half way along line seg. out along n vector
-                    test_point = np.array([x1+(x2-x1+normal_vec[0])/2.,
-                                  y1+(y2-y1+normal_vec[1])/2.])
-                    test1[i] = np.linalg.norm(test_point-t1)
-                    test2[i] = np.linalg.norm(test_point-t2)
-                    test3[i] = np.linalg.norm(test_point-t3)
-                orient = 0
-                if test1[0] < test1[1]:
-                    orient += 1
-                else:
-                    orient -= 1
-                if test2[0] < test2[1]:
-                    orient += 1
-                else:
-                    orient -= 1
-                if test3[0] < test3[1]:
-                    orient += 1
-                else:
-                    orient -= 1
-                if orient > 0:
-                    normal_vec = [-1*(y2-y1), (x2-x1)]
-                else:
-                    normal_vec = [(y2-y1), -1*(x2-x1)]
-                n_vec_norm = normal_vec/np.linalg.norm(normal_vec)
-                # x_list.append(x1)
-                # y_list.append(y1)
-                # x2_list.append(x2)
-                # y2_list.append(y2)
-                # nx_list.append(n_vec_norm[0])
-                # ny_list.append(n_vec_norm[1])
+    #     contour_dr = []
+    #     contour_vals = []
+    #     first_seg = True
+    #     integrand = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
+    #     # These are all possible edge line segments.
+    #     for [n0,n1] in [[0,3],[3,1],[1,4],[4,2],[2,5],[5,0]]:
+    #         node0 = table_nod[n0][el]
+    #         node1 = table_nod[n1][el]
+    #         if node0 in interface_nodes and node1 in interface_nodes:
+    #             # coordinates of line seg. nodes
+    #             x1 = x_arr[0,table_nod[n0][el] - 1]
+    #             y1 = x_arr[1,table_nod[n0][el] - 1]
+    #             x2 = x_arr[0,table_nod[n1][el] - 1]
+    #             y2 = x_arr[1,table_nod[n1][el] - 1]
+    #             # coordinates of non-vertex nodes, used to test orientation
+    #             nodes_all = np.array([0, 1, 2, 3, 4, 5])
+    #             nodes_rel = np.array([n0, n1])
+    #             nodes_test = np.setdiff1d(nodes_all,nodes_rel)
+    #             xt1 = x_arr[0,table_nod[nodes_test[0]][el] - 1]
+    #             yt1 = x_arr[1,table_nod[nodes_test[0]][el] - 1]
+    #             t1 = np.array([xt1,yt1])
+    #             xt2 = x_arr[0,table_nod[nodes_test[1]][el] - 1]
+    #             yt2 = x_arr[1,table_nod[nodes_test[1]][el] - 1]
+    #             t2 = np.array([xt2,yt2])
+    #             xt3 = x_arr[0,table_nod[nodes_test[2]][el] - 1]
+    #             yt3 = x_arr[1,table_nod[nodes_test[2]][el] - 1]
+    #             t3 = np.array([xt3,yt3])
+    #             for i in [0, 1]:
+    #                 t = test_orient[i]
+    #                 normal_vec = [t*(y2-y1), -1*t*(x2-x1)]
+    #                 # start half way along line seg. out along n vector
+    #                 test_point = np.array([x1+(x2-x1+normal_vec[0])/2.,
+    #                               y1+(y2-y1+normal_vec[1])/2.])
+    #                 test1[i] = np.linalg.norm(test_point-t1)
+    #                 test2[i] = np.linalg.norm(test_point-t2)
+    #                 test3[i] = np.linalg.norm(test_point-t3)
+    #             orient = 0
+    #             if test1[0] < test1[1]:
+    #                 orient += 1
+    #             else:
+    #                 orient -= 1
+    #             if test2[0] < test2[1]:
+    #                 orient += 1
+    #             else:
+    #                 orient -= 1
+    #             if test3[0] < test3[1]:
+    #                 orient += 1
+    #             else:
+    #                 orient -= 1
+    #             if orient > 0:
+    #                 normal_vec = [-1*(y2-y1), (x2-x1)]
+    #             else:
+    #                 normal_vec = [(y2-y1), -1*(x2-x1)]
+    #             n_vec_norm = normal_vec/np.linalg.norm(normal_vec)
+    #             # x_list.append(x1)
+    #             # y_list.append(y1)
+    #             # x2_list.append(x2)
+    #             # y2_list.append(y2)
+    #             # nx_list.append(n_vec_norm[0])
+    #             # ny_list.append(n_vec_norm[1])
 
-                # Find el on other side of interface and its epsilon
-                all_el_w_node0 = np.where(table_nod[:] == node0)
-                all_el_w_node1 = np.where(table_nod[:] == node1)
-                all_el_w_node0 = [list(set(all_el_w_node0[0])), list(set(all_el_w_node0[1]))]
-                all_el_w_node1 = [list(set(all_el_w_node1[0])), list(set(all_el_w_node1[1]))]
-                all_el_w_node0 = [item for sublist in all_el_w_node0 for item in sublist]
-                all_el_w_node1 = [item for sublist in all_el_w_node1 for item in sublist]
-                all_el_w_node0 = [list(set(all_el_w_node0))][0]
-                all_el_w_node1 = [list(set(all_el_w_node1))][0]
-                all_el_w_nodes = all_el_w_node0 + all_el_w_node1
-                all_el_w_node0_and_node1 = [k for (k,v) in Counter(all_el_w_nodes).iteritems() if v > 1]
-                all_el_w_node0_and_node1.remove(el)
-                out_side_el = all_el_w_node0_and_node1[0]
-                # Now finally find actual epsilons
-                type_el_a = type_el[el]
-                type_el_b = type_el[out_side_el]
-                eps_a = eps_list[type_el_a-1] # adjust for fortran indexing
-                eps_b = eps_list[type_el_b-1] # adjust for fortran indexing
+    #             # Find el on other side of interface and its epsilon
+    #             all_el_w_node0 = np.where(table_nod[:] == node0)
+    #             all_el_w_node1 = np.where(table_nod[:] == node1)
+    #             all_el_w_node0 = [list(set(all_el_w_node0[0])), list(set(all_el_w_node0[1]))]
+    #             all_el_w_node1 = [list(set(all_el_w_node1[0])), list(set(all_el_w_node1[1]))]
+    #             all_el_w_node0 = [item for sublist in all_el_w_node0 for item in sublist]
+    #             all_el_w_node1 = [item for sublist in all_el_w_node1 for item in sublist]
+    #             all_el_w_node0 = [list(set(all_el_w_node0))][0]
+    #             all_el_w_node1 = [list(set(all_el_w_node1))][0]
+    #             all_el_w_nodes = all_el_w_node0 + all_el_w_node1
+    #             all_el_w_node0_and_node1 = [k for (k,v) in Counter(all_el_w_nodes).iteritems() if v > 1]
+    #             all_el_w_node0_and_node1.remove(el)
+    #             out_side_el = all_el_w_node0_and_node1[0]
+    #             # Now finally find actual epsilons
+    #             type_el_a = type_el[el]
+    #             type_el_b = type_el[out_side_el]
+    #             eps_a = eps_list[type_el_a-1] # adjust for fortran indexing
+    #             eps_b = eps_list[type_el_b-1] # adjust for fortran indexing
 
-                ### Calc integrand on line segment
-                dr = np.array([x2-x1, y2-y1])
-                abs_dr = np.sqrt(dr[0]**2 + dr[1]**2)
-                contour_dr.append(abs_dr)
-                second_node = False
-                for n in [n0, n1]:
-                    if first_seg is True or second_node is True:
-                        EM_ival1 = EM_ival2 = 0
-                        for AC_ival in range(num_modes_AC):
-                            # E-fields
-                            e1_x = sim_EM_wguide.sol1[0,n,EM_ival1,el]
-                            e1_y = sim_EM_wguide.sol1[1,n,EM_ival1,el]
-                            e1_z = sim_EM_wguide.sol1[2,n,EM_ival1,el]
-                            e2_x = sim_EM_wguide.sol1[0,n,EM_ival2,el]
-                            e2_y = sim_EM_wguide.sol1[1,n,EM_ival2,el]
-                            e2_z = sim_EM_wguide.sol1[2,n,EM_ival2,el]
-                            d1_x = e1_x*eps_a*eps_0
-                            d1_y = e1_y*eps_a*eps_0
-                            d1_z = e1_z*eps_a*eps_0
-                            d2_x = e2_x*eps_a*eps_0
-                            d2_y = e2_y*eps_a*eps_0
-                            d2_z = e2_z*eps_a*eps_0
-                            # Displacement fields
-                            u_x = sim_AC_wguide.sol1[0,n,AC_ival,AC_el]
-                            u_y = sim_AC_wguide.sol1[1,n,AC_ival,AC_el]
-                            u_z = sim_AC_wguide.sol1[2,n,AC_ival,AC_el]
+    #             ### Calc integrand on line segment
+    #             dr = np.array([x2-x1, y2-y1])
+    #             abs_dr = np.sqrt(dr[0]**2 + dr[1]**2)
+    #             contour_dr.append(abs_dr)
+    #             second_node = False
+    #             for n in [n0, n1]:
+    #                 if first_seg is True or second_node is True:
+    #                     EM_ival1 = EM_ival2 = 0
+    #                     for AC_ival in range(num_modes_AC):
+    #                         # E-fields
+    #                         e1_x = sim_EM_wguide.sol1[0,n,EM_ival1,el]
+    #                         e1_y = sim_EM_wguide.sol1[1,n,EM_ival1,el]
+    #                         e1_z = sim_EM_wguide.sol1[2,n,EM_ival1,el]
+    #                         e2_x = sim_EM_wguide.sol1[0,n,EM_ival2,el]
+    #                         e2_y = sim_EM_wguide.sol1[1,n,EM_ival2,el]
+    #                         e2_z = sim_EM_wguide.sol1[2,n,EM_ival2,el]
+    #                         d1_x = e1_x*eps_a*eps_0
+    #                         d1_y = e1_y*eps_a*eps_0
+    #                         d1_z = e1_z*eps_a*eps_0
+    #                         d2_x = e2_x*eps_a*eps_0
+    #                         d2_y = e2_y*eps_a*eps_0
+    #                         d2_z = e2_z*eps_a*eps_0
+    #                         # Displacement fields
+    #                         u_x = sim_AC_wguide.sol1[0,n,AC_ival,AC_el]
+    #                         u_y = sim_AC_wguide.sol1[1,n,AC_ival,AC_el]
+    #                         u_z = sim_AC_wguide.sol1[2,n,AC_ival,AC_el]
 
-                            u_n = np.conj(u_x)*n_vec_norm[0] + np.conj(u_y)*n_vec_norm[1]
-                            # n_vec_norm[2] = 0 # z-comp!
-                            n_cross_e1 = np.array([[n_vec_norm[1]*e1_z],
-                                [-n_vec_norm[0]*e1_z],
-                                [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x]])
-                            n_cross_e2 = np.array([[n_vec_norm[1]*e2_z],
-                                [-n_vec_norm[0]*e2_z],
-                                [n_vec_norm[0]*e2_y - n_vec_norm[1]*e2_x]])
-                            inter_term1 = (eps_a - eps_b)*eps_0*np.vdot(n_cross_e1,n_cross_e2)
-                            # print inter_term1
-                            n_dot_d1 = n_vec_norm[0]*d1_x + n_vec_norm[1]*d1_y
-                            n_dot_d2 = n_vec_norm[0]*d2_x + n_vec_norm[1]*d2_y
-                            inter_term2 = (1./eps_b - 1./eps_a)*(1./eps_0)*np.conj(n_dot_d1)*n_dot_d2
-                            # print inter_term2
-                            integrand[EM_ival1,EM_ival2,AC_ival] = u_n*(inter_term1 - inter_term2)
-                        contour_vals.append(integrand)
-                    second_node = True
-                first_seg = False
-        contour_r = [0,contour_dr[0],np.sum(contour_dr)]
-        for AC_ival in range(num_modes_AC):
-            reshape_c_vals = []
-            for i in range(3):
-                reshape_c_vals.append(contour_vals[i][EM_ival1,EM_ival2,AC_ival])
-            Q_MB[EM_ival1,EM_ival2,AC_ival] += np.trapz(reshape_c_vals, x=contour_r)
+    #                         u_n = np.conj(u_x)*n_vec_norm[0] + np.conj(u_y)*n_vec_norm[1]
+    #                         # n_vec_norm[2] = 0 # z-comp!
+    #                         n_cross_e1 = np.array([[n_vec_norm[1]*e1_z],
+    #                             [-n_vec_norm[0]*e1_z],
+    #                             [n_vec_norm[0]*e1_y - n_vec_norm[1]*e1_x]])
+    #                         n_cross_e2 = np.array([[n_vec_norm[1]*e2_z],
+    #                             [-n_vec_norm[0]*e2_z],
+    #                             [n_vec_norm[0]*e2_y - n_vec_norm[1]*e2_x]])
+    #                         inter_term1 = (eps_a - eps_b)*eps_0*np.vdot(n_cross_e1,n_cross_e2)
+    #                         # print inter_term1
+    #                         n_dot_d1 = n_vec_norm[0]*d1_x + n_vec_norm[1]*d1_y
+    #                         n_dot_d2 = n_vec_norm[0]*d2_x + n_vec_norm[1]*d2_y
+    #                         inter_term2 = (1./eps_b - 1./eps_a)*(1./eps_0)*np.conj(n_dot_d1)*n_dot_d2
+    #                         # print inter_term2
+    #                         integrand[EM_ival1,EM_ival2,AC_ival] = u_n*(inter_term1 - inter_term2)
+    #                     contour_vals.append(integrand)
+    #                 second_node = True
+    #             first_seg = False
+    #     contour_r = [0,contour_dr[0],np.sum(contour_dr)]
+    #     for AC_ival in range(num_modes_AC):
+    #         reshape_c_vals = []
+    #         for i in range(3):
+    #             reshape_c_vals.append(contour_vals[i][EM_ival1,EM_ival2,AC_ival])
+    #         Q_MB[EM_ival1,EM_ival2,AC_ival] += np.trapz(reshape_c_vals, x=contour_r)
 
-    # print Q_MB[0,0,:]
-    # print Q_PE[0,0,2]
+    print Q_MB[0,0,:]
+    print Q_PE[0,0,:]
     Q = Q_MB
-    Q = Q_PE
+    # Q = Q_PE
     # Q = Q_PE + Q_MB
 
     # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
@@ -751,7 +751,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     # SBS_gain_py = np.real(gain_py/normal_fact_py)
     # SBS_gain_CW = np.real(gain_CW/normal_fact_CW)
 
-    print "MB_gain_ratio", SBS_gain[0,0,2]/alpha[2]/1632.18
+    print "MB_gain_ratio", SBS_gain[0,0,2]/alpha[2]/5164.72
+    print "MB_gain_ratio", SBS_gain[0,0,4]/alpha[4]/1344.00
+    # print "MB_gain_ratio", SBS_gain[0,0,8]/alpha[8]/400.31
+
+    # print "PE_gain_ratio", SBS_gain[0,0,2]/alpha[2]/1152.95
+    # print "PE_gain_ratio", SBS_gain[0,0,4]/alpha[4]/6333.18
+    # # print "PE_gain_ratio", SBS_gain[0,0,8]/alpha[8]/36.55
+    
     # print "SBS_gain_py", SBS_gain_py[0,0,:]/alpha_py
     # print "SBS_gain_CW", SBS_gain_CW[0,0,:]/alpha_py_CW
     # print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
