@@ -26,25 +26,26 @@ c     Local variables
       integer*8, allocatable :: edge_direction(:) ! (npt)
 
       integer*8 iel, inod, typ_e
-      integer*8 inod_1, inod_2, inod_3
-      integer*8 j, j_1, j_2, j_3
+      integer*8 inod_1, inod_2, inod_3, ls_inod(3)
+      integer*8 j, j_1, j_2, j_3, i, k
       integer*8 nb_edges, nb_interface_edges
       integer*8 edge_endpoints(2,3), opposite_node(3)
       double precision xy_1(2), xy_2(2), xy_3(2), ls_xy(2,3)
       double precision edge_vec(2), edge_perp(2), vec_0(2)
-      double precision edge_length, r_tmp, zz
-      double precision vec(2,3), eps_0
-      complex*16 z_val(3), z_integral, z_tmp
-      complex*16 u_n, n_cross_e1(3), n_cross_e2(3), n_dot_d2, n_dot_d1
+      double precision edge_length, r_tmp!, zz
+      double precision eps_0
+      complex*16 ls_n_dot(3), ls_n_cross(3,3)
+      complex*16 vec(3,3)!, z_integral
+      complex*16 u_n, n_dot_d2, n_dot_d1
       complex*16 eps_a, eps_b, tmp1, tmp2
       double precision p2_p2_p2_1d(3,3,3)
-      double precision version_number
-      integer file_type, data_size
-      integer physical_tag, elementary_tag
-      integer element_type, number_of_tags
-      integer number_of_string_tags
-      integer number_of_real_tags
-      integer number_of_integer_tags
+C       double precision version_number
+C       integer file_type, data_size
+C       integer physical_tag, elementary_tag
+C       integer element_type, number_of_tags
+C       integer number_of_string_tags
+C       integer number_of_real_tags
+C       integer number_of_integer_tags
 C
 C
 Cf2py intent(in) nval_EM, nval_AC, ival1, ival2, ival3, nb_typ_el
@@ -106,10 +107,17 @@ C     i = 1 is inod = 4 etc
       opposite_node(3) = 2
 c
 ccccccccccccccccccccccccccccccccccccc
-c
-c
+      do i=1,nval_EM
+        do j=1,nval_EM
+          do k=1,nval_AC
+            overlap(i,j,k) = 0.0d0
+          enddo
+        enddo
+      enddo
+cccccccccccc
+C
       eps_0 = 8.854187817d-12
-
+C
       do iel=1,nel
         typ_e = type_el(iel)
         if(typ_e == typ_select_in) then
@@ -187,7 +195,6 @@ c
 ccccccccccccccccccccccccccccccccccccc
 c
 c     Example of numerical integration
-      z_integral = 0
       do iel=1,nel
         typ_e = type_el(iel)
         if(typ_e == typ_select_in) then
@@ -233,215 +240,252 @@ c
      *              + (ls_xy(2,2) - ls_xy(2,1))**2
               edge_length = sqrt(r_tmp)
               call mat_p2_p2_p2_1d (p2_p2_p2_1d, edge_length)
-
-
-              u_n = conjg(soln_AC(1,inod,ival3,iel)) * edge_perp(1)
-     *              + conjg(soln_AC(2,inod,ival3,iel)) * edge_perp(2)
-              n_cross_e1(1) = edge_perp(2)*soln_EM(3,inod,ival1,iel)
-              n_cross_e1(2) = -1*edge_perp(1)*soln_EM(3,inod,ival1,iel)
-              n_cross_e1(3) = edge_perp(1)*soln_EM(2,inod,ival1,iel)
-     *                         - edge_perp(2)*soln_EM(1,inod,ival1,iel)
-              n_cross_e2(1) = edge_perp(2)*soln_EM(3,inod,ival2,iel)
-              n_cross_e2(2) = -1*edge_perp(1)*soln_EM(3,inod,ival2,iel)
-              n_cross_e2(3) = edge_perp(1)*soln_EM(2,inod,ival2,iel)
-     *                         - edge_perp(2)*soln_EM(1,inod,ival2,iel)
-
-              tmp1 = (eps_a - eps_b)*eps_0
-              tmp1 = tmp1*(conjg(n_cross_e1(1))*n_cross_e2(1) +
-     *                 conjg(n_cross_e1(2))*n_cross_e2(2) +
-     *                 conjg(n_cross_e1(3))*n_cross_e2(3))
-
-              n_dot_d1 = eps_a*(edge_perp(1)*soln_EM(1,inod,ival1,iel)
-     *                    + edge_perp(2)*soln_EM(2,inod,ival1,iel))
-              n_dot_d2 = eps_a*(edge_perp(1)*soln_EM(1,inod,ival2,iel)
-     *                    + edge_perp(2)*soln_EM(2,inod,ival2,iel))
-
-              tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
-              tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
-
-              j_1 = 1
-              j_2 = 1
-              j_3 = 1
-              r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-              overlap(ival1,ival2,ival3) = r_tmp*u_n*(tmp1 - tmp2) +
-     *                                       overlap(ival1,ival2,ival3)
-
-C               do j_1=1,3
-C c               In this example vec(:,j_1) = (0,x)
-C                 vec(1,j_1) = 0
-C                 vec(2,j_1) = ls_xy(1,j_1)
-C c               z_val(1): scalar product of vec(j_1) and normal vector edge_perp
-C                 z_val(1) = vec(1,j_1) * edge_perp(1)
-C      *              + vec(2,j_1) * edge_perp(2)
-C                 do j_2=1,3
-C c                 In this example vec(j_2) = (y,-2*x)
-C                   vec(1,j_2) = ls_xy(2,j_2)
-C                   vec(2,j_2) = -2.0d0 * ls_xy(1,j_2)
-C c                 z_val(2): vector product of vec(j_2) and normal vector edge_perp
-C                   z_val(2) = vec(1,j_2) * edge_perp(2)
+c             Identification number of the two end-points and mid-edge point
+              ls_inod(1) = edge_endpoints(1,inod-3)
+              ls_inod(2) = edge_endpoints(2,inod-3)
+              ls_inod(3) = inod
+c
+c             Nodes of the edge
+              do j_1=1,3
+c               (x,y,z)-components of the electric field
+                vec(1,j_1) = soln_EM(1,ls_inod(j_1),ival1,iel)
+                vec(2,j_1) = soln_EM(2,ls_inod(j_1),ival1,iel)
+                vec(3,j_1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+c               ls_n_dot(1): Normal component of vec(j_1)
+                ls_n_dot(1) = vec(1,j_1) * edge_perp(1)
+     *              + vec(2,j_1) * edge_perp(2)
+c               ls_n_cross(1): Tangential component of vec(j_1)
+C                   ls_n_cross(1) = vec(1,j_1) * edge_perp(2)
+C      *                - vec(2,j_1) * edge_perp(1)
+                ls_n_cross(1,1) = vec(3,j_1) * edge_perp(2)
+                ls_n_cross(1,2) = -1*vec(3,j_1) * edge_perp(1)
+                ls_n_cross(1,3) = vec(2,j_1) * edge_perp(1)
+     *              - vec(1,j_1) * edge_perp(2)
+                do j_2=1,3
+c                 (x,y,z)-components of the electric field
+                  vec(1,j_2)=soln_EM(1,ls_inod(j_2),ival2,iel)
+                  vec(2,j_2)=soln_EM(2,ls_inod(j_2),ival2,iel)
+                  vec(3,j_2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+c                 ls_n_dot(2): Normal component of vec(j_2)
+                  ls_n_dot(2) = vec(1,j_2) * edge_perp(1)
+     *                + vec(2,j_2) * edge_perp(2)
+c                 ls_n_cross(2): Tangential component of vec(j_2)
+C                   ls_n_cross(2) = vec(1,j_2) * edge_perp(2)
 C      *                - vec(2,j_2) * edge_perp(1)
-C                   do j_3=1,3
-C c                   In this example vec(j_3) = (y,0)
-C                     vec(1,j_3) = ls_xy(2,j_3)
-C                     vec(2,j_3) = 0
-C c                   z_val(3): scalar product of vec(j_3) and normal vector edge_perp
-C                     z_val(3) = vec(1,j_3) * edge_perp(1)
-C      *                  + vec(2,j_3) * edge_perp(2)
-C                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-C                     z_tmp = z_val(1) * z_val(2) * z_val(3) * r_tmp
-C                     z_integral = z_integral + z_tmp
-C                   enddo
-C                 enddo
-C               enddo
+                  ls_n_cross(2,1) = vec(3,j_2) * edge_perp(2)
+                  ls_n_cross(2,2) = -1*vec(3,j_2) * edge_perp(1)
+                  ls_n_cross(2,3) = vec(2,j_2) * edge_perp(1)
+     *                - vec(1,j_2) * edge_perp(2)
+                  do j_3=1,3
+c                   (x,y,z)-components of the acoustic field
+                    vec(1,j_3) = soln_AC(1,ls_inod(j_3),ival3,iel)
+                    vec(2,j_3) = soln_AC(2,ls_inod(j_3),ival3,iel)
+                    vec(3,j_3) = soln_AC(3,ls_inod(j_3),ival3,iel)
+c                   ls_n_dot(3): scalar product of vec(j_3) and normal vector edge_perp
+                    ls_n_dot(3) = vec(1,j_3) * edge_perp(1)
+     *                  + vec(2,j_3) * edge_perp(2)
+C c                   ls_n_cross(3): Tangential component of vec(j_3)
+C                     ls_n_cross(3) = vec(1,j_3) * edge_perp(2)
+C      *                  - vec(2,j_3) * edge_perp(1)
+
+C                    tmp1 = tmp1*(conjg(ls_n_cross(1))*ls_n_cross(2))
+                    tmp1 = (eps_a - eps_b)*eps_0
+                    tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(2,1)
+     *                    + conjg(ls_n_cross(1,2))*ls_n_cross(2,2)
+     *                    + conjg(ls_n_cross(1,3))*ls_n_cross(2,3))
+                    n_dot_d1 = eps_a * ls_n_dot(1)
+                    n_dot_d2 = eps_a * ls_n_dot(2)
+                    tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
+                    tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
+                    r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
+                    overlap(ival1,ival2,ival3) =
+     *              r_tmp*u_n*(tmp1 - tmp2) + overlap(ival1,ival2,ival3)
+                  enddo
+                enddo
+              enddo
+
+
+cc              u_n = conjg(soln_AC(1,inod,ival3,iel)) * edge_perp(1)
+cc     *              + conjg(soln_AC(2,inod,ival3,iel)) * edge_perp(2)
+cc              n_cross_e1(1) = edge_perp(2)*soln_EM(3,inod,ival1,iel)
+cc              n_cross_e1(2) = -1*edge_perp(1)*soln_EM(3,inod,ival1,iel)
+cc              n_cross_e1(3) = edge_perp(1)*soln_EM(2,inod,ival1,iel)
+cc     *                         - edge_perp(2)*soln_EM(1,inod,ival1,iel)
+cc              n_cross_e2(1) = edge_perp(2)*soln_EM(3,inod,ival2,iel)
+cc              n_cross_e2(2) = -1*edge_perp(1)*soln_EM(3,inod,ival2,iel)
+cc              n_cross_e2(3) = edge_perp(1)*soln_EM(2,inod,ival2,iel)
+cc     *                         - edge_perp(2)*soln_EM(1,inod,ival2,iel)
+cc
+cc              tmp1 = (eps_a - eps_b)*eps_0
+cc              tmp1 = tmp1*(conjg(n_cross_e1(1))*n_cross_e2(1) +
+cc     *                 conjg(n_cross_e1(2))*n_cross_e2(2) +
+cc     *                 conjg(n_cross_e1(3))*n_cross_e2(3))
+cc
+cc              n_dot_d1 = eps_a*(edge_perp(1)*soln_EM(1,inod,ival1,iel)
+cc     *                    + edge_perp(2)*soln_EM(2,inod,ival1,iel))
+cc              n_dot_d2 = eps_a*(edge_perp(1)*soln_EM(1,inod,ival2,iel)
+cc     *                    + edge_perp(2)*soln_EM(2,inod,ival2,iel))
+cc
+cc              tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
+cc              tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
+cc
+cc              j_1 = 1
+cc              j_2 = 1
+cc              j_3 = 1
+cc              r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
+cc              overlap(ival1,ival2,ival3) = r_tmp*u_n*(tmp1 - tmp2) +
+cc     *                                       overlap(ival1,ival2,ival3)
+cc
             endif
           enddo
         endif
       enddo
-      if (debug .eq. 1) then
-        write(*,*)
-        write(*,*) "nb_interface_edges: z_integral = ", z_integral
-        write(*,*)
-      endif
+C       if (debug .eq. 1) then
+C         write(*,*)
+C         write(*,*) "nb_interface_edges: z_integral = ", z_integral
+C         write(*,*)
+C       endif
 c
 ccccccccccccccccccccccccccccccccccccc
 c
-      open (unit=26,file="Output/edge_data.txt")
-      write(26,*)
-      write(26,*) "typ_select_in = ", typ_select_in
-      write(26,*) "npt, nel = ", npt, nel
-      write(26,*) "nb_edges = ", nb_edges
-      write(26,*) "nb_interface_edges = ", nb_interface_edges
-      j = 0
-      do inod=1,npt
-        if (ls_edge_endpoint(1,inod) .ne. 0) then
-          j = j + 1
-          write(26,*) j, inod, ls_edge_endpoint(1,inod),
-     *              ls_edge_endpoint(2,inod),
-     *              edge_direction(inod)
-        endif
-      enddo
-      close(26)
+C       open (unit=26,file="Output/edge_data.txt")
+C       write(26,*)
+C       write(26,*) "typ_select_in = ", typ_select_in
+C       write(26,*) "npt, nel = ", npt, nel
+C       write(26,*) "nb_edges = ", nb_edges
+C       write(26,*) "nb_interface_edges = ", nb_interface_edges
+C       write(26,*) "nb_interface_edges: z_integral = ", z_integral
+C       j = 0
+C       do inod=1,npt
+C         if (ls_edge_endpoint(1,inod) .ne. 0) then
+C           j = j + 1
+C           write(26,*) j, inod, ls_edge_endpoint(1,inod),
+C      *              ls_edge_endpoint(2,inod),
+C      *              edge_direction(inod)
+C         endif
+C       enddo
+C       close(26)
+C c
+C ccccccccccccccccccccccccccccccccccccc
+C c
+C       if (debug .eq. 1) then
+C         version_number = 2.2
+C         file_type = 0  ! An integer equal to 0 in the ASCII file format
+C         data_size = 8 ! An integer equal to the size of the floating point numbers used in the file
+C         open (unit=27,file="Output/edge_data.msh")
+C         write(27,'(a11)') "$MeshFormat"
+C         write(27,'((f4.1,1x,I1,1x,I1,1x))') version_number,
+C      *            file_type, data_size
+C         write(27,'(a14)') "$EndMeshFormat"
+C         write(27,'(a6)') "$Nodes"
+C         write(27,'(I0.1)') nb_interface_edges
+C         zz = 0.0d0
+C         j = 0
+C         do inod=1,npt
+C           if (ls_edge_endpoint(1,inod) .ne. 0) then
+C               xy_1(1) = x(1,inod)
+C               xy_1(2) = x(2,inod)
+C             j = j + 1
+C             write(27,*) j, xy_1(1), xy_1(2), zz
+C           endif
+C         enddo
+C         write(27,'(a9)') "$EndNodes"
+C         write(27,'(a9)') "$Elements"
+C         write(27,'(I0.1)') nb_interface_edges
+C         element_type = 15  ! 1-node point
+C         number_of_tags = 2
+C         j = 0
+C         do inod=1,npt
+C           if (ls_edge_endpoint(1,inod) .ne. 0) then
+C             j = j + 1
+C           physical_tag = j
+C           elementary_tag = j
+C           write(27,'(100(I0.1,2x))') j, element_type,
+C      *      number_of_tags, physical_tag, elementary_tag,
+C      *      j
+C           endif
+C         enddo
+C         write(27,'(a12)') "$EndElements"
+C         number_of_string_tags = 1
+C         number_of_real_tags = 1
+C         number_of_integer_tags = 3
+C         write(27,'(a9)') "$NodeData"
+C         write(27,*) number_of_string_tags
+C         write(27,*) " ""View of tangential vector"" "
+C         write(27,*) number_of_real_tags
+C         write(27,*) 0.0
+C         write(27,*) number_of_integer_tags
+C         write(27,*) 0 ! the time step (0; time steps always start at 0)
+C         write(27,*) 3 ! 3-component (vector) field
+C         write(27,*) nb_interface_edges ! Number of associated nodal values
+C c        node-number value
+C         zz = 0.0d0
+C         j = 0
+C         do inod=1,npt
+C           if (ls_edge_endpoint(1,inod) .ne. 0) then
+C             inod_1 = ls_edge_endpoint(1,inod)
+C             inod_2 = ls_edge_endpoint(2,inod)
+C             xy_1(1) = x(1,inod_1)
+C             xy_1(2) = x(2,inod_1)
+C             xy_2(1) = x(1,inod_2)
+C             xy_2(2) = x(2,inod_2)
+C             edge_vec(1) = xy_2(1) - xy_1(1)
+C             edge_vec(2) = xy_2(2) - xy_1(2)
+C c            Normalisation of edge_vec
+C             r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
+C             edge_vec(1) = edge_vec(1) / r_tmp
+C             edge_vec(2) = edge_vec(2) / r_tmp
+C             j = j + 1
+C             write(27,*) j, edge_vec(1), edge_vec(2), zz
+C           endif
+C         enddo
+C         write(27,'(a12)') "$EndNodeData"
+C c
+C ccccccccccccccccccccccccccccccccccccc
+C c
+C         write(27,'(a9)') "$NodeData"
+C         write(27,*) number_of_string_tags
+C         write(27,*) " ""View of the normal vector"" "
+C         write(27,*) number_of_real_tags
+C         write(27,*) 0.0
+C         write(27,*) number_of_integer_tags
+C         write(27,*) 0 ! the time step (0; time steps always start at 0)
+C         write(27,*) 3 ! 3-component (vector) field
+C         write(27,*) nb_interface_edges ! Number of associated nodal values
+C c        node-number value
+C         zz = 0.0d0
+C         j = 0
+C         do inod=1,npt
+C           if (ls_edge_endpoint(1,inod) .ne. 0) then
+C             inod_1 = ls_edge_endpoint(1,inod)
+C             inod_2 = ls_edge_endpoint(2,inod)
+C             xy_1(1) = x(1,inod_1)
+C             xy_1(2) = x(2,inod_1)
+C             xy_2(1) = x(1,inod_2)
+C             xy_2(2) = x(2,inod_2)
+C             edge_vec(1) = xy_2(1) - xy_1(1)
+C             edge_vec(2) = xy_2(2) - xy_1(2)
+C c            Normalisation of edge_vec
+C             r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
+C             edge_vec(1) = edge_vec(1) / r_tmp
+C             edge_vec(2) = edge_vec(2) / r_tmp
+C c            edge_vec: vector perpendicular to the edge (rotation of edge_vec by -pi/2)
+C             edge_perp(1) = edge_vec(2)
+C             edge_perp(2) = -edge_vec(1)
+C             edge_perp(1) = edge_perp(1) * edge_direction(inod)
+C             edge_perp(2) = edge_perp(2) * edge_direction(inod)
+C             j = j + 1
+C             write(27,*) j, edge_perp(1), edge_perp(2), zz
+C           endif
+C         enddo
+C         write(27,'(a12)') "$EndNodeData"
+C         close(27)
+C       endif
 c
 ccccccccccccccccccccccccccccccccccccc
 c
-      if (debug .eq. 1) then
-        version_number = 2.2
-        file_type = 0  ! An integer equal to 0 in the ASCII file format
-        data_size = 8 ! An integer equal to the size of the floating point numbers used in the file
-        open (unit=27,file="Output/edge_data.msh")
-        write(27,'(a11)') "$MeshFormat"
-        write(27,'((f4.1,1x,I1,1x,I1,1x))') version_number,
-     *            file_type, data_size
-        write(27,'(a14)') "$EndMeshFormat"
-        write(27,'(a6)') "$Nodes"
-        write(27,'(I0.1)') nb_interface_edges
-        zz = 0.0d0
-        j = 0
-        do inod=1,npt
-          if (ls_edge_endpoint(1,inod) .ne. 0) then
-              xy_1(1) = x(1,inod)
-              xy_1(2) = x(2,inod)
-            j = j + 1
-            write(27,*) j, xy_1(1), xy_1(2), zz
-          endif
-        enddo
-        write(27,'(a9)') "$EndNodes"
-        write(27,'(a9)') "$Elements"
-        write(27,'(I0.1)') nb_interface_edges
-        element_type = 15  ! 1-node point
-        number_of_tags = 2
-        j = 0
-        do inod=1,npt
-          if (ls_edge_endpoint(1,inod) .ne. 0) then
-            j = j + 1
-          physical_tag = j
-          elementary_tag = j
-          write(27,'(100(I0.1,2x))') j, element_type,
-     *      number_of_tags, physical_tag, elementary_tag,
-     *      j
-          endif
-        enddo
-        write(27,'(a12)') "$EndElements"
-        number_of_string_tags = 1
-        number_of_real_tags = 1
-        number_of_integer_tags = 3
-        write(27,'(a9)') "$NodeData"
-        write(27,*) number_of_string_tags
-        write(27,*) " ""View of tangential vector"" "
-        write(27,*) number_of_real_tags
-        write(27,*) 0.0
-        write(27,*) number_of_integer_tags
-        write(27,*) 0 ! the time step (0; time steps always start at 0)
-        write(27,*) 3 ! 3-component (vector) field
-        write(27,*) nb_interface_edges ! Number of associated nodal values
-c        node-number value
-        zz = 0.0d0
-        j = 0
-        do inod=1,npt
-          if (ls_edge_endpoint(1,inod) .ne. 0) then
-            inod_1 = ls_edge_endpoint(1,inod)
-            inod_2 = ls_edge_endpoint(2,inod)
-            xy_1(1) = x(1,inod_1)
-            xy_1(2) = x(2,inod_1)
-            xy_2(1) = x(1,inod_2)
-            xy_2(2) = x(2,inod_2)
-            edge_vec(1) = xy_2(1) - xy_1(1)
-            edge_vec(2) = xy_2(2) - xy_1(2)
-c            Normalisation of edge_vec
-            r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
-            edge_vec(1) = edge_vec(1) / r_tmp
-            edge_vec(2) = edge_vec(2) / r_tmp
-            j = j + 1
-            write(27,*) j, edge_vec(1), edge_vec(2), zz
-          endif
-        enddo
-        write(27,'(a12)') "$EndNodeData"
-c
-ccccccccccccccccccccccccccccccccccccc
-c
-        write(27,'(a9)') "$NodeData"
-        write(27,*) number_of_string_tags
-        write(27,*) " ""View of the normal vector"" "
-        write(27,*) number_of_real_tags
-        write(27,*) 0.0
-        write(27,*) number_of_integer_tags
-        write(27,*) 0 ! the time step (0; time steps always start at 0)
-        write(27,*) 3 ! 3-component (vector) field
-        write(27,*) nb_interface_edges ! Number of associated nodal values
-c        node-number value
-        zz = 0.0d0
-        j = 0
-        do inod=1,npt
-          if (ls_edge_endpoint(1,inod) .ne. 0) then
-            inod_1 = ls_edge_endpoint(1,inod)
-            inod_2 = ls_edge_endpoint(2,inod)
-            xy_1(1) = x(1,inod_1)
-            xy_1(2) = x(2,inod_1)
-            xy_2(1) = x(1,inod_2)
-            xy_2(2) = x(2,inod_2)
-            edge_vec(1) = xy_2(1) - xy_1(1)
-            edge_vec(2) = xy_2(2) - xy_1(2)
-c            Normalisation of edge_vec
-            r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
-            edge_vec(1) = edge_vec(1) / r_tmp
-            edge_vec(2) = edge_vec(2) / r_tmp
-c            edge_vec: vector perpendicular to the edge (rotation of edge_vec by -pi/2)
-            edge_perp(1) = edge_vec(2)
-            edge_perp(2) = -edge_vec(1)
-            edge_perp(1) = edge_perp(1) * edge_direction(inod)
-            edge_perp(2) = edge_perp(2) * edge_direction(inod)
-            j = j + 1
-            write(27,*) j, edge_perp(1), edge_perp(2), zz
-          endif
-        enddo
-        write(27,'(a12)') "$EndNodeData"
-        close(27)
-      endif
-c
-ccccccccccccccccccccccccccccccccccccc
-c
-      return
-      end
-C       end subroutine moving_boundary
+C       return
+C       end
+      end subroutine moving_boundary
 
 
