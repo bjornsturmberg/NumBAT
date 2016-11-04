@@ -721,8 +721,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
     #             reshape_c_vals.append(contour_vals[i][EM_ival1,EM_ival2,AC_ival])
     #         Q_MB[EM_ival1,EM_ival2,AC_ival] += np.trapz(reshape_c_vals, x=contour_r)
 
-    print Q_MB[0,0,:]
-    print Q_PE[0,0,:]
+    # print Q_MB[0,0,:]
+    # print Q_PE[0,0,:]
     Q = Q_MB
     # Q = Q_PE
     # Q = Q_PE + Q_MB
