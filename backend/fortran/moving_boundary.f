@@ -36,25 +36,26 @@ C       integer*8, allocatable :: edge_direction(:) ! (npt)
       integer*8 edge_endpoints(2,3), opposite_node(3)
       double precision xy_1(2), xy_2(2), xy_3(2), ls_xy(2,3)
       double precision edge_vec(2), edge_perp(2), vec_0(2)
-      double precision edge_length, r_tmp!, zz
+      double precision edge_length, r_tmp, zz
       double precision eps_0
       complex*16 ls_n_dot(3), ls_n_cross(3,3)
       complex*16 vec(3,3)!, z_integral
-      complex*16 u_n, n_dot_d2, n_dot_d1
+      complex*16 n_dot_d2, n_dot_d1
       complex*16 eps_a, eps_b, tmp1, tmp2
       double precision p2_p2_p2_1d(3,3,3)
-C       double precision version_number
-C       integer file_type, data_size
-C       integer physical_tag, elementary_tag
-C       integer element_type, number_of_tags
-C       integer number_of_string_tags
-C       integer number_of_real_tags
-C       integer number_of_integer_tags
+      double precision version_number
+      integer file_type, data_size
+      integer physical_tag, elementary_tag
+      integer element_type, number_of_tags
+      integer number_of_string_tags
+      integer number_of_real_tags
+      integer number_of_integer_tags
 C
 C
 Cf2py intent(in) nval_EM, nval_AC, ival1, ival2, ival3, nb_typ_el
-Cf2py intent(in) nel, npt, nnodes, table_nod, debug, typ_select_in
-Cf2py intent(in) type_el, x, soln_EM, soln_AC, eps_lst, typ_select_out
+Cf2py intent(in) nel, npt, nnodes, table_nod, debug
+Cf2py intent(in) type_el, x, soln_EM, soln_AC
+Cf2py intent(in) typ_select_in, typ_select_out, eps_lst, debug
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
@@ -210,6 +211,7 @@ C           write(*,*) eps_a, eps_b
             xy_3(1) = x(1,j)
             xy_3(2) = x(2,j)
             if (ls_edge_endpoint(1,j) .ne. 0) then
+C               write(*,*) "an edge"
               inod_1 = ls_edge_endpoint(1,j)
               inod_2 = ls_edge_endpoint(2,j)
               xy_1(1) = x(1,inod_1)
@@ -232,7 +234,7 @@ c             Normalisation of edge_vec
               edge_vec(2) = edge_vec(2) / r_tmp
 c             edge_vec: vector perpendicular to the edge (rotation of edge_vec by -pi/2)
               edge_perp(1) = edge_vec(2)
-              edge_perp(2) = -edge_vec(1)
+              edge_perp(2) = -1*edge_vec(1)
               edge_perp(1) = edge_perp(1) * edge_direction(j)
               edge_perp(2) = edge_perp(2) * edge_direction(j)
 c
@@ -245,123 +247,123 @@ c             Identification number of the two end-points and mid-edge point
               ls_inod(2) = edge_endpoints(2,inod-3)
               ls_inod(3) = inod
 c
-C If only want overlap of one given combination of EM modes and AC mode.
-              if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. 
-     *            ival3 .ge. 0) then
-c             Nodes of the edge
-              do j_1=1,3
-c               (x,y,z)-components of the electric field
-                vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
-                vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
-c               ls_n_dot(1): Normal component of vec(:,1)
-                ls_n_dot(1) = vec(1,1) * edge_perp(1)
-     *              + vec(2,1) * edge_perp(2)
-                ls_n_cross(1,1) = vec(3,1) * edge_perp(2)
-                ls_n_cross(2,1) = -vec(3,1) * edge_perp(1)
-                ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
-     *              - vec(1,1) * edge_perp(2)
-                do j_2=1,3
-c                 (x,y,z)-components of the electric field
-                  vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
-                  vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
-c                 ls_n_dot(2): Normal component of vec(:,2)
-                  ls_n_dot(2) = vec(1,2) * edge_perp(1)
-     *                + vec(2,2) * edge_perp(2)
-                  ls_n_cross(1,2) = vec(3,2) * edge_perp(2)
-                  ls_n_cross(2,2) = -vec(3,2) * edge_perp(1)
-                  ls_n_cross(3,2) = vec(2,2) * edge_perp(1)
-     *                - vec(1,2) * edge_perp(2)
-                  do j_3=1,3
-c                   (x,y,z)-components of the acoustic field
-                    vec(1,3) = soln_AC(1,ls_inod(j_3),ival3,iel)
-                    vec(2,3) = soln_AC(2,ls_inod(j_3),ival3,iel)
-                    vec(3,3) = soln_AC(3,ls_inod(j_3),ival3,iel)
-c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector edge_perp
-                    ls_n_dot(3) = vec(1,3) * edge_perp(1)
-     *                  + vec(2,3) * edge_perp(2)
-                    tmp1 = (eps_a - eps_b)*eps_0
-                    tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
-     *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
-     *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
-                    n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
-                    n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
-                    tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
-                    tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
-                    r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-              overlap(ival1,ival2,ival3) = overlap(ival1,ival2,ival3) +
-     *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
-                  enddo
-                enddo
-              enddo
-C
-C If want overlap of given EM mode 1 and 2 and all AC modes.
-              else if (ival1 .ge. 0 .and. ival2 .ge. 0 .and.
-     *                 ival3 .eq. -1) then
-c             Nodes of the edge
-              do j_1=1,3
-c               (x,y,z)-components of the electric field
-                vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
-                vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
-c               ls_n_dot(1): Normal component of vec(:,1)
-                ls_n_dot(1) = vec(1,1) * edge_perp(1)
-     *              + vec(2,1) * edge_perp(2)
-c               ls_n_cross(1): Tangential component of vec(:,1)
-C                   ls_n_cross(1) = vec(1,1) * edge_perp(2)
-C      *                - vec(2,1) * edge_perp(1)
-                ls_n_cross(1,1) = vec(3,1) * edge_perp(2)
-                ls_n_cross(2,1) = -vec(3,1) * edge_perp(1)
-                ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
-     *              - vec(1,1) * edge_perp(2)
-                do j_2=1,3
-c                 (x,y,z)-components of the electric field
-                  vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
-                  vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
-c                 ls_n_dot(2): Normal component of vec(:,2)
-                  ls_n_dot(2) = vec(1,2) * edge_perp(1)
-     *                + vec(2,2) * edge_perp(2)
-c                 ls_n_cross(2): Tangential component of vec(:,2)
-C                   ls_n_cross(2) = vec(1,2) * edge_perp(2)
-C      *                - vec(2,2) * edge_perp(1)
-                  ls_n_cross(1,2) = vec(3,2) * edge_perp(2)
-                  ls_n_cross(2,2) = -1*vec(3,2) * edge_perp(1)
-                  ls_n_cross(3,2) = vec(2,2) * edge_perp(1)
-     *                - vec(1,2) * edge_perp(2)
+C C If only want overlap of one given combination of EM modes and AC mode.
+C               if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. 
+C      *            ival3 .ge. 0) then
+C c             Nodes of the edge
+C               do j_1=1,3
+C c               (x,y,z)-components of the electric field
+C                 vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
+C                 vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
+C                 vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+C c               ls_n_dot(1): Normal component of vec(:,1)
+C                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
+C      *              + vec(2,1) * edge_perp(2)
+C                 ls_n_cross(1,1) = vec(3,1) * edge_perp(2)
+C                 ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
+C                 ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
+C      *              - vec(1,1) * edge_perp(2)
+C                 do j_2=1,3
+C c                 (x,y,z)-components of the electric field
+C                   vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
+C                   vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
+C                   vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+C c                 ls_n_dot(2): Normal component of vec(:,2)
+C                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
+C      *                + vec(2,2) * edge_perp(2)
+C                   ls_n_cross(1,2) = vec(3,2) * edge_perp(2)
+C                   ls_n_cross(2,2) = -1*vec(3,2) * edge_perp(1)
+C                   ls_n_cross(3,2) = vec(2,2) * edge_perp(1)
+C      *                - vec(1,2) * edge_perp(2)
+C                   do j_3=1,3
+C c                   (x,y,z)-components of the acoustic field
+C                     vec(1,3) = soln_AC(1,ls_inod(j_3),ival3,iel)
+C                     vec(2,3) = soln_AC(2,ls_inod(j_3),ival3,iel)
+C                     vec(3,3) = soln_AC(3,ls_inod(j_3),ival3,iel)
+C c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector edge_perp
+C                     ls_n_dot(3) = vec(1,3) * edge_perp(1)
+C      *                  + vec(2,3) * edge_perp(2)
+C                     tmp1 = (eps_a - eps_b)*eps_0
+C                     tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
+C      *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
+C      *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
+C                     n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
+C                     n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
+C                     tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
+C                     tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
+C                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
+C               overlap(ival1,ival2,ival3) = overlap(ival1,ival2,ival3) +
+C      *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
+C                   enddo
+C                 enddo
+C               enddo
+C C
+C C If want overlap of given EM mode 1 and 2 and all AC modes.
+C               else if (ival1 .ge. 0 .and. ival2 .ge. 0 .and.
+C      *                 ival3 .eq. -1) then
+C c             Nodes of the edge
+C               do j_1=1,3
+C c               (x,y,z)-components of the electric field
+C                 vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
+C                 vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
+C                 vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+C c               ls_n_dot(1): Normal component of vec(:,1)
+C                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
+C      *              + vec(2,1) * edge_perp(2)
+C c               ls_n_cross(1): Tangential component of vec(:,1)
+C C                   ls_n_cross(1) = vec(1,1) * edge_perp(2)
+C C      *                - vec(2,1) * edge_perp(1)
+C                 ls_n_cross(1,1) = vec(3,1) * edge_perp(2)
+C                 ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
+C                 ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
+C      *              - vec(1,1) * edge_perp(2)
+C                 do j_2=1,3
+C c                 (x,y,z)-components of the electric field
+C                   vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
+C                   vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
+C                   vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+C c                 ls_n_dot(2): Normal component of vec(:,2)
+C                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
+C      *                + vec(2,2) * edge_perp(2)
+C c                 ls_n_cross(2): Tangential component of vec(:,2)
+C C                   ls_n_cross(2) = vec(1,2) * edge_perp(2)
+C C      *                - vec(2,2) * edge_perp(1)
+C                   ls_n_cross(1,2) = vec(3,2) * edge_perp(2)
+C                   ls_n_cross(2,2) = -1*vec(3,2) * edge_perp(1)
+C                   ls_n_cross(3,2) = vec(2,2) * edge_perp(1)
+C      *                - vec(1,2) * edge_perp(2)
 
-                  do ival3s = 1,nval_AC
-                  do j_3=1,3
-c                   (x,y,z)-components of the acoustic field
-                    vec(1,3) = soln_AC(1,ls_inod(j_3),ival3s,iel)
-                    vec(2,3) = soln_AC(2,ls_inod(j_3),ival3s,iel)
-                    vec(3,3) = soln_AC(3,ls_inod(j_3),ival3s,iel)
-c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector edge_perp
-                    ls_n_dot(3) = vec(1,3) * edge_perp(1)
-     *                  + vec(2,3) * edge_perp(2)
-                    tmp1 = (eps_a - eps_b)*eps_0
-                    tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
-     *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
-     *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
-                    n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
-                    n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
-                    tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
-                    tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
-                    r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-             overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
-     *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
-C                     write(*,*) "blah", tmp1
-C                     write(*,*) "b", tmp2
-C                     write(*,*) "bcccc", r_tmp
-C                     write(*,*) "rst", ls_n_dot(3)
-C                     write(*,*) "fie", r_tmp*ls_n_dot(3)*(tmp1 - tmp2)
-                  enddo
-                  enddo
-                enddo
-              enddo
-              endif
-cc
+C                   do ival3s = 1,nval_AC
+C                   do j_3=1,3
+C c                   (x,y,z)-components of the acoustic field
+C                     vec(1,3) = soln_AC(1,ls_inod(j_3),ival3s,iel)
+C                     vec(2,3) = soln_AC(2,ls_inod(j_3),ival3s,iel)
+C                     vec(3,3) = soln_AC(3,ls_inod(j_3),ival3s,iel)
+C c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector edge_perp
+C                     ls_n_dot(3) = vec(1,3) * edge_perp(1)
+C      *                  + vec(2,3) * edge_perp(2)
+C                     tmp1 = (eps_a - eps_b)*eps_0
+C                     tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
+C      *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
+C      *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
+C                     n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
+C                     n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
+C                     tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
+C                     tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
+C                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
+C              overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
+C      *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
+C C                     write(*,*) "blah", tmp1
+C C                     write(*,*) "b", tmp2
+C C                     write(*,*) "bcccc", r_tmp
+C C                     write(*,*) "rst", ls_n_dot(3)
+C C                     write(*,*) "fie", r_tmp*ls_n_dot(3)*(tmp1 - tmp2)
+C                   enddo
+C                   enddo
+C                 enddo
+C               enddo
+C               endif
+C cc
             endif
           enddo
         endif
@@ -391,122 +393,123 @@ C      *              edge_direction(inod)
 C         endif
 C       enddo
 C       close(26)
-C c
-C ccccccccccccccccccccccccccccccccccccc
-C c
-C       if (debug .eq. 1) then
-C         version_number = 2.2
-C         file_type = 0  ! An integer equal to 0 in the ASCII file format
-C         data_size = 8 ! An integer equal to the size of the floating point numbers used in the file
-C         open (unit=27,file="Output/edge_data.msh")
-C         write(27,'(a11)') "$MeshFormat"
-C         write(27,'((f4.1,1x,I1,1x,I1,1x))') version_number,
-C      *            file_type, data_size
-C         write(27,'(a14)') "$EndMeshFormat"
-C         write(27,'(a6)') "$Nodes"
-C         write(27,'(I0.1)') nb_interface_edges
-C         zz = 0.0d0
-C         j = 0
-C         do inod=1,npt
-C           if (ls_edge_endpoint(1,inod) .ne. 0) then
-C               xy_1(1) = x(1,inod)
-C               xy_1(2) = x(2,inod)
-C             j = j + 1
-C             write(27,*) j, xy_1(1), xy_1(2), zz
-C           endif
-C         enddo
-C         write(27,'(a9)') "$EndNodes"
-C         write(27,'(a9)') "$Elements"
-C         write(27,'(I0.1)') nb_interface_edges
-C         element_type = 15  ! 1-node point
-C         number_of_tags = 2
-C         j = 0
-C         do inod=1,npt
-C           if (ls_edge_endpoint(1,inod) .ne. 0) then
-C             j = j + 1
-C           physical_tag = j
-C           elementary_tag = j
-C           write(27,'(100(I0.1,2x))') j, element_type,
-C      *      number_of_tags, physical_tag, elementary_tag,
-C      *      j
-C           endif
-C         enddo
-C         write(27,'(a12)') "$EndElements"
-C         number_of_string_tags = 1
-C         number_of_real_tags = 1
-C         number_of_integer_tags = 3
-C         write(27,'(a9)') "$NodeData"
-C         write(27,*) number_of_string_tags
-C         write(27,*) " ""View of tangential vector"" "
-C         write(27,*) number_of_real_tags
-C         write(27,*) 0.0
-C         write(27,*) number_of_integer_tags
-C         write(27,*) 0 ! the time step (0; time steps always start at 0)
-C         write(27,*) 3 ! 3-component (vector) field
-C         write(27,*) nb_interface_edges ! Number of associated nodal values
-C c        node-number value
-C         zz = 0.0d0
-C         j = 0
-C         do inod=1,npt
-C           if (ls_edge_endpoint(1,inod) .ne. 0) then
-C             inod_1 = ls_edge_endpoint(1,inod)
-C             inod_2 = ls_edge_endpoint(2,inod)
-C             xy_1(1) = x(1,inod_1)
-C             xy_1(2) = x(2,inod_1)
-C             xy_2(1) = x(1,inod_2)
-C             xy_2(2) = x(2,inod_2)
-C             edge_vec(1) = xy_2(1) - xy_1(1)
-C             edge_vec(2) = xy_2(2) - xy_1(2)
-C c            Normalisation of edge_vec
-C             r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
-C             edge_vec(1) = edge_vec(1) / r_tmp
-C             edge_vec(2) = edge_vec(2) / r_tmp
-C             j = j + 1
-C             write(27,*) j, edge_vec(1), edge_vec(2), zz
-C           endif
-C         enddo
-C         write(27,'(a12)') "$EndNodeData"
-C c
-C ccccccccccccccccccccccccccccccccccccc
-C c
-C         write(27,'(a9)') "$NodeData"
-C         write(27,*) number_of_string_tags
-C         write(27,*) " ""View of the normal vector"" "
-C         write(27,*) number_of_real_tags
-C         write(27,*) 0.0
-C         write(27,*) number_of_integer_tags
-C         write(27,*) 0 ! the time step (0; time steps always start at 0)
-C         write(27,*) 3 ! 3-component (vector) field
-C         write(27,*) nb_interface_edges ! Number of associated nodal values
-C c        node-number value
-C         zz = 0.0d0
-C         j = 0
-C         do inod=1,npt
-C           if (ls_edge_endpoint(1,inod) .ne. 0) then
-C             inod_1 = ls_edge_endpoint(1,inod)
-C             inod_2 = ls_edge_endpoint(2,inod)
-C             xy_1(1) = x(1,inod_1)
-C             xy_1(2) = x(2,inod_1)
-C             xy_2(1) = x(1,inod_2)
-C             xy_2(2) = x(2,inod_2)
-C             edge_vec(1) = xy_2(1) - xy_1(1)
-C             edge_vec(2) = xy_2(2) - xy_1(2)
-C c            Normalisation of edge_vec
-C             r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
-C             edge_vec(1) = edge_vec(1) / r_tmp
-C             edge_vec(2) = edge_vec(2) / r_tmp
-C c            edge_vec: vector perpendicular to the edge (rotation of edge_vec by -pi/2)
-C             edge_perp(1) = edge_vec(2)
-C             edge_perp(2) = -edge_vec(1)
-C             edge_perp(1) = edge_perp(1) * edge_direction(inod)
-C             edge_perp(2) = edge_perp(2) * edge_direction(inod)
-C             j = j + 1
-C             write(27,*) j, edge_perp(1), edge_perp(2), zz
-C           endif
-C         enddo
-C         write(27,'(a12)') "$EndNodeData"
-C         close(27)
-C       endif
+c
+ccccccccccccccccccccccccccccccccccccc
+c
+      debug = 1
+      if (debug .eq. 1) then
+        version_number = 2.2
+        file_type = 0  ! An integer equal to 0 in the ASCII file format
+        data_size = 8 ! An integer equal to the size of the floating point numbers used in the file
+        open (unit=27,file="../Output/edge_data.msh")
+        write(27,'(a11)') "$MeshFormat"
+        write(27,'((f4.1,1x,I1,1x,I1,1x))') version_number,
+     *            file_type, data_size
+        write(27,'(a14)') "$EndMeshFormat"
+        write(27,'(a6)') "$Nodes"
+        write(27,'(I0.1)') nb_interface_edges
+        zz = 0.0d0
+        j = 0
+        do inod=1,npt
+          if (ls_edge_endpoint(1,inod) .ne. 0) then
+              xy_1(1) = x(1,inod)
+              xy_1(2) = x(2,inod)
+            j = j + 1
+            write(27,*) j, xy_1(1), xy_1(2), zz
+          endif
+        enddo
+        write(27,'(a9)') "$EndNodes"
+        write(27,'(a9)') "$Elements"
+        write(27,'(I0.1)') nb_interface_edges
+        element_type = 15  ! 1-node point
+        number_of_tags = 2
+        j = 0
+        do inod=1,npt
+          if (ls_edge_endpoint(1,inod) .ne. 0) then
+            j = j + 1
+          physical_tag = j
+          elementary_tag = j
+          write(27,'(100(I0.1,2x))') j, element_type,
+     *      number_of_tags, physical_tag, elementary_tag,
+     *      j
+          endif
+        enddo
+        write(27,'(a12)') "$EndElements"
+        number_of_string_tags = 1
+        number_of_real_tags = 1
+        number_of_integer_tags = 3
+        write(27,'(a9)') "$NodeData"
+        write(27,*) number_of_string_tags
+        write(27,*) " ""View of tangential vector"" "
+        write(27,*) number_of_real_tags
+        write(27,*) 0.0
+        write(27,*) number_of_integer_tags
+        write(27,*) 0 ! the time step (0; time steps always start at 0)
+        write(27,*) 3 ! 3-component (vector) field
+        write(27,*) nb_interface_edges ! Number of associated nodal values
+c        node-number value
+        zz = 0.0d0
+        j = 0
+        do inod=1,npt
+          if (ls_edge_endpoint(1,inod) .ne. 0) then
+            inod_1 = ls_edge_endpoint(1,inod)
+            inod_2 = ls_edge_endpoint(2,inod)
+            xy_1(1) = x(1,inod_1)
+            xy_1(2) = x(2,inod_1)
+            xy_2(1) = x(1,inod_2)
+            xy_2(2) = x(2,inod_2)
+            edge_vec(1) = xy_2(1) - xy_1(1)
+            edge_vec(2) = xy_2(2) - xy_1(2)
+c            Normalisation of edge_vec
+            r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
+            edge_vec(1) = edge_vec(1) / r_tmp
+            edge_vec(2) = edge_vec(2) / r_tmp
+            j = j + 1
+            write(27,*) j, edge_vec(1), edge_vec(2), zz
+          endif
+        enddo
+        write(27,'(a12)') "$EndNodeData"
+c
+ccccccccccccccccccccccccccccccccccccc
+c
+        write(27,'(a9)') "$NodeData"
+        write(27,*) number_of_string_tags
+        write(27,*) " ""View of the normal vector"" "
+        write(27,*) number_of_real_tags
+        write(27,*) 0.0
+        write(27,*) number_of_integer_tags
+        write(27,*) 0 ! the time step (0; time steps always start at 0)
+        write(27,*) 3 ! 3-component (vector) field
+        write(27,*) nb_interface_edges ! Number of associated nodal values
+c        node-number value
+        zz = 0.0d0
+        j = 0
+        do inod=1,npt
+          if (ls_edge_endpoint(1,inod) .ne. 0) then
+            inod_1 = ls_edge_endpoint(1,inod)
+            inod_2 = ls_edge_endpoint(2,inod)
+            xy_1(1) = x(1,inod_1)
+            xy_1(2) = x(2,inod_1)
+            xy_2(1) = x(1,inod_2)
+            xy_2(2) = x(2,inod_2)
+            edge_vec(1) = xy_2(1) - xy_1(1)
+            edge_vec(2) = xy_2(2) - xy_1(2)
+c            Normalisation of edge_vec
+            r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
+            edge_vec(1) = edge_vec(1) / r_tmp
+            edge_vec(2) = edge_vec(2) / r_tmp
+c            edge_vec: vector perpendicular to the edge (rotation of edge_vec by -pi/2)
+            edge_perp(1) = edge_vec(2)
+            edge_perp(2) = -edge_vec(1)
+            edge_perp(1) = edge_perp(1) * edge_direction(inod)
+            edge_perp(2) = edge_perp(2) * edge_direction(inod)
+            j = j + 1
+            write(27,*) j, edge_perp(1), edge_perp(2), zz
+          endif
+        enddo
+        write(27,'(a12)') "$EndNodeData"
+        close(27)
+      endif
 c
 ccccccccccccccccccccccccccccccccccccc
 c
