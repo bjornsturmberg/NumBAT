@@ -524,7 +524,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         #     relevant_eps_effs, Fortran_debug)
 
         # print sim_EM_wguide.type_el
-        print sim_AC_wguide.type_el
+        # print sim_AC_wguide.type_el
 
         # sim_AC_wguide.x_arr = 100*sim_AC_wguide.x_arr
 

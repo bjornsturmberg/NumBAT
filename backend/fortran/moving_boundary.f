@@ -40,7 +40,7 @@ C       integer*8, allocatable :: edge_direction(:) ! (npt)
       double precision eps_0
       complex*16 ls_n_dot(3), ls_n_cross(3,3)
       complex*16 vec(3,3)!, z_integral
-      complex*16 n_dot_d2, n_dot_d1
+      complex*16 n_dot_d(2)
       complex*16 eps_a, eps_b, tmp1, tmp2
       double precision p2_p2_p2_1d(3,3,3)
       double precision version_number
@@ -232,26 +232,9 @@ c             Normalisation of edge_vec
               r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
               edge_vec(1) = -1*edge_direction(j)*edge_vec(1) / r_tmp
               edge_vec(2) = -1*edge_direction(j)*edge_vec(2) / r_tmp
-C               edge_direction(j) = 1!*edge_direction(j)
 c             edge_vec: vector perpendicular to the edge (rotation of edge_vec by -pi/2)
               edge_perp(1) = -1*edge_vec(2)
               edge_perp(2) = edge_vec(1)
-              if (ls_xy(1,1) .gt. .0001928d0) then 
-                if (ls_xy(2,1) .gt. -.0001946d0) then 
-C                   write(*,*) ls_xy(1,1)
-C                   write(*,*) ls_xy(2,1)
-                  write(*,*) "top corner", edge_direction(j)
-C                   edge_direction(j) = -1*edge_direction(j)
-C                   edge_vec(1) = -1.0d0*edge_direction(j)*edge_vec(1)
-C                   edge_vec(2) = -1.0d0*edge_direction(j)*edge_vec(2)
-                else
-                  write(*,*) "out", edge_direction(j)
-                endif
-                else
-                  write(*,*) "out", edge_direction(j)
-              endif
-C               edge_perp(1) = edge_perp(1) * edge_direction(j)
-C               edge_perp(2) = edge_perp(2) * edge_direction(j)
 c
               r_tmp = (ls_xy(1,2) - ls_xy(1,1))**2
      *              + (ls_xy(2,2) - ls_xy(2,1))**2
@@ -302,10 +285,10 @@ c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector ed
                     tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
      *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
      *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
-                    n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
-                    n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
+                    n_dot_d(1) = eps_0*eps_a * ls_n_dot(1)
+                    n_dot_d(2) = eps_0*eps_a * ls_n_dot(2)
                     tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
-                    tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
+                    tmp2 = tmp2*conjg(n_dot_d(1))*n_dot_d(2)
                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
               overlap(ival1,ival2,ival3) = overlap(ival1,ival2,ival3) +
      *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
@@ -361,10 +344,10 @@ c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector ed
                     tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
      *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
      *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
-                    n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
-                    n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
+                    n_dot_d(1) = eps_0*eps_a * ls_n_dot(1)
+                    n_dot_d(2) = eps_0*eps_a * ls_n_dot(2)
                     tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
-                    tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
+                    tmp2 = tmp2*conjg(n_dot_d(1))*n_dot_d(2)
                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
              overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
      *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
