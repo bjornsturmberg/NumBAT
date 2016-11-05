@@ -523,7 +523,10 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         #     trimmed_EM_field, sim_AC_wguide.sol1,
         #     relevant_eps_effs, Fortran_debug)
 
+        # print sim_EM_wguide.type_el
         print sim_AC_wguide.type_el
+
+        # sim_AC_wguide.x_arr = 100*sim_AC_wguide.x_arr
 
         Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
             sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,

@@ -230,13 +230,28 @@ c
               edge_vec(2) = ls_xy(2,2) - ls_xy(2,1)
 c             Normalisation of edge_vec
               r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
-              edge_vec(1) = edge_vec(1) / r_tmp
-              edge_vec(2) = edge_vec(2) / r_tmp
+              edge_vec(1) = -1*edge_direction(j)*edge_vec(1) / r_tmp
+              edge_vec(2) = -1*edge_direction(j)*edge_vec(2) / r_tmp
+C               edge_direction(j) = 1!*edge_direction(j)
 c             edge_vec: vector perpendicular to the edge (rotation of edge_vec by -pi/2)
-              edge_perp(1) = edge_vec(2)
-              edge_perp(2) = -1*edge_vec(1)
-              edge_perp(1) = edge_perp(1) * edge_direction(j)
-              edge_perp(2) = edge_perp(2) * edge_direction(j)
+              edge_perp(1) = -1*edge_vec(2)
+              edge_perp(2) = edge_vec(1)
+              if (ls_xy(1,1) .gt. .0001928d0) then 
+                if (ls_xy(2,1) .gt. -.0001946d0) then 
+C                   write(*,*) ls_xy(1,1)
+C                   write(*,*) ls_xy(2,1)
+                  write(*,*) "top corner", edge_direction(j)
+C                   edge_direction(j) = -1*edge_direction(j)
+C                   edge_vec(1) = -1.0d0*edge_direction(j)*edge_vec(1)
+C                   edge_vec(2) = -1.0d0*edge_direction(j)*edge_vec(2)
+                else
+                  write(*,*) "out", edge_direction(j)
+                endif
+                else
+                  write(*,*) "out", edge_direction(j)
+              endif
+C               edge_perp(1) = edge_perp(1) * edge_direction(j)
+C               edge_perp(2) = edge_perp(2) * edge_direction(j)
 c
               r_tmp = (ls_xy(1,2) - ls_xy(1,1))**2
      *              + (ls_xy(2,2) - ls_xy(2,1))**2
@@ -247,122 +262,122 @@ c             Identification number of the two end-points and mid-edge point
               ls_inod(2) = edge_endpoints(2,inod-3)
               ls_inod(3) = inod
 c
-C C If only want overlap of one given combination of EM modes and AC mode.
-C               if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. 
-C      *            ival3 .ge. 0) then
-C c             Nodes of the edge
-C               do j_1=1,3
-C c               (x,y,z)-components of the electric field
-C                 vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
-C                 vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-C                 vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
-C c               ls_n_dot(1): Normal component of vec(:,1)
-C                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
-C      *              + vec(2,1) * edge_perp(2)
-C                 ls_n_cross(1,1) = vec(3,1) * edge_perp(2)
-C                 ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
-C                 ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
-C      *              - vec(1,1) * edge_perp(2)
-C                 do j_2=1,3
-C c                 (x,y,z)-components of the electric field
-C                   vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
-C                   vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-C                   vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
-C c                 ls_n_dot(2): Normal component of vec(:,2)
-C                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
-C      *                + vec(2,2) * edge_perp(2)
-C                   ls_n_cross(1,2) = vec(3,2) * edge_perp(2)
-C                   ls_n_cross(2,2) = -1*vec(3,2) * edge_perp(1)
-C                   ls_n_cross(3,2) = vec(2,2) * edge_perp(1)
-C      *                - vec(1,2) * edge_perp(2)
-C                   do j_3=1,3
-C c                   (x,y,z)-components of the acoustic field
-C                     vec(1,3) = soln_AC(1,ls_inod(j_3),ival3,iel)
-C                     vec(2,3) = soln_AC(2,ls_inod(j_3),ival3,iel)
-C                     vec(3,3) = soln_AC(3,ls_inod(j_3),ival3,iel)
-C c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector edge_perp
-C                     ls_n_dot(3) = vec(1,3) * edge_perp(1)
-C      *                  + vec(2,3) * edge_perp(2)
-C                     tmp1 = (eps_a - eps_b)*eps_0
-C                     tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
-C      *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
-C      *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
-C                     n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
-C                     n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
-C                     tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
-C                     tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
-C                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-C               overlap(ival1,ival2,ival3) = overlap(ival1,ival2,ival3) +
-C      *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
-C                   enddo
-C                 enddo
-C               enddo
-C C
-C C If want overlap of given EM mode 1 and 2 and all AC modes.
-C               else if (ival1 .ge. 0 .and. ival2 .ge. 0 .and.
-C      *                 ival3 .eq. -1) then
-C c             Nodes of the edge
-C               do j_1=1,3
-C c               (x,y,z)-components of the electric field
-C                 vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
-C                 vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-C                 vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
-C c               ls_n_dot(1): Normal component of vec(:,1)
-C                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
-C      *              + vec(2,1) * edge_perp(2)
-C c               ls_n_cross(1): Tangential component of vec(:,1)
-C C                   ls_n_cross(1) = vec(1,1) * edge_perp(2)
-C C      *                - vec(2,1) * edge_perp(1)
-C                 ls_n_cross(1,1) = vec(3,1) * edge_perp(2)
-C                 ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
-C                 ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
-C      *              - vec(1,1) * edge_perp(2)
-C                 do j_2=1,3
-C c                 (x,y,z)-components of the electric field
-C                   vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
-C                   vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-C                   vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
-C c                 ls_n_dot(2): Normal component of vec(:,2)
-C                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
-C      *                + vec(2,2) * edge_perp(2)
-C c                 ls_n_cross(2): Tangential component of vec(:,2)
-C C                   ls_n_cross(2) = vec(1,2) * edge_perp(2)
-C C      *                - vec(2,2) * edge_perp(1)
-C                   ls_n_cross(1,2) = vec(3,2) * edge_perp(2)
-C                   ls_n_cross(2,2) = -1*vec(3,2) * edge_perp(1)
-C                   ls_n_cross(3,2) = vec(2,2) * edge_perp(1)
-C      *                - vec(1,2) * edge_perp(2)
+C If only want overlap of one given combination of EM modes and AC mode.
+              if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. 
+     *            ival3 .ge. 0) then
+c             Nodes of the edge
+              do j_1=1,3
+c               (x,y,z)-components of the electric field
+                vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
+                vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
+                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+c               ls_n_dot(1): Normal component of vec(:,1)
+                ls_n_dot(1) = vec(1,1) * edge_perp(1)
+     *              + vec(2,1) * edge_perp(2)
+                ls_n_cross(1,1) = vec(3,1) * edge_perp(2)
+                ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
+                ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
+     *              - vec(1,1) * edge_perp(2)
+                do j_2=1,3
+c                 (x,y,z)-components of the electric field
+                  vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
+                  vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
+                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+c                 ls_n_dot(2): Normal component of vec(:,2)
+                  ls_n_dot(2) = vec(1,2) * edge_perp(1)
+     *                + vec(2,2) * edge_perp(2)
+                  ls_n_cross(1,2) = vec(3,2) * edge_perp(2)
+                  ls_n_cross(2,2) = -1*vec(3,2) * edge_perp(1)
+                  ls_n_cross(3,2) = vec(2,2) * edge_perp(1)
+     *                - vec(1,2) * edge_perp(2)
+                  do j_3=1,3
+c                   (x,y,z)-components of the acoustic field
+                    vec(1,3) = soln_AC(1,ls_inod(j_3),ival3,iel)
+                    vec(2,3) = soln_AC(2,ls_inod(j_3),ival3,iel)
+                    vec(3,3) = soln_AC(3,ls_inod(j_3),ival3,iel)
+c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector edge_perp
+                    ls_n_dot(3) = vec(1,3) * edge_perp(1)
+     *                  + vec(2,3) * edge_perp(2)
+                    tmp1 = (eps_a - eps_b)*eps_0
+                    tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
+     *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
+     *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
+                    n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
+                    n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
+                    tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
+                    tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
+                    r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
+              overlap(ival1,ival2,ival3) = overlap(ival1,ival2,ival3) +
+     *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
+                  enddo
+                enddo
+              enddo
+C
+C If want overlap of given EM mode 1 and 2 and all AC modes.
+              else if (ival1 .ge. 0 .and. ival2 .ge. 0 .and.
+     *                 ival3 .eq. -1) then
+c             Nodes of the edge
+              do j_1=1,3
+c               (x,y,z)-components of the electric field
+                vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
+                vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
+                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+c               ls_n_dot(1): Normal component of vec(:,1)
+                ls_n_dot(1) = vec(1,1) * edge_perp(1)
+     *              + vec(2,1) * edge_perp(2)
+c               ls_n_cross(1): Tangential component of vec(:,1)
+C                   ls_n_cross(1) = vec(1,1) * edge_perp(2)
+C      *                - vec(2,1) * edge_perp(1)
+                ls_n_cross(1,1) = vec(3,1) * edge_perp(2)
+                ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
+                ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
+     *              - vec(1,1) * edge_perp(2)
+                do j_2=1,3
+c                 (x,y,z)-components of the electric field
+                  vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
+                  vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
+                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+c                 ls_n_dot(2): Normal component of vec(:,2)
+                  ls_n_dot(2) = vec(1,2) * edge_perp(1)
+     *                + vec(2,2) * edge_perp(2)
+c                 ls_n_cross(2): Tangential component of vec(:,2)
+C                   ls_n_cross(2) = vec(1,2) * edge_perp(2)
+C      *                - vec(2,2) * edge_perp(1)
+                  ls_n_cross(1,2) = vec(3,2) * edge_perp(2)
+                  ls_n_cross(2,2) = -1*vec(3,2) * edge_perp(1)
+                  ls_n_cross(3,2) = vec(2,2) * edge_perp(1)
+     *                - vec(1,2) * edge_perp(2)
 
-C                   do ival3s = 1,nval_AC
-C                   do j_3=1,3
-C c                   (x,y,z)-components of the acoustic field
-C                     vec(1,3) = soln_AC(1,ls_inod(j_3),ival3s,iel)
-C                     vec(2,3) = soln_AC(2,ls_inod(j_3),ival3s,iel)
-C                     vec(3,3) = soln_AC(3,ls_inod(j_3),ival3s,iel)
-C c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector edge_perp
-C                     ls_n_dot(3) = vec(1,3) * edge_perp(1)
-C      *                  + vec(2,3) * edge_perp(2)
-C                     tmp1 = (eps_a - eps_b)*eps_0
-C                     tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
-C      *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
-C      *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
-C                     n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
-C                     n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
-C                     tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
-C                     tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
-C                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-C              overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
-C      *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
-C C                     write(*,*) "blah", tmp1
-C C                     write(*,*) "b", tmp2
-C C                     write(*,*) "bcccc", r_tmp
-C C                     write(*,*) "rst", ls_n_dot(3)
-C C                     write(*,*) "fie", r_tmp*ls_n_dot(3)*(tmp1 - tmp2)
-C                   enddo
-C                   enddo
-C                 enddo
-C               enddo
-C               endif
+                  do ival3s = 1,nval_AC
+                  do j_3=1,3
+c                   (x,y,z)-components of the acoustic field
+                    vec(1,3) = soln_AC(1,ls_inod(j_3),ival3s,iel)
+                    vec(2,3) = soln_AC(2,ls_inod(j_3),ival3s,iel)
+                    vec(3,3) = soln_AC(3,ls_inod(j_3),ival3s,iel)
+c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector edge_perp
+                    ls_n_dot(3) = vec(1,3) * edge_perp(1)
+     *                  + vec(2,3) * edge_perp(2)
+                    tmp1 = (eps_a - eps_b)*eps_0
+                    tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
+     *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
+     *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
+                    n_dot_d1 = eps_0*eps_a * ls_n_dot(1)
+                    n_dot_d2 = eps_0*eps_a * ls_n_dot(2)
+                    tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
+                    tmp2 = tmp2*conjg(n_dot_d1)*n_dot_d2
+                    r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
+             overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
+     *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
+C                     write(*,*) "blah", tmp1
+C                     write(*,*) "b", tmp2
+C                     write(*,*) "bcccc", r_tmp
+C                     write(*,*) "rst", ls_n_dot(3)
+C                     write(*,*) "fie", r_tmp*ls_n_dot(3)*(tmp1 - tmp2)
+                  enddo
+                  enddo
+                enddo
+              enddo
+              endif
 C cc
             endif
           enddo
@@ -412,8 +427,8 @@ c
         j = 0
         do inod=1,npt
           if (ls_edge_endpoint(1,inod) .ne. 0) then
-              xy_1(1) = x(1,inod)
-              xy_1(2) = x(2,inod)
+              xy_1(1) = 100*x(1,inod)
+              xy_1(2) = 100*x(2,inod)
             j = j + 1
             write(27,*) j, xy_1(1), xy_1(2), zz
           endif
@@ -462,8 +477,8 @@ c        node-number value
             edge_vec(2) = xy_2(2) - xy_1(2)
 c            Normalisation of edge_vec
             r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
-            edge_vec(1) = edge_vec(1) / r_tmp
-            edge_vec(2) = edge_vec(2) / r_tmp
+            edge_vec(1) = -1*edge_direction(inod)*edge_vec(1) / r_tmp
+            edge_vec(2) = -1*edge_direction(inod)*edge_vec(2) / r_tmp
             j = j + 1
             write(27,*) j, edge_vec(1), edge_vec(2), zz
           endif
@@ -496,13 +511,13 @@ c        node-number value
             edge_vec(2) = xy_2(2) - xy_1(2)
 c            Normalisation of edge_vec
             r_tmp = sqrt(edge_vec(1)**2+edge_vec(2)**2)
-            edge_vec(1) = edge_vec(1) / r_tmp
-            edge_vec(2) = edge_vec(2) / r_tmp
+            edge_vec(1) = -1*edge_direction(inod)*edge_vec(1) / r_tmp
+            edge_vec(2) = -1*edge_direction(inod)*edge_vec(2) / r_tmp
 c            edge_vec: vector perpendicular to the edge (rotation of edge_vec by -pi/2)
-            edge_perp(1) = edge_vec(2)
-            edge_perp(2) = -edge_vec(1)
-            edge_perp(1) = edge_perp(1) * edge_direction(inod)
-            edge_perp(2) = edge_perp(2) * edge_direction(inod)
+            edge_perp(1) = -edge_vec(2)
+            edge_perp(2) = edge_vec(1)
+C             edge_perp(1) = edge_perp(1) * edge_direction(inod)
+C             edge_perp(2) = edge_perp(2) * edge_direction(inod)
             j = j + 1
             write(27,*) j, edge_perp(1), edge_perp(2), zz
           endif
