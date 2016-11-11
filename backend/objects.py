@@ -119,6 +119,10 @@ class Struct(object):
                  unitcell_y=None, inc_a_y=None, inc_shape='rectangular',
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
                  coating_y=None, inc_b_x=None, inc_b_y=None,
+                 inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
+                 inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
+                 inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
+                 inc_o_x=None, 
                  two_inc_sep=None, incs_y_offset=None,
                  bkg_material=materials.Material(1.0 + 0.0j),
                  inc_a_material=materials.Material(1.0 + 0.0j),
@@ -156,6 +160,19 @@ class Struct(object):
         self.slab_a_y = slab_a_y
         self.slab_b_x = slab_b_x
         self.slab_b_y = slab_b_y
+        self.inc_c_x = inc_c_x
+        self.inc_d_x = inc_d_x
+        self.inc_e_x = inc_e_x
+        self.inc_f_x = inc_f_x
+        self.inc_g_x = inc_g_x
+        self.inc_h_x = inc_h_x
+        self.inc_i_x = inc_i_x
+        self.inc_j_x = inc_j_x
+        self.inc_k_x = inc_k_x
+        self.inc_l_x = inc_l_x
+        self.inc_m_x = inc_m_x
+        self.inc_n_x = inc_n_x
+        self.inc_o_x = inc_o_x
         self.coating_y = coating_y
         self.two_inc_sep = two_inc_sep
         self.bkg_material = bkg_material
@@ -432,6 +449,53 @@ class Struct(object):
                     geo = geo.replace('slab2_width = d_in_nm;', "slab2_width = %f;" % self.slab_b_x)
                     geo = geo.replace('slab2_height = 5;', "slab2_height = %f;" % self.slab_b_y)
 
+        elif self.inc_shape in ['SMF']:
+
+            msh_name = 'SMF_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
+           'd': dec_float_str(self.unitcell_x),
+           'dy': dec_float_str(self.unitcell_y),
+           'a': dec_float_str(self.inc_a_x),
+           'b': dec_float_str(self.inc_b_x),
+           'c': dec_float_str(self.inc_c_x),
+           'd': dec_float_str(self.inc_d_x),
+           'e': dec_float_str(self.inc_e_x),
+           'f': dec_float_str(self.inc_f_x),
+           'g': dec_float_str(self.inc_g_x),
+           }
+           msh_name += '_%(h)s_%(i)s_%(j)s_%(k)s_%(l)s_%(m)s_%(n)s_%(o)s' % {
+           'h': dec_float_str(self.inc_h_x),
+           'i': dec_float_str(self.inc_i_x),
+           'j': dec_float_str(self.inc_j_x),
+           'k': dec_float_str(self.inc_k_x),
+           'l': dec_float_str(self.inc_l_x),
+           'm': dec_float_str(self.inc_m_x),
+           'n': dec_float_str(self.inc_n_x),
+           'o': dec_float_str(self.inc_o_x),
+           }
+            msh_template = 'SMF'
+            if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                geo = geo.replace('a1 = 2;', "a1 = %f;" % self.inc_a_x)
+                geo = geo.replace('a2 = 2;', "a2 = %f;" % self.inc_b_x)
+                geo = geo.replace('a3 = 2;', "a3 = %f;" % self.inc_c_x)
+                geo = geo.replace('a4 = 2;', "a4 = %f;" % self.inc_d_x)
+                geo = geo.replace('a5 = 2;', "a5 = %f;" % self.inc_e_x)
+                geo = geo.replace('a6 = 2;', "a6 = %f;" % self.inc_f_x)
+                geo = geo.replace('a7 = 2;', "a7 = %f;" % self.inc_g_x)
+                geo = geo.replace('a8 = 2;', "a8 = %f;" % self.inc_h_x)
+                geo = geo.replace('a9 = 2;', "a9 = %f;" % self.inc_i_x)
+                geo = geo.replace('a10 = 2;', "a10 = %f;" % self.inc_j_x)
+                geo = geo.replace('a11 = 2;', "a11 = %f;" % self.inc_k_x)
+                geo = geo.replace('a12 = 2;', "a12 = %f;" % self.inc_l_x)
+                geo = geo.replace('a13 = 2;', "a13 = %f;" % self.inc_m_x)
+                geo = geo.replace('a14 = 2;', "a14 = %f;" % self.inc_n_x)
+                geo = geo.replace('a15 = 2;', "a15 = %f;" % self.inc_o_x)
+                geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+
         else:
             raise NotImplementedError, "\n Selected inc_shape = '%s' \n " \
             "is not currently implemented. Please make a mesh with gmsh, & \n " \
@@ -506,6 +570,7 @@ class Struct(object):
 
 def dec_float_str(dec_float):
     """ Convert float with decimal point into string with '_' in place of '.' """
-    string = str(dec_float)
+    # string = str(dec_float)
+    string = '%8.4f' %dec_float
     fmt_string = string.replace('.', '_')
     return fmt_string
