@@ -17,11 +17,11 @@ from fortran import NumBAT
 class Simmo(object):
     """ Calculates the modes of a :Struc: object at a wavelength of wl_nm.
     """
-    def __init__(self, structure, wl_nm, q_acoustic=None, num_modes=20,
+    def __init__(self, structure, wl_nm, k_AC=None, num_modes=20,
                  shift_Hz=None, EM_sim=None):
         self.structure = structure
         self.wl_m = wl_nm*1e-9
-        self.q_acoustic = q_acoustic
+        self.k_AC = k_AC
         self.shift_Hz = shift_Hz
         self.EM_sim = EM_sim
         self.num_modes = num_modes
@@ -207,16 +207,16 @@ class Simmo(object):
                 # v_list.append(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
             AC_velocity = 2595
             print "AC_velocity", AC_velocity
-            shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            shift = np.real(AC_velocity*self.k_AC/(2.*np.pi))
             print "shift", shift
             AC_velocity = np.real(v_list).min()
             print "AC_velocity", AC_velocity
-            shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            shift = np.real(AC_velocity*self.k_AC/(2.*np.pi))
             print "shift", shift
             shift = 0.95*shift
             print "shift", shift
             # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
-            # shift = np.real(AC_velocity*self.q_acoustic/(2.*np.pi))
+            # shift = np.real(AC_velocity*self.k_AC/(2.*np.pi))
             # print shift
         else:
             shift = self.shift_Hz
@@ -333,7 +333,7 @@ class Simmo(object):
 
         try:
             resm = NumBAT.calc_ac_modes(
-                self.q_acoustic, self.num_modes,
+                self.k_AC, self.num_modes,
                 AC_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
                 self.n_msh_el, self.structure.nb_typ_el_AC,
                 self.structure.c_tensor, self.structure.rho,
@@ -378,20 +378,20 @@ class Simmo(object):
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor,
-                    self.q_acoustic, self.Omega_AC, self.sol1)
+                    self.k_AC, self.Omega_AC, self.sol1)
             ## Integration using analytically evaluated basis function integrals. Fast.
             #     self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v2(
             #         self.num_modes, self.n_msh_el, self.n_msh_pts,
             #         nnodes, self.table_nod, self.type_el, self.x_arr,
             #         self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
-            #         self.q_acoustic, self.Omega_AC, self.sol1)
+            #         self.k_AC, self.Omega_AC, self.sol1)
             elif self.structure.inc_shape == 'circular':
             # Integration by quadrature. Slowest.
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
-                    self.q_acoustic, self.Omega_AC, self.sol1, AC_FEM_debug)
+                    self.k_AC, self.Omega_AC, self.sol1, AC_FEM_debug)
 
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\

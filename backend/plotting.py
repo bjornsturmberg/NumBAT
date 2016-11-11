@@ -398,9 +398,9 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
             del_y_Ey = np.gradient(m_Ey, dy, axis=1)
             del_x_Ez = np.gradient(m_Ez, dx, axis=0)
             del_y_Ez = np.gradient(m_Ez, dy, axis=1)
-            del_z_Ex = 1j*sim_wguide.q_acoustic*m_Ex
-            del_z_Ey = 1j*sim_wguide.q_acoustic*m_Ey
-            del_z_Ez = 1j*sim_wguide.q_acoustic*m_Ez
+            del_z_Ex = 1j*sim_wguide.k_AC*m_Ex
+            del_z_Ey = 1j*sim_wguide.k_AC*m_Ey
+            del_z_Ez = 1j*sim_wguide.k_AC*m_Ez
 
             # Flip y order as imshow has origin at top left
             del_mat = np.array([del_x_Ex[:,::-1].real, del_x_Ey[:,::-1].real, del_x_Ez[:,::-1].real, del_x_Ex[:,::-1].imag, del_x_Ey[:,::-1].imag, del_x_Ez[:,::-1].imag, del_y_Ex[:,::-1].real, del_y_Ey[:,::-1].real, del_y_Ez[:,::-1].real, del_y_Ex[:,::-1].imag, del_y_Ey[:,::-1].imag, del_y_Ez[:,::-1].imag, del_z_Ex[:,::-1].real, del_z_Ey[:,::-1].real, del_z_Ez[:,::-1].real, del_z_Ex[:,::-1].imag, del_z_Ey[:,::-1].imag, del_z_Ez[:,::-1].imag])

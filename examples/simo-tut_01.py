@@ -15,7 +15,7 @@ from fortran import NumBAT
 # Naming conventions
 # AC: acoustic
 # EM: electromagnetic
-# q_acoustic: acoustic wavenumber
+# k_AC: acoustic wavenumber
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
@@ -77,15 +77,15 @@ plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 # Choose acoustic wavenumber to solve for
 # Backward SBS
 # AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
-q_acoustic = 2*np.real(sim_EM_wguide.Eig_value[0])
-print 'AC wavenumber (1/m) \n', q_acoustic
+k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
+print 'AC wavenumber (1/m) \n', k_AC
 # Forward (intramode) SBS
 # EM modes on same lightline.
-# q_acoustic = 0.0
+# k_AC = 0.0
 
 
 # Calculate Acoustic Modes
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic,
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
     num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)
 # Print the frequencies of AC modes.
 print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
@@ -97,7 +97,7 @@ plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 # Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
-    sim_EM_wguide, sim_AC_wguide, q_acoustic,
+    sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.
 print "SBS_gain \n", SBS_gain[EM_ival1,EM_ival2,:]/alpha

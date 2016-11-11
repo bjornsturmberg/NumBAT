@@ -17,8 +17,8 @@ import plotting
 from fortran import NumBAT
 
 
-def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
-                EM_ival1=0, EM_ival2=0, AC_ival=0):
+def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
+                EM_ival1=0, EM_ival2=0, AC_ival=0, fixed_Q=None):
     """ Calculate interaction integrals and SBS gain.
 
         Implements Eqs. 33, 41, 45 of
@@ -31,7 +31,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
             sim_AC_wguide  (:Simmo: object): Contains all info on AC modes
 
-            q_acoustic  (float): Propagation constant of acoustic modes.
+            k_AC  (float): Propagation constant of acoustic modes.
 
         Keyword Args:
             EM_ival1  (int/string): Specify mode number of EM mode 1 (pump mode)
@@ -51,6 +51,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 Numbering is python index so runs from 0 to num_AC_modes-1,
                 with 0 being fundamental mode (largest prop constant).
                 Can also set to 'All' to include all modes.
+
+            fixed_Q  (int): Specify a fixed Q-factor for the AC modes, rather than 
+                calculating the acoustic loss (alpha).
     """
 
     # Notes about internals of fortran integration
@@ -104,25 +107,29 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
         if el_typ+1 in sim_AC_wguide.structure.typ_el_AC:
             relevant_eps_effs.append(sim_EM_wguide.n_effs[el_typ]**2)
 
-    # Calc alpha (loss) Eq. 45
-    try:
-        if sim_EM_wguide.structure.inc_shape == 'rectangular':
-            alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
-                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
-                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
-                q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
-                sim_AC_wguide.AC_mode_overlap)
-        elif sim_EM_wguide.structure.inc_shape == 'circular':
-            alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
-                sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
-                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
-                q_acoustic, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
-                sim_AC_wguide.AC_mode_overlap, Fortran_debug)
-    except KeyboardInterrupt:
-        print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
-    alpha = np.real(alpha)
+    if fixed_Q is None:
+        # Calc alpha (loss) Eq. 45
+        try:
+            if sim_EM_wguide.structure.inc_shape == 'rectangular':
+                alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
+                    sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                    sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                    sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
+                    k_AC, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
+                    sim_AC_wguide.AC_mode_overlap)
+            elif sim_EM_wguide.structure.inc_shape == 'circular':
+                alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
+                    sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
+                    sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+                    sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
+                    k_AC, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
+                    sim_AC_wguide.AC_mode_overlap, Fortran_debug)
+        except KeyboardInterrupt:
+            print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
+        alpha = np.real(alpha)
+    else:
+        alpha = (np.pi*k_AC/fixed_Q)*np.ones(sim_AC_wguide.num_modes)
+
 
 
     # Calc Q_photoelastic Eq. 33
@@ -134,7 +141,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-                q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
+                k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
         elif sim_EM_wguide.structure.inc_shape == 'circular':
             Q_PE = NumBAT.photoelastic_int(
@@ -143,7 +150,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
                 sim_AC_wguide.n_msh_pts, nnodes,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-                q_acoustic, trimmed_EM_field, sim_AC_wguide.sol1,
+                k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
@@ -364,12 +371,12 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 #         del_y_Ey_star = np.gradient(np.conj(m_Ey), dy, axis=1)
 #         del_x_Ez_star = np.gradient(np.conj(m_Ez), dx, axis=0)
 #         del_y_Ez_star = np.gradient(np.conj(m_Ez), dy, axis=1)
-#         del_z_Ex = 1j*q_acoustic*m_Ex
-#         del_z_Ey = 1j*q_acoustic*m_Ey
-#         del_z_Ez = 1j*q_acoustic*m_Ez
-#         del_z_Ex_star = -1j*q_acoustic*np.conj(m_Ex)
-#         del_z_Ey_star = -1j*q_acoustic*np.conj(m_Ey)
-#         del_z_Ez_star = -1j*q_acoustic*np.conj(m_Ez)
+#         del_z_Ex = 1j*k_AC*m_Ex
+#         del_z_Ey = 1j*k_AC*m_Ey
+#         del_z_Ez = 1j*k_AC*m_Ez
+#         del_z_Ex_star = -1j*k_AC*np.conj(m_Ex)
+#         del_z_Ey_star = -1j*k_AC*np.conj(m_Ey)
+#         del_z_Ez_star = -1j*k_AC*np.conj(m_Ez)
 
 #         del_mat = np.array([[del_x_Ex, del_x_Ey, del_x_Ez], [del_y_Ex, del_y_Ey, del_y_Ez], [del_z_Ex, del_z_Ey, del_z_Ez]])
 #         del_mat_star = np.array([[del_x_Ex_star, del_x_Ey_star, del_x_Ez_star], [del_y_Ex_star, del_y_Ey_star, del_y_Ez_star], [del_z_Ex_star, del_z_Ey_star, del_z_Ez_star]])
@@ -384,18 +391,18 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 #             del_y_CWy = np.gradient(CW_mat[ival][1], dy_CW, axis=1)
 #             del_x_CWz = np.gradient(CW_mat[ival][2], dx_CW, axis=0)
 #             del_y_CWz = np.gradient(CW_mat[ival][2], dy_CW, axis=1)
-#             del_z_CWx = 1j*q_acoustic*CW_mat[ival][0]
-#             del_z_CWy = 1j*q_acoustic*CW_mat[ival][1]
-#             del_z_CWz = 1j*q_acoustic*CW_mat[ival][2]
+#             del_z_CWx = 1j*k_AC*CW_mat[ival][0]
+#             del_z_CWy = 1j*k_AC*CW_mat[ival][1]
+#             del_z_CWz = 1j*k_AC*CW_mat[ival][2]
 #             del_x_CWx_star = np.gradient(np.conj(CW_mat[ival][0]), dx_CW, axis=0)
 #             del_y_CWx_star = np.gradient(np.conj(CW_mat[ival][0]), dy_CW, axis=1)
 #             del_x_CWy_star = np.gradient(np.conj(CW_mat[ival][1]), dx_CW, axis=0)
 #             del_y_CWy_star = np.gradient(np.conj(CW_mat[ival][1]), dy_CW, axis=1)
 #             del_x_CWz_star = np.gradient(np.conj(CW_mat[ival][2]), dx_CW, axis=0)
 #             del_y_CWz_star = np.gradient(np.conj(CW_mat[ival][2]), dy_CW, axis=1)
-#             del_z_CWx_star = -1j*q_acoustic*np.conj(CW_mat[ival][0])
-#             del_z_CWy_star = -1j*q_acoustic*np.conj(CW_mat[ival][1])
-#             del_z_CWz_star = -1j*q_acoustic*np.conj(CW_mat[ival][2])
+#             del_z_CWx_star = -1j*k_AC*np.conj(CW_mat[ival][0])
+#             del_z_CWy_star = -1j*k_AC*np.conj(CW_mat[ival][1])
+#             del_z_CWz_star = -1j*k_AC*np.conj(CW_mat[ival][2])
 #             del_mat_CW = np.array([[del_x_CWx, del_x_CWy, del_x_CWz], [del_y_CWx, del_y_CWy, del_y_CWz], [del_z_CWx, del_z_CWy, del_z_CWz]])
 #             del_mat_CW_star = np.array([[del_x_CWx_star, del_x_CWy_star, del_x_CWz_star], [del_y_CWx_star, del_y_CWy_star, del_y_CWz_star], [del_z_CWx_star, del_z_CWy_star, del_z_CWz_star]])
 #         else:
@@ -738,8 +745,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, q_acoustic,
 
     # print Q_MB[0,0,:]
     # print Q_PE[0,0,:]
-    Q = Q_MB
-    # Q = Q_PE
+    # Q = Q_MB
+    Q = Q_PE
     # Q = Q_PE + Q_MB
 
     # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz

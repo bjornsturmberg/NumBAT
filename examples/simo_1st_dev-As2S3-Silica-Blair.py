@@ -90,16 +90,16 @@ print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 ### Calculate Acoustic Modes
 # Backward SBS
 # Acoustic k has to push optical mode from +ve lightline to -ve, hence factor 2.
-q_acoustic = 2*sim_EM_wguide.Eig_value[0]
-print "q_acoustic FEM", q_acoustic
-q_acoustic = 2*n_eff*2*np.pi/(wl_nm*1e-9)
-print "q_acoustic Blair", q_acoustic
+k_AC = 2*sim_EM_wguide.Eig_value[0]
+print "k_AC FEM", k_AC
+k_AC = 2*n_eff*2*np.pi/(wl_nm*1e-9)
+print "k_AC Blair", k_AC
 # # Forward (intramode) SBS
-# q_acoustic = 0.0
+# k_AC = 0.0
 # As2S3_bulk_velocity = 2595m/s @1550 gives 7.6 GHz as freq in reg waveguides
 shift_Hz = 5.8e9
 print shift_Hz
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_acoustic, num_AC_modes, 
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC, num_AC_modes, 
    EM_sim=sim_EM_wguide)#, shift_Hz=shift_Hz )
 np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
@@ -110,7 +110,7 @@ print 'Res freq of AC wave (GHz) \n', sim_AC_wguide.Eig_value*1e-9
 
 ### Calculate interaction integrals
 SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
-    sim_EM_wguide, sim_AC_wguide, q_acoustic,
+    sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
 # npzfile = np.load('wguide_data_AC_gain.npz')
@@ -131,7 +131,7 @@ print "SBS_gain", SBS_gain[0,0,:]/alpha
 # # Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
 # # speed_in_Si = 9620 # m/s 
 # # LW = speed_in_Si*alpha
-# phase_v = sim_AC_wguide.Eig_value/q_acoustic # phase velocity as approximation to group velocity
+# phase_v = sim_AC_wguide.Eig_value/k_AC # phase velocity as approximation to group velocity
 # LW = phase_v*alpha
 # # print LW
 # for AC_i in range(num_AC_modes):

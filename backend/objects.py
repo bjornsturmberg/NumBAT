@@ -481,26 +481,24 @@ class Struct(object):
         elif self.inc_shape in ['SMF']:
 
             msh_name = 'SMF_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
-           'd': dec_float_str(self.unitcell_x),
-           'dy': dec_float_str(self.unitcell_y),
-           'a': dec_float_str(self.inc_a_x),
-           'b': dec_float_str(self.inc_b_x),
-           'c': dec_float_str(self.inc_c_x),
-           'd': dec_float_str(self.inc_d_x),
-           'e': dec_float_str(self.inc_e_x),
-           'f': dec_float_str(self.inc_f_x),
-           'g': dec_float_str(self.inc_g_x),
-           }
-           msh_name += '_%(h)s_%(i)s_%(j)s_%(k)s_%(l)s_%(m)s_%(n)s_%(o)s' % {
-           'h': dec_float_str(self.inc_h_x),
-           'i': dec_float_str(self.inc_i_x),
-           'j': dec_float_str(self.inc_j_x),
-           'k': dec_float_str(self.inc_k_x),
-           'l': dec_float_str(self.inc_l_x),
-           'm': dec_float_str(self.inc_m_x),
-           'n': dec_float_str(self.inc_n_x),
-           'o': dec_float_str(self.inc_o_x),
-           }
+            'd': dec_float_str(self.unitcell_x),
+            'dy': dec_float_str(self.unitcell_y),
+            'a': dec_float_str(self.inc_a_x),
+            'b': dec_float_str(self.inc_b_x),
+            'c': dec_float_str(self.inc_c_x),
+            'd': dec_float_str(self.inc_d_x),
+            'e': dec_float_str(self.inc_e_x),
+            'f': dec_float_str(self.inc_f_x),
+            'g': dec_float_str(self.inc_g_x)}
+            msh_name = msh_name + '_%(h)s_%(i)s_%(j)s_%(k)s_%(l)s_%(m)s_%(n)s_%(o)s' % {
+            'h': dec_float_str(self.inc_h_x),
+            'i': dec_float_str(self.inc_i_x),
+            'j': dec_float_str(self.inc_j_x),
+            'k': dec_float_str(self.inc_k_x),
+            'l': dec_float_str(self.inc_l_x),
+            'm': dec_float_str(self.inc_m_x),
+            'n': dec_float_str(self.inc_n_x),
+            'o': dec_float_str(self.inc_o_x)}
             msh_template = 'SMF'
             if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                 geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
@@ -565,7 +563,7 @@ class Struct(object):
         return simmo
 
 
-    def calc_AC_modes(self, wl_nm, q_acoustic, num_modes,
+    def calc_AC_modes(self, wl_nm, k_AC, num_modes,
                       shift_Hz=None, EM_sim=None, **args):
         """ Run a simulation to find the Struct's acoustic modes.
 
@@ -589,7 +587,7 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo_AC = Simmo(self, wl_nm, q_acoustic=q_acoustic,
+        simmo_AC = Simmo(self, wl_nm, k_AC=k_AC,
                          num_modes=num_modes, shift_Hz=shift_Hz,
                          EM_sim=EM_sim)
 
