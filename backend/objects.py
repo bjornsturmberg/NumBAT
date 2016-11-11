@@ -119,10 +119,6 @@ class Struct(object):
                  unitcell_y=None, inc_a_y=None, inc_shape='rectangular',
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
                  coating_y=None, inc_b_x=None, inc_b_y=None,
-                 inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
-                 inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
-                 inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
-                 inc_o_x=None, 
                  two_inc_sep=None, incs_y_offset=None,
                  bkg_material=materials.Material(1.0 + 0.0j),
                  inc_a_material=materials.Material(1.0 + 0.0j),
@@ -132,6 +128,26 @@ class Struct(object):
                  slab_b_material=materials.Material(1.0 + 0.0j),
                  slab_b_bkg_material=materials.Material(1.0 + 0.0j),
                  coating_material=materials.Material(1.0 + 0.0j),
+                 inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
+                 inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
+                 inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
+                 inc_o_x=None, 
+                 inc_c_material=materials.Material(1.0 + 0.0j),
+                 inc_d_material=materials.Material(1.0 + 0.0j),
+                 inc_e_material=materials.Material(1.0 + 0.0j),
+                 inc_f_material=materials.Material(1.0 + 0.0j),
+                 inc_g_material=materials.Material(1.0 + 0.0j),
+                 inc_h_material=materials.Material(1.0 + 0.0j),
+                 inc_i_material=materials.Material(1.0 + 0.0j),
+                 inc_j_material=materials.Material(1.0 + 0.0j),
+                 inc_k_material=materials.Material(1.0 + 0.0j),
+                 inc_l_material=materials.Material(1.0 + 0.0j),
+                 inc_m_material=materials.Material(1.0 + 0.0j),
+                 inc_n_material=materials.Material(1.0 + 0.0j),
+                 inc_o_material=materials.Material(1.0 + 0.0j),
+                 inc_c_AC=None, inc_d_AC=None,inc_e_AC=None,inc_f_AC=None,inc_g_AC=None,
+                 inc_h_AC=None,inc_i_AC=None,inc_j_AC=None,inc_k_AC=None,inc_l_AC=None,
+                 inc_m_AC=None,inc_n_AC=None,inc_o_AC=None,
                  loss=True, bkg_AC=None, inc_a_AC=None, slab_a_AC=None,
                  slab_a_bkg_AC=None, slab_b_AC=None, slab_b_bkg_AC=None,
                  make_mesh_now=True, force_mesh=True,
@@ -182,6 +198,19 @@ class Struct(object):
         self.slab_a_bkg_material = slab_a_bkg_material
         self.slab_b_material = slab_b_material
         self.slab_b_bkg_material = slab_b_bkg_material
+        self.inc_c_material = inc_c_material
+        self.inc_d_material = inc_d_material
+        self.inc_e_material = inc_e_material
+        self.inc_f_material = inc_f_material
+        self.inc_g_material = inc_g_material
+        self.inc_h_material = inc_h_material
+        self.inc_i_material = inc_i_material
+        self.inc_j_material = inc_j_material
+        self.inc_k_material = inc_k_material
+        self.inc_l_material = inc_l_material
+        self.inc_m_material = inc_m_material
+        self.inc_n_material = inc_n_material
+        self.inc_o_material = inc_o_material
         self.coating_material = coating_material
         self.loss = loss
         if slab_b_x is not None:
