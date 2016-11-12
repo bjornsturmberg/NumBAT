@@ -52,8 +52,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                 with 0 being fundamental mode (largest prop constant).
                 Can also set to 'All' to include all modes.
 
-            fixed_Q  (int): Specify a fixed Q-factor for the AC modes, rather than 
+            fixed_Q  (int): Specify a fixed Q-factor for the AC modes, rather than
                 calculating the acoustic loss (alpha).
+
+        Returns:
+            SBS_gain  (num_modes_EM,num_modes_EM,num_modes_AC): The SBS gain including both photoelastic and moving boundary contributions.
+            SBS_gain_PE  (num_modes_EM,num_modes_EM,num_modes_AC): The SBS gain for only the photoelastic effect.
+            SBS_gain_MB  (num_modes_EM,num_modes_EM,num_modes_AC): The SBS gain for only the moving boundary effect.
+            alpha  (num_modes_AC): The acoustic loss for each mode.
     """
 
     # Notes about internals of fortran integration
@@ -128,7 +134,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
             print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
         alpha = np.real(alpha)
     else:
-        alpha = (np.pi*k_AC/fixed_Q)*np.ones(sim_AC_wguide.num_modes)
+        alpha = (np.pi*k_AC/fixed_Q)*np.ones(num_modes_AC)
 
 
 
@@ -743,44 +749,34 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     #             reshape_c_vals.append(contour_vals[i][EM_ival1,EM_ival2,AC_ival])
     #         Q_MB[EM_ival1,EM_ival2,AC_ival] += np.trapz(reshape_c_vals, x=contour_r)
 
-    # print Q_MB[0,0,:]
-    # print Q_PE[0,0,:]
-    # Q = Q_MB
-    Q = Q_PE
-    # Q = Q_PE + Q_MB
+
+    Q = Q_PE + Q_MB
 
     # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
     # Note: sim_AC_wguide.Omega_AC is the acoustic angular freq in units of Hz
     gain = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q*np.conj(Q))
-    # gain_py = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q_PE_py*np.conj(Q_PE_py))
-    # gain_CW = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q_PE_py_CW*np.conj(Q_PE_py_CW))
-    normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
-    # normal_fact_py = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
-    # normal_fact_CW = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
-    # P1_CW = 1.954501164316765E-14
+    gain_PE = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q_PE*np.conj(Q_PE))
+    gain_MB = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q_MB*np.conj(Q_MB))
+   normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
     for i in range(num_modes_EM):
         P1 = sim_EM_wguide.EM_mode_overlap[i]
         for j in range(num_modes_EM):
             P2 = sim_EM_wguide.EM_mode_overlap[j]
             for k in range(num_modes_AC):
                 P3 = sim_AC_wguide.AC_mode_overlap[k]
-                # P3_py = AC_py[k]
-                # P3_CW = AC_py_CW[k]
                 normal_fact[i, j, k] = P1*P2*P3
-                # normal_fact_py[i, j, k] = P1*P2*P3_py
-                # normal_fact_CW[i, j, k] = P1_CW*P1_CW*P3_CW
     SBS_gain = np.real(gain/normal_fact)
-    # SBS_gain_py = np.real(gain_py/normal_fact_py)
-    # SBS_gain_CW = np.real(gain_CW/normal_fact_CW)
+    SBS_gain_PE = np.real(gain_PE/normal_fact)
+    SBS_gain_MB = np.real(gain_MB/normal_fact)
 
-    print "MB_gain_ratio", SBS_gain[0,0,2]/alpha[2]/5164.72
-    print "MB_gain_ratio", SBS_gain[0,0,4]/alpha[4]/1344.00
-    # print "MB_gain_ratio", SBS_gain[0,0,8]/alpha[8]/400.31
+    print "MB_gain_ratio", SBS_gain_MB[0,0,2]/alpha[2]/5164.72
+    print "MB_gain_ratio", SBS_gain_MB[0,0,4]/alpha[4]/1344.00
+    # print "MB_gain_ratio", SBS_gain_MB[0,0,8]/alpha[8]/400.31
 
-    # print "PE_gain_ratio", SBS_gain[0,0,2]/alpha[2]/1152.95
-    # print "PE_gain_ratio", SBS_gain[0,0,4]/alpha[4]/6333.18
-    # # print "PE_gain_ratio", SBS_gain[0,0,8]/alpha[8]/36.55
-    
+    # print "PE_gain_ratio", SBS_gain_PE[0,0,2]/alpha[2]/1152.95
+    # print "PE_gain_ratio", SBS_gain_PE[0,0,4]/alpha[4]/6333.18
+    # # print "PE_gain_ratio", SBS_gain_PE[0,0,8]/alpha[8]/36.55
+
     # print "SBS_gain_py", SBS_gain_py[0,0,:]/alpha_py
     # print "SBS_gain_CW", SBS_gain_CW[0,0,:]/alpha_py_CW
     # print "gain ratio py", SBS_gain_py[0,0,:]/SBS_gain[0,0,:]
@@ -804,7 +800,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     #     {'add' : el}, bbox_inches='tight')
     # plt.close()
 
-    return SBS_gain, Q_PE, Q_MB, alpha
+    return SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha
 
 
 # # # Test overlap
