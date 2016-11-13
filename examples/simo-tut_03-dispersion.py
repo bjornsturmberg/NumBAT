@@ -58,6 +58,8 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # Will scan from forward to backward SBS,
 # so need to know k_AC of backward SBS.
 k_AC = 2*sim_EM_wguide.Eig_value[0]
+# Number of wavevectors steps.
+nu_ks = 20
 
 import matplotlib
 matplotlib.use('pdf')
@@ -65,7 +67,7 @@ import matplotlib.pyplot as plt
 plt.clf()
 plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)
-for q_ac in np.linspace(0.0,k_AC,20):
+for q_ac in np.linspace(0.0,k_AC,nu_ks):
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_ac, num_AC_modes, EM_sim=sim_EM_wguide)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
     sym_list = integration.symmetries(sim_AC_wguide)
@@ -74,15 +76,16 @@ for q_ac in np.linspace(0.0,k_AC,20):
         Om = prop_AC_modes[i]*1e-9
         plt.plot(q_ac/k_AC, Om, 'ok')
         if sym_list[i][0] == 1 and sym_list[i][1] == 1 and sym_list[i][2] == 1:
-            plt.plot(np.real(q_ac/k_AC), Om, 'or')
+            sym_A, = plt.plot(np.real(q_ac/k_AC), Om, 'or')
         if sym_list[i][0] == -1 and sym_list[i][1] == 1 and sym_list[i][2] == -1:
-            plt.plot(np.real(q_ac/k_AC), Om, 'vc')
+            sym_B, = plt.plot(np.real(q_ac/k_AC), Om, 'vc')
         if sym_list[i][0] == 1 and sym_list[i][1] == -1 and sym_list[i][2] == -1:
-            plt.plot(np.real(q_ac/k_AC), Om, 'sb')
+            sym_C, = plt.plot(np.real(q_ac/k_AC), Om, 'sb')
         if sym_list[i][0] == -1 and sym_list[i][1] == -1 and sym_list[i][2] == 1:
-            plt.plot(np.real(q_ac/k_AC), Om, '^g')
-    ax.set_ylim(0,20)
-    ax.set_xlim(0,1)
+            sym_D, = plt.plot(np.real(q_ac/k_AC), Om, '^g')
+ax.set_ylim(0,20)
+ax.set_xlim(0,1)
+plt.legend([sym_A, sym_B, sym_C, sym_D],['E',r'C$_2$',r'$\sigma_y$',r'$\sigma_x$'], loc='lower right')
 plt.xlabel(r'Axial wavevector (normalised)', fontsize=16)
 plt.ylabel(r'Frequency (GHz)', fontsize=16)
 plt.savefig('disp.pdf', bbox_inches='tight')

@@ -757,7 +757,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     gain = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q*np.conj(Q))
     gain_PE = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q_PE*np.conj(Q_PE))
     gain_MB = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q_MB*np.conj(Q_MB))
-   normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
+    normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
     for i in range(num_modes_EM):
         P1 = sim_EM_wguide.EM_mode_overlap[i]
         for j in range(num_modes_EM):
