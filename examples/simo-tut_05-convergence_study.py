@@ -64,11 +64,12 @@ def modes_n_gain(wguide):
 
     return [sim_EM_wguide, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha]
 
-lc_bkg = 0.5
-nu_lcs = 10
-lc_list = np.linspace(1,200,nu_lcs)
+nu_lcs = 15
+lc_bkg_list = np.linspace(10,0.4,nu_lcs)
+lc_list = np.linspace(1,50,nu_lcs)
 geo_objects_list = []
-for lc_ref in lc_list:
+for i_lc, lc_ref in enumerate(lc_list):
+    lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
                             bkg_material=materials.Material(1.0 + 0.0j),
@@ -109,7 +110,7 @@ ax2.yaxis.set_label_position("left")
 EM_plot_Mk = rel_mode_freq_EM*1e-6
 error0 = np.abs((np.array(EM_plot_Mk[0:-1])-EM_plot_Mk[-1])/EM_plot_Mk[-1])
 ax2.plot(lc_list[0:-1], error0, 'b-v',label=r'Error')
-ax1.plot(lc_list, EM_plot_Mk, 'r-.o',label=r'EM k$_z$')
+ax1.plot(lc_list, np.real(EM_plot_Mk), 'r-.o',label=r'EM k$_z$')
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
@@ -139,7 +140,7 @@ for i_m, rel_mode in enumerate(rel_modes):
     rel_mode_freq_AC_plot_GHz = rel_mode_freq_AC[:,i_m]*1e-9
     error0 = np.abs((np.array(rel_mode_freq_AC_plot_GHz[0:-1])-rel_mode_freq_AC_plot_GHz[-1])/rel_mode_freq_AC_plot_GHz[-1])
     ax2.plot(lc_list[0:-1], error0, '-v',label='Error mode #%i'%rel_mode)
-    ax1.plot(lc_list, rel_mode_freq_AC_plot_GHz, '-.o',label=r'AC Freq mode #%i'%rel_mode)
+    ax1.plot(lc_list, np.real(rel_mode_freq_AC_plot_GHz), '-.o',label=r'AC Freq mode #%i'%rel_mode)
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
@@ -170,7 +171,7 @@ for i_m, rel_mode in enumerate(rel_modes):
     rel_mode_freq_AC_plot = rel_mode_gain[:,i_m]
     error0 = np.abs((np.array(rel_mode_freq_AC_plot[0:-1])-rel_mode_freq_AC_plot[-1])/rel_mode_freq_AC_plot[-1])
     ax2.plot(lc_list[0:-1], error0, '-v',label=r'Error mode #%i'%rel_mode)
-    ax1.plot(lc_list, rel_mode_freq_AC_plot, '-.o',label=r'Gain mode #%i'%rel_mode)
+    ax1.plot(lc_list, np.real(rel_mode_freq_AC_plot), '-.o',label=r'Gain mode #%i'%rel_mode)
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
