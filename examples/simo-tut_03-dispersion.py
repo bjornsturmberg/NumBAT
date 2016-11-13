@@ -46,39 +46,32 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 
 
 # Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# Save
-np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+
+# Assuming this calculation is run directly after simo-tut_02
+# we don't need to recalculate EM modes, but can load them in.
+npzfile = np.load('wguide_data.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 
 
-### Calculate Acoustic Modes
-# Acoustic k has to push optical mode from -ve lightline to +ve, hence factor 2.
-# Backward SBS
+# Will scan from forward to backward SBS,
+# so need to know k_AC of backward SBS.
 k_AC = 2*sim_EM_wguide.Eig_value[0]
 
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
-# marks = ['ok','ob','or','og','oc','om','^k','^b','^r','^g','^c','^m','sk','sb','sr','sg','sc','sm']
 plt.clf()
 plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)
 for q_ac in np.linspace(0.0,k_AC,20):
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_ac, num_AC_modes, EM_sim=sim_EM_wguide)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
-    # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.imag(x)) < 1e-0])
-    # prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value])
-    # prop_AC_modes = np.array([x for x in prop_AC_modes if np.real(x) > 0.0])
-    # print 'Omega of AC wave \n', sim_AC_wguide.Eig_value*1e-9 # GHz
-    # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
     sym_list = integration.symmetries(sim_AC_wguide)
 
-    # prop_AC_modes_allowed = integration.allowed_symmetries(sim_AC_wguide)
     for i in range(len(prop_AC_modes)):
         Om = prop_AC_modes[i]*1e-9
-        # plt.plot(q_ac/k_AC, Om, marks[i%len(marks)])
         plt.plot(q_ac/k_AC, Om, 'ok')
         if sym_list[i][0] == 1 and sym_list[i][1] == 1 and sym_list[i][2] == 1:
             plt.plot(np.real(q_ac/k_AC), Om, 'or')
