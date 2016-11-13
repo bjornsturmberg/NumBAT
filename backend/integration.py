@@ -769,8 +769,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     SBS_gain_PE = np.real(gain_PE/normal_fact)
     SBS_gain_MB = np.real(gain_MB/normal_fact)
 
-    print "MB_gain_ratio", SBS_gain_MB[0,0,2]/alpha[2]/5164.72
-    print "MB_gain_ratio", SBS_gain_MB[0,0,4]/alpha[4]/1344.00
+    # print "MB_gain_ratio", SBS_gain_MB[0,0,2]/alpha[2]/5164.72
+    # print "MB_gain_ratio", SBS_gain_MB[0,0,4]/alpha[4]/1344.00
     # print "MB_gain_ratio", SBS_gain_MB[0,0,8]/alpha[8]/400.31
 
     # print "PE_gain_ratio", SBS_gain_PE[0,0,2]/alpha[2]/1152.95

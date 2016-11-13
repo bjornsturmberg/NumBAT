@@ -1,9 +1,15 @@
+""" Calculate a dispersion diagram of the acoustic modes
+    from k_AC = 0 (forward SBS) to k_AC = 2*k_EM (backward SBS).
+"""
+
 import time
 import datetime
 import numpy as np
 import sys
-from multiprocessing import Pool
 sys.path.append("../backend/")
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as plt
 
 import materials
 import objects
@@ -15,7 +21,7 @@ from fortran import NumBAT
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550
-unitcell_x = 2.5*1550
+unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
 inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
@@ -61,9 +67,6 @@ k_AC = 2*sim_EM_wguide.Eig_value[0]
 # Number of wavevectors steps.
 nu_ks = 20
 
-import matplotlib
-matplotlib.use('pdf')
-import matplotlib.pyplot as plt
 plt.clf()
 plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)

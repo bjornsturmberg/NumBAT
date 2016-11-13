@@ -520,7 +520,7 @@ C
 C
       write(ui,*)
       write(ui,*) "----------------------------------------------"
-      write(ui,*) " EM FEM, wavelength : ", lambda*1.0d9, "nm"
+      write(ui,*) " EM FEM, lambda : ", lambda*1.0d9, "nm"
       write(ui,*) "----------------------------------------------"
       write(ui,*)
 C

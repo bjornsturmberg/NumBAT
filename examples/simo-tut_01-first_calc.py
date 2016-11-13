@@ -6,7 +6,6 @@ import time
 import datetime
 import numpy as np
 import sys
-from multiprocessing import Pool
 sys.path.append("../backend/")
 
 import materials
@@ -24,7 +23,7 @@ from fortran import NumBAT
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
 # Unit cell must be large to ensure fields are zero at boundary.
-unitcell_x = 2.5*1550
+unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
 # Waveguide width (x direction).
 inc_a_x = 314.7

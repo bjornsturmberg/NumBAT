@@ -10,8 +10,10 @@ import time
 import datetime
 import numpy as np
 import sys
-from multiprocessing import Pool
 sys.path.append("../backend/")
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as plt
 
 import materials
 import objects
@@ -23,7 +25,7 @@ from fortran import NumBAT
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550
-unitcell_x = 2.5*1550
+unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
 inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
@@ -108,9 +110,6 @@ np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
 
 # Construct the SBS gain spectrum, built up
 # from Lorentzian peaks of the individual modes.
-import matplotlib
-matplotlib.use('pdf')
-import matplotlib.pyplot as plt
 plt.figure(figsize=(13,13))
 plt.clf()
 tune_steps = 5e4
@@ -123,7 +122,7 @@ detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
 # phase velocity as approximation to group velocity
 phase_v = sim_AC_wguide.Eig_value/k_AC
 line_width = phase_v*alpha
-interp_grid_points = 1e4
+interp_grid_points = 10000
 interp_grid = np.linspace(10, 25, interp_grid_points)
 interp_values = np.zeros(interp_grid_points)
 for AC_i in range(num_AC_modes):
@@ -137,6 +136,8 @@ for AC_i in range(num_AC_modes):
 
 plt.plot(interp_grid, interp_values, 'k', linewidth=4)
 plt.xlim(10,25)
+plt.xlabel('Frequency (GHz)', fontsize=16)
+plt.ylabel('Gain 1/(Wm)', fontsize=16)
 plt.savefig('gain_spectra.pdf')
 plt.close()
 
