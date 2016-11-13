@@ -1,3 +1,7 @@
+""" Calculate the backward SBS gain for modes in a
+    silicon waveguide surrounded in air.
+"""
+
 import time
 import datetime
 import numpy as np
@@ -37,7 +41,7 @@ num_EM_modes = 20
 # Number of acoustic modes to solve for.
 num_AC_modes = 20
 # The first EM mode(s) for which to calculate interaction with AC modes.
-# Can specify a mode number (zero has lowest propagation constant) or 'All'
+# Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival1=0
 # The second EM mode(s) for which to calculate interaction with AC modes.
 EM_ival2=EM_ival1
@@ -47,11 +51,11 @@ AC_ival='All'
 # Acoustic Parameters
 # Density
 s = 2330  # kg/m3
-# Stiffness tensor components
+# Stiffness tensor components.
 c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
 # Photoelastic tensor components
 p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
-# Acoustic loss tensor components
+# Acoustic loss tensor components.
 eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 # Put acoustic parameters together for convenience.
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
@@ -95,8 +99,10 @@ print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
 plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 
-# Calculate interaction integrals
-SBS_gain, Q_PE, Q_MB, alpha = integration.gain_and_qs(
+# Calculate interaction integrals and SBS gain
+# - for PE and MB effects combined, as well as
+# just for PE, and just for MB. Also calculate acoustic loss alpha.
+SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.

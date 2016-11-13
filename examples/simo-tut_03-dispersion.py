@@ -13,52 +13,44 @@ import plotting
 from fortran import NumBAT
 
 
-### Geometric parameters
+# Geometric Parameters - all in nm.
 wl_nm = 1550
-speed_c = 299792458
-opt_freq_GHz = speed_c/wl_nm # putting in wl in nm gives you GHz
 unitcell_x = 2.5*1550
 unitcell_y = unitcell_x
-inc_a_x = 300
-inc_a_y = 280
-# print inc_a_x/wl_nm
-# print 2*np.pi/wl_nm
-# print (2*np.pi/wl_nm)/(2*np.pi*speed_c/inc_a_x)
-# inc_a_x = .35*wl_nm
-# print inc_a_x
+inc_a_x = 314.7
+inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 
-
-### Optical parameters
+# Optical Parameters
 eps = 12.25
 num_EM_modes = 20
 num_AC_modes = 20
+EM_ival1=0
+EM_ival2=EM_ival1
+AC_ival='All'
 
-### Acoustic parameters
-# Inclusion a
+# Acoustic Parameters
 s = 2330  # kg/m3
 c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
-p_11 = -0.044; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3  # Pa s
-eta_44 = 620e-6   # Pa s
+p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
+eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
+# Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        # lc_bkg=0.2, lc2=20.0, lc3=20.0)#,
-                        lc_bkg=0.1, lc2=30.0, lc3=20.0)
+                        lc_bkg=0.1, lc2=40.0, lc3=20.0)
 
 
-### Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
-# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-# print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
-# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+# Calculate Electromagnetic Modes
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# Save
+np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 
 
 ### Calculate Acoustic Modes
