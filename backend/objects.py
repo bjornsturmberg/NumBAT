@@ -131,7 +131,7 @@ class Struct(object):
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
                  inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
                  inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
-                 inc_o_x=None, 
+                 inc_o_x=None,
                  inc_c_material=materials.Material(1.0 + 0.0j),
                  inc_d_material=materials.Material(1.0 + 0.0j),
                  inc_e_material=materials.Material(1.0 + 0.0j),

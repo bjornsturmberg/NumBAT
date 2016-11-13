@@ -24,9 +24,9 @@ import integration
 import plotting
 from fortran import NumBAT
 
+
 # Select the number of CPUs to use in simulation.
 num_cores = 6
-
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550
@@ -90,12 +90,14 @@ for width in waveguide_widths:
                             lc_bkg=lc_bkg, lc2=40.0, lc3=20.0)
     geo_objects_list.append(wguide)
 
+
 # Run widths in parallel across num_cores CPUs using multiprocessing package.
 pool = Pool(num_cores)
 width_objs = pool.map(modes_n_gain, geo_objects_list)
 np.savez('Simo_results', width_objs=width_objs)
 # npzfile = np.load('Simo_results.npz')
 # width_objs = npzfile['width_objs'].tolist()
+
 
 n_effs = []
 freqs_gains = []
