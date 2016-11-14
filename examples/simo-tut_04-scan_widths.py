@@ -56,7 +56,7 @@ def modes_n_gain(wguide):
     k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
     # Calculate Acoustic Modes
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
-        num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)
+        num_AC_modes, EM_sim=sim_EM_wguide)
     # Calculate interaction integrals and SBS gain
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
         sim_EM_wguide, sim_AC_wguide, k_AC,

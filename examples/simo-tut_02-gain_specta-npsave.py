@@ -78,8 +78,8 @@ k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
 
 # Calculate Acoustic Modes
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
-    num_AC_modes, EM_sim=sim_EM_wguide, shift_Hz=12e9)
-np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+    num_AC_modes, EM_sim=sim_EM_wguide)
+# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 
 # The previous two lines can be commented out and the following
 # two uncommented to provide precisely the same objects for the

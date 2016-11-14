@@ -93,11 +93,11 @@ k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
 # print k_AC*inc_a_x*1e-9/np.pi
 # Forward (intramode) SBS
 # k_AC = 0.0
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
-#     num_AC_modes, EM_sim=sim_EM_wguide)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
+    num_AC_modes, EM_sim=sim_EM_wguide)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-npzfile = np.load('wguide_data_AC.npz')
-sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
 # plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')#, add_name='-check')
 

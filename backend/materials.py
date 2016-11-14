@@ -167,6 +167,21 @@ class Material(object):
         else:
             self._n = interp1d(self.data_wls, self.data_ns)
 
+def isotropic_stiffness(E, v):
+    """
+    Calculate the stiffness matrix components of isotropic 
+    materials, given the two free parameters:
+    E: Youngs_modulus
+    v: Poisson_ratio
+
+    Ref: http://www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
+    """
+    c_11 = E*(1-v)/((1+v)*(1-2*v))
+    c_12 = c_11
+    c_44 = E*(1-2*v)/((1+v)*(1-2*v))
+
+    return c_11, c_12, c_44
+
 
 def plot_n_data(data_name):
     data = np.loadtxt(data_location+'%s.txt' % data_name)

@@ -13,7 +13,6 @@ import plotting
 from fortran import NumBAT
 
 
-speed_c = 299792458
 ### Geometric parameters 
 ## All spacial variables given in nm!
 wl_nm = 1550
@@ -34,20 +33,7 @@ EM_ival2=0
 AC_ival='All'
 
 ### Acoustic parameters
-def isotropic_stiffness(E, v):
-   """
-   Calculate the stiffness matrix components of isotropic 
-   materials, given the two free parameters:
-   E: Youngs_modulus
-   v: Poisson_ratio
 
-   Ref: http://www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
-   """
-   c_11 = E*(1-v)/((1+v)*(1-2*v))
-   c_12 = c_11
-   c_44 = E*(1-2*v)/((1+v)*(1-2*v))
-
-   return c_11, c_12, c_44
 
 # Background - Silca
 s = 2200  # kg/m3
