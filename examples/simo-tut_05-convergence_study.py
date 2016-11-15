@@ -49,7 +49,21 @@ eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
-def modes_n_gain(wguide):
+
+nu_lcs = 10
+lc_bkg_list = np.linspace(10,0.1,nu_lcs)
+lc_list = np.linspace(1,30,nu_lcs)
+conv_list = []
+# Do not run in parallel, otherwise there are confusions reading the msh files!
+for i_lc, lc_ref in enumerate(lc_list):
+    lc_bkg = lc_bkg_list[i_lc]
+    wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
+                            inc_a_y,inc_shape,
+                            bkg_material=materials.Material(1.0 + 0.0j),
+                            inc_a_material=materials.Material(np.sqrt(eps)),
+                            loss=False, inc_a_AC=inc_a_AC_props,
+                            lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc_ref, force_mesh=True)
+
     # Calculate Electromagnetic Modes
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
     # Backward SBS
@@ -62,28 +76,12 @@ def modes_n_gain(wguide):
         sim_EM_wguide, sim_AC_wguide, k_AC,
         EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 
-    return [sim_EM_wguide, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha]
-
-nu_lcs = 15
-lc_bkg_list = np.linspace(10,0.4,nu_lcs)
-lc_list = np.linspace(1,50,nu_lcs)
-geo_objects_list = []
-for i_lc, lc_ref in enumerate(lc_list):
-    lc_bkg = lc_bkg_list[i_lc]
-    wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
-                            inc_a_y,inc_shape,
-                            bkg_material=materials.Material(1.0 + 0.0j),
-                            inc_a_material=materials.Material(np.sqrt(eps)),
-                            loss=False, inc_a_AC=inc_a_AC_props,
-                            lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc_ref, force_mesh=True)
-    geo_objects_list.append(wguide)
+    conv_list.append([sim_EM_wguide, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha])
 
 
-# Do not run in parallel, otherwise there are confusions reading the msh files!
-lc_objs = map(modes_n_gain, geo_objects_list)
-np.savez('Simo_results', lc_objs=lc_objs)
+np.savez('Simo_results', conv_list=conv_list)
 # npzfile = np.load('Simo_results.npz')
-# lc_objs = npzfile['lc_objs'].tolist()
+# conv_list = npzfile['conv_list'].tolist()
 
 
 rel_modes = [2,4,8]
@@ -91,13 +89,11 @@ rel_mode_freq_EM = np.zeros(nu_lcs,dtype=complex)
 rel_mode_freq_AC = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 rel_mode_gain = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 # rel_mode_alpha = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
-for i_lc, lc_obj in enumerate(lc_objs):
-    rel_mode_freq_EM[i_lc] = lc_obj[0].Eig_value[0]
+for i_conv, conv_obj in enumerate(conv_list):
+    rel_mode_freq_EM[i_conv] = conv_obj[0].Eig_value[0]
     for i_m, rel_mode in enumerate(rel_modes):
-        rel_mode_freq_AC[i_lc,i_m] = lc_obj[1].Eig_value[rel_mode]
-        rel_mode_gain[i_lc,i_m] = lc_obj[2][EM_ival1,EM_ival2,rel_mode]/lc_obj[5][rel_mode]
-        # rel_mode_alpha[i_lc,i_m] = lc_obj[5][rel_mode]
-
+        rel_mode_freq_AC[i_conv,i_m] = conv_obj[1].Eig_value[rel_mode]
+        rel_mode_gain[i_conv,i_m] = conv_obj[4][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
 
 
 xlabel = "Mesh Refinement Factor"
