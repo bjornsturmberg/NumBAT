@@ -50,21 +50,25 @@ inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
 
-nu_lcs = 15
-lc_bkg_list = np.linspace(2,0.04,nu_lcs)
-# lc_list = np.linspace(1,40,nu_lcs)
-lc_list = 50*np.ones(nu_lcs)
+nu_lcs = 10
+# lc_bkg_list = np.linspace(2,0.05,nu_lcs)
+lc_bkg_list = 2*np.ones(nu_lcs)
+lc_list = np.linspace(1e2,9e3,nu_lcs)
+# lc_list = 50*np.ones(nu_lcs)
 x_axis = lc_bkg_list
+x_axis = lc_list
 conv_list = []
 # Do not run in parallel, otherwise there are confusions reading the msh files!
 for i_lc, lc_ref in enumerate(lc_list):
+    print i_lc+1, "/", nu_lcs
+    lc3 = 0.01*lc_ref
     lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
                             bkg_material=materials.Material(1.0 + 0.0j),
                             inc_a_material=materials.Material(np.sqrt(eps)),
                             loss=False, inc_a_AC=inc_a_AC_props,
-                            lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc_ref, force_mesh=True)
+                            lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc3, force_mesh=True)
 
     # Calculate Electromagnetic Modes
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
@@ -85,6 +89,9 @@ np.savez('Simo_results', conv_list=conv_list)
 # npzfile = np.load('Simo_results.npz')
 # conv_list = npzfile['conv_list'].tolist()
 
+# sim_EM_wguide = conv_list[-1][0]
+# # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
+# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 rel_modes = [2,4,8]
 rel_mode_freq_EM = np.zeros(nu_lcs,dtype=complex)
@@ -112,7 +119,7 @@ ax2.yaxis.tick_left()
 ax2.yaxis.set_label_position("left")
 EM_plot_Mk = rel_mode_freq_EM*1e-6
 error0 = np.abs((np.array(EM_plot_Mk[0:-1])-EM_plot_Mk[-1])/EM_plot_Mk[-1])
-ax2.plot(x_axis[0:-1], error0, 'b-v',label=r'Error')
+ax2.plot(x_axis[0:-1], error0, 'b-v',label='Mode #%i'%EM_ival1)
 ax1.plot(x_axis, np.real(EM_plot_Mk), 'r-.o',label=r'EM k$_z$')
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
@@ -123,8 +130,8 @@ ax1.tick_params(axis='y', colors='red')
 # ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
 ax2.legend(handles, labels)#, loc='center left')
-handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels)#, loc='center right')
+# handles, labels = ax1.get_legend_handles_labels()
+# ax1.legend(handles, labels)#, loc='center right')
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"EM k$_z$ ($\times 10^6$ 1/m)")
 ax2.set_ylabel(r"Relative Error EM k$_z$")
@@ -142,7 +149,7 @@ ax2.yaxis.set_label_position("left")
 for i_m, rel_mode in enumerate(rel_modes):
     rel_mode_freq_AC_plot_GHz = rel_mode_freq_AC[:,i_m]*1e-9
     error0 = np.abs((np.array(rel_mode_freq_AC_plot_GHz[0:-1])-rel_mode_freq_AC_plot_GHz[-1])/rel_mode_freq_AC_plot_GHz[-1])
-    ax2.plot(x_axis[0:-1], error0, '-v',label='Error mode #%i'%rel_mode)
+    ax2.plot(x_axis[0:-1], error0, '-v',label='Mode #%i'%rel_mode)
     ax1.plot(x_axis, np.real(rel_mode_freq_AC_plot_GHz), '-.o',label=r'AC Freq mode #%i'%rel_mode)
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
@@ -153,8 +160,8 @@ ax1.tick_params(axis='y', colors='red')
 # ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
 ax2.legend(handles, labels)#, loc='center left')
-handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels)#, loc='center right')
+# handles, labels = ax1.get_legend_handles_labels()
+# ax1.legend(handles, labels)#, loc='center right')
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"AC Freq (GHz)")
 ax2.set_ylabel(r"Relative Error AC Freq")
@@ -173,7 +180,7 @@ ax2.yaxis.set_label_position("left")
 for i_m, rel_mode in enumerate(rel_modes):
     rel_mode_gain_plot = rel_mode_gain[:,i_m]
     error0 = np.abs((np.array(rel_mode_gain_plot[0:-1])-rel_mode_gain_plot[-1])/rel_mode_gain_plot[-1])
-    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Error mode #%i'%rel_mode)
+    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Mode #%i'%rel_mode)
     ax1.plot(x_axis, np.real(rel_mode_gain_plot), '-.o',label=r'Gain mode #%i'%rel_mode)
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
@@ -184,8 +191,8 @@ ax1.tick_params(axis='y', colors='red')
 # ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
 ax2.legend(handles, labels)#, loc='center left')
-handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels)#, loc='center right')
+# handles, labels = ax1.get_legend_handles_labels()
+# ax1.legend(handles, labels)#, loc='center right')
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
@@ -204,7 +211,7 @@ ax2.yaxis.set_label_position("left")
 for i_m, rel_mode in enumerate(rel_modes):
     rel_mode_gain_PE_plot = rel_mode_gain_PE[:,i_m]
     error0 = np.abs((np.array(rel_mode_gain_PE_plot[0:-1])-rel_mode_gain_PE_plot[-1])/rel_mode_gain_PE_plot[-1])
-    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Error mode #%i'%rel_mode)
+    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Mode #%i'%rel_mode)
     ax1.plot(x_axis, np.real(rel_mode_gain_PE_plot), '-.o',label=r'Gain mode #%i'%rel_mode)
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
@@ -215,8 +222,8 @@ ax1.tick_params(axis='y', colors='red')
 # ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
 ax2.legend(handles, labels)#, loc='center left')
-handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels)#, loc='center right')
+# handles, labels = ax1.get_legend_handles_labels()
+# ax1.legend(handles, labels)#, loc='center right')
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
@@ -235,7 +242,7 @@ ax2.yaxis.set_label_position("left")
 for i_m, rel_mode in enumerate(rel_modes):
     rel_mode_gain_MB_plot = rel_mode_gain_MB[:,i_m]
     error0 = np.abs((np.array(rel_mode_gain_MB_plot[0:-1])-rel_mode_gain_MB_plot[-1])/rel_mode_gain_MB_plot[-1])
-    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Error mode #%i'%rel_mode)
+    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Mode #%i'%rel_mode)
     ax1.plot(x_axis, np.real(rel_mode_gain_MB_plot), '-.o',label=r'Gain mode #%i'%rel_mode)
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
@@ -246,8 +253,8 @@ ax1.tick_params(axis='y', colors='red')
 # ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
 ax2.legend(handles, labels)#, loc='center left')
-handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels)#, loc='center right')
+# handles, labels = ax1.get_legend_handles_labels()
+# ax1.legend(handles, labels)#, loc='center right')
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")

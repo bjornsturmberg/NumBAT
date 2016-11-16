@@ -48,21 +48,21 @@ C       endif
       allocate(col_ind_0(nonz_max), STAT=alloc_stat)
       if (alloc_stat /= 0) then
         write(*,*)
-        write(*,*) "csr_length: ",
+        write(*,*) "csr_length_AC: ",
      *     "The allocation is unsuccessful"
         write(*,*) "alloc_stat = ", alloc_stat
         write(*,*) "Not enough memory for the array col_ind_0"
         write(*,*) "nonz_max = ", nonz_max
-        write(*,*) "csr_length: Aborting..."
+        write(*,*) "csr_length_AC: Aborting..."
         stop
       endif
 
 
 c
       if ( nnodes .ne. 6 ) then
-        write(ui,*) "csr_length: problem nnodes = ", nnodes
-        write(ui,*) "csr_length: nnodes should be equal to 6 !"
-        write(ui,*) "csr_length: Aborting..."
+        write(ui,*) "csr_length_AC: problem nnodes = ", nnodes
+        write(ui,*) "csr_length_AC: nnodes should be equal to 6 !"
+        write(ui,*) "csr_length_AC: Aborting..."
         stop
       endif
 c
@@ -91,16 +91,16 @@ c                 Search if the entry (ind_ip,ind_jp) is already stored
                       if(col_ind_0(k) .eq. 0) goto 20
                       if(col_ind_0(k) .eq. ind_jp) goto 30
                     enddo
-                    print*, "csr_length: There is a problem!",
+                    print*, "csr_length_AC: There is a problem!",
      *                " Aborting..."
                     stop
 20                  continue
 c                   No entry exists for (ind_ip,ind_jp); create new one
                     nonz = nonz + 1
                     if (nonz .gt. nonz_max) then
-                      print*, "csr_length: nonz > nonz_max: ",
+                      print*, "csr_length_AC: nonz > nonz_max: ",
      *                nonz .gt. nonz_max
-                      print*, "csr_length: Aborting..."
+                      print*, "csr_length_AC: Aborting..."
                       stop
                     endif
                     col_ind_0(k) = ind_jp
@@ -157,15 +157,15 @@ c
         if (row_len .gt. max_row_len) max_row_len = row_len
       enddo
       if (debug .eq. 1) then
-      write(ui,*) "csr_length: max_row_len = ", max_row_len
+      write(ui,*) "csr_length_AC: max_row_len = ", max_row_len
       endif
 c
       if ((ipointer+nonz) .gt. int_max) then
-         write(ui,*) "csr_length: (ipointer+nonz) > int_max : ",
+         write(ui,*) "csr_length_AC: (ipointer+nonz) > int_max : ",
      *   (ipointer+nonz), int_max
-         write(ui,*) "csr_length: nonz_max = ", nonz_max
-         write(ui,*) "csr_length: increase the size of int_max"
-         write(ui,*) "csr_length: Aborting..."
+         write(ui,*) "csr_length_AC: nonz_max = ", nonz_max
+         write(ui,*) "csr_length_AC: increase the size of int_max"
+         write(ui,*) "csr_length_AC: Aborting..."
          stop
       else
 c       Copy the local array col_ind_0 into col_ind

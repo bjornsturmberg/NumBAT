@@ -77,32 +77,32 @@ print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 
-# # Choose acoustic wavenumber to solve for
-# # Backward SBS
-# # AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
-# k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
-# print 'AC wavenumber (1/m) \n', k_AC
-# # Forward (intramode) SBS
-# # EM modes on same lightline.
-# # k_AC = 0.0
+# Choose acoustic wavenumber to solve for
+# Backward SBS
+# AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
+k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
+print 'AC wavenumber (1/m) \n', k_AC
+# Forward (intramode) SBS
+# EM modes on same lightline.
+# k_AC = 0.0
 
 
-# # Calculate Acoustic Modes
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
-#     num_AC_modes, EM_sim=sim_EM_wguide)
-# # Print the frequencies of AC modes.
-# print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
-# # Plot the AC modes fields, important to specify this with EM_AC='AC'.
-# # The AC modes are calculated on a subset of the full unitcell,
-# # which excludes vacuum regions, so no need to restrict area plotted.
-# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
+# Calculate Acoustic Modes
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
+    num_AC_modes, EM_sim=sim_EM_wguide)
+# Print the frequencies of AC modes.
+print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
+# Plot the AC modes fields, important to specify this with EM_AC='AC'.
+# The AC modes are calculated on a subset of the full unitcell,
+# which excludes vacuum regions, so no need to restrict area plotted.
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 
-# # Calculate interaction integrals and SBS gain
-# # - for PE and MB effects combined, as well as
-# # just for PE, and just for MB. Also calculate acoustic loss alpha.
-# SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
-#     sim_EM_wguide, sim_AC_wguide, k_AC,
-#     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
-# # Print the Backward SBS gain of the AC modes.
-# print "SBS_gain \n", SBS_gain[EM_ival1,EM_ival2,:]/alpha
+# Calculate interaction integrals and SBS gain
+# - for PE and MB effects combined, as well as
+# just for PE, and just for MB. Also calculate acoustic loss alpha.
+SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
+    sim_EM_wguide, sim_AC_wguide, k_AC,
+    EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
+# Print the Backward SBS gain of the AC modes.
+print "SBS_gain \n", SBS_gain[EM_ival1,EM_ival2,:]/alpha
