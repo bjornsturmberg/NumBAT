@@ -50,9 +50,11 @@ inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
 
-nu_lcs = 10
-lc_bkg_list = np.linspace(10,0.1,nu_lcs)
-lc_list = np.linspace(1,30,nu_lcs)
+nu_lcs = 15
+lc_bkg_list = np.linspace(2,0.04,nu_lcs)
+# lc_list = np.linspace(1,40,nu_lcs)
+lc_list = 50*np.ones(nu_lcs)
+x_axis = lc_bkg_list
 conv_list = []
 # Do not run in parallel, otherwise there are confusions reading the msh files!
 for i_lc, lc_ref in enumerate(lc_list):
@@ -88,12 +90,17 @@ rel_modes = [2,4,8]
 rel_mode_freq_EM = np.zeros(nu_lcs,dtype=complex)
 rel_mode_freq_AC = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 rel_mode_gain = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
+rel_mode_gain_MB = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
+rel_mode_gain_PE = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 # rel_mode_alpha = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 for i_conv, conv_obj in enumerate(conv_list):
     rel_mode_freq_EM[i_conv] = conv_obj[0].Eig_value[0]
     for i_m, rel_mode in enumerate(rel_modes):
         rel_mode_freq_AC[i_conv,i_m] = conv_obj[1].Eig_value[rel_mode]
-        rel_mode_gain[i_conv,i_m] = conv_obj[4][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
+        rel_mode_gain[i_conv,i_m] = conv_obj[2][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
+        rel_mode_gain_PE[i_conv,i_m] = conv_obj[3][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
+        rel_mode_gain_MB[i_conv,i_m] = conv_obj[4][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
+
 
 
 xlabel = "Mesh Refinement Factor"
@@ -105,8 +112,8 @@ ax2.yaxis.tick_left()
 ax2.yaxis.set_label_position("left")
 EM_plot_Mk = rel_mode_freq_EM*1e-6
 error0 = np.abs((np.array(EM_plot_Mk[0:-1])-EM_plot_Mk[-1])/EM_plot_Mk[-1])
-ax2.plot(lc_list[0:-1], error0, 'b-v',label=r'Error')
-ax1.plot(lc_list, np.real(EM_plot_Mk), 'r-.o',label=r'EM k$_z$')
+ax2.plot(x_axis[0:-1], error0, 'b-v',label=r'Error')
+ax1.plot(x_axis, np.real(EM_plot_Mk), 'r-.o',label=r'EM k$_z$')
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
@@ -115,14 +122,14 @@ ax1.tick_params(axis='y', colors='red')
 # import matplotlib.ticker as mtick
 # ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels, loc='center left')
+ax2.legend(handles, labels)#, loc='center left')
 handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels, loc='center right')
+ax1.legend(handles, labels)#, loc='center right')
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"EM k$_z$ ($\times 10^6$ 1/m)")
 ax2.set_ylabel(r"Relative Error EM k$_z$")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-freq_EM.pdf')#, bbox_inches='tight')
+plt.savefig('convergence-freq_EM.pdf', bbox_inches='tight')
 plt.close()
 
 
@@ -135,8 +142,8 @@ ax2.yaxis.set_label_position("left")
 for i_m, rel_mode in enumerate(rel_modes):
     rel_mode_freq_AC_plot_GHz = rel_mode_freq_AC[:,i_m]*1e-9
     error0 = np.abs((np.array(rel_mode_freq_AC_plot_GHz[0:-1])-rel_mode_freq_AC_plot_GHz[-1])/rel_mode_freq_AC_plot_GHz[-1])
-    ax2.plot(lc_list[0:-1], error0, '-v',label='Error mode #%i'%rel_mode)
-    ax1.plot(lc_list, np.real(rel_mode_freq_AC_plot_GHz), '-.o',label=r'AC Freq mode #%i'%rel_mode)
+    ax2.plot(x_axis[0:-1], error0, '-v',label='Error mode #%i'%rel_mode)
+    ax1.plot(x_axis, np.real(rel_mode_freq_AC_plot_GHz), '-.o',label=r'AC Freq mode #%i'%rel_mode)
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
@@ -145,14 +152,14 @@ ax1.tick_params(axis='y', colors='red')
 # import matplotlib.ticker as mtick
 # ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels, loc='center left')
+ax2.legend(handles, labels)#, loc='center left')
 handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels, loc='center right')
+ax1.legend(handles, labels)#, loc='center right')
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"AC Freq (GHz)")
 ax2.set_ylabel(r"Relative Error AC Freq")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-freq_AC.pdf')#, bbox_inches='tight')
+plt.savefig('convergence-freq_AC.pdf', bbox_inches='tight')
 plt.close()
 
 
@@ -164,10 +171,10 @@ ax2 = ax1.twinx()
 ax2.yaxis.tick_left()
 ax2.yaxis.set_label_position("left")
 for i_m, rel_mode in enumerate(rel_modes):
-    rel_mode_freq_AC_plot = rel_mode_gain[:,i_m]
-    error0 = np.abs((np.array(rel_mode_freq_AC_plot[0:-1])-rel_mode_freq_AC_plot[-1])/rel_mode_freq_AC_plot[-1])
-    ax2.plot(lc_list[0:-1], error0, '-v',label=r'Error mode #%i'%rel_mode)
-    ax1.plot(lc_list, np.real(rel_mode_freq_AC_plot), '-.o',label=r'Gain mode #%i'%rel_mode)
+    rel_mode_gain_plot = rel_mode_gain[:,i_m]
+    error0 = np.abs((np.array(rel_mode_gain_plot[0:-1])-rel_mode_gain_plot[-1])/rel_mode_gain_plot[-1])
+    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Error mode #%i'%rel_mode)
+    ax1.plot(x_axis, np.real(rel_mode_gain_plot), '-.o',label=r'Gain mode #%i'%rel_mode)
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
@@ -176,12 +183,74 @@ ax1.tick_params(axis='y', colors='red')
 # import matplotlib.ticker as mtick
 # ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels, loc='center left')
+ax2.legend(handles, labels)#, loc='center left')
 handles, labels = ax1.get_legend_handles_labels()
-ax1.legend(handles, labels, loc='center right')
+ax1.legend(handles, labels)#, loc='center right')
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-Gain.pdf')#, bbox_inches='tight')
+plt.savefig('convergence-Gain.pdf', bbox_inches='tight')
+plt.close()
+
+
+
+fig = plt.figure()#figsize=(13,13))
+plt.clf()
+ax1 = fig.add_subplot(1,1,1)
+ax2 = ax1.twinx()
+ax2.yaxis.tick_left()
+ax2.yaxis.set_label_position("left")
+for i_m, rel_mode in enumerate(rel_modes):
+    rel_mode_gain_PE_plot = rel_mode_gain_PE[:,i_m]
+    error0 = np.abs((np.array(rel_mode_gain_PE_plot[0:-1])-rel_mode_gain_PE_plot[-1])/rel_mode_gain_PE_plot[-1])
+    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Error mode #%i'%rel_mode)
+    ax1.plot(x_axis, np.real(rel_mode_gain_PE_plot), '-.o',label=r'Gain mode #%i'%rel_mode)
+ax1.yaxis.tick_right()
+ax1.spines['right'].set_color('red')
+ax1.yaxis.label.set_color('red')
+ax1.yaxis.set_label_position("right")
+ax1.tick_params(axis='y', colors='red')
+# import matplotlib.ticker as mtick
+# ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
+handles, labels = ax2.get_legend_handles_labels()
+ax2.legend(handles, labels)#, loc='center left')
+handles, labels = ax1.get_legend_handles_labels()
+ax1.legend(handles, labels)#, loc='center right')
+ax1.set_xlabel(xlabel)
+ax1.set_ylabel(r"Gain")
+ax2.set_ylabel(r"Relative Error Gain")
+ax2.set_yscale('log', nonposx='clip')
+plt.savefig('convergence-Gain_PE.pdf', bbox_inches='tight')
+plt.close()
+
+
+
+fig = plt.figure()#figsize=(13,13))
+plt.clf()
+ax1 = fig.add_subplot(1,1,1)
+ax2 = ax1.twinx()
+ax2.yaxis.tick_left()
+ax2.yaxis.set_label_position("left")
+for i_m, rel_mode in enumerate(rel_modes):
+    rel_mode_gain_MB_plot = rel_mode_gain_MB[:,i_m]
+    error0 = np.abs((np.array(rel_mode_gain_MB_plot[0:-1])-rel_mode_gain_MB_plot[-1])/rel_mode_gain_MB_plot[-1])
+    ax2.plot(x_axis[0:-1], error0, '-v',label=r'Error mode #%i'%rel_mode)
+    ax1.plot(x_axis, np.real(rel_mode_gain_MB_plot), '-.o',label=r'Gain mode #%i'%rel_mode)
+ax1.yaxis.tick_right()
+ax1.spines['right'].set_color('red')
+ax1.yaxis.label.set_color('red')
+ax1.yaxis.set_label_position("right")
+ax1.tick_params(axis='y', colors='red')
+# import matplotlib.ticker as mtick
+# ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
+handles, labels = ax2.get_legend_handles_labels()
+ax2.legend(handles, labels)#, loc='center left')
+handles, labels = ax1.get_legend_handles_labels()
+ax1.legend(handles, labels)#, loc='center right')
+ax1.set_xlabel(xlabel)
+ax1.set_ylabel(r"Gain")
+ax2.set_ylabel(r"Relative Error Gain")
+ax2.set_yscale('log', nonposx='clip')
+plt.savefig('convergence-Gain_MB.pdf', bbox_inches='tight')
 plt.close()
