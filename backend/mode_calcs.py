@@ -190,9 +190,9 @@ class Simmo(object):
         # Size of Fortran's complex superarray (scales with mesh)
         # In theory could do some python-based preprocessing
         # on the mesh file to work out RAM requirements
-        cmplx_max = 2**27  # 30
-        real_max = 2**23
-        int_max = 2**22
+        cmplx_max = 2**27
+        real_max = 2**26
+        int_max = 2**25
 
 
         # Calculate where to center the Eigenmode solver around.
