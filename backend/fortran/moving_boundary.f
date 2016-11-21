@@ -341,16 +341,12 @@ c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector ed
                     ls_n_dot(3) = vec(1,3) * edge_perp(1)
      *                  + vec(2,3) * edge_perp(2)
                     tmp1 = (eps_a - eps_b)*eps_0
-C                     tmp1 = tmp1*(conjg(ls_n_cross(1,1))*ls_n_cross(1,2)
-C      *                    + conjg(ls_n_cross(2,1))*ls_n_cross(2,2)
-C      *                    + conjg(ls_n_cross(3,1))*ls_n_cross(3,2))
                     tmp1 = tmp1*((ls_n_cross(1,1))*ls_n_cross(1,2)
      *                    + (ls_n_cross(2,1))*ls_n_cross(2,2)
      *                    + (ls_n_cross(3,1))*ls_n_cross(3,2))
                     n_dot_d(1) = eps_0*eps_a * ls_n_dot(1)
                     n_dot_d(2) = eps_0*eps_a * ls_n_dot(2)
                     tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
-C                     tmp2 = tmp2*conjg(n_dot_d(1))*n_dot_d(2)
                     tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
              overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +

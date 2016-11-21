@@ -113,35 +113,37 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
 
 
 print "SBS_gain", SBS_gain[0,0,:]/alpha
+print "SBS_gain_MB", SBS_gain_MB[0,0,:]/alpha
+print "SBS_gain_PE", SBS_gain_PE[0,0,:]/alpha
 
 
-import matplotlib
-matplotlib.use('pdf')
-import matplotlib.pyplot as plt
-plt.figure(figsize=(13,13))
-plt.clf()
-tune_steps = 5e4
-tune_range = 10 #GHz
-# Construct an odd range of frequencies that is guaranteed to include the central resonance freq.
-detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps), np.linspace(0, tune_range, tune_steps)[1:])*1e9 # in GHz
-# Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
-# speed_in_Si = 9620 # m/s
-# line_width = speed_in_Si*alpha
-phase_v = sim_AC_wguide.Eig_value/k_AC # phase velocity as approximation to group velocity
-line_width = phase_v*alpha
-interp_grid_points = 1e4
-interp_grid = np.linspace(10, 25, interp_grid_points)
-interp_values = np.zeros(interp_grid_points)
-for AC_i in range(num_AC_modes):
-    gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
-    freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
-    plt.plot(freq_list_GHz, gain_list,linewidth=3)
-    # set up an interpolation for summing all the gain peaks
-    interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
-    interp_values += interp_spectrum
+# import matplotlib
+# matplotlib.use('pdf')
+# import matplotlib.pyplot as plt
+# plt.figure(figsize=(13,13))
+# plt.clf()
+# tune_steps = 5e4
+# tune_range = 10 #GHz
+# # Construct an odd range of frequencies that is guaranteed to include the central resonance freq.
+# detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps), np.linspace(0, tune_range, tune_steps)[1:])*1e9 # in GHz
+# # Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
+# # speed_in_Si = 9620 # m/s
+# # line_width = speed_in_Si*alpha
+# phase_v = sim_AC_wguide.Eig_value/k_AC # phase velocity as approximation to group velocity
+# line_width = phase_v*alpha
+# interp_grid_points = 1e4
+# interp_grid = np.linspace(10, 25, interp_grid_points)
+# interp_values = np.zeros(interp_grid_points)
+# for AC_i in range(num_AC_modes):
+#     gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+#                  *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+#     freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
+#     plt.plot(freq_list_GHz, gain_list,linewidth=3)
+#     # set up an interpolation for summing all the gain peaks
+#     interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
+#     interp_values += interp_spectrum
 
-plt.plot(interp_grid, interp_values, 'k', linewidth=4)
-plt.xlim(10,25)
-plt.savefig('gain_spectra.pdf')
-plt.close()
+# plt.plot(interp_grid, interp_values, 'k', linewidth=4)
+# plt.xlim(10,25)
+# plt.savefig('gain_spectra.pdf')
+# plt.close()
