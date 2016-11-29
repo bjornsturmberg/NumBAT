@@ -126,7 +126,7 @@ C
       do iel=1,nel
         typ_e = type_el(iel)
         if(typ_e == typ_select_in) then
-          do inod=4,6  ! Scan the adges
+          do inod=4,6  ! Scan the edges
             j = table_nod(inod,iel)
             nb_visite(j) = nb_visite(j) + 1  ! Will indicate the number of
           enddo
@@ -203,7 +203,8 @@ c     Numerical integration
       do iel=1,nel
         typ_e = type_el(iel)
         if(typ_e == typ_select_in) then
-          eps_a = eps_lst(1)!typ_e)
+C           eps_a = eps_lst(1)!typ_e)
+          eps_a = 12.25d0! for Kokou test
           eps_b = 1.0d0!eps_lst(2)!typ_select_out)
 C           write(*,*) eps_a, eps_b
           do inod=4,6  ! Scan the edges
@@ -351,10 +352,10 @@ c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector ed
                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
              overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
      *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
-C                     write(*,*) "blah", tmp1
-C                     write(*,*) "b", tmp2
-C                     write(*,*) "bcccc", r_tmp
-C                     write(*,*) "rst", ls_n_dot(3)
+C                     write(*,*) "tmp1", tmp1
+C                     write(*,*) "tmp2", tmp2
+C                     write(*,*) "r_tmp", r_tmp
+C                     write(*,*) "ls_n_dot", ls_n_dot(3)
 C                     write(*,*) "fie", r_tmp*ls_n_dot(3)*(tmp1 - tmp2)
                   enddo
                   enddo

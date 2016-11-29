@@ -94,12 +94,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     num_modes_AC = sim_AC_wguide.num_modes
     n_msh_el_AC = sim_AC_wguide.n_msh_el
     trimmed_EM_field = np.zeros((ncomps,nnodes,num_modes_EM,n_msh_el_AC), dtype=complex)
-    for el in range(n_msh_el_AC):
-        new_el = sim_AC_wguide.el_convert_tbl[el]
-        for ival in range(num_modes_EM):
-            for n in range(nnodes):
-                for x in range(ncomps):
-                    trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
+    # ToDo: below is just for testing w Kokou msh
+    # for el in range(n_msh_el_AC):
+    #     new_el = sim_AC_wguide.el_convert_tbl[el]
+    #     for ival in range(num_modes_EM):
+    #         for n in range(nnodes):
+    #             for x in range(ncomps):
+    #                 trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
+
     # sim_EM_wguide.sol1 = trimmed_EM_field
     # sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el
     # sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts
@@ -528,30 +530,25 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     try:
         # Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
         #     sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,
-        #     AC_ival_fortran, sim_EM_wguide.n_msh_el,
-        #     sim_EM_wguide.n_msh_pts, nnodes,
-        #     sim_EM_wguide.table_nod, sim_EM_wguide.type_el,
-        #     sim_EM_wguide.x_arr,
-        #     sim_EM_wguide.structure.nb_typ_el, typ_select_in, typ_select_out,
+        #     AC_ival_fortran, sim_AC_wguide.n_msh_el,
+        #     sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
+        #     sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
+        #     sim_AC_wguide.structure.nb_typ_el_AC, typ_select_in, typ_select_out,
         #     trimmed_EM_field, sim_AC_wguide.sol1,
         #     relevant_eps_effs, Fortran_debug)
-
-        # print sim_EM_wguide.type_el
-        # print sim_AC_wguide.type_el
-
-        # sim_AC_wguide.x_arr = 100*sim_AC_wguide.x_arr
 
         Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
             sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,
             AC_ival_fortran, sim_AC_wguide.n_msh_el,
             sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
             sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-            sim_AC_wguide.structure.nb_typ_el_AC, typ_select_in, typ_select_out,
-            trimmed_EM_field, sim_AC_wguide.sol1,
+            2, typ_select_in, typ_select_out,
+            sim_AC_wguide.sol1, sim_AC_wguide.sol1,
             relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine moving_boundary interrupted by keyboard.\n\n"
 
+    print Q_MB[2,2,2]
 
     # from collections import Counter
 
