@@ -4,7 +4,7 @@ c
       subroutine moving_boundary (nval_EM, nval_AC, ival1,
      *    ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
      *    nb_typ_el, typ_select_in, typ_select_out, soln_EM, soln_AC,
-     *    eps_lst, debug, overlap)
+     *    eps_lst, debug, overlap, py_nodes, py_int, py_vec)
 c
       implicit none
       integer*8 nel, npt, nnodes, nb_typ_el
@@ -50,6 +50,10 @@ C       integer*8, allocatable :: edge_direction(:) ! (npt)
       integer number_of_string_tags
       integer number_of_real_tags
       integer number_of_integer_tags
+
+      double precision py_nodes(nel,2,3)
+      double precision py_vec(nel,2)
+      complex*16 py_int(nel,3)
 C
 C
 Cf2py intent(in) nval_EM, nval_AC, ival1, ival2, ival3, nb_typ_el
@@ -64,7 +68,7 @@ Cf2py depend(soln_EM) nnodes, nval_EM, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(eps_lst) nb_typ_el
 C
-Cf2py intent(out) overlap
+Cf2py intent(out) overlap, py_nodes, py_int, py_vec
 C
 ccccccccccccccccccccccccccccccccccccc
 c
@@ -121,6 +125,19 @@ ccccccccccccccccccccccccccccccccccccc
       enddo
 cccccccccccc
 C
+
+      do iel=1,nel
+        py_nodes(iel,1,1) = (0.0d0)
+        py_nodes(iel,1,2) = (0.0d0)
+        py_nodes(iel,2,1) = (0.0d0)
+        py_nodes(iel,2,2) = (0.0d0)
+        py_nodes(iel,3,1) = (0.0d0)
+        py_nodes(iel,3,2) = (0.0d0)
+        py_int(iel,1) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,2) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,3) = cmplx(0.0d0, 0.0d0)
+      enddo
+
       eps_0 = 8.854187817d-12
 C
       do iel=1,nel
@@ -245,6 +262,15 @@ c             Identification number of the two end-points and mid-edge point
               ls_inod(2) = edge_endpoints(2,inod-3)
               ls_inod(3) = inod
 c
+              py_nodes(iel,1,1) = ls_xy(1,1)
+              py_nodes(iel,2,1) = ls_xy(2,1)
+              py_nodes(iel,1,2) = ls_xy(1,2)
+              py_nodes(iel,2,2) = ls_xy(2,2)
+              py_nodes(iel,1,3) = ls_xy(1,3)
+              py_nodes(iel,2,3) = ls_xy(2,3)
+              py_vec(iel,1) = edge_perp(1)
+              py_vec(iel,2) = edge_perp(2)
+
 C If only want overlap of one given combination of EM modes and AC mode.
               if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. 
      *            ival3 .ge. 0) then
@@ -351,6 +377,12 @@ c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector ed
                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
              overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
      *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
+
+                  if (ival3s .eq. 3) then
+                    if (j_1 .eq. j_2 .and. j_2 .eq. j_3) then
+                     py_int(iel, j_1) = conjg(ls_n_dot(3))*(tmp1 - tmp2)
+                    endif
+                  endif
 C                     write(*,*) "blah", tmp1
 C                     write(*,*) "b", tmp2
 C                     write(*,*) "bcccc", r_tmp

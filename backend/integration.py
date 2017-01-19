@@ -541,7 +541,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
 
         # sim_AC_wguide.x_arr = 100*sim_AC_wguide.x_arr
 
-        Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
+        Q_MB, py_nodes, py_int, py_vec = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
             sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,
             AC_ival_fortran, sim_AC_wguide.n_msh_el,
             sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
@@ -553,6 +553,48 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
         print "\n\n Routine moving_boundary interrupted by keyboard.\n\n"
 
 
+    # for iel in range(sim_AC_wguide.n_msh_el):
+
+
+    import matplotlib
+    matplotlib.use('pdf')
+    import matplotlib.pyplot as plt
+    plt.clf()
+    plt.figure(figsize=(13,13))
+    ax = plt.subplot(1,1,1)
+    for iel in range(sim_AC_wguide.n_msh_el):
+        if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+            plt.plot(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], 'gs')
+            ax.arrow(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], 1e8*(py_nodes[iel,0,2]-py_nodes[iel,0,0]), 1e8*(py_nodes[iel,1,2]-py_nodes[iel,1,0]), fc='b', ec='b')
+            # if py_nodes[iel,0,0]>195e-8 and py_nodes[iel,1,0]>-195e-8:
+            #     ax.arrow(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], -1e8*(py_nodes[iel,0,2]-py_nodes[iel,0,0]), -1e8*(py_nodes[iel,1,2]-py_nodes[iel,1,0]), fc='r', ec='r')
+            # # plt.plot(py_nodes[iel,0,1], py_nodes[iel,1,1], 'k+')
+            # plt.plot(py_nodes[iel,0,2], py_nodes[iel,1,2], 'kv')
+            # plt.plot(py_nodes[iel,0,2]+1e-8*py_vec[iel,0], py_nodes[iel,1,2]+1e-8*py_vec[iel,1], 'ro')
+    ax.set_aspect('equal')
+    plt.savefig('msh_.pdf', bbox_inches='tight')
+    plt.close()
+
+    Q_MB2 = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
+    for iel in range(sim_AC_wguide.n_msh_el):
+        if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+            dx = np.sqrt((py_nodes[iel,0,1]-py_nodes[iel,0,2])**2 + (py_nodes[iel,1,1]-py_nodes[iel,1,2])**2)
+            reshape_int = [py_int[iel,0],py_int[iel,2],py_int[iel,1]]
+            # if py_nodes[iel,0,0]>195e-8 and py_nodes[iel,1,0]>-195e-8:
+                # tmp_x = py_nodes[iel,0,0]
+                # tmp_y = py_nodes[iel,1,0]
+                # py_nodes[iel,0,0] = py_nodes[iel,0,2]
+                # py_nodes[iel,1,0] = py_nodes[iel,1,2]
+                # py_nodes[iel,0,2] = tmp_x
+                # py_nodes[iel,1,2] = tmp_y
+                # reshape_int = [py_int[iel,1],py_int[iel,2],py_int[iel,0]]
+            # print dx
+            # print reshape_int
+            Q_MB2[0,0,2] += np.trapz(reshape_int, dx=dx)
+    print Q_MB2[0,0,2]
+    print Q_MB[0,0,2]
+    Q_MB[0,0,2] = Q_MB2[0,0,2]
+
     # from collections import Counter
 
     # n_msh_el = sim_EM_wguide.n_msh_el
@@ -562,7 +604,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     # x_arr = sim_EM_wguide.x_arr
 
     # eps_0 = 8.854187817e-12
-    # Q_MB = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
+    # Q_MB2 = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
 
     # ### Find nodes that are in elements of various types
     # ### and find elements that have multiple nodes of various types
@@ -746,8 +788,10 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     #         reshape_c_vals = []
     #         for i in range(3):
     #             reshape_c_vals.append(contour_vals[i][EM_ival1,EM_ival2,AC_ival])
-    #         Q_MB[EM_ival1,EM_ival2,AC_ival] += np.trapz(reshape_c_vals, x=contour_r)
+    #         Q_MB2[EM_ival1,EM_ival2,AC_ival] += np.trapz(reshape_c_vals, x=contour_r)
 
+    # print Q_MB[0,0,0]
+    # print Q_MB2[0,0,0]
 
     Q = Q_PE + Q_MB
 
