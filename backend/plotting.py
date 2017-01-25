@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+plt.style.use('bjornstyle')
 
 # font = {'family' : 'normal',
 #         'weight' : 'bold',

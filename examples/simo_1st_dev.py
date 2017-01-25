@@ -19,13 +19,12 @@ speed_c = 299792458
 ## All spacial variables given in nm!
 wl_nm = 1550
 unitcell_x = 2.5*1550
-inc_a_x = 314.7
 unitcell_y = unitcell_x
+inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 # inc_shape = 'circular'
-# inc_a_x = 300
-# inc_a_y = 280
+
 
 ### Optical parameters
 eps = 12.25
@@ -62,7 +61,7 @@ eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 # E = 170e9
 # v = 0.28
 # c_11, c_12, c_44 = isotropic_stiffness(E, v)
-# p_11 = 0.09; p_12 = -0.017; p_44 = -0.051
+# p_11 = -0.09; p_12 = -0.017; p_44 = -0.051
 # # print c_11, c_12, c_44
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
@@ -76,10 +75,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         # mesh_file='rect_acoustic_3.mail')
 
 ### Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')#,
     # n_points=1000, quiver_steps=10)
@@ -117,33 +116,82 @@ print "SBS_gain_MB", SBS_gain_MB[0,0,:]/alpha
 print "SBS_gain_PE", SBS_gain_PE[0,0,:]/alpha
 
 
-# import matplotlib
-# matplotlib.use('pdf')
-# import matplotlib.pyplot as plt
-# plt.figure(figsize=(13,13))
-# plt.clf()
-# tune_steps = 5e4
-# tune_range = 10 #GHz
-# # Construct an odd range of frequencies that is guaranteed to include the central resonance freq.
-# detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps), np.linspace(0, tune_range, tune_steps)[1:])*1e9 # in GHz
-# # Line width of resonances should be v_g * alpha, but we don't have convenient access to v_g
-# # speed_in_Si = 9620 # m/s
-# # line_width = speed_in_Si*alpha
-# phase_v = sim_AC_wguide.Eig_value/k_AC # phase velocity as approximation to group velocity
-# line_width = phase_v*alpha
-# interp_grid_points = 1e4
-# interp_grid = np.linspace(10, 25, interp_grid_points)
-# interp_values = np.zeros(interp_grid_points)
-# for AC_i in range(num_AC_modes):
-#     gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-#                  *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
-#     freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
-#     plt.plot(freq_list_GHz, gain_list,linewidth=3)
-#     # set up an interpolation for summing all the gain peaks
-#     interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
-#     interp_values += interp_spectrum
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as plt
 
-# plt.plot(interp_grid, interp_values, 'k', linewidth=4)
+
+fixed_q = 1000.
+alpha = (np.pi*k_AC/fixed_q)*np.ones(sim_AC_wguide.num_modes)
+
+
+# freqs_gains = []
+# Calculate the EM effective index of the waveguide.
+n_eff_sim = round(np.real(sim_EM_wguide.Eig_value[0]*((wl_nm*1e-9)/(2.*np.pi))), 4)
+print "n_eff", n_eff_sim
+
+# Construct the SBS gain spectrum, built up
+# from Lorentzian peaks of the individual modes.
+tune_steps = 5e4
+tune_range = 10 # GHz
+# Construct an odd range of frequencies that is guaranteed to include the central resonance freq.
+detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
+                   np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
+k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
+phase_v = sim_AC_wguide.Eig_value/k_AC
+line_width = phase_v*alpha
+interp_grid_points = 10000
+interp_grid = np.linspace(10, 25, interp_grid_points)
+interp_values = np.zeros(interp_grid_points)
+
+plt.figure(figsize=(13,13))
+plt.clf()
+for AC_i in range(len(alpha)):
+    gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+    freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
+    plt.plot(freq_list_GHz, gain_list)#,linewidth=2)
+    # set up an interpolation for summing all the gain peaks
+    interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
+    interp_values += interp_spectrum
+# freqs_gains.append(zip(interp_grid, interp_values))
+# plt.plot(interp_grid, interp_values, 'k', linewidth=3)
+plt.xlim(10,25)
+plt.xlabel('Frequency (GHz)')#, fontsize=16)
+plt.ylabel('Gain 1/(Wm)')#, fontsize=16)
+plt.savefig('gain_spectra-mode_comps.pdf')
+plt.close()
+
+
+interp_values = np.zeros(interp_grid_points)
+interp_values_PE = np.zeros(interp_grid_points)
+interp_values_MB = np.zeros(interp_grid_points)
+plt.figure(figsize=(13,13))
+plt.clf()
+for AC_i in range(len(alpha)):
+    gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+    freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
+    interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
+    interp_values += interp_spectrum
+
+    gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+    interp_spectrum_PE = np.interp(interp_grid, freq_list_GHz, gain_list_PE)
+    interp_values_PE += interp_spectrum_PE
+
+    gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+    interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
+    interp_values_MB += interp_spectrum_MB
+
+# freqs_gains.append(zip(interp_grid, interp_values))
+plt.plot(interp_grid, interp_values_PE, 'r', linewidth=3)
+plt.plot(interp_grid, interp_values_MB, 'g', linewidth=3)
+plt.plot(interp_grid, interp_values, 'b', linewidth=3)
 # plt.xlim(10,25)
-# plt.savefig('gain_spectra.pdf')
-# plt.close()
+plt.xlim(12,14)
+plt.xlabel('Frequency (GHz)')#, fontsize=16)
+plt.ylabel('Gain 1/(Wm)')#, fontsize=16)
+plt.savefig('gain_spectra-MB_PE_comps.pdf')
+plt.close()

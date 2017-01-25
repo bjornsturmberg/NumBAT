@@ -3,8 +3,8 @@ cccccccccccccccccccccccccccccccccccccccccccccccccc
 c
       subroutine moving_boundary (nval_EM, nval_AC, ival1,
      *    ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
-     *    nb_typ_el, typ_select_in, typ_select_out, soln_EM, soln_AC,
-     *    eps_lst, debug, overlap, py_nodes, py_int, py_vec)
+     *    nb_typ_el, typ_select_in, typ_select_out, betas_EM, soln_EM, 
+     *    soln_AC, eps_lst, debug, overlap, py_nodes, py_int, py_vec)
 c
       implicit none
       integer*8 nel, npt, nnodes, nb_typ_el
@@ -15,7 +15,7 @@ cc      complex*16 x(2,npt)
       integer*8 nval_EM, nval_AC, ival1, ival2, ival3
       integer*8 ival3s, ival2s, ival1s
       integer*8 typ_select_in, typ_select_out
-      complex*16 soln_EM(3,nnodes,nval_EM,nel)
+      complex*16 soln_EM(3,nnodes,nval_EM,nel), betas_EM(nval_EM)
       complex*16 soln_AC(3,nnodes,nval_AC,nel)
       complex*16 eps_lst(nb_typ_el)
       complex*16 overlap(nval_EM, nval_EM, nval_AC)
@@ -53,17 +53,18 @@ C       integer*8, allocatable :: edge_direction(:) ! (npt)
 
       double precision py_nodes(nel,2,3)
       double precision py_vec(nel,2)
-      complex*16 py_int(nel,3)
+      complex*16 py_int(nel,3,4), ii
 C
 C
 Cf2py intent(in) nval_EM, nval_AC, ival1, ival2, ival3, nb_typ_el
 Cf2py intent(in) nel, npt, nnodes, table_nod, debug
-Cf2py intent(in) type_el, x, soln_EM, soln_AC
+Cf2py intent(in) type_el, x, soln_EM, soln_AC, betas_EM
 Cf2py intent(in) typ_select_in, typ_select_out, eps_lst, debug
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
 Cf2py depend(x) npt
+Cf2py depend(betas_EM)nval_EM
 Cf2py depend(soln_EM) nnodes, nval_EM, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(eps_lst) nb_typ_el
@@ -91,6 +92,8 @@ C       write(*,*) "npt = ", npt
 C       write(*,*) "edge_orientation: Aborting..."
 C       stop
 C     endif
+
+      ii = cmplx(0.0d0, 1.0d0)
 
 c     Initialisation
       do inod=1,npt
@@ -133,9 +136,18 @@ C
         py_nodes(iel,2,2) = (0.0d0)
         py_nodes(iel,3,1) = (0.0d0)
         py_nodes(iel,3,2) = (0.0d0)
-        py_int(iel,1) = cmplx(0.0d0, 0.0d0)
-        py_int(iel,2) = cmplx(0.0d0, 0.0d0)
-        py_int(iel,3) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,1,1) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,2,1) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,3,1) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,1,2) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,2,2) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,3,2) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,1,3) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,2,3) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,3,3) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,1,4) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,2,4) = cmplx(0.0d0, 0.0d0)
+        py_int(iel,3,4) = cmplx(0.0d0, 0.0d0)
       enddo
 
       eps_0 = 8.854187817d-12
@@ -317,7 +329,7 @@ c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector ed
                     tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
               overlap(ival1,ival2,ival3) = overlap(ival1,ival2,ival3) +
-     *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
+     *           r_tmp*conjg(ls_n_dot(3))*(tmp1 + tmp2)
                   enddo
                 enddo
               enddo
@@ -330,7 +342,8 @@ c             Nodes of the edge
 c               (x,y,z)-components of the electric field
                 vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
                 vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+                vec(3,1) = -ii*betas_EM(ival1) * 
+     *            soln_EM(3,ls_inod(j_1),ival1,iel)
 c               ls_n_dot(1): Normal component of vec(:,1)
                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *              + vec(2,1) * edge_perp(2)
@@ -345,7 +358,8 @@ C      *                - vec(2,1) * edge_perp(1)
 c                 (x,y,z)-components of the electric field
                   vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
                   vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+                  vec(3,2)=-ii*betas_EM(ival2) * 
+     *              soln_EM(3,ls_inod(j_2),ival2,iel)
 c                 ls_n_dot(2): Normal component of vec(:,2)
                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                + vec(2,2) * edge_perp(2)
@@ -376,12 +390,16 @@ c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector ed
                     tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
              overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
-     *           r_tmp*conjg(ls_n_dot(3))*(tmp1 - tmp2)
+     *           r_tmp*conjg(ls_n_dot(3))*(tmp1 + tmp2)
 
                   if (ival3s .eq. 3) then
                     if (j_1 .eq. j_2 .and. j_2 .eq. j_3) then
-                     py_int(iel, j_1) = conjg(ls_n_dot(3))*(tmp1 - tmp2)
+                     py_int(iel, j_1,1) = conjg(ls_n_dot(3))*(tmp1+tmp2)
+                     py_int(iel, j_1,2) = conjg(ls_n_dot(3))
+                     py_int(iel, j_1,3) = tmp1
+                     py_int(iel, j_1,4) = tmp2
                     endif
+C                     write(*,*) "ls_n_dot(3)", ls_n_dot(3)
                   endif
 C                     write(*,*) "blah", tmp1
 C                     write(*,*) "b", tmp2

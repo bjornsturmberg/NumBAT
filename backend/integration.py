@@ -547,39 +547,336 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
             sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
             sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, typ_select_in, typ_select_out,
-            trimmed_EM_field, sim_AC_wguide.sol1,
+            sim_EM_wguide.Eig_value, trimmed_EM_field, sim_AC_wguide.sol1,
             relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine moving_boundary interrupted by keyboard.\n\n"
 
-
+    # x_min = 190e-8
+    # x_max = 0
+    # y_min = -190e-8
+    # y_max = -190e-8
+    # import matplotlib
+    # matplotlib.use('pdf')
+    # import matplotlib.pyplot as plt
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(1,1,1)
     # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         plt.plot(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], 'gs')
+    #         ax.arrow(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], 1e8*(py_nodes[iel,0,2]-py_nodes[iel,0,0]), 1e8*(py_nodes[iel,1,2]-py_nodes[iel,1,0]), fc='b', ec='b')
+    #         # if py_nodes[iel,0,0]>195e-8 and py_nodes[iel,1,0]>-195e-8:
+    #         #     ax.arrow(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], -1e8*(py_nodes[iel,0,2]-py_nodes[iel,0,0]), -1e8*(py_nodes[iel,1,2]-py_nodes[iel,1,0]), fc='r', ec='r')
+    #         # # plt.plot(py_nodes[iel,0,1], py_nodes[iel,1,1], 'k+')
+    #         # plt.plot(py_nodes[iel,0,2], py_nodes[iel,1,2], 'kv')
+    #         plt.plot(1e8*py_nodes[iel,0,2]+py_vec[iel,0], 1e8*py_nodes[iel,1,2]+py_vec[iel,1], 'ro')
+    #         if py_nodes[iel,0,0] < x_min:
+    #             x_min = py_nodes[iel,0,0]
+    #         if py_nodes[iel,0,0] > x_max:
+    #             x_max = py_nodes[iel,0,0]
+    #         if py_nodes[iel,1,0] < y_min:
+    #             y_min = py_nodes[iel,1,0]
+    #         if py_nodes[iel,1,0] > y_max:
+    #             y_max = py_nodes[iel,1,0]
+    # ax.set_aspect('equal')
+    # plt.savefig('msh_.pdf', bbox_inches='tight')
+    # plt.close()
 
 
-    import matplotlib
-    matplotlib.use('pdf')
-    import matplotlib.pyplot as plt
-    plt.clf()
-    plt.figure(figsize=(13,13))
-    ax = plt.subplot(1,1,1)
-    for iel in range(sim_AC_wguide.n_msh_el):
-        if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
-            plt.plot(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], 'gs')
-            ax.arrow(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], 1e8*(py_nodes[iel,0,2]-py_nodes[iel,0,0]), 1e8*(py_nodes[iel,1,2]-py_nodes[iel,1,0]), fc='b', ec='b')
-            # if py_nodes[iel,0,0]>195e-8 and py_nodes[iel,1,0]>-195e-8:
-            #     ax.arrow(1e8*py_nodes[iel,0,0], 1e8*py_nodes[iel,1,0], -1e8*(py_nodes[iel,0,2]-py_nodes[iel,0,0]), -1e8*(py_nodes[iel,1,2]-py_nodes[iel,1,0]), fc='r', ec='r')
-            # # plt.plot(py_nodes[iel,0,1], py_nodes[iel,1,1], 'k+')
-            # plt.plot(py_nodes[iel,0,2], py_nodes[iel,1,2], 'kv')
-            # plt.plot(py_nodes[iel,0,2]+1e-8*py_vec[iel,0], py_nodes[iel,1,2]+1e-8*py_vec[iel,1], 'ro')
-    ax.set_aspect('equal')
-    plt.savefig('msh_.pdf', bbox_inches='tight')
-    plt.close()
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(2,2,2)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_max:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.real(1e8*py_int[iel,0,0]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.real(1e8*py_int[iel,2,0]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.real(1e8*py_int[iel,1,0]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,3)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_min:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.real(1e8*py_int[iel,0,0]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.real(1e8*py_int[iel,2,0]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.real(1e8*py_int[iel,1,0]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,1)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_max:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.real(1e8*py_int[iel,0,0]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.real(1e8*py_int[iel,2,0]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.real(1e8*py_int[iel,1,0]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,4)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_min:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.real(1e8*py_int[iel,0,0]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.real(1e8*py_int[iel,2,0]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.real(1e8*py_int[iel,1,0]))
+    # ax.set_ylim(-0.001, 0.001)
+    # plt.savefig('int_real.pdf')
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(2,2,2)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_max:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.imag(1e8*py_int[iel,0,0]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.imag(1e8*py_int[iel,2,0]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.imag(1e8*py_int[iel,1,0]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,3)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_min:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.imag(1e8*py_int[iel,0,0]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.imag(1e8*py_int[iel,2,0]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.imag(1e8*py_int[iel,1,0]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,1)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_max:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.imag(1e8*py_int[iel,0,0]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.imag(1e8*py_int[iel,2,0]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.imag(1e8*py_int[iel,1,0]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,4)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_min:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.imag(1e8*py_int[iel,0,0]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.imag(1e8*py_int[iel,2,0]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.imag(1e8*py_int[iel,1,0]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # plt.savefig('int_imag.pdf')
+    # plt.close()
+
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(2,2,2)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_max:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.real(1e8*py_int[iel,0,1]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.real(1e8*py_int[iel,2,1]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.real(1e8*py_int[iel,1,1]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,3)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_min:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.real(1e8*py_int[iel,0,1]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.real(1e8*py_int[iel,2,1]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.real(1e8*py_int[iel,1,1]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,1)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_max:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.real(1e8*py_int[iel,0,1]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.real(1e8*py_int[iel,2,1]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.real(1e8*py_int[iel,1,1]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,4)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_min:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.real(1e8*py_int[iel,0,1]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.real(1e8*py_int[iel,2,1]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.real(1e8*py_int[iel,1,1]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # plt.savefig('p1_real.pdf')
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(2,2,2)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_max:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.imag(1e8*py_int[iel,0,1]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.imag(1e8*py_int[iel,2,1]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.imag(1e8*py_int[iel,1,1]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,3)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_min:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.imag(1e8*py_int[iel,0,1]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.imag(1e8*py_int[iel,2,1]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.imag(1e8*py_int[iel,1,1]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,1)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_max:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.imag(1e8*py_int[iel,0,1]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.imag(1e8*py_int[iel,2,1]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.imag(1e8*py_int[iel,1,1]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,4)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_min:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.imag(1e8*py_int[iel,0,1]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.imag(1e8*py_int[iel,2,1]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.imag(1e8*py_int[iel,1,1]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # plt.savefig('p1_imag.pdf')
+    # plt.close()
+
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(2,2,2)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_max:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.real(1e8*py_int[iel,0,2]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.real(1e8*py_int[iel,2,2]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.real(1e8*py_int[iel,1,2]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,3)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_min:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.real(1e8*py_int[iel,0,2]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.real(1e8*py_int[iel,2,2]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.real(1e8*py_int[iel,1,2]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,1)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_max:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.real(1e8*py_int[iel,0,2]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.real(1e8*py_int[iel,2,2]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.real(1e8*py_int[iel,1,2]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,4)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_min:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.real(1e8*py_int[iel,0,2]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.real(1e8*py_int[iel,2,2]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.real(1e8*py_int[iel,1,2]))
+    # ax.set_ylim(-0.001, 0.001)
+    # plt.savefig('p2_real.pdf')
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(2,2,2)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_max:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.imag(1e8*py_int[iel,0,2]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.imag(1e8*py_int[iel,2,2]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.imag(1e8*py_int[iel,1,2]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,3)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_min:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.imag(1e8*py_int[iel,0,2]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.imag(1e8*py_int[iel,2,2]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.imag(1e8*py_int[iel,1,2]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,1)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_max:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.imag(1e8*py_int[iel,0,2]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.imag(1e8*py_int[iel,2,2]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.imag(1e8*py_int[iel,1,2]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,4)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_min:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.imag(1e8*py_int[iel,0,2]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.imag(1e8*py_int[iel,2,2]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.imag(1e8*py_int[iel,1,2]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # plt.savefig('p2_imag.pdf')
+    # plt.close()
+
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(2,2,2)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_max:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.real(1e8*py_int[iel,0,3]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.real(1e8*py_int[iel,2,3]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.real(1e8*py_int[iel,1,3]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,3)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_min:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.real(1e8*py_int[iel,0,3]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.real(1e8*py_int[iel,2,3]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.real(1e8*py_int[iel,1,3]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,1)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_max:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.real(1e8*py_int[iel,0,3]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.real(1e8*py_int[iel,2,3]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.real(1e8*py_int[iel,1,3]))
+    # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,4)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_min:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.real(1e8*py_int[iel,0,3]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.real(1e8*py_int[iel,2,3]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.real(1e8*py_int[iel,1,3]))
+    # ax.set_ylim(-0.001, 0.001)
+    # plt.savefig('p3_real.pdf')
+    # plt.clf()
+    # plt.figure(figsize=(13,13))
+    # ax = plt.subplot(2,2,2)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_max:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.imag(1e8*py_int[iel,0,3]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.imag(1e8*py_int[iel,2,3]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.imag(1e8*py_int[iel,1,3]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,3)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,0,0] == x_min:
+    #             plt.scatter(1e8*py_nodes[iel,1,0], np.imag(1e8*py_int[iel,0,3]))
+    #             plt.scatter(1e8*py_nodes[iel,1,2], np.imag(1e8*py_int[iel,2,3]))
+    #             plt.scatter(1e8*py_nodes[iel,1,1], np.imag(1e8*py_int[iel,1,3]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,1)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_max:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.imag(1e8*py_int[iel,0,3]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.imag(1e8*py_int[iel,2,3]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.imag(1e8*py_int[iel,1,3]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # ax = plt.subplot(2,2,4)
+    # for iel in range(sim_AC_wguide.n_msh_el):
+    #     if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
+    #         if py_nodes[iel,1,0] == y_min:
+    #             plt.scatter(1e8*py_nodes[iel,0,0], np.imag(1e8*py_int[iel,0,3]))
+    #             plt.scatter(1e8*py_nodes[iel,0,2], np.imag(1e8*py_int[iel,2,3]))
+    #             plt.scatter(1e8*py_nodes[iel,0,1], np.imag(1e8*py_int[iel,1,3]))
+    # # ax.set_ylim(-0.001, 0.001)
+    # plt.savefig('p3_imag.pdf')
+    # plt.close()
 
     Q_MB2 = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=np.complex128)
     for iel in range(sim_AC_wguide.n_msh_el):
         if py_nodes[iel,0,0] != 0 and py_nodes[iel,0,1] != 0:
             dx = np.sqrt((py_nodes[iel,0,1]-py_nodes[iel,0,2])**2 + (py_nodes[iel,1,1]-py_nodes[iel,1,2])**2)
-            reshape_int = [py_int[iel,0],py_int[iel,2],py_int[iel,1]]
+            reshape_int = [py_int[iel,0,0],py_int[iel,2,0],py_int[iel,1,0]]
             # if py_nodes[iel,0,0]>195e-8 and py_nodes[iel,1,0]>-195e-8:
                 # tmp_x = py_nodes[iel,0,0]
                 # tmp_y = py_nodes[iel,1,0]
@@ -587,13 +884,13 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                 # py_nodes[iel,1,0] = py_nodes[iel,1,2]
                 # py_nodes[iel,0,2] = tmp_x
                 # py_nodes[iel,1,2] = tmp_y
-                # reshape_int = [py_int[iel,1],py_int[iel,2],py_int[iel,0]]
+                # reshape_int = [py_int[iel,1,0],py_int[iel,2,0],py_int[iel,0,0]]
             # print dx
             # print reshape_int
             Q_MB2[0,0,2] += np.trapz(reshape_int, dx=dx)
     print Q_MB2[0,0,2]
     print Q_MB[0,0,2]
-    Q_MB[0,0,2] = Q_MB2[0,0,2]
+    # Q_MB[0,0,2] = Q_MB2[0,0,2]
 
     # from collections import Counter
 
