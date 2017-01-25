@@ -120,7 +120,7 @@ import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 
-
+# Note should put this up above into gain_and_qs calc.
 fixed_q = 1000.
 alpha = (np.pi*k_AC/fixed_q)*np.ones(sim_AC_wguide.num_modes)
 
