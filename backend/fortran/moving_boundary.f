@@ -111,7 +111,7 @@ C
       do iel=1,nel
         typ_e = type_el(iel)
         if(typ_e == typ_select_in) then
-          do inod=4,6  ! Scan the adges
+          do inod=4,6  ! Scan the edges
             j = table_nod(inod,iel)
             nb_visite(j) = nb_visite(j) + 1  ! Will indicate the number of
           enddo
@@ -715,8 +715,4 @@ C             edge_perp(2) = edge_perp(2) * edge_direction(inod)
 c
 ccccccccccccccccccccccccccccccccccccc
 c
-C       return
-C       end
       end subroutine moving_boundary
-
-

@@ -100,6 +100,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
             for n in range(nnodes):
                 for x in range(ncomps):
                     trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
+
     # sim_EM_wguide.sol1 = trimmed_EM_field
     # sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el
     # sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts
