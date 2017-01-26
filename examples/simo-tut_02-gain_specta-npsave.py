@@ -126,7 +126,7 @@ detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
 phase_v = sim_AC_wguide.Eig_value/k_AC
 line_width = phase_v*alpha
 
-interp_grid_points = 10000
+interp_grid_points = 1e4
 interp_grid = np.linspace(10, 25, interp_grid_points)
 interp_values = np.zeros(interp_grid_points)
 
