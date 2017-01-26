@@ -187,9 +187,12 @@ c     Numerical integration
       do iel=1,nel
         typ_e = type_el(iel)
         if(typ_e == typ_select_in) then
-          eps_a = eps_lst(1)!typ_e)
-          eps_b = 1.0d0!eps_lst(2)!typ_select_out)
-C           write(*,*) eps_a, eps_b
+          eps_a = eps_lst(typ_e)
+          if (typ_select_out .eq. -1) then
+            eps_b = 1.0d0
+          else
+            eps_b = eps_lst(typ_select_out)
+          endif
           do inod=4,6  ! Scan the edges
             j = table_nod(inod,iel)
             xy_3(1) = x(1,j)
@@ -276,7 +279,8 @@ c                   ls_n_dot(3): scalar product of vec(:,3) and normal vector ed
                     tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
                     tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                     r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-              overlap(ival1,ival2,ival3) = overlap(ival1,ival2,ival3) +
+                    overlap(ival1,ival2,ival3) = 
+     *                            overlap(ival1,ival2,ival3) +
      *                            r_tmp*conjg(ls_n_dot(3))*(tmp1 + tmp2)
                   enddo
                 enddo
@@ -330,7 +334,8 @@ c                     ls_n_dot(3): scalar product of vec(:,3) and normal vector 
                       tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
                       tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                       r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-             overlap(ival1,ival2,ival3s) = overlap(ival1,ival2,ival3s) +
+                      overlap(ival1,ival2,ival3s) = 
+     *                            overlap(ival1,ival2,ival3s) +
      *                            r_tmp*conjg(ls_n_dot(3))*(tmp1 + tmp2)
                     enddo
                   enddo
@@ -386,7 +391,8 @@ c                       ls_n_dot(3): scalar product of vec(:,3) and normal vecto
                         tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
                         tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                         r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-            overlap(ival1,ival2s,ival3s) = overlap(ival1,ival2s,ival3s)+
+                        overlap(ival1,ival2s,ival3s) = 
+     *                            overlap(ival1,ival2s,ival3s)+
      *                            r_tmp*conjg(ls_n_dot(3))*(tmp1 + tmp2)
                       enddo
                     enddo
@@ -443,7 +449,8 @@ c                       ls_n_dot(3): scalar product of vec(:,3) and normal vecto
                         tmp2 = (1.0d0/eps_b - 1.0d0/eps_a)*(1.0d0/eps_0)
                         tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                         r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-            overlap(ival1s,ival2,ival3s) = overlap(ival1s,ival2,ival3s)+
+                        overlap(ival1s,ival2,ival3s) = 
+     *                            overlap(ival1s,ival2,ival3s)+
      *                            r_tmp*conjg(ls_n_dot(3))*(tmp1 + tmp2)
                       enddo
                     enddo
@@ -501,7 +508,8 @@ c                         ls_n_dot(3): scalar product of vec(:,3) and normal vec
                           tmp2 = (1.0d0/eps_b-1.0d0/eps_a)*(1.0d0/eps_0)
                           tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                           r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-          overlap(ival1s,ival2s,ival3s) = overlap(ival1s,ival2s,ival3s)+
+                          overlap(ival1s,ival2s,ival3s) = 
+     *                            overlap(ival1s,ival2s,ival3s)+
      *                            r_tmp*conjg(ls_n_dot(3))*(tmp1 + tmp2)
                         enddo
                       enddo
@@ -559,7 +567,8 @@ c                       ls_n_dot(3): scalar product of vec(:,3) and normal vecto
                         tmp2 = (1.0d0/eps_b-1.0d0/eps_a)*(1.0d0/eps_0)
                         tmp2 = tmp2*(n_dot_d(1))*n_dot_d(2)
                         r_tmp = p2_p2_p2_1d(j_1, j_2, j_3)
-          overlap(ival1s,ival2s,ival3) = overlap(ival1s,ival2s,ival3) +
+                        overlap(ival1s,ival2s,ival3) = 
+     *                            overlap(ival1s,ival2s,ival3) +
      *                            r_tmp*conjg(ls_n_dot(3))*(tmp1 + tmp2)
                       enddo
                     enddo

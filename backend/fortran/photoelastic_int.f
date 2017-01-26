@@ -12,7 +12,6 @@ c
       integer*8 type_el(nel), debug
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
-c      complex*16 x(2,npt)
       complex*16 soln_EM(3,nnodes,nval_EM,nel)
       complex*16 soln_AC(3,nnodes,nval_AC,nel)
       complex*16 betas_EM(nval_EM)
