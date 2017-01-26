@@ -77,7 +77,6 @@ for q_ac in np.linspace(0.0,k_AC,nu_ks):
 
     for i in range(len(prop_AC_modes)):
         Om = prop_AC_modes[i]*1e-9
-        plt.plot(q_ac/k_AC, Om, 'ok')
         if sym_list[i][0] == 1 and sym_list[i][1] == 1 and sym_list[i][2] == 1:
             sym_A, = plt.plot(np.real(q_ac/k_AC), Om, 'or')
         if sym_list[i][0] == -1 and sym_list[i][1] == 1 and sym_list[i][2] == -1:
@@ -89,7 +88,7 @@ for q_ac in np.linspace(0.0,k_AC,nu_ks):
 ax.set_ylim(0,20)
 ax.set_xlim(0,1)
 plt.legend([sym_A, sym_B, sym_C, sym_D],['E',r'C$_2$',r'$\sigma_y$',r'$\sigma_x$'], loc='lower right')
-plt.xlabel(r'Axial wavevector (normalised)', fontsize=16)
-plt.ylabel(r'Frequency (GHz)', fontsize=16)
-plt.savefig('disp.pdf', bbox_inches='tight')
+plt.xlabel(r'Axial wavevector (normalised)')
+plt.ylabel(r'Frequency (GHz)')
+plt.savefig('symetrised_dispersion.pdf', bbox_inches='tight')
 plt.close()

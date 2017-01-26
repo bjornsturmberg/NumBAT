@@ -123,7 +123,7 @@ alpha = (np.pi*k_AC/fixed_q)*np.ones(sim_AC_wguide.num_modes)
 
 # freqs_gains = []
 # Calculate the EM effective index of the waveguide.
-n_eff_sim = round(np.real(sim_EM_wguide.Eig_value[0]*((wl_nm*1e-9)/(2.*np.pi))), 4)
+n_eff_sim = round(np.real(k_AC*((wl_nm*1e-9)/(2.*np.pi))), 4)
 print "n_eff", n_eff_sim
 
 # Construct the SBS gain spectrum, built up
@@ -133,7 +133,6 @@ tune_range = 10 # GHz
 # Construct an odd range of frequencies that is guaranteed to include the central resonance freq.
 detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                    np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
-k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
 phase_v = sim_AC_wguide.Eig_value/k_AC
 line_width = phase_v*alpha
 interp_grid_points = 10000
