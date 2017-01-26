@@ -238,7 +238,7 @@ C                       Ustar = conjg(soln_AC(l_eq,ltest,ival3,iel))
 C
 C If want overlap of given EM mode 1 and 2 and all AC modes.
         else if (ival1 .ge. 0 .and. ival2 .ge. 0 .and. 
-     *                                           ival3 .eq. -1) then
+     *           ival3 .eq. -1) then
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
@@ -276,7 +276,7 @@ C                         Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
 C
 C If want overlap of given EM mode 1 and all EM modes 2 and all AC modes.
         else if (ival1 .ge. 0 .and. ival2 .eq. -1 .and. 
-     *                                            ival3 .eq. -1) then
+     *           ival3 .eq. -1) then
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
@@ -316,7 +316,7 @@ C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
 C
 C If want overlap of given EM mode 2 and all EM modes 1 and all AC modes.
         else if (ival1 .eq. -1 .and. ival2 .ge. 0 .and. 
-     *                                            ival3 .eq. -1) then
+     *           ival3 .eq. -1) then
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
@@ -356,7 +356,7 @@ C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
 C
 C If want overlap of all EM mode 1, all EM modes 2 and all AC modes.
         else if (ival1 .eq. -1 .and. ival2 .eq. -1 .and. 
-     *                                             ival3 .eq. -1) then
+     *           ival3 .eq. -1) then
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
@@ -398,7 +398,7 @@ C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
 C
 C If want overlap of all EM mode 1, all EM modes 2 and one AC mode.
         else if (ival1 .eq. -1 .and. ival2 .eq. -1 .and. 
-     *                                             ival3 .ge. 0) then
+     *           ival3 .ge. 0) then
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
