@@ -101,7 +101,7 @@ width_objs = pool.map(modes_n_gain, geo_objects_list)
 
 n_effs = []
 freqs_gains = []
-interp_grid_points = 1e4
+interp_grid_points = 10000
 interp_grid = np.linspace(10, 25, interp_grid_points)
 for i_w, width_obj in enumerate(width_objs):
     interp_values = np.zeros(interp_grid_points)
