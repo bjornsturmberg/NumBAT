@@ -64,10 +64,10 @@ inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
-                        loss=False, inc_a_AC=inc_a_AC_props,plotting_fields=True,
-                        lc_bkg=0.02, lc2=40.0, lc3=10.0)
+                        loss=False, inc_a_AC=inc_a_AC_props, plotting_fields=False,
+                        lc_bkg=0.1, lc2=40.0, lc3=10.0)
 
-
+# plot_fields_in_FEM
 # Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 # Print the wavevectors of EM modes.
@@ -105,4 +105,15 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.
-print "SBS_gain \n", SBS_gain[EM_ival1,EM_ival2,:]/alpha
+print "SBS_gain PE contribution \n", SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha
+print "SBS_gain MB contribution \n", SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha
+print "SBS_gain total \n", SBS_gain[EM_ival1,EM_ival2,:]/alpha
+# Mask negligible gain values to improve clarity of print out.
+threshold = 1e-3
+masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
+masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
+masked = np.ma.masked_inside(SBS_gain[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
+print "\n"
+print "SBS_gain PE contribution \n", masked_PE
+print "SBS_gain MB contribution \n", masked_MB
+print "SBS_gain total \n", masked
