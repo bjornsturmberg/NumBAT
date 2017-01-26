@@ -14,7 +14,6 @@ from fortran import NumBAT
 
 # start = time.time()
 
-speed_c = 299792458
 ### Geometric parameters
 ## All spacial variables given in nm!
 wl_nm = 1550
@@ -23,8 +22,6 @@ unitcell_y = unitcell_x
 inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
-# inc_shape = 'circular'
-
 
 ### Optical parameters
 eps = 12.25
@@ -34,7 +31,6 @@ num_AC_modes = 20
 EM_ival1=0
 EM_ival2=EM_ival1
 AC_ival='All'
-# AC_ival=2
 
 ### Acoustic parameters
 def isotropic_stiffness(E, v):
