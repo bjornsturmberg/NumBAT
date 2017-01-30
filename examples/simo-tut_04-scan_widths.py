@@ -79,15 +79,13 @@ for width in waveguide_widths:
     inc_a_x = width
     inc_a_y = 0.9*inc_a_x
 
-    lc_bkg = 0.1#/msh_ratio
-
     # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
                             bkg_material=materials.Material(1.0 + 0.0j),
                             inc_a_material=materials.Material(np.sqrt(eps)),
                             loss=False, inc_a_AC=inc_a_AC_props,
-                            lc_bkg=lc_bkg, lc2=40.0, lc3=10.0)
+                            lc_bkg=2, lc2=2000.0, lc3=10.0)
     geo_objects_list.append(wguide)
 
 

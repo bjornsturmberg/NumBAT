@@ -50,16 +50,16 @@ inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
 
-nu_lcs = 10
-# lc_bkg_list = np.linspace(2,0.05,nu_lcs)
+nu_lcs = 9
 lc_bkg_list = 2*np.ones(nu_lcs)
 lc_list = np.linspace(1e2,9e3,nu_lcs)
-# lc_list = 50*np.ones(nu_lcs)
 x_axis = lc_bkg_list
 x_axis = lc_list
 conv_list = []
+time_list = []
 # Do not run in parallel, otherwise there are confusions reading the msh files!
 for i_lc, lc_ref in enumerate(lc_list):
+    start = time.time()
     print i_lc+1, "/", nu_lcs
     lc3 = 0.01*lc_ref
     lc_bkg = lc_bkg_list[i_lc]
@@ -83,9 +83,11 @@ for i_lc, lc_ref in enumerate(lc_list):
         EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 
     conv_list.append([sim_EM_wguide, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha])
+    end = time.time()
+    time_list.append(end - start)
 
 
-np.savez('Simo_results', conv_list=conv_list)
+# np.savez('Simo_results', conv_list=conv_list)
 # npzfile = np.load('Simo_results.npz')
 # conv_list = npzfile['conv_list'].tolist()
 
@@ -111,7 +113,7 @@ for i_conv, conv_obj in enumerate(conv_list):
 
 
 xlabel = "Mesh Refinement Factor"
-fig = plt.figure()#figsize=(13,13))
+fig = plt.figure()
 plt.clf()
 ax1 = fig.add_subplot(1,1,1)
 ax2 = ax1.twinx()
@@ -126,12 +128,8 @@ ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
 ax1.yaxis.set_label_position("right")
 ax1.tick_params(axis='y', colors='red')
-# import matplotlib.ticker as mtick
-# ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels)#, loc='center left')
-# handles, labels = ax1.get_legend_handles_labels()
-# ax1.legend(handles, labels)#, loc='center right')
+ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"EM k$_z$ ($\times 10^6$ 1/m)")
 ax2.set_ylabel(r"Relative Error EM k$_z$")
@@ -139,8 +137,7 @@ ax2.set_yscale('log', nonposx='clip')
 plt.savefig('convergence-freq_EM.pdf', bbox_inches='tight')
 plt.close()
 
-
-fig = plt.figure()#figsize=(13,13))
+fig = plt.figure()
 plt.clf()
 ax1 = fig.add_subplot(1,1,1)
 ax2 = ax1.twinx()
@@ -156,12 +153,8 @@ ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
 ax1.yaxis.set_label_position("right")
 ax1.tick_params(axis='y', colors='red')
-# import matplotlib.ticker as mtick
-# ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels)#, loc='center left')
-# handles, labels = ax1.get_legend_handles_labels()
-# ax1.legend(handles, labels)#, loc='center right')
+ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"AC Freq (GHz)")
 ax2.set_ylabel(r"Relative Error AC Freq")
@@ -169,9 +162,7 @@ ax2.set_yscale('log', nonposx='clip')
 plt.savefig('convergence-freq_AC.pdf', bbox_inches='tight')
 plt.close()
 
-
-
-fig = plt.figure()#figsize=(13,13))
+fig = plt.figure()
 plt.clf()
 ax1 = fig.add_subplot(1,1,1)
 ax2 = ax1.twinx()
@@ -187,12 +178,8 @@ ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
 ax1.yaxis.set_label_position("right")
 ax1.tick_params(axis='y', colors='red')
-# import matplotlib.ticker as mtick
-# ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels)#, loc='center left')
-# handles, labels = ax1.get_legend_handles_labels()
-# ax1.legend(handles, labels)#, loc='center right')
+ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
@@ -200,9 +187,7 @@ ax2.set_yscale('log', nonposx='clip')
 plt.savefig('convergence-Gain.pdf', bbox_inches='tight')
 plt.close()
 
-
-
-fig = plt.figure()#figsize=(13,13))
+fig = plt.figure()
 plt.clf()
 ax1 = fig.add_subplot(1,1,1)
 ax2 = ax1.twinx()
@@ -218,12 +203,8 @@ ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
 ax1.yaxis.set_label_position("right")
 ax1.tick_params(axis='y', colors='red')
-# import matplotlib.ticker as mtick
-# ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels)#, loc='center left')
-# handles, labels = ax1.get_legend_handles_labels()
-# ax1.legend(handles, labels)#, loc='center right')
+ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
@@ -231,9 +212,7 @@ ax2.set_yscale('log', nonposx='clip')
 plt.savefig('convergence-Gain_PE.pdf', bbox_inches='tight')
 plt.close()
 
-
-
-fig = plt.figure()#figsize=(13,13))
+fig = plt.figure()
 plt.clf()
 ax1 = fig.add_subplot(1,1,1)
 ax2 = ax1.twinx()
@@ -249,15 +228,13 @@ ax1.spines['right'].set_color('red')
 ax1.yaxis.label.set_color('red')
 ax1.yaxis.set_label_position("right")
 ax1.tick_params(axis='y', colors='red')
-# import matplotlib.ticker as mtick
-# ax1.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.5f'))
 handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels)#, loc='center left')
-# handles, labels = ax1.get_legend_handles_labels()
-# ax1.legend(handles, labels)#, loc='center right')
+ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
 plt.savefig('convergence-Gain_MB.pdf', bbox_inches='tight')
 plt.close()
+
+print "Calculation time", time_list

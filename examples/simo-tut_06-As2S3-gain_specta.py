@@ -63,7 +63,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         loss=False, 
                         bkg_AC=bkg_AC_props,
                         inc_a_AC=inc_a_AC_props,plotting_fields=True,
-                        lc_bkg=0.5, lc2=30.0, lc3=30.0)
+                        lc_bkg=2, lc2=2000.0, lc3=10.0)
 
 
 # Calculate Electromagnetic Modes

@@ -191,8 +191,8 @@ class Simmo(object):
         # In theory could do some python-based preprocessing
         # on the mesh file to work out RAM requirements
         cmplx_max = 2**27
-        real_max = 2**26
-        int_max = 2**25
+        real_max = 2**27
+        int_max = 2**26
 
 
         # Calculate where to center the Eigenmode solver around.

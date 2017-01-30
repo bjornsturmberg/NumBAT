@@ -60,12 +60,15 @@ eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
+start = time.time()
+
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props, plotting_fields=False,
-                        lc_bkg=0.1, lc2=40.0, lc3=10.0)
+                        lc_bkg=2, lc2=2000.0, lc3=10.0)
+
 
 # plot_fields_in_FEM
 # Calculate Electromagnetic Modes
@@ -74,7 +77,7 @@ sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 print 'k_z of EM wave \n', np.real(sim_EM_wguide.Eig_value)
 # Plot the EM modes fields, important to specify this with EM_AC='EM'.
 # Zoom in on the central region (of big unitcell) with xlim, ylim args.
-plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 
 # Choose acoustic wavenumber to solve for
@@ -98,7 +101,7 @@ print 'Res freq of AC wave (GHz) \n', np.real(sim_AC_wguide.Eig_value)*1e-9
 # Plot the AC modes fields, important to specify this with EM_AC='AC'.
 # The AC modes are calculated on a subset of the full unitcell,
 # which excludes vacuum regions, so no need to restrict area plotted.
-plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
+# plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
@@ -119,3 +122,6 @@ print "\n"
 print "SBS_gain PE contribution \n", masked_PE
 print "SBS_gain MB contribution \n", masked_MB
 print "SBS_gain total \n", masked
+
+end = time.time()
+print(end - start)
