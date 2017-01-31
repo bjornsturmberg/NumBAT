@@ -123,7 +123,7 @@ detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
 # but we don't have convenient access to v_g, therefore
 # phase velocity as approximation to group velocity
 phase_v = sim_AC_wguide.Eig_value/k_AC
-line_width = phase_v*alpha
+linewidth = phase_v*alpha
 
 freq_min = 5  # GHz
 freq_max = 10  # GHz
@@ -135,7 +135,7 @@ plt.figure()
 plt.clf()
 for AC_i in range(len(alpha)):
     gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
     freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
     plt.plot(freq_list_GHz, gain_list)
     # set up an interpolation for summing all the gain peaks
@@ -158,18 +158,18 @@ plt.figure()
 plt.clf()
 for AC_i in range(len(alpha)):
     gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
     freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
     interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
     interp_values += interp_spectrum
 
     gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
     interp_spectrum_PE = np.interp(interp_grid, freq_list_GHz, gain_list_PE)
     interp_values_PE += interp_spectrum_PE
 
     gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
     interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
     interp_values_MB += interp_spectrum_MB
 plt.plot(interp_grid, interp_values, 'k', linewidth=3, label="Total")

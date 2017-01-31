@@ -74,14 +74,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 # Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
 # Print the wavevectors of EM modes.
-print 'k_z of EM wave \n', np.round(np.real(sim_EM_wguide.Eig_value),4)
+print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_value),4)
 # Plot the EM modes fields, important to specify this with EM_AC='EM'.
 # Zoom in on the central region (of big unitcell) with xlim, ylim args.
 plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
-
-# Calculate the EM effective index of the waveguide.
-n_eff_sim = np.real(k_AC*((wl_nm*1e-9)/(2.*np.pi)))
-print "n_eff", np.round(n_eff_sim, 4)
 
 # Choose acoustic wavenumber to solve for
 # Backward SBS
@@ -92,11 +88,15 @@ print 'AC wavenumber (1/m) \n', np.round(k_AC, 4)
 # EM modes on same lightline.
 # k_AC = 0.0
 
+# Calculate the EM effective index of the waveguide.
+n_eff_sim = np.real(k_AC*((wl_nm*1e-9)/(2.*np.pi)))
+print "n_eff", np.round(n_eff_sim, 4)
+
 # Calculate Acoustic Modes
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
     num_AC_modes, EM_sim=sim_EM_wguide)
 # Print the frequencies of AC modes.
-print 'Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_value)*1e-9, 4)
+print 'Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_value)*1e-9, 4)
 # Plot the AC modes fields, important to specify this with EM_AC='AC'.
 # The AC modes are calculated on a subset of the full unitcell,
 # which excludes vacuum regions, so no need to restrict area plotted.

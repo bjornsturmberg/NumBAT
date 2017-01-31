@@ -18,7 +18,7 @@ from fortran import NumBAT
 
 
 def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
-                EM_ival1=0, EM_ival2=0, AC_ival=0, fixed_Q=None):
+                EM_ival1=0, EM_ival2=0, AC_ival=0, fixed_Q=None, typ_select_out=None):
     """ Calculate interaction integrals and SBS gain.
 
         Implements Eqs. 33, 41, 45 of
@@ -163,8 +163,8 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
 
     # Calc Q_moving_boundary Eq. 41
     typ_select_in = 1 # first element in relevant_eps_effs list, in fortan indexing
-    typ_select_out = None
-    if typ_select_out is None: typ_select_out = -1
+    if len(relevant_eps_effs) == 2: typ_select_out = 2
+    elif typ_select_out is None: typ_select_out = -1
     try:
         Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
             sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,
