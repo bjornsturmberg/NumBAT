@@ -651,7 +651,7 @@ C
         z_tmp = 1.0d0/z_tmp0+shift
         z_beta = sqrt(z_tmp)
 C       Mode classification - we want the forward propagating mode
-        if (abs(imag(z_beta)) .lt. 1.0d-8) then
+        if (abs(imag(z_beta)/z_beta) .lt. 1.0d-8) then
 C         re(z_beta) > 0 for forward propagating mode
           if (dble(z_beta) .lt. 0) z_beta = -z_beta
         else

@@ -21,15 +21,15 @@ from fortran import NumBAT
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550
-unitcell_x = 4.5*wl_nm
+unitcell_x = 6.5*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 850
+inc_a_x = 1900
 inc_a_y = 680
 inc_shape = 'rectangular'
 
 # Optical parameters
 n_b = 1.44
-n_i = 2.83
+n_i = 2.44
 num_EM_modes = 20
 # There are lots of leaky acoustic modes!
 num_AC_modes = 250
@@ -63,7 +63,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         loss=False, 
                         bkg_AC=bkg_AC_props,
                         inc_a_AC=inc_a_AC_props,plotting_fields=False,
-                        lc_bkg=2, lc2=2000.0, lc3=10.0)
+                        lc_bkg=3, lc2=2500.0, lc3=10.0)
 
 
 # Calculate Electromagnetic Modes
@@ -100,7 +100,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
 print 'Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_value*1e-9), 4)
 
 # Experimentaly obtained Q factor.
-set_q_factor = 300.
+set_q_factor = 200.
 
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
@@ -149,8 +149,8 @@ plt.ylabel('Gain 1/(Wm)')
 plt.savefig('As2S3-gain_spectra-mode_comps.pdf')
 plt.close()
 
-freq_min_zoom = freq_min
-freq_max_zoom = freq_max
+freq_min_zoom = 7.2
+freq_max_zoom = 8.1
 interp_values = np.zeros(interp_grid_points)
 interp_values_PE = np.zeros(interp_grid_points)
 interp_values_MB = np.zeros(interp_grid_points)
