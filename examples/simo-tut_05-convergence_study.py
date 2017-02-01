@@ -50,9 +50,9 @@ inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
 
-nu_lcs = 9
+nu_lcs = 8
 lc_bkg_list = 2*np.ones(nu_lcs)
-lc_list = np.linspace(1e2,9e3,nu_lcs)
+lc_list = np.linspace(1e2,8e3,nu_lcs)
 x_axis = lc_bkg_list
 x_axis = lc_list
 conv_list = []
@@ -70,13 +70,15 @@ for i_lc, lc_ref in enumerate(lc_list):
                             loss=False, inc_a_AC=inc_a_AC_props,
                             lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc3, force_mesh=True)
 
+    # Expected effective index of fundamental guided mode.
+    n_eff = np.real(np.sqrt(eps))-0.1
     # Calculate Electromagnetic Modes
-    sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+    sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
     k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
     # Calculate Acoustic Modes
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
-        num_AC_modes, EM_sim=sim_EM_wguide)
+    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
+        EM_sim=sim_EM_wguide)
     # Calculate interaction integrals and SBS gain
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
         sim_EM_wguide, sim_AC_wguide, k_AC,

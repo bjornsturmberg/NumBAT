@@ -111,7 +111,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     relevant_eps_effs =[]
     for el_typ in range(sim_EM_wguide.structure.nb_typ_el):
         if el_typ+1 in sim_AC_wguide.structure.typ_el_AC:
-            relevant_eps_effs.append(sim_EM_wguide.n_effs[el_typ]**2)
+            relevant_eps_effs.append(sim_EM_wguide.n_list[el_typ]**2)
 
     if fixed_Q is None:
         # Calc alpha (loss) Eq. 45

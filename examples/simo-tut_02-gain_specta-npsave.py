@@ -52,11 +52,14 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=2, lc2=3000.0, lc3=10.0)
+                        lc_bkg=2, lc2=2000.0, lc3=10.0)
 
+
+# Expected effective index of fundamental guided mode.
+n_eff = np.real(np.sqrt(eps))-0.1
 
 # Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
 # Save calculated :Simmo: object for EM calculation.
 np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 
@@ -69,18 +72,18 @@ np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 # Print the wavevectors of EM modes.
 print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_value), 4)
 
+# Calculate the EM effective index of the waveguide.
+n_eff_sim = np.real(sim_EM_wguide.Eig_value[0]*((wl_nm*1e-9)/(2.*np.pi)))
+print "n_eff", np.round(n_eff_sim, 4)
+
 # Choose acoustic wavenumber to solve for
 # Backward SBS
 # AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
 k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
 
-# Calculate the EM effective index of the waveguide.
-n_eff_sim = np.real(k_AC*((wl_nm*1e-9)/(2.*np.pi)))
-print "n_eff", np.round(n_eff_sim, 4)
-
 # Calculate Acoustic Modes
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
-    num_AC_modes, EM_sim=sim_EM_wguide)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
+    EM_sim=sim_EM_wguide)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 
 # The previous two lines can be commented out and the following

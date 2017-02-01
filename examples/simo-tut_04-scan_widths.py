@@ -48,15 +48,19 @@ eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
+# Width previous simo's done for, with known meshing params
+known_geo = 315.
 
 def modes_n_gain(wguide):
+    # Expected effective index of fundamental guided mode.
+    n_eff = (np.real(np.sqrt(eps))-0.1) * wguide.inc_a_x/known_geo
     # Calculate Electromagnetic Modes
-    sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+    sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
     k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
     # Calculate Acoustic Modes
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
-        num_AC_modes, EM_sim=sim_EM_wguide)
+    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
+        EM_sim=sim_EM_wguide)
     # Calculate interaction integrals and SBS gain
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
         sim_EM_wguide, sim_AC_wguide, k_AC,
@@ -68,8 +72,6 @@ def modes_n_gain(wguide):
 nu_widths = 12
 waveguide_widths = np.linspace(300,400,nu_widths)
 geo_objects_list = []
-# Width previous simo's done for, with known meshing params
-known_geo = 315.
 # Scale meshing to new structures
 for width in waveguide_widths:
     msh_ratio = (width/known_geo)
@@ -108,8 +110,8 @@ for i_w, width_obj in enumerate(width_objs):
     SBS_gain = width_obj[2]
     alpha = width_obj[5]
     k_AC = width_obj[6]
-    # Calculate the EM effective index of the waveguide.
-    n_eff_sim = round(np.real(k_AC*((wl_nm*1e-9)/(2.*np.pi))), 4)
+    # Calculate the EM effective index of the waveguide (k_AC = 2*k_EM).
+    n_eff_sim = round(np.real((k_AC/2.)*((wl_nm*1e-9)/(2.*np.pi))), 4)
     n_effs.append(n_eff_sim)
 
     # Construct the SBS gain spectrum, built up

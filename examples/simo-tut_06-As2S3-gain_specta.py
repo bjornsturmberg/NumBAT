@@ -32,7 +32,7 @@ n_b = 1.44
 n_i = 2.44
 num_EM_modes = 20
 # There are lots of leaky acoustic modes!
-num_AC_modes = 250
+num_AC_modes = 350
 EM_ival1=0
 EM_ival2=EM_ival1
 AC_ival='All'
@@ -65,15 +65,14 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         inc_a_AC=inc_a_AC_props,plotting_fields=False,
                         lc_bkg=3, lc2=2500.0, lc3=10.0)
 
+# Expected effective index of fundamental guided mode.
+n_eff = 2.
 
 # Calculate Electromagnetic Modes
-# Provide an estimate of the effective index of the fundamental optical mode.
-n_eff = 2.
-shift_Hz = n_eff**2 * (2*np.pi/(wl_nm*1e-9))**2
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, shift_Hz=shift_Hz)
-# np.savez('wguide_data-chalc', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data-chalc.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
+np.savez('wguide_data-chalc', sim_EM_wguide=sim_EM_wguide)
+# npzfile = np.load('wguide_data-chalc.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM', add_name='As2S3')
 
 # Print the wavevectors of EM modes.
@@ -89,8 +88,8 @@ print 'n_eff of 3rd EM mode \n', np.round(n_eff_sim, 4)
 k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
 
 # Calculate Acoustic Modes
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
-    num_AC_modes, EM_sim=sim_EM_wguide)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
+    EM_sim=sim_EM_wguide)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
@@ -100,7 +99,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, k_AC,
 print 'Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_value*1e-9), 4)
 
 # Experimentaly obtained Q factor.
-set_q_factor = 200.
+set_q_factor = 500.
 
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,

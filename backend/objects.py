@@ -540,7 +540,7 @@ class Struct(object):
             os.system(gmsh_cmd)
 
 
-    def calc_EM_modes(self, wl_nm, num_modes, shift_Hz=None, **args):
+    def calc_EM_modes(self, wl_nm, num_modes, n_eff, **args):
         """ Run a simulation to find the Struct's EM modes.
 
             Args:
@@ -548,22 +548,19 @@ class Struct(object):
 
                 num_modes  (int): Number of EM modes to solve for.
 
-            Keyword Args:
-                shift_Hz  (float): Guesstimated frequency of modes,
-                    will be origin of FEM search. NumBAT will make
-                    an educated guess if shift_Hz=None.
-                    (Technically the shift and invert parameter).
+                n_eff  (float): Guesstimated effective index of
+                    fundamental mode, will be origin of FEM search.
 
             Returns:
                 :Simmo: object
         """
-        simmo = Simmo(self, wl_nm, num_modes=num_modes, shift_Hz=shift_Hz)
+        simmo = Simmo(self, wl_nm, num_modes=num_modes, n_eff=n_eff)
 
         simmo.calc_EM_modes(**args)
         return simmo
 
 
-    def calc_AC_modes(self, wl_nm, k_AC, num_modes,
+    def calc_AC_modes(self, wl_nm, num_modes, k_AC,
                       shift_Hz=None, EM_sim=None, **args):
         """ Run a simulation to find the Struct's acoustic modes.
 
@@ -587,8 +584,8 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo_AC = Simmo(self, wl_nm, k_AC=k_AC,
-                         num_modes=num_modes, shift_Hz=shift_Hz,
+        simmo_AC = Simmo(self, wl_nm, num_modes=num_modes,
+                         k_AC=k_AC, shift_Hz=shift_Hz,
                          EM_sim=EM_sim)
 
         simmo_AC.calc_AC_modes(**args)

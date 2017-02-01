@@ -17,12 +17,13 @@ from fortran import NumBAT
 class Simmo(object):
     """ Calculates the modes of a :Struc: object at a wavelength of wl_nm.
     """
-    def __init__(self, structure, wl_nm, k_AC=None, num_modes=20,
-                 shift_Hz=None, EM_sim=None):
+    def __init__(self, structure, wl_nm, num_modes=20, n_eff=None, shift_Hz=None, 
+                 k_AC=None, EM_sim=None):
         self.structure = structure
         self.wl_m = wl_nm*1e-9
-        self.k_AC = k_AC
+        self.n_eff = n_eff
         self.shift_Hz = shift_Hz
+        self.k_AC = k_AC
         self.EM_sim = EM_sim
         self.num_modes = num_modes
         self.mode_pol = None
@@ -44,7 +45,7 @@ class Simmo(object):
                [field comp, node nu on element, Eig value, el nu]
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
-        self.n_effs = np.array([self.structure.bkg_material.n(self.wl_m),
+        self.n_list = np.array([self.structure.bkg_material.n(self.wl_m),
                                 self.structure.inc_a_material.n(self.wl_m),
                                 self.structure.inc_b_material.n(self.wl_m),
                                 self.structure.slab_a_material.n(self.wl_m),
@@ -53,9 +54,9 @@ class Simmo(object):
                                 self.structure.slab_b_bkg_material.n(self.wl_m),
                                 self.structure.coating_material.n(self.wl_m)])
 
-        self.n_effs = self.n_effs[:self.structure.nb_typ_el]
+        self.n_list = self.n_list[:self.structure.nb_typ_el]
         if self.structure.loss is False:
-            self.n_effs = self.n_effs.real
+            self.n_list = self.n_list.real
 
         if self.num_modes < 20:
             self.num_modes = 20
@@ -75,15 +76,7 @@ class Simmo(object):
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
-        if self.shift_Hz is None:
-            # Take real part so that complex conjugate pair Eigenvalues are
-            # equal distance from shift and invert point and therefore both found.
-            max_n = np.real(self.n_effs).max()
-            confinment_factor = 1.8/np.sqrt(12) # value from silicon in air
-            # shift = n_eff**2 * k_0**2
-            shift = (confinment_factor*max_n)**2 * self.k_0**2
-        else:
-            shift = self.shift_Hz
+        shift = self.n_eff**2 * self.k_0**2
 
         if EM_FEM_debug == 1:
             if not os.path.exists("Normed"):
@@ -100,7 +93,7 @@ class Simmo(object):
             resm = NumBAT.calc_em_modes(
                 self.wl_m, self.num_modes,
                 EM_FEM_debug, self.structure.mesh_file, self.n_msh_pts,
-                self.n_msh_el, self.structure.nb_typ_el, self.n_effs,
+                self.n_msh_el, self.structure.nb_typ_el, self.n_list,
                 self.k_pll, self.d_in_m, shift, self.E_H_field, i_cond, itermax,
                 self.structure.plotting_fields, self.structure.plot_real,
                 self.structure.plot_imag, self.structure.plot_abs,
@@ -118,7 +111,7 @@ class Simmo(object):
 
         # if self.structure.plotting_fields != 1:
         #     self.sol1 = None
-        #     self.n_effs = None
+        #     self.n_list = None
         #     self.E_H_field = None
         #     self.table_nod = None
         #     self.type_el = None

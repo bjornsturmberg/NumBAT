@@ -51,8 +51,11 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         lc_bkg=2, lc2=2000.0, lc3=10.0)
 
 
+# Expected effective index of fundamental guided mode.
+n_eff = np.real(np.sqrt(eps))-0.1
+
 # Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes)
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 
 # Assuming this calculation is run directly after simo-tut_02
@@ -71,7 +74,7 @@ plt.clf()
 plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)
 for q_ac in np.linspace(0.0,k_AC,nu_ks):
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, q_ac, num_AC_modes, EM_sim=sim_EM_wguide)
+    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, q_ac, EM_sim=sim_EM_wguide)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
     sym_list = integration.symmetries(sim_AC_wguide)
 
