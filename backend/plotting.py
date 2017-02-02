@@ -217,11 +217,11 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
         fig = plt.figure(figsize=(15,15))
         for i_p,plot in enumerate(v_plots):
             ax = plt.subplot(3,3,i_p+1)
-            if np.max(plot) > plot_threshold:
+            if np.max(np.abs(plot[~np.isnan(plot)])) < plot_threshold:
                 # im = plt.imshow(plot.T,cmap='viridis');
-                im = plt.imshow(plot.T,cmap='inferno');
-            else:
                 im = plt.imshow(np.zeros(np.shape(plot.T)),cmap='inferno');
+            else:
+                im = plt.imshow(plot.T,cmap='inferno');
             # ax.set_aspect('equal')
             # no ticks
             plt.xticks([])
