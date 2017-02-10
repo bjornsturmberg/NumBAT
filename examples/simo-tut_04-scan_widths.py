@@ -139,7 +139,7 @@ for i_w, width_obj in enumerate(width_objs):
     plt.plot(interp_grid, interp_values, 'k', linewidth=4)
     plt.xlim(10,25)
     plt.xlabel('Frequency (GHz)')
-    plt.ylabel('Gain 1/(Wm)')
+    plt.ylabel('Gain (1/Wm)')
     plt.savefig('gain_spectra_%i.pdf' % i_w)
     plt.close()
 
@@ -156,7 +156,7 @@ ax.set_xlabel('Frequency (GHz)', fontsize=14)
 ax.set_xlim3d(10,25)
 ax.set_ylabel('Width (nm)', fontsize=14)
 ax.set_ylim3d(waveguide_widths[0], waveguide_widths[-1])
-ax.set_zlabel('Gain 1/(Wm)', fontsize=14)
+ax.set_zlabel('Gain (1/Wm)', fontsize=14)
 ax.set_zlim3d(0,1500)
 # We change the fontsize of minor ticks label 
 plt.tick_params(axis='both', which='major', labelsize=12, pad=-2)

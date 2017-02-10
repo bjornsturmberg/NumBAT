@@ -39,12 +39,18 @@ AC_ival='All'
 
 # Acoustic Parameters
 # Background - silca
-# Use the isotropic parameters for silca.
-s = 2200  # kg/m3
-E = 7.3e10
-v = 0.17
-c_11, c_12, c_44 = materials.isotropic_stiffness(E, v)
-p_11 = 0.121; p_12 = 0.270; p_44 = -0.075
+# # Use the isotropic parameters for silca.
+# s = 2200  # kg/m3
+# E = 7.3e10
+# v = 0.17
+# c_11, c_12, c_44 = materials.isotropic_stiffness(E, v)
+# p_11 = 0.121; p_12 = 0.270; p_44 = -0.075
+
+# Silca - Laude AIP Advances 2013
+s = 2203  # kg/m3
+c_11 = 78e9; c_12 = 16e9; c_44 = 31e9
+p_11 = 0.12; p_12 = 0.270; p_44 = -0.073
+
 eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
 bkg_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
@@ -69,10 +75,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 n_eff = 2.
 
 # Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
-np.savez('wguide_data-chalc', sim_EM_wguide=sim_EM_wguide)
-# npzfile = np.load('wguide_data-chalc.npz')
-# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
+# np.savez('wguide_data-chalc', sim_EM_wguide=sim_EM_wguide)
+npzfile = np.load('wguide_data-chalc.npz')
+sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM', add_name='As2S3')
 
 # Print the wavevectors of EM modes.
@@ -88,18 +94,18 @@ print 'n_eff of 3rd EM mode \n', np.round(n_eff_sim, 4)
 k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
 
 # Calculate Acoustic Modes
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
-    EM_sim=sim_EM_wguide)
+# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
+#     EM_sim=sim_EM_wguide)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+npzfile = np.load('wguide_data_AC.npz')
+sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # plotting.plt_mode_fields(sim_AC_wguide, xlim=0.3, ylim=0.3, EM_AC='AC', add_name='As2S3')
 
 # Print the frequencies of AC modes.
 print 'Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_value*1e-9), 4)
 
 # Experimentaly obtained Q factor.
-set_q_factor = 500.
+set_q_factor = 1600.
 
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
@@ -144,12 +150,14 @@ plt.plot(interp_grid, interp_values, 'k', linewidth=3, label="Total")
 plt.legend(loc=0)
 plt.xlim(freq_min,freq_max)
 plt.xlabel('Frequency (GHz)')
-plt.ylabel('Gain 1/(Wm)')
+plt.ylabel('Gain (1/Wm)')
 plt.savefig('As2S3-gain_spectra-mode_comps.pdf')
 plt.close()
 
-freq_min_zoom = 7.2
-freq_max_zoom = 8.1
+freq_min_zoom = 7.5
+freq_max_zoom = 8.6
+# freq_min_zoom = freq_min
+# freq_max_zoom = freq_max
 interp_values = np.zeros(interp_grid_points)
 interp_values_PE = np.zeros(interp_grid_points)
 interp_values_MB = np.zeros(interp_grid_points)
@@ -177,6 +185,19 @@ plt.plot(interp_grid, interp_values_MB, 'g', linewidth=3, label="MB")
 plt.legend(loc=0)
 plt.xlim(freq_min_zoom,freq_max_zoom)
 plt.xlabel('Frequency (GHz)')
-plt.ylabel('Gain 1/(Wm)')
+plt.ylabel('Gain (1/Wm)')
 plt.savefig('As2S3-gain_spectra-MB_PE_comps.pdf')
+plt.close()
+
+
+plt.figure()
+plt.clf()
+plt.plot(interp_grid, 20*np.log10(abs(interp_values)), 'k', linewidth=3, label="Total")
+plt.plot(interp_grid, 20*np.log10(abs(interp_values_PE)), 'r', linewidth=3, label="PE")
+plt.plot(interp_grid, 20*np.log10(abs(interp_values_MB)), 'g', linewidth=3, label="MB")
+plt.legend(loc=0)
+plt.xlim(freq_min_zoom,freq_max_zoom)
+plt.xlabel('Frequency (GHz)')
+plt.ylabel('Gain (dB)')
+plt.savefig('As2S3-gain_spectra-MB_PE_comps-dB.pdf')
 plt.close()

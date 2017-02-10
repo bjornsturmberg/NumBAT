@@ -183,7 +183,7 @@ class Simmo(object):
         # Size of Fortran's complex superarray (scales with mesh)
         # In theory could do some python-based preprocessing
         # on the mesh file to work out RAM requirements
-        cmplx_max = 2**29
+        cmplx_max = 2**28
         real_max = 2**27
         int_max = 2**26
 

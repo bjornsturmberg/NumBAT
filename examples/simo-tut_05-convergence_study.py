@@ -50,9 +50,9 @@ inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
 
-nu_lcs = 8
+nu_lcs = 6
 lc_bkg_list = 2*np.ones(nu_lcs)
-lc_list = np.linspace(1e2,8e3,nu_lcs)
+lc_list = np.linspace(2e2,6e3,nu_lcs)
 x_axis = lc_bkg_list
 x_axis = lc_list
 conv_list = []

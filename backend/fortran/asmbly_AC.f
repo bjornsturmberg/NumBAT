@@ -95,7 +95,7 @@ cc        write(ui,*) "asmbly_AC: iel, nel", iel, nel
             c_tensor_el(i,j) = c_tensor(i,j,typ_e)
           enddo
         enddo
-        call mat_el (xel, beta, c_tensor_el, rho_el, mat_K, mat_M,debug)
+        call mat_el_v2 (xel,beta,c_tensor_el,rho_el,mat_K,mat_M,debug)
         do jtest=1,nnodes
           jp = table_nod(jtest,iel)
           do j_eq=1,3
