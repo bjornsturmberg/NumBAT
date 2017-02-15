@@ -6,6 +6,7 @@ The source code for NumBAT is hosted `here on Github <https://github.com/bjornst
 NumBAT has been developed on Ubuntu and is easiest to install on this platform. Simply 'sudo apt-get install' the packages listed in the dependencies.txt file and then run setup.sh. ::
 
     $ sudo apt-get update
+    $ sudo apt-get upgrade
     $ sudo apt-get -y install <dependencies>
     $ /setup.sh
 
