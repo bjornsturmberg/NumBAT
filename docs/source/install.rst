@@ -3,12 +3,21 @@ Installation
 
 The source code for NumBAT is hosted `here on Gitlab <https://gitlab.com/bjorn_mq/NumBAT/>`_. Please download the latest release from here.
 
-NumBAT has been developed on Ubuntu and is easiest to install on this platform. Simply 'sudo apt-get install' the packages listed in the dependencies.txt file and then run setup.sh. ::
+NumBAT has been developed on Ubuntu and is easiest to install on this platform. Simply run the setup script ::
+
+    $ sudo /setup.sh
+
+Or, if you prefer to do things manually, this is equivalent to ::
 
     $ sudo apt-get update
     $ sudo apt-get upgrade
-    $ sudo apt-get -y install <dependencies>
-    $ /setup.sh
+    $ sudo apt-get install -y <dependencies>
+    $ cd backend/fortran/
+    $ make
+    $ cd ../../tests/
+    $ nosetests
+
+where the <dependencies> packages are listed dependencies.txt.
 
 **This is all there is, there isn't any more.**
 
