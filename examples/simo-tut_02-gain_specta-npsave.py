@@ -113,74 +113,13 @@ np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
 # SBS_gain = npzfile['SBS_gain']
 # alpha = npzfile['alpha']
 
-
-# Construct the SBS gain spectrum, built up
-# from Lorentzian peaks of the individual modes.
-tune_steps = 5e4
-tune_range = 10 # GHz
-# Construct an odd range of frequencies that is guaranteed to include 
-# the central resonance frequency.
-detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
-                   np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
-# Line width of resonances should be v_g * alpha,
-# but we don't have convenient access to v_g, therefore
-# phase velocity as approximation to group velocity
-phase_v = sim_AC_wguide.Eig_values/k_AC
-linewidth = phase_v*alpha
-
+# Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = 10  # GHz
 freq_max = 25  # GHz
-interp_grid_points = 10000
-interp_grid = np.linspace(freq_min, freq_max, interp_grid_points)
-interp_values = np.zeros(interp_grid_points)
-
-plt.figure()
-plt.clf()
-for AC_i in range(len(alpha)):
-    gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-    freq_list_GHz = np.real(sim_AC_wguide.Eig_values[AC_i] + detuning_range)*1e-9
-    plt.plot(freq_list_GHz, gain_list)
-    # set up an interpolation for summing all the gain peaks
-    interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
-    interp_values += interp_spectrum
-plt.plot(interp_grid, interp_values, 'k', linewidth=3, label="Total")
-plt.legend(loc=0)
-plt.xlim(freq_min,freq_max)
-plt.xlabel('Frequency (GHz)')
-plt.ylabel('Gain (1/Wm)')
-plt.savefig('gain_spectra-mode_comps.pdf')
-plt.close()
-
-freq_min_zoom = 12
-freq_max_zoom = 14
-interp_values = np.zeros(interp_grid_points)
-interp_values_PE = np.zeros(interp_grid_points)
-interp_values_MB = np.zeros(interp_grid_points)
-plt.figure()
-plt.clf()
-for AC_i in range(len(alpha)):
-    gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-    freq_list_GHz = np.real(sim_AC_wguide.Eig_values[AC_i] + detuning_range)*1e-9
-    interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
-    interp_values += interp_spectrum
-
-    gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-    interp_spectrum_PE = np.interp(interp_grid, freq_list_GHz, gain_list_PE)
-    interp_values_PE += interp_spectrum_PE
-
-    gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-    interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
-    interp_values_MB += interp_spectrum_MB
-plt.plot(interp_grid, interp_values, 'k', linewidth=3, label="Total")
-plt.plot(interp_grid, interp_values_PE, 'r', linewidth=3, label="PE")
-plt.plot(interp_grid, interp_values_MB, 'g', linewidth=3, label="MB")
-plt.legend(loc=0)
-plt.xlim(freq_min_zoom,freq_max_zoom)
-plt.xlabel('Frequency (GHz)')
-plt.ylabel('Gain (1/Wm)')
-plt.savefig('gain_spectra-MB_PE_comps.pdf')
-plt.close()
+plotting.gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+    EM_ival1, EM_ival2, AC_ival, freq_min=freq_min, freq_max=freq_max)
+# Zoomed in version
+freq_min = 11  # GHz
+freq_max = 15  # GHz
+plotting.gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+    EM_ival1, EM_ival2, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_zoom')

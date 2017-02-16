@@ -69,7 +69,7 @@ def modes_n_gain(wguide):
     return [sim_EM_wguide, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC]
 
 
-nu_widths = 12
+nu_widths = 6
 waveguide_widths = np.linspace(300,400,nu_widths)
 geo_objects_list = []
 # Scale meshing to new structures
@@ -108,40 +108,34 @@ for i_w, width_obj in enumerate(width_objs):
     sim_EM = width_obj[0]
     sim_AC = width_obj[1]
     SBS_gain = width_obj[2]
+    SBS_gain_PE = width_obj[3]
+    SBS_gain_MB = width_obj[4]
     alpha = width_obj[5]
     k_AC = width_obj[6]
     # Calculate the EM effective index of the waveguide (k_AC = 2*k_EM).
     n_eff_sim = round(np.real((k_AC/2.)*((wl_nm*1e-9)/(2.*np.pi))), 4)
     n_effs.append(n_eff_sim)
 
-    # Construct the SBS gain spectrum, built up
-    # from Lorentzian peaks of the individual modes.
+    # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
+    freq_min = 10  # GHz
+    freq_max = 25  # GHz
+    plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+        EM_ival1, EM_ival2, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_scan%i' % i_w)
+
+    # Repeat calc to collect data for waterfall plot.
     tune_steps = 5e4
     tune_range = 10 # GHz
-    # Construct an odd range of frequencies that is guaranteed to include 
-    # the central resonance frequency
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
     phase_v = sim_AC.Eig_values/k_AC
     line_width = phase_v*alpha
-    
-    plt.figure(figsize=(13,13))
-    plt.clf()
     for AC_i in range(len(alpha)):
         gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
                      *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
         freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
-        plt.plot(freq_list_GHz, gain_list,linewidth=3)
-        # set up an interpolation for summing all the gain peaks
         interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
         interp_values += interp_spectrum
     freqs_gains.append(zip(interp_grid, interp_values))
-    plt.plot(interp_grid, interp_values, 'k', linewidth=4)
-    plt.xlim(10,25)
-    plt.xlabel('Frequency (GHz)')
-    plt.ylabel('Gain (1/Wm)')
-    plt.savefig('gain_spectra_%i.pdf' % i_w)
-    plt.close()
 
 print 'Widths', waveguide_widths
 print 'n_effs', n_effs
