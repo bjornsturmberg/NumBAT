@@ -1,7 +1,7 @@
 Installation
 ================
 
-The source code for NumBAT is hosted `here on Github <https://github.com/bjornsturmberg/NumBAT>`_. Please download the latest release from here.
+The source code for NumBAT is hosted `here on Gitlab <https://gitlab.com/bjorn_mq/NumBAT/>`_. Please download the latest release from here.
 
 NumBAT has been developed on Ubuntu and is easiest to install on this platform. Simply 'sudo apt-get install' the packages listed in the dependencies.txt file and then run setup.sh. ::
 
@@ -10,16 +10,20 @@ NumBAT has been developed on Ubuntu and is easiest to install on this platform. 
     $ sudo apt-get -y install <dependencies>
     $ /setup.sh
 
+**This is all there is, there isn't any more.**
+
+Well there's more if you want to change it up.
 
 The Fortran components (NumBAT source code and libraries) have been successfully compiled with intel's ifortran as well as open-source gfortran. In this documentation we use gfortran, but this can be easily adjusted in NumBAT/backend/fortran/Makefile
 
+On non-ubuntu OS you may also need to compile a local version of Suitesparse, which is described in the next section.
 
 Manual installation of SuiteSparse
 ----------------------------------
 
 The FEM routine used in NumBAT makes use of the highly optimised `UMFPACK <https://www.cise.ufl.edu/research/sparse/umfpack/>`_ (Unsymmetric MultiFrontal Package) direct solver for sparse matrices developed by Prof. Timothy A. Davis. This is distributed as part of the  SuiteSparse libraries under a GPL license. It can be downloaded from `https://www.cise.ufl.edu/research/sparse/SuiteSparse/ <https://www.cise.ufl.edu/research/sparse/SuiteSparse/>`_
 
-This is the process I followed in my installations. They are provided as little more than tips...
+This is the process I followed in my installations, however this was some years ago and may need to be modified.
 
 Unpack SuiteSparse into NumBAT/backend/fortran/, it should create a directory there; SuiteSparse/
 Make a directory where you want SuiteSparse installed, in my case SS_installed ::
