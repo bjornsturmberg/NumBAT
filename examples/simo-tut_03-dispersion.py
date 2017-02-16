@@ -66,7 +66,7 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 
 # Will scan from forward to backward SBS,
 # so need to know k_AC of backward SBS.
-k_AC = 2*sim_EM_wguide.Eig_value[0]
+k_AC = 2*sim_EM_wguide.Eig_values[0]
 # Number of wavevectors steps.
 nu_ks = 20
 
@@ -75,7 +75,7 @@ plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)
 for q_ac in np.linspace(0.0,k_AC,nu_ks):
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, q_ac, EM_sim=sim_EM_wguide)
-    prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_value if abs(np.real(x)) > abs(np.imag(x))])
+    prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_values if abs(np.real(x)) > abs(np.imag(x))])
     sym_list = integration.symmetries(sim_AC_wguide)
 
     for i in range(len(prop_AC_modes)):

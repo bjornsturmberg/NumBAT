@@ -57,7 +57,7 @@ def modes_n_gain(wguide):
     # Calculate Electromagnetic Modes
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
-    k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
+    k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
     # Calculate Acoustic Modes
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
         EM_sim=sim_EM_wguide)
@@ -122,7 +122,7 @@ for i_w, width_obj in enumerate(width_objs):
     # the central resonance frequency
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
-    phase_v = sim_AC.Eig_value/k_AC
+    phase_v = sim_AC.Eig_values/k_AC
     line_width = phase_v*alpha
     
     plt.figure(figsize=(13,13))
@@ -130,7 +130,7 @@ for i_w, width_obj in enumerate(width_objs):
     for AC_i in range(len(alpha)):
         gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
                      *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
-        freq_list_GHz = np.real(sim_AC.Eig_value[AC_i] + detuning_range)*1e-9
+        freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
         plt.plot(freq_list_GHz, gain_list,linewidth=3)
         # set up an interpolation for summing all the gain peaks
         interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)

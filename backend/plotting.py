@@ -104,7 +104,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
     x_arr = sim_wguide.x_arr.T
 
     # for ival in [0]:
-    for ival in range(len(sim_wguide.Eig_value)):
+    for ival in range(len(sim_wguide.Eig_values)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
@@ -133,7 +133,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
                 v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
                 if EM_AC == 'EM':
     # Note physical z-comp of EM modes is -i beta E_z, where E_z is FEM output sol
-                    v_Ez6p[i] = -1j*sim_wguide.Eig_value[ival]*sim_wguide.sol1[2,i_node,ival,i_el]
+                    v_Ez6p[i] = -1j*sim_wguide.Eig_values[ival]*sim_wguide.sol1[2,i_node,ival,i_el]
                 else:
                     v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
                 i += 1
@@ -269,30 +269,30 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
             plt.title('Transverse',fontsize=title_font-4)
 
         if EM_AC=='EM':
-            n_eff = sim_wguide.Eig_value[ival] * sim_wguide.wl_m / (2*np.pi)
-            if np.imag(sim_wguide.Eig_value[ival]) < 0:
+            n_eff = sim_wguide.Eig_values[ival] * sim_wguide.wl_m / (2*np.pi)
+            if np.imag(sim_wguide.Eig_values[ival]) < 0:
                 k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival])}
+                    {'re_k' : np.real(sim_wguide.Eig_values[ival]),
+                    'im_k' : np.imag(sim_wguide.Eig_values[ival])}
                 n_str = r'n$_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             else:
                 k_str = r'k$_z = %(re_k)f6 + %(im_k)f6 i$'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival])}
+                    {'re_k' : np.real(sim_wguide.Eig_values[ival]),
+                    'im_k' : np.imag(sim_wguide.Eig_values[ival])}
                 n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             # plt.text(10, 0.3, n_str, fontsize=title_font)
         else:
             n_str = ''
-            if np.imag(sim_wguide.Eig_value[ival]) < 0:
+            if np.imag(sim_wguide.Eig_values[ival]) < 0:
                 k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
+                    {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
+                    'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
                 k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
+                    {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
+                    'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
         # plt.text(10, 0.5, k_str, fontsize=title_font)
         plt.suptitle(k_str + '   ' + n_str+"\n", fontsize=title_font)
         # plt.tight_layout(pad=2.5, w_pad=0.5, h_pad=1.0)
@@ -351,14 +351,14 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
             # plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
             fig.set_tight_layout(True)
             n_str = ''
-            if np.imag(sim_wguide.Eig_value[ival]) < 0:
+            if np.imag(sim_wguide.Eig_values[ival]) < 0:
                 k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
+                    {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
+                    'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
                 k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
-                    {'re_k' : np.real(sim_wguide.Eig_value[ival]*1e-9),
-                    'im_k' : np.imag(sim_wguide.Eig_value[ival]*1e-9)}
+                    {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
+                    'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
 
             if pdf_png=='png':

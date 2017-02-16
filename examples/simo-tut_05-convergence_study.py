@@ -75,7 +75,7 @@ for i_lc, lc_ref in enumerate(lc_list):
     # Calculate Electromagnetic Modes
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
-    k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
+    k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
     # Calculate Acoustic Modes
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
         EM_sim=sim_EM_wguide)
@@ -94,7 +94,7 @@ for i_lc, lc_ref in enumerate(lc_list):
 # conv_list = npzfile['conv_list'].tolist()
 
 # sim_EM_wguide = conv_list[-1][0]
-# # print 'k_z of EM wave \n', sim_EM_wguide.Eig_value
+# # print 'k_z of EM wave \n', sim_EM_wguide.Eig_values
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
 
 rel_modes = [2,4,8]
@@ -105,9 +105,9 @@ rel_mode_gain_MB = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 rel_mode_gain_PE = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 # rel_mode_alpha = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 for i_conv, conv_obj in enumerate(conv_list):
-    rel_mode_freq_EM[i_conv] = conv_obj[0].Eig_value[0]
+    rel_mode_freq_EM[i_conv] = conv_obj[0].Eig_values[0]
     for i_m, rel_mode in enumerate(rel_modes):
-        rel_mode_freq_AC[i_conv,i_m] = conv_obj[1].Eig_value[rel_mode]
+        rel_mode_freq_AC[i_conv,i_m] = conv_obj[1].Eig_values[rel_mode]
         rel_mode_gain[i_conv,i_m] = conv_obj[2][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
         rel_mode_gain_PE[i_conv,i_m] = conv_obj[3][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
         rel_mode_gain_MB[i_conv,i_m] = conv_obj[4][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]

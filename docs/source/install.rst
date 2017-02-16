@@ -10,24 +10,12 @@ NumBAT has been developed on Ubuntu and is easiest to install on this platform. 
     $ sudo apt-get -y install <dependencies>
     $ /setup.sh
 
-UPDATE: the current version of SuiteSparse is not fully compatible with 64 bit Linux... a solution to this is to backport `SuiteSparse 3.4 from Ubuntu 12.04 <http://packages.ubuntu.com/source/precise/suitesparse>`_ using the method described `here <https://help.ubuntu.com/community/PinningHowto#Example_.231:_Pinning_the_ubuntu-x-swat.2BAC8-q-lts-backport-precise_PPA>`_. Alternatively the pre-compiled libraries have been shown to work on Ubuntu 14.04
 
-On other linux distributions either use the pre-compiled libraries of install them from the package manager or manually.
+The Fortran components (NumBAT source code and libraries) have been successfully compiled with intel's ifortran as well as open-source gfortran. In this documentation we use gfortran, but this can be easily adjusted in NumBAT/backend/fortran/Makefile
 
-All that is required to use the pre-compiled libraries is to switch to a slightly modified Makefile and then run setup.sh. ::
 
-    $ cd backend/fortran/
-    $ mv Makefile Makefile_ubuntu
-    $ mv Makefile-pre_compiled_libs Makefile
-    $ cd ../../
-    $ /setup.sh
-
-The Fortran components (NumBAT source code and libraries) have been successfully compiled with intel's ifortran as well as open-source gfortran. In this documentation we use gfortran.
-
-NOTE: different versions of gmsh can give errors in the final test. This is okay, provided the test simulation ran, i.e. the test gives E rather than F.
-
-SuiteSparse
-----------------
+Manual installation of SuiteSparse
+----------------------------------
 
 The FEM routine used in NumBAT makes use of the highly optimised `UMFPACK <https://www.cise.ufl.edu/research/sparse/umfpack/>`_ (Unsymmetric MultiFrontal Package) direct solver for sparse matrices developed by Prof. Timothy A. Davis. This is distributed as part of the  SuiteSparse libraries under a GPL license. It can be downloaded from `https://www.cise.ufl.edu/research/sparse/SuiteSparse/ <https://www.cise.ufl.edu/research/sparse/SuiteSparse/>`_
 
@@ -91,11 +79,7 @@ Copy the libraries into NumBAT/backend/fortran/Lib/ so that NumBAT/ is a complet
     $ cp SS_install/lib/umf4_f77zwrapper64.o NumBAT/backend/fortran/Lib/
 
 
-
-
-
 NumBAT Makefile
--------------------
 
 Edit NumBAT/backend/fortran/Makefile to reflect what compiler you are using and how you installed the libraries. The Makefile has further details.
 

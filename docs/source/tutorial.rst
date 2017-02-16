@@ -25,9 +25,7 @@ This will return you into an interactive python session in which all simulation 
 where we have accessed the docstring of the Light class from objects.py
 
 
-In the remainder of this chapter we go through a number of example simo.py files.
-
-Another tip to mention before diving into the examples is running simulations within screen seshions, which allow you to disconnect from servers leaving them to continue your processes.
+In the remainder of this chapter we go through a number of example simo.py files. But before we do, another quick tip about running simulations within screen sessions, which allow you to disconnect from servers leaving them to continue your processes.
 
 .. raw:: latex
 
@@ -131,6 +129,47 @@ The PID is found from one of two ways::
 Basic SBS Gain Calculation
 ------------------------------------------------
 
-.. literalinclude:: ../../examples/simo-tut_01.py
+.. literalinclude:: ../../examples/simo-tut_01-first_calc.py
     :lines: 0-
 
+
+SBS Gain Spectra
+------------------------------------------------
+
+.. literalinclude:: ../../examples/simo-tut_02-gain_specta-npsave.py
+    :lines: 0-
+
+
+Investigating Dispersion
+------------------------------------------------
+
+.. literalinclude:: ../../examples/simo-tut_03-dispersion.py
+    :lines: 0-
+
+
+Parameter Scan of Widths
+------------------------------------------------
+
+.. literalinclude:: ../../examples/simo-tut_04-scan_widths.py
+    :lines: 0-
+
+
+Convergence Study
+------------------------------------------------
+
+.. literalinclude:: ../../examples/simo-tut_05-convergence_study.py
+    :lines: 0-
+
+
+Embedded Chalcogenide Example
+------------------------------------------------
+
+.. literalinclude:: ../../examples/simo-tut_06-As2S3-gain_specta.py
+    :lines: 0-
+
+
+Silica Nanowire Example
+------------------------------------------------
+
+.. literalinclude:: ../../examples/simo-tut_07-Silica_nanowire.py
+    :lines: 0-

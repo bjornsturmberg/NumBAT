@@ -147,7 +147,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
-                relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
+                relevant_eps_effs, sim_EM_wguide.Eig_values, Fortran_debug)
         elif sim_EM_wguide.structure.inc_shape == 'circular':
             Q_PE = NumBAT.photoelastic_int(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
@@ -156,7 +156,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                 sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
-                relevant_eps_effs, sim_EM_wguide.Eig_value, Fortran_debug)
+                relevant_eps_effs, sim_EM_wguide.Eig_values, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
 
@@ -172,7 +172,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
             sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
             sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
             sim_AC_wguide.structure.nb_typ_el_AC, typ_select_in, typ_select_out,
-            sim_EM_wguide.Eig_value, trimmed_EM_field, sim_AC_wguide.sol1,
+            sim_EM_wguide.Eig_values, trimmed_EM_field, sim_AC_wguide.sol1,
             relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine moving_boundary interrupted by keyboard.\n\n"
@@ -241,7 +241,7 @@ def symmetries(sim_wguide, n_points=10):
 
     sym_list = []
 
-    for ival in range(len(sim_wguide.Eig_value)):
+    for ival in range(len(sim_wguide.Eig_values)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)

@@ -39,7 +39,7 @@ class Simmo(object):
 
         Returns a :Simmo: object that now has these key values:
 
-        Eig_value: a 1d array of Eigenvalues (propagation constants) in [1/m]
+        Eig_values: a 1d array of Eigenvalues (propagation constants) in [1/m]
 
         sol1: the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
@@ -99,7 +99,7 @@ class Simmo(object):
                 self.structure.plot_imag, self.structure.plot_abs,
                 cmplx_max, real_max, int_max)
 
-            self.Eig_value, self.sol1, self.mode_pol, \
+            self.Eig_values, self.sol1, self.mode_pol, \
             self.table_nod, self.type_el, self.type_nod, self.x_arr = resm
 
         except KeyboardInterrupt:
@@ -127,18 +127,18 @@ class Simmo(object):
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
-                    self.x_arr, self.Eig_value, self.sol1)
+                    self.x_arr, self.Eig_values, self.sol1)
             # Only calculate energy in waveguide region
                 # self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_wg(
                 #     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                 #     nnodes, self.table_nod,
-                #     self.x_arr, self.Eig_value, self.sol1, self.type_el)
+                #     self.x_arr, self.Eig_values, self.sol1, self.type_el)
             elif self.structure.inc_shape == 'circular':
             # Integration by quadrature. Slowest.
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
-                    self.x_arr, self.Eig_value, self.sol1)
+                    self.x_arr, self.Eig_values, self.sol1)
             # Bring Kokou's def into line with CW formulation.
             self.EM_mode_overlap = 2.0*self.EM_mode_overlap
 
@@ -164,7 +164,7 @@ class Simmo(object):
 
         Returns a :Simmo: object that now has these key values:
 
-        Eig_value: a 1d array of Eigenvalues (frequencies) in [1/s]
+        Eig_values: a 1d array of Eigenvalues (frequencies) in [1/s]
 
         sol1: the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
@@ -335,10 +335,10 @@ class Simmo(object):
                 cmplx_max, real_max, int_max, suplied_geo_flag, type_nod_AC,
                 table_nod_AC, type_el_AC, x_arr_AC)
             table_nod_out, type_el_out, x_arr_out, \
-            self.Eig_value, self.sol1, self.mode_pol = resm
+            self.Eig_values, self.sol1, self.mode_pol = resm
 
             # FEM Eigenvalue is frequency, rather than angular frequency Omega
-            self.Omega_AC = self.Eig_value*2*np.pi
+            self.Omega_AC = self.Eig_values*2*np.pi
 
         except KeyboardInterrupt:
             print "\n\n FEM routine calc_AC_modes",\

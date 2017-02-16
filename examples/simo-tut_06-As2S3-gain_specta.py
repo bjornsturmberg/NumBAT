@@ -82,16 +82,16 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM', add_name='As2S3')
 
 # Print the wavevectors of EM modes.
-print 'k_z of EM wave \n', np.round(np.real(sim_EM_wguide.Eig_value), 4)
-n_eff_sim = np.real((sim_EM_wguide.Eig_value[0]*((wl_nm*1e-9)/(2.*np.pi))))
+print 'k_z of EM wave \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
+n_eff_sim = np.real((sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi))))
 print 'n_eff of fund. EM mode \n', np.round(n_eff_sim, 4)
-n_eff_sim = np.real((sim_EM_wguide.Eig_value[2]*((wl_nm*1e-9)/(2.*np.pi))))
+n_eff_sim = np.real((sim_EM_wguide.Eig_values[2]*((wl_nm*1e-9)/(2.*np.pi))))
 print 'n_eff of 3rd EM mode \n', np.round(n_eff_sim, 4)
 
 # Choose acoustic wavenumber to solve for
 # Backward SBS
 # AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
-k_AC = 2*np.real(sim_EM_wguide.Eig_value[0])
+k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
 # Calculate Acoustic Modes
 # sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
@@ -102,7 +102,7 @@ sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # plotting.plt_mode_fields(sim_AC_wguide, xlim=0.3, ylim=0.3, EM_AC='AC', add_name='As2S3')
 
 # Print the frequencies of AC modes.
-print 'Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_value*1e-9), 4)
+print 'Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values*1e-9), 4)
 
 # Experimentaly obtained Q factor.
 set_q_factor = 1600.
@@ -127,7 +127,7 @@ detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
 # Line width of resonances should be v_g * alpha,
 # but we don't have convenient access to v_g, therefore
 # phase velocity as approximation to group velocity
-phase_v = sim_AC_wguide.Eig_value/k_AC
+phase_v = sim_AC_wguide.Eig_values/k_AC
 linewidth = phase_v*alpha
 
 freq_min = 5  # GHz
@@ -141,7 +141,7 @@ plt.clf()
 for AC_i in range(len(alpha)):
     gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
                  *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-    freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
+    freq_list_GHz = np.real(sim_AC_wguide.Eig_values[AC_i] + detuning_range)*1e-9
     plt.plot(freq_list_GHz, gain_list)
     # set up an interpolation for summing all the gain peaks
     interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
@@ -166,7 +166,7 @@ plt.clf()
 for AC_i in range(len(alpha)):
     gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
                  *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-    freq_list_GHz = np.real(sim_AC_wguide.Eig_value[AC_i] + detuning_range)*1e-9
+    freq_list_GHz = np.real(sim_AC_wguide.Eig_values[AC_i] + detuning_range)*1e-9
     interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
     interp_values += interp_spectrum
 
