@@ -84,7 +84,8 @@ k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 # Calculate Acoustic Modes
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
     EM_sim=sim_EM_wguide)
-# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+# Save calculated :Simmo: object for AC calculation.
+np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 
 # The previous two lines can be commented out and the following
 # two uncommented to provide precisely the same objects for the
@@ -104,13 +105,18 @@ set_q_factor = 1000.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival, fixed_Q=set_q_factor)
-np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
+
+# Save the gain calculation results
+np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, 
+            SBS_gain_MB=SBS_gain_MB, alpha=alpha)
 
 # The previous two lines can be commented out and the following
 # three uncommented to provide precisely the same objects for the
 # remainder of the simulation.
 # npzfile = np.load('wguide_data_AC_gain.npz')
 # SBS_gain = npzfile['SBS_gain']
+# SBS_gain_PE = npzfile['SBS_gain_PE']
+# SBS_gain_MB = npzfile['SBS_gain_MB']
 # alpha = npzfile['alpha']
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.

@@ -860,8 +860,8 @@ If(rect == 1)
 
         If(2*radius1 > slab_w)
             If(slab2_w_full == 1)
-                Point(352) = {d/2-slab2_w/2, -hy+slab_h+slab2_h, 0, lc5};
-                Point(353) = {d/2+slab2_w/2, -hy+slab_h+slab2_h, 0, lc5};
+                Point(352) = {d/2-slab2_w/2, -hy+slab_h+slab2_h, 0, lc2};
+                Point(353) = {d/2+slab2_w/2, -hy+slab_h+slab2_h, 0, lc2};
                 Line(31) = {11, 352};
                 Line(32) = {352, 250};
                 Line(33) = {352, 350};

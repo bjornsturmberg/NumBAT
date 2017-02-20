@@ -110,9 +110,11 @@ set_q_factor = 1600.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival, fixed_Q=set_q_factor)
-# np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, alpha=alpha)
+# np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, SBS_gain_MB=SBS_gain_MB, alpha=alpha)
 # npzfile = np.load('wguide_data_AC_gain.npz')
 # SBS_gain = npzfile['SBS_gain']
+# SBS_gain_PE = npzfile['SBS_gain_PE']
+# SBS_gain_MB = npzfile['SBS_gain_MB']
 # alpha = npzfile['alpha']
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
