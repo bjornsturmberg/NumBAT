@@ -181,7 +181,7 @@ If(rect == 0)
 
     Physical Surface(1) = {41, 73, 79, 55, 53, 77, 75, 43};
     Physical Surface(2) = {67, 65, 71, 69};
-    Physical Surface(3) = {63, 57, 59, 61};
+    Physical Surface(7) = {63, 57, 59, 61};
 EndIf
 
 If(rect == 1)
@@ -269,5 +269,5 @@ If(rect == 1)
 
     Physical Surface(1) = {93, 117, 123, 97, 99, 121, 119, 95};
     Physical Surface(2) = {101, 103, 105, 107};
-    Physical Surface(3) = {109, 115, 113, 111};
+    Physical Surface(7) = {109, 115, 113, 111};
 EndIf

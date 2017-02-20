@@ -54,7 +54,8 @@ class Simmo(object):
                                 self.structure.slab_b_bkg_material.n(self.wl_m),
                                 self.structure.coating_material.n(self.wl_m)])
 
-        self.n_list = self.n_list[:self.structure.nb_typ_el]
+        # self.n_list = self.n_list[:self.structure.nb_typ_el]
+        self.n_list = self.n_list[self.n_list != 0]
         if self.structure.loss is False:
             self.n_list = self.n_list.real
 
@@ -214,7 +215,6 @@ class Simmo(object):
         else:
             shift = self.shift_Hz
 
-
         # Take existing msh from EM FEM and manipulate mesh to exclude vacuum areas.
         if self.EM_sim:
             suplied_geo_flag = 1
@@ -235,7 +235,9 @@ class Simmo(object):
                 plotting.plot_msh(x_arr, 'orig')
 
             for el in range(n_msh_el):
+                # print type_el[el]
                 if type_el[el] in self.structure.typ_el_AC:
+                    # print "in", type_el[el]
                     type_el_AC.append(self.structure.typ_el_AC[type_el[el]])
                     el_convert_tbl[n_el_kept] = el
                     el_convert_tbl_inv[el] = n_el_kept

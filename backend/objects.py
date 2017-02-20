@@ -76,6 +76,18 @@ class Struct(object):
 
             coating_material  : A :Material: instance for the
 
+            bkg_AC  : A list of acoustic parameters
+
+            inc_a_AC  : A list of acoustic parameters
+
+            slab_a_AC  : A list of acoustic parameters
+
+            slab_a_bkg_AC  : A list of acoustic parameters
+
+            slab_b_AC  : A list of acoustic parameters
+
+            slab_b_bkg_AC  : A list of acoustic parameters
+
             loss  (bool): If False, Im(n) = 0, if True n as in \
                 :Material: instance.
 
@@ -122,29 +134,30 @@ class Struct(object):
                  two_inc_sep=None, incs_y_offset=None,
                  bkg_material=materials.Material(1.0 + 0.0j),
                  inc_a_material=materials.Material(1.0 + 0.0j),
-                 inc_b_material=materials.Material(1.0 + 0.0j),
-                 slab_a_material=materials.Material(1.0 + 0.0j),
-                 slab_a_bkg_material=materials.Material(1.0 + 0.0j),
-                 slab_b_material=materials.Material(1.0 + 0.0j),
-                 slab_b_bkg_material=materials.Material(1.0 + 0.0j),
-                 coating_material=materials.Material(1.0 + 0.0j),
+                 slab_a_material=materials.Material(0.0 + 0.0j),
+                 slab_a_bkg_material=materials.Material(0.0 + 0.0j),
+                 slab_b_material=materials.Material(0.0 + 0.0j),
+                 slab_b_bkg_material=materials.Material(0.0 + 0.0j),
+                 coating_material=materials.Material(0.0 + 0.0j),
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
                  inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
                  inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
                  inc_o_x=None,
-                 inc_c_material=materials.Material(1.0 + 0.0j),
-                 inc_d_material=materials.Material(1.0 + 0.0j),
-                 inc_e_material=materials.Material(1.0 + 0.0j),
-                 inc_f_material=materials.Material(1.0 + 0.0j),
-                 inc_g_material=materials.Material(1.0 + 0.0j),
-                 inc_h_material=materials.Material(1.0 + 0.0j),
-                 inc_i_material=materials.Material(1.0 + 0.0j),
-                 inc_j_material=materials.Material(1.0 + 0.0j),
-                 inc_k_material=materials.Material(1.0 + 0.0j),
-                 inc_l_material=materials.Material(1.0 + 0.0j),
-                 inc_m_material=materials.Material(1.0 + 0.0j),
-                 inc_n_material=materials.Material(1.0 + 0.0j),
-                 inc_o_material=materials.Material(1.0 + 0.0j),
+                 inc_b_material=materials.Material(0.0 + 0.0j),
+                 inc_c_material=materials.Material(0.0 + 0.0j),
+                 inc_d_material=materials.Material(0.0 + 0.0j),
+                 inc_e_material=materials.Material(0.0 + 0.0j),
+                 inc_f_material=materials.Material(0.0 + 0.0j),
+                 inc_g_material=materials.Material(0.0 + 0.0j),
+                 inc_h_material=materials.Material(0.0 + 0.0j),
+                 inc_i_material=materials.Material(0.0 + 0.0j),
+                 inc_j_material=materials.Material(0.0 + 0.0j),
+                 inc_k_material=materials.Material(0.0 + 0.0j),
+                 inc_l_material=materials.Material(0.0 + 0.0j),
+                 inc_m_material=materials.Material(0.0 + 0.0j),
+                 inc_n_material=materials.Material(0.0 + 0.0j),
+                 inc_o_material=materials.Material(0.0 + 0.0j),
+                 inc_b_AC=None,
                  inc_c_AC=None, inc_d_AC=None,inc_e_AC=None,inc_f_AC=None,inc_g_AC=None,
                  inc_h_AC=None,inc_i_AC=None,inc_j_AC=None,inc_k_AC=None,inc_l_AC=None,
                  inc_m_AC=None,inc_n_AC=None,inc_o_AC=None,
@@ -211,6 +224,20 @@ class Struct(object):
         self.inc_m_material = inc_m_material
         self.inc_n_material = inc_n_material
         self.inc_o_material = inc_o_material
+        self.inc_b_AC = inc_b_AC
+        self.inc_c_AC = inc_c_AC
+        self.inc_d_AC = inc_d_AC
+        self.inc_e_AC = inc_e_AC
+        self.inc_f_AC = inc_f_AC
+        self.inc_g_AC = inc_g_AC
+        self.inc_h_AC = inc_h_AC
+        self.inc_i_AC = inc_i_AC
+        self.inc_j_AC = inc_j_AC
+        self.inc_k_AC = inc_k_AC
+        self.inc_l_AC = inc_l_AC
+        self.inc_m_AC = inc_m_AC
+        self.inc_n_AC = inc_n_AC
+        self.inc_o_AC = inc_o_AC
         self.coating_material = coating_material
         self.loss = loss
         if slab_b_x is not None:
@@ -267,7 +294,7 @@ class Struct(object):
         self.plot_field_conc = plot_field_conc
         # Order must match msh templates!
         el_conv_table = {}
-        acoustic_props = [bkg_AC, inc_a_AC, slab_a_bkg_AC, slab_a_AC, slab_b_bkg_AC, slab_b_AC]
+        acoustic_props = [bkg_AC, inc_a_AC, slab_a_AC, slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC, inc_b_AC]
         i = 1
         j = 1
         for matter in acoustic_props:
@@ -390,11 +417,9 @@ class Struct(object):
                    'diasss': dec_float_str(self.slab_b_x),
                    'diassss': dec_float_str(self.slab_b_y)}
                 elif self.coating_y is not None and self.inc_b_x is not None:
-                    raise NotImplementedError, "Have not implemented 2 coated " \
-                    "inclusions."
+                    raise NotImplementedError, "Have not implemented 2 coated inclusions."
                 elif self.coating_y is not None and self.inc_b_x is None:
-                        raise NotImplementedError, "Have not implemented 1 coated " \
-                    "inclusions."
+                        raise NotImplementedError, "Have not implemented 1 coated inclusions."
                 else:
                     raise ValueError, "NumBAT doesn't understand you geometry."
             elif self.slab_a_x is not None:
@@ -419,11 +444,9 @@ class Struct(object):
                    'dias': dec_float_str(self.slab_a_x),
                    'diass': dec_float_str(self.slab_a_y)}
                 elif self.coating_y is not None and self.inc_b_x is not None:
-                    raise NotImplementedError, "Have not implemented 2 coated " \
-                    "inclusions."
+                    raise NotImplementedError, "Have not implemented 2 coated inclusions."
                 elif self.coating_y is not None and self.inc_b_x is None:
-                        raise NotImplementedError, "Have not implemented 1 coated " \
-                    "inclusions."
+                        raise NotImplementedError, "Have not implemented 1 coated inclusions."
                 else:
                     raise ValueError, "NumBAT doesn't understand you geometry."
             elif self.inc_a_x is not None:
@@ -444,11 +467,9 @@ class Struct(object):
                    'diab': dec_float_str(self.inc_a_x),
                    'diasb': dec_float_str(self.inc_a_y)}
                 elif self.coating_y is not None and self.inc_b_x is not None:
-                    raise NotImplementedError, "Have not implemented 2 coated " \
-                    "inclusions."
+                    raise NotImplementedError, "Have not implemented 2 coated inclusions."
                 elif self.coating_y is not None and self.inc_b_x is None:
-                        raise NotImplementedError, "Have not implemented 1 coated " \
-                    "inclusions."
+                        raise NotImplementedError, "Have not implemented 1 coated inclusions."
                 else:
                     raise ValueError, "NumBAT doesn't understand you geometry."
             else:
@@ -469,14 +490,19 @@ class Struct(object):
                     geo = geo.replace('a2 = 10;', "a2 = %f;" % self.inc_b_x)
                     geo = geo.replace('a2y = 20;', "a2y = %f;" % self.inc_b_y)
                     geo = geo.replace('sep = 10;', "sep = %f;" % self.two_inc_sep)
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
                 if msh_template == '2':
                     geo = geo.replace('yoff = -5;;', "yoff = %f;" % self.incs_y_offset)
                 if msh_template == '1_on_slab' or msh_template == '1_on_2slabs' or msh_template == '1_on_slab' or msh_template == '2_on_2slabs':
                     geo = geo.replace('slab_width = d_in_nm;', "slab_width = %f;" % self.slab_a_x)
                     geo = geo.replace('slab_height = 10;', "slab_height = %f;" % self.slab_a_y)
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
+                    geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
                 if msh_template == '1_on_2slabs' or msh_template == '2_on_2slabs':
                     geo = geo.replace('slab2_width = d_in_nm;', "slab2_width = %f;" % self.slab_b_x)
                     geo = geo.replace('slab2_height = 5;', "slab2_height = %f;" % self.slab_b_y)
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
+                    geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
 
         elif self.inc_shape in ['SMF']:
 
@@ -596,5 +622,6 @@ def dec_float_str(dec_float):
     """ Convert float with decimal point into string with '_' in place of '.' """
     # string = str(dec_float)
     string = '%8.4f' %dec_float
-    fmt_string = string.replace('.', '_')
-    return fmt_string
+    string = string.replace('.', '_')
+    string = string.replace(" ", "")
+    return string

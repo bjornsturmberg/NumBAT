@@ -79,7 +79,7 @@ n_eff = 2.
 # np.savez('wguide_data-chalc', sim_EM_wguide=sim_EM_wguide)
 npzfile = np.load('wguide_data-chalc.npz')
 sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM', add_name='As2S3')
+# plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4, ylim_max=0.4, EM_AC='EM', add_name='As2S3')
 
 # Print the wavevectors of EM modes.
 print 'k_z of EM wave \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)

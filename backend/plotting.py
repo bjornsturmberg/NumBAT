@@ -196,8 +196,9 @@ def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 
 
 #### Standard plotting of spectra #############################################
-def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=None,
-                  EM_AC='EM', pdf_png='png', add_name=''):
+def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, 
+                  xlim_min=None, xlim_max=None, ylim_min=None, ylim_max=None,
+                  EM_AC='EM', stress_fields=False, pdf_png='png', add_name=''):
     """ Plot EM mode fields.
     NOTE: z component of EM field needs comes scaled by 1/(i beta),
     which must be reintroduced!
@@ -209,9 +210,21 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
             n_points  (int): The number of points across unitcell to \
                 interpolate the field onto.
 
-            xlim  (float): Limit plotted xrange to xlim:(1-xlim) of unitcell
+            xlim_min  (float): Limit plotted xrange to xlim_min:(1-xlim_max) of unitcell
 
-            ylim  (float): Limit plotted yrange to ylim:(1-ylim) of unitcell
+            xlim_max  (float): Limit plotted xrange to xlim_min:(1-xlim_max) of unitcell
+
+            ylim_min  (float): Limit plotted yrange to ylim_min:(1-ylim_max) of unitcell
+
+            ylim_max  (float): Limit plotted yrange to ylim_min:(1-ylim_max) of unitcell
+
+            EM_AC  (str): Either 'EM' or 'AC' modes
+
+            stress_fields  (bool): Calculate acoustic stress fields
+
+            pdf_png  (str): File type to save, either 'png' or 'pdf' 
+
+            add_name  (str): Add a string to the file name.
     """
 
     if EM_AC is not 'EM' and EM_AC is not 'AC':
@@ -247,7 +260,6 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
     table_nod = sim_wguide.table_nod.T
     x_arr = sim_wguide.x_arr.T
 
-    # for ival in [0]:
     for ival in range(len(sim_wguide.Eig_values)):
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
@@ -286,66 +298,38 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
                         np.abs(v_Ey6p)**2 +
                         np.abs(v_Ez6p)**2)
 
-        # ### Interpolate onto triangular grid - honest to FEM elements
-        # # dense triangulation with unique points
-        # v_triang1p = []
-        # for i_el in np.arange(sim_wguide.n_msh_el):
-        #     # triangles
-        #     triangles = [[table_nod[i_el,0]-1,table_nod[i_el,3]-1,table_nod[i_el,5]-1],
-        #                  [table_nod[i_el,1]-1,table_nod[i_el,4]-1,table_nod[i_el,3]-1],
-        #                  [table_nod[i_el,2]-1,table_nod[i_el,5]-1,table_nod[i_el,4]-1],
-        #                  [table_nod[i_el,3]-1,table_nod[i_el,4]-1,table_nod[i_el,5]-1]]
-        #     v_triang1p.extend(triangles)
+        ### Interpolate onto triangular grid - honest to FEM elements
+        # dense triangulation with unique points
+        v_triang1p = []
+        for i_el in np.arange(sim_wguide.n_msh_el):
+            # triangles
+            triangles = [[table_nod[i_el,0]-1,table_nod[i_el,3]-1,table_nod[i_el,5]-1],
+                         [table_nod[i_el,1]-1,table_nod[i_el,4]-1,table_nod[i_el,3]-1],
+                         [table_nod[i_el,2]-1,table_nod[i_el,5]-1,table_nod[i_el,4]-1],
+                         [table_nod[i_el,3]-1,table_nod[i_el,4]-1,table_nod[i_el,5]-1]]
+            v_triang1p.extend(triangles)
 
-        # # triangulations
-        # triang6p = matplotlib.tri.Triangulation(v_x6p,v_y6p,v_triang6p)
-        # triang1p = matplotlib.tri.Triangulation(x_arr[:,0],x_arr[:,1],v_triang1p)
+        # triangulations
+        triang6p = matplotlib.tri.Triangulation(v_x6p,v_y6p,v_triang6p)
+        triang1p = matplotlib.tri.Triangulation(x_arr[:,0],x_arr[:,1],v_triang1p)
 
-        # # building interpolators: triang1p for the finder, triang6p for the values
-        # finder = matplotlib.tri.TrapezoidMapTriFinder(triang1p)
-        # ReEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.real,trifinder=finder)
-        # ImEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.imag,trifinder=finder)
-        # ReEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.real,trifinder=finder)
-        # ImEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.imag,trifinder=finder)
-        # ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
-        # ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
-        # AbsE = matplotlib.tri.LinearTriInterpolator(triang6p,v_E6p,trifinder=finder)
-        # # interpolated fields
-        # m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
-
-
-        ### Interpolate onto rectangular Cartesian grid
-        xy = zip(v_x6p, v_y6p)
-        grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
-        m_ReEx = interpolate.griddata(xy, v_Ex6p.real, (grid_x, grid_y), method='linear')
-        m_ReEy = interpolate.griddata(xy, v_Ey6p.real, (grid_x, grid_y), method='linear')
-        m_ReEz = interpolate.griddata(xy, v_Ez6p.real, (grid_x, grid_y), method='linear')
-        m_ImEx = interpolate.griddata(xy, v_Ex6p.imag, (grid_x, grid_y), method='linear')
-        m_ImEy = interpolate.griddata(xy, v_Ey6p.imag, (grid_x, grid_y), method='linear')
-        m_ImEz = interpolate.griddata(xy, v_Ez6p.imag, (grid_x, grid_y), method='linear')
-        m_AbsE = interpolate.griddata(xy, v_E6p.real, (grid_x, grid_y), method='linear')
-        dx = grid_x[-1,0] - grid_x[-2,0]
-        dy = grid_y[0,-1] - grid_y[0,-2]
-        m_Ex = m_ReEx + 1j*m_ImEx
-        m_Ey = m_ReEy + 1j*m_ImEy
-        m_Ez = m_ReEz + 1j*m_ImEz
-        m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
-        m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
-        m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
-        m_AbsE = m_AbsE.reshape(n_pts_x,n_pts_y)
-
-        m_ReEx = np.real(m_Ex)
-        m_ReEy = np.real(m_Ey)
-        m_ReEz = np.real(m_Ez)
-        m_ImEx = np.imag(m_Ex)
-        m_ImEy = np.imag(m_Ey)
-        m_ImEz = np.imag(m_Ez)
+        # building interpolators: triang1p for the finder, triang6p for the values
+        finder = matplotlib.tri.TrapezoidMapTriFinder(triang1p)
+        ReEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.real,trifinder=finder)
+        ImEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.imag,trifinder=finder)
+        ReEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.real,trifinder=finder)
+        ImEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.imag,trifinder=finder)
+        ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
+        ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
+        AbsE = matplotlib.tri.LinearTriInterpolator(triang6p,v_E6p,trifinder=finder)
+        # interpolated fields
+        m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
+        m_AbsE = AbsE(v_x,v_y).reshape(n_pts_x,n_pts_y)
 
 
         # Flip y order as imshow has origin at top left
@@ -371,10 +355,10 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
             plt.xticks([])
             plt.yticks([])
             # limits
-            if xlim:
-                ax.set_xlim(xlim*n_points,(1-xlim)*n_points)
-            if ylim:
-                ax.set_ylim((1-ylim)*n_points,ylim*n_points)
+            if xlim_min != None:
+                ax.set_xlim(xlim_min*n_points,(1-xlim_max)*n_points)
+            if ylim_min != None:
+                ax.set_ylim((1-ylim_min)*n_points,ylim_max*n_points)
             # titles
             plt.title(v_labels[i_p],fontsize=title_font-4)
             # colorbar
@@ -406,10 +390,10 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
             axes = plt.gca()
             xmin, xmax = axes.get_xlim()
             ymin, ymax = axes.get_ylim()
-            if xlim:
-                ax.set_xlim(xlim*xmax,(1-xlim)*xmax)
-            if ylim:
-                ax.set_ylim((1-ylim)*ymin, ylim*ymin)
+            if xlim_min != None:
+                ax.set_xlim(xlim_min*xmax,(1-xlim_max)*xmax)
+            if ylim_min != None:
+                ax.set_ylim((1-ylim_min)*ymin, ylim_max*ymin)
             plt.title('Transverse',fontsize=title_font-4)
 
         if EM_AC=='EM':
@@ -456,7 +440,34 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
         plt.close()
 
 
-        if EM_AC=='AC':
+        if EM_AC=='AC' and stress_fields is True:
+            ### Interpolate onto rectangular Cartesian grid
+            xy = zip(v_x6p, v_y6p)
+            grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
+            m_ReEx = interpolate.griddata(xy, v_Ex6p.real, (grid_x, grid_y), method='linear')
+            m_ReEy = interpolate.griddata(xy, v_Ey6p.real, (grid_x, grid_y), method='linear')
+            m_ReEz = interpolate.griddata(xy, v_Ez6p.real, (grid_x, grid_y), method='linear')
+            m_ImEx = interpolate.griddata(xy, v_Ex6p.imag, (grid_x, grid_y), method='linear')
+            m_ImEy = interpolate.griddata(xy, v_Ey6p.imag, (grid_x, grid_y), method='linear')
+            m_ImEz = interpolate.griddata(xy, v_Ez6p.imag, (grid_x, grid_y), method='linear')
+            m_AbsE = interpolate.griddata(xy, v_E6p.real, (grid_x, grid_y), method='linear')
+            dx = grid_x[-1,0] - grid_x[-2,0]
+            dy = grid_y[0,-1] - grid_y[0,-2]
+            m_Ex = m_ReEx + 1j*m_ImEx
+            m_Ey = m_ReEy + 1j*m_ImEy
+            m_Ez = m_ReEz + 1j*m_ImEz
+            m_Ex = m_Ex.reshape(n_pts_x,n_pts_y)
+            m_Ey = m_Ey.reshape(n_pts_x,n_pts_y)
+            m_Ez = m_Ez.reshape(n_pts_x,n_pts_y)
+            m_AbsE = m_AbsE.reshape(n_pts_x,n_pts_y)
+
+            m_ReEx = np.real(m_Ex)
+            m_ReEy = np.real(m_Ey)
+            m_ReEz = np.real(m_Ez)
+            m_ImEx = np.imag(m_Ex)
+            m_ImEy = np.imag(m_Ey)
+            m_ImEz = np.imag(m_Ez)
+
             del_x_Ex = np.gradient(m_Ex, dx, axis=0)
             del_y_Ex = np.gradient(m_Ex, dy, axis=1)
             del_x_Ey = np.gradient(m_Ey, dx, axis=0)
@@ -481,10 +492,10 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, xlim=None, ylim=N
                 plt.xticks([])
                 plt.yticks([])
                 # limits
-                if xlim:
-                    ax.set_xlim(xlim*n_points,(1-xlim)*n_points)
-                if ylim:
-                    ax.set_ylim((1-ylim)*n_points,ylim*n_points)
+                if xlim_min != None:
+                    ax.set_xlim(xlim_min*n_points,(1-xlim_max)*n_points)
+                if ylim_min != None:
+                    ax.set_ylim((1-ylim_min)*n_points,ylim_max*n_points)
                 # titles
                 plt.title(v_labels[i_p],fontsize=title_font-4)
                 # colorbar

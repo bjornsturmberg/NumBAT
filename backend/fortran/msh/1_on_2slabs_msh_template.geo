@@ -46,6 +46,7 @@ Point(3) = {-hx+d, -hy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
 // Slab
+Point(38) = {-hx+d/2, -hy+slab2_h, 0, lc5};
 Point(250) = {d/2-slab_w/2, -hy+slab_h+slab2_h, 0, lc5};
 Point(251) = {d/2+slab_w/2, -hy+slab_h+slab2_h, 0, lc5};
 Point(350) = {d/2-slab2_w/2, -hy+slab2_h, 0, lc5};
@@ -57,7 +58,6 @@ Point(6) = {-hx+d/2, -hy+2*radius1y+slab_h+slab2_h, 0, lc2};
 Point(7) = {-hx+d/2-radius1, -hy+radius1y+slab_h+slab2_h, 0, lc2};
 Point(8) = {-hx+d/2, -hy+slab_h+slab2_h, 0, lc2};
 Point(9) = {-hx+d/2+radius1, -hy+radius1y+slab_h+slab2_h, 0, lc2};
-Point(38) = {-hx+d/2, -hy+slab2_h, 0, lc2};
 
 Point(10) = {-hx+d/2, 0, 0, lc4};
 Point(11) = {0,-hy+radius1y+slab_h+slab2_h, 0, lc};
@@ -94,6 +94,7 @@ If(rect == 0)
     Line Loop(55) = {10, -14, 18};
     Plane Surface(56) = {55};
     Physical Line(57) = {1, 2};
+
     Physical Surface(2) = {56, 50, 52, 54};
 
     If(slab_w_full == 1)
@@ -133,7 +134,7 @@ If(rect == 0)
 
             Physical Surface(1) = {46, 48, 61, 59};
             Physical Surface(3) = {65, 63};
-            Physical Surface(4) = {67, 69};
+            Physical Surface(5) = {67, 69};
         EndIf
 
         If(slab2_w_full == 0)  
@@ -182,8 +183,8 @@ If(rect == 0)
 
             Physical Surface(1) = {71, 46, 48, 73};
             Physical Surface(3) = {77, 75};
-            Physical Surface(4) = {81, 83};
-            Physical Surface(5) = {79, 85};
+            Physical Surface(5) = {81, 83};
+            Physical Surface(6) = {79, 85};
         EndIf
     EndIf
 
@@ -426,10 +427,10 @@ EndIf
 
 
 If(rect == 1)
-    Point(150) = {-hx+d/2+radius1, -hy+slab_h+slab2_h+2*radius1y, 0,lc3};
-    Point(151) = {-hx+d/2-radius1, -hy+slab_h+slab2_h+2*radius1y, 0,lc3};
-    Point(152) = {-hx+d/2+radius1, -hy+slab_h+slab2_h, 0,lc3};
-    Point(153) = {-hx+d/2-radius1, -hy+slab_h+slab2_h, 0,lc3};
+    Point(150) = {-hx+d/2+radius1, -hy+slab_h+slab2_h+2*radius1y, 0,lc2};
+    Point(151) = {-hx+d/2-radius1, -hy+slab_h+slab2_h+2*radius1y, 0,lc2};
+    Point(152) = {-hx+d/2+radius1, -hy+slab_h+slab2_h, 0,lc2};
+    Point(153) = {-hx+d/2-radius1, -hy+slab_h+slab2_h, 0,lc2};
 
     If(slab_w_full == 1)
         Line(6) = {11,250};

@@ -95,7 +95,7 @@ for i_lc, lc_ref in enumerate(lc_list):
 
 # sim_EM_wguide = conv_list[-1][0]
 # # print 'k_z of EM wave \n', sim_EM_wguide.Eig_values
-# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+# plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4, ylim_max=0.4, EM_AC='EM')
 
 rel_modes = [2,4,8]
 rel_mode_freq_EM = np.zeros(nu_lcs,dtype=complex)

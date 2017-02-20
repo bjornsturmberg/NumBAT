@@ -77,8 +77,9 @@ sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 # Print the wavevectors of EM modes.
 print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values),4)
 # Plot the EM modes fields, important to specify this with EM_AC='EM'.
-# Zoom in on the central region (of big unitcell) with xlim, ylim args.
-plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM')
+# Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
+plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, 
+	                     ylim_min=0.4, ylim_max=0.4, EM_AC='EM')
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))

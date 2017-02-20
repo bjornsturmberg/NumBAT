@@ -72,7 +72,7 @@ sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-# plotting.plt_mode_fields(sim_EM_wguide, xlim=0.4, ylim=0.4, EM_AC='EM', add_name='NW')
+# plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4, ylim_max=0.4, EM_AC='EM', add_name='NW')
 # plotting.plt_mode_fields(sim_EM_wguide, EM_AC='EM', add_name='NW')
 
 # Print the wavevectors of EM modes.

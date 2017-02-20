@@ -24,8 +24,8 @@ EndIf
 lc = 0; // 0.501 0.201 0.0701;
 lc2 = lc/1; // on cylinder surfaces
 lc3 = lc/1; // cylinder1 centres
-lc4 = lc2/1; // centres of top and bottom
-lc5 = lc2/1; // slab
+lc4 = lc/1; // centres of top and bottom
+lc5 = lc/1; // slab
 
 hy = dy; // Thickness: square profile => hy=d
 hx = 0.;
@@ -152,8 +152,8 @@ If(rect == 0)
         Physical Line(54) = {8, 30};
         Physical Surface(1) = {34, 32};
         Physical Surface(2) = {42, 36, 38, 40};
-        Physical Surface(3) = {50, 48};
-        Physical Surface(4) = {46, 44};
+        Physical Surface(4) = {50, 48};
+        Physical Surface(3) = {46, 44};
     EndIf
 EndIf
 
@@ -261,8 +261,8 @@ If(rect == 1)
 
             Physical Surface(1) = {64, 66};
             Physical Surface(2) = {40, 42, 50, 52};
-            Physical Surface(3) = {58, 48};
-            Physical Surface(4) = {54, 56};
+            Physical Surface(4) = {58, 48};
+            Physical Surface(3) = {54, 56};
 
         EndIf
     EndIf
@@ -317,8 +317,8 @@ If(rect == 1)
         Physical Line(62) = {32, 6};
         Physical Surface(1) = {64, 66};
         Physical Surface(2) = {42, 46, 48, 40};
-        Physical Surface(3) = {50, 58};
-        Physical Surface(4) = {56, 54};
+        Physical Surface(4) = {50, 58};
+        Physical Surface(3) = {56, 54};
 
     EndIf
 EndIf

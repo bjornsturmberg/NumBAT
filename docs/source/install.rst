@@ -45,8 +45,8 @@ edit SuiteSparse/SuiteSparse\_config/SuiteSparse\_config.mk for consistency acro
 
 set path to install folder::
 
-    line 85 INSTALL_LIB = /$Path_to_EMustack/NumBAT/backend/fortran/SS_install/lib
-    line 86 INSTALL_INCLUDE = /$Path_to_EMustack/NumBAT/backend/fortran/SS_install/include
+    line 85 INSTALL_LIB = /$Path_to_EMustack/NumBAT/backend/fortran/SS_installed/lib
+    line 86 INSTALL_INCLUDE = /$Path_to_EMustack/NumBAT/backend/fortran/SS_installed/include
 
 line 290ish commenting out all other references to these::
 
@@ -76,7 +76,7 @@ Now make metis (still in SuiteSparse/metis-4.0/)::
 
 Now move back to NumBAT/backend/fortran/ ::
 
-    $ cp SuiteSparse/metis-4.0/libmetis.a SS_install/lib/
+    $ cp SuiteSparse/metis-4.0/libmetis.a SS_installed/lib/
 
 and then move to SuiteSparse/ and execute the following::
 
@@ -84,12 +84,12 @@ and then move to SuiteSparse/ and execute the following::
     $ make install
     $ cd SuiteSparse/UMFPACK/Demo
     $ make fortran64
-    $ cp SuiteSparse/UMFPACK/Demo/umf4_f77zwrapper64.o into SS_install/lib/
+    $ cp SuiteSparse/UMFPACK/Demo/umf4_f77zwrapper64.o into SS_installed/lib/
 
 Copy the libraries into NumBAT/backend/fortran/Lib/ so that NumBAT/ is a complete package that can be moved across machine without alteration. This will override the pre-compiled libraries from the release (you may wish to save these somewhere).::
 
-    $ cp SS_install/lib/*.a NumBAT/backend/fortran/Lib/
-    $ cp SS_install/lib/umf4_f77zwrapper64.o NumBAT/backend/fortran/Lib/
+    $ cp SS_installed/lib/*.a NumBAT/backend/fortran/Lib/
+    $ cp SS_installed/lib/umf4_f77zwrapper64.o NumBAT/backend/fortran/Lib/
 
 
 NumBAT Makefile

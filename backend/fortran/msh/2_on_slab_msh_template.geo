@@ -20,7 +20,7 @@ b = sep/(2*d_in_nm);
 
 rect = 1;
 
-slab_width = d_in_nm;
+slab_width = d_in_nm-10;
 slab_height = 10;
 slab_w = slab_width/d_in_nm;
 slab_h = slab_height/d_in_nm;
@@ -189,15 +189,15 @@ EndIf
 
 
 If(rect == 1)
-    Point(150) = {-radius1-b-hx+d/2+radius1, -hy/2+radius1y, 0,lc3};
-    Point(151) = {-radius1-b-hx+d/2-radius1, -hy/2+radius1y, 0,lc3};
-    Point(152) = {-radius1-b-hx+d/2+radius1, -hy/2-radius1y, 0,lc3};
-    Point(153) = {-radius1-b-hx+d/2-radius1, -hy/2-radius1y, 0,lc3};
+    Point(150) = {-radius1-b-hx+d/2+radius1, -hy+slab_h+2*radius1y, 0,lc3};
+    Point(151) = {-radius1-b-hx+d/2-radius1, -hy+slab_h+2*radius1y, 0,lc3};
+    Point(152) = {-radius1-b-hx+d/2+radius1, -hy+slab_h, 0,lc3};
+    Point(153) = {-radius1-b-hx+d/2-radius1, -hy+slab_h, 0,lc3};
 
-    Point(154) = {radius2+b-hx+d/2+radius2, -hy/2+radius2y, 0,lc3};
-    Point(155) = {radius2+b-hx+d/2-radius2, -hy/2+radius2y, 0,lc3};
-    Point(156) = {radius2+b-hx+d/2+radius2, -hy/2-radius2y, 0,lc3};
-    Point(157) = {radius2+b-hx+d/2-radius2, -hy/2-radius2y, 0,lc3};
+    Point(154) = {radius2+b-hx+d/2+radius2, -hy+slab_h+2*radius2y, 0,lc3};
+    Point(155) = {radius2+b-hx+d/2-radius2, -hy+slab_h+2*radius2y, 0,lc3};
+    Point(156) = {radius2+b-hx+d/2+radius2, -hy+slab_h, 0,lc3};
+    Point(157) = {radius2+b-hx+d/2-radius2, -hy+slab_h, 0,lc3};
 
     Line(48) = {10, 151};
     Line(26) = {151, 6};
@@ -274,15 +274,15 @@ If(rect == 1)
     Plane Surface(76) = {75};
     
     Physical Surface(2) = {88, 80, 82, 84};
-    Physical Surface(3) = {70, 72, 76, 74};
+    Physical Surface(7) = {70, 72, 76, 74};
 
     If(slab_w_full == 1)
         Physical Surface(1) = {50, 86, 66, 68, 54};
-        Physical Surface(4) = {52};
+        Physical Surface(3) = {52};
     EndIf
     If(slab_w_full == 0)
         Physical Surface(1) = {56, 86, 66, 68, 60};
-        Physical Surface(4) = {64};
-        Physical Surface(5) = {58, 62};
+        Physical Surface(3) = {64};
+        Physical Surface(4) = {58, 62};
     EndIf
 EndIf

@@ -133,11 +133,36 @@ If(rect == 0)
     Plane Surface(118) = {117};
     Line Loop(119) = {112, 109, -23, 107};
     Plane Surface(120) = {119};
-    Physical Surface(1) = {114, 57, 79, 61, 118};
-    Physical Surface(2) = {75, 77, 71, 73};
-    Physical Surface(3) = {63, 65, 67, 69};
-    Physical Surface(4) = {116};
+
+    Line Loop(121) = {35, -28, -27, -36, -2};
+    Plane Surface(122) = {121};
+    Line Loop(123) = {36, -30, 40, -33, -37, -3};
+    Plane Surface(124) = {123};
+    Line Loop(125) = {37, -32, -31, -38, -4};
+    Plane Surface(126) = {125};
+    Line Loop(127) = {31, 19, 22};
+    Plane Surface(128) = {127};
+    Line Loop(129) = {22, -34, -20};
+    Plane Surface(130) = {129};
+    Line Loop(131) = {20, -33, 21};
+    Plane Surface(132) = {131};
+    Line Loop(133) = {21, -19, 32};
+    Plane Surface(134) = {133};
+    Line Loop(135) = {27, 15, 18};
+    Plane Surface(136) = {135};
+    Line Loop(137) = {15, 17, -28};
+    Plane Surface(138) = {137};
+    Line Loop(139) = {17, 29, -16};
+    Plane Surface(140) = {139};
+    Line Loop(141) = {16, 30, -18};
+    Plane Surface(142) = {141};
+
+    Physical Surface(1) = {114, 122, 124, 126, 118};
+    Physical Surface(2) = {134, 128, 130, 132};
+    Physical Surface(7) = {136, 142, 140, 138};
+    Physical Surface(3) = {116};
     Physical Surface(5) = {120};
+
 EndIf
 
 
@@ -209,9 +234,8 @@ If(rect == 1)
     Plane Surface(142) = {141};
     Physical Surface(1) = {114, 120, 130, 132, 142};
     Physical Surface(2) = {124, 126, 128, 122};
-    Physical Surface(3) = {138, 140, 134, 136};
-    Physical Surface(4) = {116};
+    Physical Surface(7) = {138, 140, 134, 136};
+    Physical Surface(3) = {116};
     Physical Surface(5) = {118};
 EndIf
-
 
