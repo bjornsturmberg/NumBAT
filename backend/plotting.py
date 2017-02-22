@@ -18,7 +18,7 @@ import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 try: plt.style.use('bjornstyle')
-except IOError: "Preferred matplotlib style file not found."
+except (IOError, AttributeError): "Preferred matplotlib style file not found."
 
 # font = {'family' : 'normal',
 #         'weight' : 'bold',
@@ -52,7 +52,7 @@ def zeros_int_str(zero_int):
 
 
 def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-                EM_ival1, EM_ival2, AC_ival, freq_min = None, freq_max = None,
+                EM_ival1, EM_ival2, AC_ival, freq_min, freq_max,
                 pdf_png='png', add_name=''):
     """ Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 
@@ -69,10 +69,11 @@ def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 
             k_AC  (float): Acoustic wavevector.
 
-        Keyword Args:
             freq_min  (float): Minimum of frequency range.
 
             freq_max  (float): Maximum of frequency range.
+            
+        Keyword Args:
     """
     tune_steps = 5e4
     tune_range = 10 # GHz
@@ -193,6 +194,7 @@ def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
         plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.pdf' % {'add' : add_name})
     plt.close()
 
+    return interp_values
 
 
 #### Standard plotting of spectra #############################################
