@@ -1,7 +1,7 @@
 Installation
 ================
 
-The source code for NumBAT is hosted `here on Gitlab <https://gitlab.com/bjorn_mq/NumBAT/>`_. Please download the latest release from here.
+The source code for NumBAT is hosted `here on Github <https://github.com/bjornsturmberg/NumBAT>`_. Please download the latest release from here.
 
 NumBAT has been developed on Ubuntu and is easiest to install on this platform. Simply run the setup script ::
 
