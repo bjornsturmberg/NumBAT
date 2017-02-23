@@ -52,7 +52,7 @@ def zeros_int_str(zero_int):
 
 
 def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-                EM_ival1, EM_ival2, AC_ival, freq_min, freq_max,
+                EM_ival1, EM_ival2, AC_ival, freq_min, freq_max, num_interp_pts=3000,
                 pdf_png='png', add_name=''):
     """ Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 
@@ -87,9 +87,8 @@ def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     phase_v = sim_AC_wguide.Eig_values/k_AC
     linewidth = phase_v*alpha
 
-    interp_grid_points = 10000
-    interp_grid = np.linspace(freq_min, freq_max, interp_grid_points)
-    interp_values = np.zeros(interp_grid_points)
+    interp_grid = np.linspace(freq_min, freq_max, num_interp_pts)
+    interp_values = np.zeros(num_interp_pts)
 
     plt.figure()
     plt.clf()
@@ -140,9 +139,9 @@ def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.close()
 
 
-    interp_values = np.zeros(interp_grid_points)
-    interp_values_PE = np.zeros(interp_grid_points)
-    interp_values_MB = np.zeros(interp_grid_points)
+    interp_values = np.zeros(num_interp_pts)
+    interp_values_PE = np.zeros(num_interp_pts)
+    interp_values_MB = np.zeros(num_interp_pts)
     plt.figure()
     plt.clf()
     if AC_ival == 'All':

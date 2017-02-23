@@ -79,7 +79,8 @@ n_eff = 2.
 # np.savez('wguide_data-chalc', sim_EM_wguide=sim_EM_wguide)
 npzfile = np.load('wguide_data-chalc.npz')
 sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-# plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4, ylim_max=0.4, EM_AC='EM', add_name='As2S3')
+# plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, 
+#                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM', add_name='As2S3')
 
 # Print the wavevectors of EM modes.
 print 'k_z of EM wave \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
@@ -99,7 +100,8 @@ k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 npzfile = np.load('wguide_data_AC.npz')
 sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
-# plotting.plt_mode_fields(sim_AC_wguide, xlim=0.3, ylim=0.3, EM_AC='AC', add_name='As2S3')
+# plotting.plt_mode_fields(sim_AC_wguide, xlim_min=0.4, xlim_max=0.4, 
+#                           ylim_min=0.4, ylim_max=0.4, EM_AC='AC', add_name='As2S3')
 
 # Print the frequencies of AC modes.
 print 'Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values*1e-9), 4)

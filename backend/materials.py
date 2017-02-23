@@ -177,8 +177,8 @@ def isotropic_stiffness(E, v):
     Ref: http://www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
     """
     c_11 = E*(1-v)/((1+v)*(1-2*v))
-    c_12 = c_11
-    c_44 = E*(1-2*v)/((1+v)*(1-2*v))
+    c_12 = E*(v)/((1+v)*(1-2*v))
+    c_44 = (E*(1-2*v)/((1+v)*(1-2*v)))/2
 
     return c_11, c_12, c_44
 
