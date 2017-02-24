@@ -47,7 +47,7 @@ EM_ival2=EM_ival1
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival='All'
 
-# Acoustic Parameters
+# Acoustic Parameters - Silicon
 # Density
 s = 2330  # kg/m3
 # Stiffness tensor components.

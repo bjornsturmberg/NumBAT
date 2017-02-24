@@ -38,7 +38,8 @@ class Struct(object):
             inc_a_y  (float): The vertical diameter of the inclusion in nm.
 
             inc_shape  (str): Shape of inclusions that have template mesh, \
-                currently: 'circular', 'rectangular'. Rectangular is default.
+                currently: 'circular', 'rectangular', 'slot'. \
+                Rectangular is default.
 
             slab_a_x  (float): The horizontal diameter in nm of the slab \
                 directly below the inclusion.
@@ -292,17 +293,18 @@ class Struct(object):
         self.plot_imag = plot_imag
         self.plot_abs = plot_abs
         self.plot_field_conc = plot_field_conc
+
         # Order must match msh templates!
         el_conv_table = {}
         acoustic_props = [bkg_AC, inc_a_AC, slab_a_AC, slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC, inc_b_AC]
-        i = 1
-        j = 1
+        i = 1; j = 1
         for matter in acoustic_props:
             if matter != None:
                 el_conv_table[i] = j
                 j += 1
             i += 1
         self.typ_el_AC = el_conv_table
+        print el_conv_table
         acoustic_props = [x for x in acoustic_props if x is not None]
         self.nb_typ_el_AC = len(acoustic_props)
         # Any material not given acoustic_props assumed to be vacuum.
@@ -504,8 +506,30 @@ class Struct(object):
                     geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
                     geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
 
-        elif self.inc_shape in ['SMF']:
+        elif self.inc_shape in ['slot']:
+            msh_name = 'slot_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s' % {
+            'd': dec_float_str(self.unitcell_x),
+            'dy': dec_float_str(self.unitcell_y),
+            'a': dec_float_str(self.inc_a_x),
+            'b': dec_float_str(self.inc_a_y),
+            'c': dec_float_str(self.slab_a_y)}
+            msh_template = 'slot'
+            if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
+                geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
+                geo = geo.replace('a2y = 10;', "a2y = %f;" % self.inc_b_y)
+                geo = geo.replace('s1y = 10;', "s1y = %f;" % self.slab_a_y)
+                geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+            self.nb_typ_el = 4
 
+
+        elif self.inc_shape in ['SMF']:
             msh_name = 'SMF_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
             'd': dec_float_str(self.unitcell_x),
             'dy': dec_float_str(self.unitcell_y),

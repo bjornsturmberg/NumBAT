@@ -123,7 +123,7 @@ class Simmo(object):
 ### Calc unnormalised power in each EM mode Kokou equiv. of Eq. 8.
         try:
             nnodes = 6
-            if self.structure.inc_shape == 'rectangular':
+            if self.structure.inc_shape in ['rectangular', 'slot']:
             ## Integration using analytically evaluated basis function integrals. Fast.
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
@@ -140,6 +140,8 @@ class Simmo(object):
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
+            else:
+                raise ValueError, "Do not know which EM overlap integral to use."
             # Bring Kokou's def into line with CW formulation.
             self.EM_mode_overlap = 2.0*self.EM_mode_overlap
 
@@ -367,7 +369,7 @@ class Simmo(object):
             nnodes = 6
             # import time
             # start = time.time()
-            if self.structure.inc_shape == 'rectangular':
+            if self.structure.inc_shape in ['rectangular', 'slot']:
             # Integration following KD 9/9/16 notes. Fastest!
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v4(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
@@ -387,6 +389,8 @@ class Simmo(object):
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
                     self.k_AC, self.Omega_AC, self.sol1, AC_FEM_debug)
+            else:
+                raise ValueError, "Do not know which AC overlap integral to use."
 
         except KeyboardInterrupt:
             print "\n\n FEM routine AC_mode_energy_int",\

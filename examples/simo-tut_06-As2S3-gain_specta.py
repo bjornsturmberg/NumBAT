@@ -37,14 +37,6 @@ EM_ival1=0
 EM_ival2=EM_ival1
 AC_ival='All'
 
-# Acoustic Parameters
-# Background - silca
-# # Use the isotropic parameters for silca.
-# s = 2200  # kg/m3
-# E = 7.3e10
-# v = 0.17
-# c_11, c_12, c_44 = materials.isotropic_stiffness(E, v)
-# p_11 = 0.121; p_12 = 0.270; p_44 = -0.075
 
 # Silca - Laude AIP Advances 2013
 s = 2203  # kg/m3

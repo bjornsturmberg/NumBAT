@@ -39,14 +39,6 @@ EM_ival1=0
 EM_ival2=EM_ival1
 AC_ival='All'
 
-# # Silca
-# s = 2200  # kg/m3
-# E = 7.3e10
-# v = 0.17
-# c_11, c_12, c_44 = materials.isotropic_stiffness(E, v)
-# p_11 = 0.121; p_12 = 0.270; p_44 = -0.075
-# eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
-
 
 # Silca - Laude AIP Advances 2013
 s = 2203  # kg/m3
