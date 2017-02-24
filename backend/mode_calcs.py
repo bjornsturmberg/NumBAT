@@ -53,7 +53,7 @@ class Simmo(object):
                                self.structure.slab_b_material.n(self.wl_m),
                                self.structure.slab_b_bkg_material.n(self.wl_m),
                                self.structure.inc_b_material.n(self.wl_m),
-                               self.structure.coating_material.n(self.wl_m)])
+                               self.structure.coat_material.n(self.wl_m)])
         self.el_conv_table_n = {}
         i = 1; j = 1
         for n in n_list_tmp:
