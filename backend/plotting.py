@@ -356,10 +356,15 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             plt.xticks([])
             plt.yticks([])
             # limits
+            axes = plt.gca()
+            xmin, xmax = axes.get_xlim()
+            ymin, ymax = axes.get_ylim()
+            width_x = xmax-xmin
+            width_y = ymax-ymin
             if xlim_min != None:
-                ax.set_xlim(xlim_min*n_points,(1-xlim_max)*n_points)
+                ax.set_xlim(xmin+xlim_min*width_x,xmax-xlim_max*width_x)
             if ylim_min != None:
-                ax.set_ylim((1-ylim_min)*n_points,ylim_max*n_points)
+                ax.set_ylim(ymin+ylim_min*width_y,ymax-ylim_max*width_y)
             # titles
             plt.title(v_labels[i_p],fontsize=title_font-4)
             # colorbar

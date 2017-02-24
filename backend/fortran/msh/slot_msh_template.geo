@@ -18,8 +18,8 @@ slab1y = (s1y/(2*d_in_nm))*d;
 
 
 lc = 0; // 0.501 0.201 0.0701;
-lc2 = lc/1; // on cylinder surfaces
-lc3 = lc/1; // cylinder1 centres
+lc2 = lc/1; // waveguide core
+lc3 = lc/1; // waveguide clading
 
 hy = dy; // Thickness: square profile => hy=d
 hx = 0.;
@@ -33,15 +33,15 @@ Point(4) = {d, 0, 0,lc};
 Point(5) = {-hx, -hy+slab1y, 0, lc};
 Point(6) = {-hx+d, -hy+slab1y, 0, lc};
 // slot
-Point(7) = {-hx+d/2+radius1, -hy+slab1y, 0, lc};
-Point(8) = {-hx+d/2-radius1, -hy+slab1y, 0, lc};
-Point(9) = {-hx+d/2+radius1, -hy+slab1y+2*radius1y, 0, lc};
-Point(10) = {-hx+d/2-radius1, -hy+slab1y+2*radius1y, 0, lc};
+Point(7) = {-hx+d/2+radius1, -hy+slab1y, 0, lc2};
+Point(8) = {-hx+d/2-radius1, -hy+slab1y, 0, lc2};
+Point(9) = {-hx+d/2+radius1, -hy+slab1y+2*radius1y, 0, lc2};
+Point(10) = {-hx+d/2-radius1, -hy+slab1y+2*radius1y, 0, lc2};
 // surroundings
-Point(11) = {-hx+d/2+radius1+2*radius2, -hy+slab1y, 0, lc};
-Point(12) = {-hx+d/2-radius1-2*radius2, -hy+slab1y, 0, lc};
-Point(13) = {-hx+d/2+radius1+2*radius2, -hy+slab1y+2*radius2y, 0, lc};
-Point(14) = {-hx+d/2-radius1-2*radius2, -hy+slab1y+2*radius2y, 0, lc};
+Point(11) = {-hx+d/2+radius1+2*radius2, -hy+slab1y, 0, lc3};
+Point(12) = {-hx+d/2-radius1-2*radius2, -hy+slab1y, 0, lc3};
+Point(13) = {-hx+d/2+radius1+2*radius2, -hy+slab1y+2*radius2y, 0, lc3};
+Point(14) = {-hx+d/2-radius1-2*radius2, -hy+slab1y+2*radius2y, 0, lc3};
 
 Line(1) = {1, 4};
 Line(2) = {4, 6};

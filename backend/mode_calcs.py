@@ -62,11 +62,8 @@ class Simmo(object):
                 self.el_conv_table_n[i] = j
                 j += 1
             i += 1
-        # print self.el_conv_table_n
-
-        # self.n_list = self.n_list[:self.structure.nb_typ_el]
-        # self.n_list = self.n_list[self.n_list != 0]
         self.n_list = np.array(n_list)
+
         if self.structure.loss is False:
             self.n_list = self.n_list.real
 
