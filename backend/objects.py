@@ -295,17 +295,18 @@ class Struct(object):
         self.plot_field_conc = plot_field_conc
 
         # Order must match msh templates!
-        el_conv_table = {}
-        acoustic_props = [bkg_AC, inc_a_AC, slab_a_AC, slab_a_bkg_AC, slab_b_AC, slab_b_bkg_AC, inc_b_AC]
-        i = 1; j = 1
-        for matter in acoustic_props:
-            if matter != None:
-                el_conv_table[i] = j
-                j += 1
-            i += 1
-        self.typ_el_AC = el_conv_table
-        print el_conv_table
-        acoustic_props = [x for x in acoustic_props if x is not None]
+        self.acoustic_props_tmp = [bkg_AC, inc_a_AC, slab_a_AC, slab_a_bkg_AC, 
+                                   slab_b_AC, slab_b_bkg_AC, inc_b_AC]
+        # el_conv_table = {}
+        # i = 1; j = 1
+        # for matter in acoustic_props:
+        #     if matter != None:
+        #         el_conv_table[i] = j
+        #         j += 1
+        #     i += 1
+        # self.typ_el_AC = el_conv_table
+        # print el_conv_table
+        acoustic_props = [x for x in self.acoustic_props_tmp if x is not None]
         self.nb_typ_el_AC = len(acoustic_props)
         # Any material not given acoustic_props assumed to be vacuum.
         rho = np.zeros(self.nb_typ_el_AC)

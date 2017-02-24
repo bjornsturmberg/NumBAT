@@ -159,9 +159,9 @@ If(rect == 0)
 
     Physical Surface(1) = {114, 122, 124, 126, 118};
     Physical Surface(2) = {134, 128, 130, 132};
-    Physical Surface(7) = {136, 142, 140, 138};
+    Physical Surface(5) = {136, 142, 140, 138};
     Physical Surface(3) = {116};
-    Physical Surface(5) = {120};
+    Physical Surface(4) = {120};
 
 EndIf
 
@@ -234,8 +234,8 @@ If(rect == 1)
     Plane Surface(142) = {141};
     Physical Surface(1) = {114, 120, 130, 132, 142};
     Physical Surface(2) = {124, 126, 128, 122};
-    Physical Surface(7) = {138, 140, 134, 136};
+    Physical Surface(5) = {138, 140, 134, 136};
     Physical Surface(3) = {116};
-    Physical Surface(5) = {118};
+    Physical Surface(4) = {118};
 EndIf
 

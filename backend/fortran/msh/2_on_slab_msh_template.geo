@@ -274,7 +274,7 @@ If(rect == 1)
     Plane Surface(76) = {75};
     
     Physical Surface(2) = {88, 80, 82, 84};
-    Physical Surface(7) = {70, 72, 76, 74};
+    Physical Surface(5) = {70, 72, 76, 74};
 
     If(slab_w_full == 1)
         Physical Surface(1) = {50, 86, 66, 68, 54};

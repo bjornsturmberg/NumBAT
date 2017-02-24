@@ -45,17 +45,28 @@ class Simmo(object):
                [field comp, node nu on element, Eig value, el nu]
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
-        self.n_list = np.array([self.structure.bkg_material.n(self.wl_m),
-                                self.structure.inc_a_material.n(self.wl_m),
-                                self.structure.inc_b_material.n(self.wl_m),
-                                self.structure.slab_a_material.n(self.wl_m),
-                                self.structure.slab_a_bkg_material.n(self.wl_m),
-                                self.structure.slab_b_material.n(self.wl_m),
-                                self.structure.slab_b_bkg_material.n(self.wl_m),
-                                self.structure.coating_material.n(self.wl_m)])
+        n_list = []
+        n_list_tmp = np.array([self.structure.bkg_material.n(self.wl_m),
+                               self.structure.inc_a_material.n(self.wl_m),
+                               self.structure.slab_a_material.n(self.wl_m),
+                               self.structure.slab_a_bkg_material.n(self.wl_m),
+                               self.structure.slab_b_material.n(self.wl_m),
+                               self.structure.slab_b_bkg_material.n(self.wl_m),
+                               self.structure.inc_b_material.n(self.wl_m),
+                               self.structure.coating_material.n(self.wl_m)])
+        self.el_conv_table_n = {}
+        i = 1; j = 1
+        for n in n_list_tmp:
+            if n != 0:
+                n_list.append(n)
+                self.el_conv_table_n[i] = j
+                j += 1
+            i += 1
+        # print self.el_conv_table_n
 
         # self.n_list = self.n_list[:self.structure.nb_typ_el]
-        self.n_list = self.n_list[self.n_list != 0]
+        # self.n_list = self.n_list[self.n_list != 0]
+        self.n_list = np.array(n_list)
         if self.structure.loss is False:
             self.n_list = self.n_list.real
 
@@ -174,6 +185,20 @@ class Simmo(object):
         """
         self.d_in_m = self.structure.inc_a_x*1e-9
 
+        el_conv_table = {}
+        i = 1; j = 1
+        for matter in self.structure.acoustic_props_tmp:
+            if matter != None:
+                el_conv_table[i] = j
+                j += 1
+            i += 1
+        final_dict = {}
+        for entry in el_conv_table:
+            # print entry, self.EM_sim.el_conv_table_n[entry], el_conv_table[entry]
+            final_dict[self.EM_sim.el_conv_table_n[entry]] = el_conv_table[entry]
+        # print final_dict
+        self.typ_el_AC = final_dict
+
         if self.num_modes < 20:
             self.num_modes = 20
             print "Warning: ARPACK needs >= 20 modes so set num_modes=20."
@@ -238,9 +263,9 @@ class Simmo(object):
 
             for el in range(n_msh_el):
                 # print type_el[el]
-                if type_el[el] in self.structure.typ_el_AC:
+                if type_el[el] in self.typ_el_AC:
                     # print "in", type_el[el]
-                    type_el_AC.append(self.structure.typ_el_AC[type_el[el]])
+                    type_el_AC.append(self.typ_el_AC[type_el[el]])
                     el_convert_tbl[n_el_kept] = el
                     el_convert_tbl_inv[el] = n_el_kept
                     for i in range(6):

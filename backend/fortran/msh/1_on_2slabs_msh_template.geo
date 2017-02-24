@@ -134,7 +134,7 @@ If(rect == 0)
 
             Physical Surface(1) = {46, 48, 61, 59};
             Physical Surface(3) = {65, 63};
-            Physical Surface(5) = {67, 69};
+            Physical Surface(4) = {67, 69};
         EndIf
 
         If(slab2_w_full == 0)  
@@ -183,8 +183,8 @@ If(rect == 0)
 
             Physical Surface(1) = {71, 46, 48, 73};
             Physical Surface(3) = {77, 75};
-            Physical Surface(5) = {81, 83};
-            Physical Surface(6) = {79, 85};
+            Physical Surface(4) = {81, 83};
+            Physical Surface(5) = {79, 85};
         EndIf
     EndIf
 
@@ -848,12 +848,12 @@ If(rect == 1)
                     Physical Line(98) = {55, 59, 36, 60};
                     Physical Line(99) = {33, 32, 31, 5};
 
-                    Physical Surface(0) = {65, 67, 69, 76};
-                    Physical Surface(1) = {79, 73, 71, 78};
-                    Physical Surface(2) = {85, 81};
-                    Physical Surface(3) = {83, 87};
-                    Physical Surface(4) = {91, 93};
-                    Physical Surface(5) = {89, 95};
+                    Physical Surface(1) = {65, 67, 69, 76};
+                    Physical Surface(2) = {79, 73, 71, 78};
+                    Physical Surface(3) = {85, 81};
+                    Physical Surface(4) = {83, 87};
+                    Physical Surface(5) = {91, 93};
+                    Physical Surface(6) = {89, 95};
                 EndIf
             EndIf
         EndIf

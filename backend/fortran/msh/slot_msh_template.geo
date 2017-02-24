@@ -78,4 +78,4 @@ Physical Line(32) = {1};
 Physical Surface(1) = {20};
 Physical Surface(2) = {26};
 Physical Surface(3) = {22};
-Physical Surface(7) = {28, 24};
+Physical Surface(4) = {28, 24};
