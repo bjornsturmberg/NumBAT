@@ -87,7 +87,7 @@ for width in waveguide_widths:
                             bkg_material=materials.Material(1.0 + 0.0j),
                             inc_a_material=materials.Material(np.sqrt(eps)),
                             loss=False, inc_a_AC=inc_a_AC_props,
-                            lc_bkg=2, lc2=2000.0, lc3=10.0)
+                            lc_bkg=2, lc2=1000.0, lc3=10.0)
     geo_objects_list.append(wguide)
 
 

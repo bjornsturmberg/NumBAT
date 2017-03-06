@@ -97,6 +97,9 @@ for coat_y in coat_y_list:
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
         EM_sim=sim_EM_wguide, shift_Hz=shift_Hz)
 
+    # plotting.plt_mode_fields(sim_AC_wguide, xlim_min=0.4, xlim_max=0.4, 
+    #                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', add_name='_%i' %int(coat_y))
+
     # Do not calculate the acoustic loss from our fields, but instead set a 
     # predetirmined Q factor. (Useful for instance when replicating others results).
     set_q_factor = 1000.

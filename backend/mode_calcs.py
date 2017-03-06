@@ -223,19 +223,11 @@ class Simmo(object):
                 v_list.append(np.sqrt(self.structure.c_tensor[0,0][el]/self.structure.rho[el]))
                 # # Using acoustic velocity of shear mode pg 215 Auld vol 1.
                 # v_list.append(np.sqrt(self.structure.c_tensor[3,3][el]/self.structure.rho[el]))
-            AC_velocity = 2595
-            print "AC_velocity", AC_velocity
-            shift = np.real(AC_velocity*self.k_AC/(2.*np.pi))
-            print "shift", shift
             AC_velocity = np.real(v_list).min()
-            print "AC_velocity", AC_velocity
             shift = np.real(AC_velocity*self.k_AC/(2.*np.pi))
-            print "shift", shift
-            shift = 0.95*shift
-            print "shift", shift
-            # AC_velocity = np.sqrt((self.structure.c_tensor[0,0][1]+4./3.*self.structure.c_tensor[3,3][1])/self.structure.rho[1])
-            # shift = np.real(AC_velocity*self.k_AC/(2.*np.pi))
-            # print shift
+            # print "shift", shift
+            shift = 0.9*shift
+            # print "shift", shift
         else:
             shift = self.shift_Hz
 

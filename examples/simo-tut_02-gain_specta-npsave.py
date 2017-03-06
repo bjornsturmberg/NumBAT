@@ -47,12 +47,13 @@ eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
+# Use a more refined mesh.
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props,
-                        lc_bkg=2, lc2=2000.0, lc3=10.0)
+                        lc_bkg=2, lc2=1000.0, lc3=10.0)
 
 
 # Expected effective index of fundamental guided mode.
@@ -71,6 +72,13 @@ np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 
 # Print the wavevectors of EM modes.
 print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
+
+# Plot the EM modes fields, important to specify this with EM_AC='EM'.
+# Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
+# We want to get pdf files so set pdf_png='pdf' (default is png 
+# as these are easier to flick through).
+plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, 
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM', pdf_png='pdf')
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
@@ -95,6 +103,11 @@ np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 
 # Print the frequencies of AC modes.
 print 'Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4)
+
+# Plot the AC modes fields, important to specify this with EM_AC='AC'.
+# The AC modes are calculated on a subset of the full unitcell,
+# which excludes vacuum regions, so no need to restrict area plotted.
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 # Do not calculate the acoustic loss from our fields, but instead set a 
 # predetirmined Q factor. (Useful for instance when replicating others results).

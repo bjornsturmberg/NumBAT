@@ -67,7 +67,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Material(1.0 + 0.0j),
                         inc_a_material=materials.Material(np.sqrt(eps)),
                         loss=False, inc_a_AC=inc_a_AC_props, plotting_fields=False,
-                        lc_bkg=2, lc2=2000.0, lc3=10.0)
+                        lc_bkg=2, lc2=200.0, lc3=5.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = np.real(np.sqrt(eps))-0.1
@@ -76,12 +76,6 @@ n_eff = np.real(np.sqrt(eps))-0.1
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 # Print the wavevectors of EM modes.
 print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values),4)
-# Plot the EM modes fields, important to specify this with EM_AC='EM'.
-# Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
-# We want to get pdf files so set pdf_png='pdf' (default is png 
-# as these are easier to flick through).
-plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, 
-	                     ylim_min=0.4, ylim_max=0.4, EM_AC='EM', pdf_png='pdf')
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
@@ -98,13 +92,9 @@ print 'AC wavenumber (1/m) = ', np.round(k_AC, 4)
 
 # Calculate Acoustic Modes
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, 
-	k_AC=k_AC, EM_sim=sim_EM_wguide)
+    k_AC=k_AC, EM_sim=sim_EM_wguide)
 # Print the frequencies of AC modes.
 print 'Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4)
-# Plot the AC modes fields, important to specify this with EM_AC='AC'.
-# The AC modes are calculated on a subset of the full unitcell,
-# which excludes vacuum regions, so no need to restrict area plotted.
-plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
