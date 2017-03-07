@@ -5,6 +5,7 @@
     Copyright (C) 2016  Bjorn Sturmberg, Kokou Dossou
 """
 
+import time
 import numpy as np
 from scipy import interpolate
 import matplotlib
@@ -113,8 +114,11 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
         if el_typ+1 in sim_AC_wguide.typ_el_AC:
             relevant_eps_effs.append(sim_EM_wguide.n_list[el_typ]**2)
 
+    print "\n -----------------------------------------------"
     if fixed_Q is None:
         # Calc alpha (loss) Eq. 45
+        print "Acoustic loss calc"
+        start = time.time()
         try:
             if sim_EM_wguide.structure.inc_shape in ['rectangular', 'slot']:
                 alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
@@ -135,11 +139,15 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
         except KeyboardInterrupt:
             print "\n\n Routine ac_alpha_int interrupted by keyboard.\n\n"
         alpha = np.real(alpha)
+        end = time.time()
+        print "     time (sec.)", (end - start)
     else:
         alpha = (np.pi*k_AC/fixed_Q)*np.ones(num_modes_AC)
 
 
     # Calc Q_photoelastic Eq. 33
+    print "Photoelastic calc"
+    start = time.time()
     try:
         if sim_EM_wguide.structure.inc_shape in ['rectangular', 'slot']:
             Q_PE = NumBAT.photoelastic_int_v2(
@@ -163,12 +171,16 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
             raise ValueError, "Do not know which PE overlap integral to use."
     except KeyboardInterrupt:
         print "\n\n Routine photoelastic_int interrupted by keyboard.\n\n"
+    end = time.time()
+    print "     time (sec.)", (end - start)
 
 
     # Calc Q_moving_boundary Eq. 41
     typ_select_in = 1 # first element in relevant_eps_effs list, in fortan indexing
     if len(relevant_eps_effs) == 2: typ_select_out = 2
     elif typ_select_out is None: typ_select_out = -1
+    print "Moving boundary calc"
+    start = time.time()
     try:
         Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
             sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,
@@ -180,6 +192,9 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
             relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print "\n\n Routine moving_boundary interrupted by keyboard.\n\n"
+    end = time.time()
+    print "     time (sec.)", (end - start)
+    print "-----------------------------------------------"
 
     Q = Q_PE + Q_MB
 

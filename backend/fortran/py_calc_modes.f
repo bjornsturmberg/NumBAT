@@ -520,10 +520,10 @@ C
 C
       write(ui,*)
       write(ui,*) "-----------------------------------------------"
-      write(ui,*) " EM FEM, lambda : ", lambda*1.0d9, "nm"
-      write(ui,*) "-----------------------------------------------"
-      write(ui,*)
-C
+C       write(ui,*) " EM FEM, lambda : ", lambda*1.0d9, "nm"
+C       write(ui,*) "-----------------------------------------------"
+C       write(ui,*)
+C C
       freq = 1.0d0/lambda
       k_0 = 2.0d0*pi*freq
 C
@@ -598,10 +598,12 @@ C
 C
 C     Assemble the coefficient matrix A and the right-hand side F of the
 C     finite element equations
-      if (debug .eq. 1) then
-        write(ui,*) "py_calc_modes.f: Asmbly: call to asmbly"
-      endif
+C       if (debug .eq. 1) then
+C         write(ui,*) "py_calc_modes.f: Asmbly: call to asmbly"
+C       endif
+      write(ui,*) "EM FEM, assmbling linear system"
       call cpu_time(time1_asmbl)
+      call cpu_time(time1)
       call asmbly (i_cond, i_base, nel, npt, n_ddl, neq, nnodes,
      *  shift, bloch_vec_k, nb_typ_el, pp, qq, table_nod,
      *  a(ip_table_N_E_F), type_el, a(ip_eq),
@@ -609,6 +611,8 @@ C     finite element equations
      *  nonz, a(ip_row), a(ip_col_ptr), c(kp_mat1_re),
      *  c(kp_mat1_im), b(jp_mat2), a(ip_work))
       call cpu_time(time2_asmbl)
+      call cpu_time(time2)
+      write(ui,*) '    assembly time (sec.)  = ', (time2-time1)
 C
 C     factorization of the globale matrice
 C     -----------------------------------
@@ -618,9 +622,11 @@ C
 c        write(ui,*) "py_calc_modes.f: factorisation: call to znsy"
       endif
 C
-      if (debug .eq. 1) then
-        write(ui,*) "py_calc_modes.f: call to valpr"
-      endif
+C       if (debug .eq. 1) then
+C         write(ui,*) "py_calc_modes.f: call to valpr"
+C       endif
+      write(ui,*) "EM FEM, solving linear system"
+      call cpu_time(time1)
       call valpr_64 (i_base, nvect, nval, neq, itermax, ltrav,
      *  tol, nonz, a(ip_row), a(ip_col_ptr), c(kp_mat1_re),
      *  c(kp_mat1_im), b(jp_mat2), b(jp_vect1), b(jp_vect2),
@@ -628,6 +634,8 @@ C
      *  b(jp_trav), b(jp_vp), c(kp_rhs_re), c(kp_rhs_im),
      *  c(kp_lhs_re), c(kp_lhs_im), n_conv, ls_data,
      *  numeric, filenum, status, control, info_umf, debug)
+      call cpu_time(time2)
+      write(ui,*) '    eigensolver time (sec.)  = ', (time2-time1)
 c
       if (n_conv .ne. nval) then
          write(ui,*) "py_calc_modes.f: convergence problem with &
@@ -870,6 +878,9 @@ C
         write(ui,*) "   .      .      ."
         write(ui,*) "  and   we're  done!"
       endif
+
+      write(ui,*) "-----------------------------------------------"
+      write(ui,*)
 C
       deallocate(a,b,c,index,overlap_L)
 

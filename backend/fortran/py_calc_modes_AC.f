@@ -388,23 +388,29 @@ C#####################  End FEM PRE-PROCESSING  #########################
 C
       write(ui,*)
       write(ui,*) "-----------------------------------------------"
-      write(ui,*) " AC FEM, k_AC : ", real(beta_in), " 1/m"
-      write(ui,*) "-----------------------------------------------"
-      write(ui,*)
+C       write(ui,*) " AC FEM, k_AC : ", real(beta_in), " 1/m"
+C       write(ui,*) "-----------------------------------------------"
+C       write(ui,*)
 
-      if (debug .eq. 1) then
-        write(ui,*) "py_calc_modes_AC: call to asmbly"
-      endif
+C       if (debug .eq. 1) then
+C         write(ui,*) "py_calc_modes_AC: call to asmbly"
+C       endif
+      write(ui,*) "AC FEM, assmbling linear system"
+      call cpu_time(time1)
 C     Assemble the coefficient matrix K and M of the finite element equations
       call asmbly_AC (i_base, nel, npt, neq, nnodes,
      *  shift, beta_in, nb_typ_el, rho, c_tensor,
      *  table_nod, type_el, a(ip_eq),
      *  x_arr, nonz, a(ip_row), a(ip_col_ptr),
      *  c(kp_mat1_re), c(kp_mat1_im), b(jp_mat2), a(ip_work), debug)
+      call cpu_time(time2)
+      write(ui,*) '    assembly time (sec.)  = ', (time2-time1)
 C
-      if (debug .eq. 1) then
-        write(ui,*) "py_calc_modes_AC: call to valpr"
-      endif
+C       if (debug .eq. 1) then
+C         write(ui,*) "py_calc_modes_AC: call to valpr"
+C       endif
+      write(ui,*) "AC FEM, solving linear system"
+      call cpu_time(time1)
       call valpr_64_AC (i_base, nvect, nval, neq, itermax, ltrav,
      *  tol, nonz, a(ip_row), a(ip_col_ptr), c(kp_mat1_re),
      *  c(kp_mat1_im), b(jp_mat2), b(jp_vect1), b(jp_vect2),
@@ -412,6 +418,8 @@ C
      *  b(jp_trav), b(jp_vp), c(kp_rhs_re), c(kp_rhs_im),
      *  c(kp_lhs_re), c(kp_lhs_im), n_conv, ls_data,
      *  numeric, filenum, status, control, info_umf, debug)
+      call cpu_time(time2)
+      write(ui,*) '    eigensolver time (sec.)  = ', (time2-time1)
 
       if (n_conv .ne. nval) then
          write(ui,*) "py_calc_modes_AC: convergence problem in valpr_64"
@@ -520,6 +528,9 @@ C
         write(ui,*) "   .      . (d=",d_in_m,")"
         write(ui,*) "  and   we're   done!"
       endif
+
+      write(ui,*) "-----------------------------------------------"
+      write(ui,*)
 C
       deallocate(a,b,c,index)
 
