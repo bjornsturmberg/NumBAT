@@ -206,3 +206,39 @@ Literature Examples
 
 Having gotten familiar with NumBAT, we now set out to replicate a number of examples from the literature.
 
+
+Rectangular Waveguide - Silica
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_01-Laude-AIPAdv_2013-silica.py
+    :lines: 0-
+
+
+Rectangular Waveguide - Silicon
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_01-Laude-AIPAdv_2013-silicon.py
+    :lines: 0-
+
+
+Tapered Fibre
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_03-Florez-NatComm_2016.py
+    :lines: 0-
+
+
+Tapered Fibre - Scanning Widths
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_04-Beugnot-NatComm_2014.py
+    :lines: 0-
+
+
+Waveguide on a Pedestal
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_05-Van_Laer-NatPhot_2015.py
+    :lines: 0-
+
+
