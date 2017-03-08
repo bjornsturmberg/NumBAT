@@ -39,6 +39,7 @@ Guide
     :maxdepth: 4
 
     tutorial
+    examples_lit
 
 
 ==================

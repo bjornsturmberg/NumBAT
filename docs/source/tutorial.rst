@@ -20,9 +20,9 @@ To have direct access to the simulation objects upon the completion of the scrip
 This will return you into an interactive python session in which all simulation objects are accessible. In this session you can access the docstrings of objects, classes and methods. For example::
 
     >>> from pydoc import help
-    >>> help(objects.Light)
+    >>> help(objects.Struct)
 
-where we have accessed the docstring of the Light class from objects.py
+where we have accessed the docstring of the Struct class from objects.py
 
 
 In the remainder of this chapter we go through a number of example simo.py files. But before we do, another quick tip about running simulations within screen sessions, which allow you to disconnect from servers leaving them to continue your processes.
@@ -60,8 +60,8 @@ To open a new screen session::
 
 We can start a new calculation here::
 
-    $ cd NumBAT/examples/
-    $ python simo_040-2D_array.py
+    $ cd NumBAT/tutorials/
+    $ python simo-tut_01-first_calc.py
 
 We can then detach from the session (leaving everything in the screen running) by typing::
 
@@ -126,50 +126,83 @@ The PID is found from one of two ways::
 
     \clearpage
 
-Basic SBS Gain Calculation
-------------------------------------------------
 
-.. literalinclude:: ../../examples/simo-tut_01-first_calc.py
+Tutorial
+--------
+
+In this section we go through a number of simple simulations that demonstrate the basic use of NumBAT.
+
+
+Basic SBS Gain Calculation
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../tutorials/simo-tut_01-first_calc.py
     :lines: 0-
 
 
 SBS Gain Spectra
-------------------------------------------------
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../examples/simo-tut_02-gain_specta-npsave.py
+.. literalinclude:: ../../tutorials/simo-tut_02-gain_specta-npsave.py
     :lines: 0-
 
 
 Investigating Dispersion
-------------------------------------------------
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../examples/simo-tut_03-dispersion.py
+.. literalinclude:: ../../tutorials/simo-tut_03-dispersion.py
     :lines: 0-
 
 
 Parameter Scan of Widths
-------------------------------------------------
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../examples/simo-tut_04-scan_widths.py
+.. literalinclude:: ../../tutorials/simo-tut_04-scan_widths.py
     :lines: 0-
 
 
 Convergence Study
-------------------------------------------------
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../examples/simo-tut_05-convergence_study.py
+.. literalinclude:: ../../tutorials/simo-tut_05-convergence_study.py
     :lines: 0-
 
 
-Embedded Chalcogenide Example
-------------------------------------------------
+Embedded Chalcogenide
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../examples/simo-tut_06-As2S3-gain_specta.py
+.. literalinclude:: ../../tutorials/simo-tut_06-As2S3-gain_specta.py
     :lines: 0-
 
 
-Silica Nanowire Example
-------------------------------------------------
+Silica Nanowire 
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../examples/simo-tut_07-Silica_nanowire.py
+.. literalinclude:: ../../tutorials/simo-tut_07-Silica_nanowire.py
     :lines: 0-
+
+
+Slot Waveguide
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../tutorials/simo-tut_08-slot.py
+    :lines: 0-
+
+
+Covered Slot Waveguide
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../tutorials/simo-tut_09-slot_coated-scan.py
+    :lines: 0-
+
+
+.. raw:: latex
+
+    \clearpage
+
+
+Literature Examples
+---------------------
+
+Having gotten familiar with NumBAT, we now set out to replicate a number of examples from the literature.
+
