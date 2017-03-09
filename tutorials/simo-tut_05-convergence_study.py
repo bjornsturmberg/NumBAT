@@ -1,6 +1,5 @@
-""" Calculate the convergence as a function of FEM mesh
-    for backward SBS gain spectra of a
-    silicon waveguide surrounded in air.
+""" Calculate the convergence as a function of FEM mesh for 
+    backward SBS gain spectra of a silicon waveguide surrounded in air.
 
     Again utilises python multiprocessing.
 """
@@ -29,30 +28,20 @@ num_cores = 6
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 2000
+inc_a_y = 680
 inc_shape = 'rectangular'
 
-# Optical Parameters
-eps = 12.25
 num_EM_modes = 20
 num_AC_modes = 20
-EM_ival1=0
-EM_ival2=EM_ival1
-AC_ival='All'
-
-# Acoustic Parameters
-s = 2330  # kg/m3
-c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
-p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
-inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
+EM_ival1 = 0
+EM_ival2 = EM_ival1
+AC_ival = 'All'
 
 
-nu_lcs = 6
+nu_lcs = 4
 lc_bkg_list = 2*np.ones(nu_lcs)
-lc_list = np.linspace(2e2,6e3,nu_lcs)
+lc_list = np.linspace(2e2,3e3,nu_lcs)
 x_axis = lc_bkg_list
 x_axis = lc_list
 conv_list = []
@@ -60,18 +49,17 @@ time_list = []
 # Do not run in parallel, otherwise there are confusions reading the msh files!
 for i_lc, lc_ref in enumerate(lc_list):
     start = time.time()
-    print i_lc+1, "/", nu_lcs
+    print "\n Running simulation", i_lc+1, "/", nu_lcs
     lc3 = 0.01*lc_ref
     lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
-                            bkg_material=materials.Material(1.0 + 0.0j),
-                            inc_a_material=materials.Material(np.sqrt(eps)),
-                            loss=False, inc_a_AC=inc_a_AC_props,
+                            bkg_material=materials.Air,
+                            inc_a_material=materials.Si,
                             lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc3, force_mesh=True)
 
     # Expected effective index of fundamental guided mode.
-    n_eff = np.real(np.sqrt(eps))-0.1
+    n_eff = wguide.inc_a_material.n-0.1
     # Calculate Electromagnetic Modes
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
@@ -88,14 +76,6 @@ for i_lc, lc_ref in enumerate(lc_list):
     end = time.time()
     time_list.append(end - start)
 
-
-# np.savez('Simo_results', conv_list=conv_list)
-# npzfile = np.load('Simo_results.npz')
-# conv_list = npzfile['conv_list'].tolist()
-
-# sim_EM_wguide = conv_list[-1][0]
-# # print 'k_z of EM wave \n', sim_EM_wguide.Eig_values
-# plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4, ylim_max=0.4, EM_AC='EM')
 
 rel_modes = [2,4,8]
 rel_mode_freq_EM = np.zeros(nu_lcs,dtype=complex)

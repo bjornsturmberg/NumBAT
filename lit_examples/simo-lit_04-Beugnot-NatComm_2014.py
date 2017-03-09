@@ -1,9 +1,7 @@
-""" Calculate the backward SBS gain spectra of a
-    silicon waveguide surrounded in air.
-
-    Show how to save simulation objects (eg EM mode calcs)
-    to expedite the process of altering later parts of
-    simulations.
+""" Replicating the results of
+    Brillouin light scattering from surface acoustic waves in a subwavelength-diameter optical fibre
+    Beugnot et al.
+    http://dx.doi.org/10.1038/ncomms6242
 """
 
 import time
@@ -32,25 +30,15 @@ unitcell_x = 5*wl_nm
 unitcell_y = unitcell_x
 inc_shape = 'circular'
 
-# Optical Parameters
-# n_inc_a = 1.4682 # n_eff Corning SMF 28
-n_inc_a = 1.465
 num_EM_modes = 20
 num_AC_modes = 70
-EM_ival1=0
-EM_ival2=EM_ival1
-AC_ival='All'
-
-# Silca - Laude AIP Advances 2013
-s = 2203  # kg/m3
-c_11 = 78e9; c_12 = 16e9; c_44 = 31e9
-p_11 = 0.12; p_12 = 0.270; p_44 = -0.073
-eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
-inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
+EM_ival1 = 0
+EM_ival2 = EM_ival1
+AC_ival = 'All'
 
 # Expected effective index of fundamental guided mode.
-n_eff=1.18
+n_eff = 1.18
+
 freq_min = 4 
 freq_max = 12
 
@@ -58,16 +46,15 @@ width_min = 600
 width_max = 2000
 num_widths = 300
 inc_a_x_range = np.linspace(width_min, width_max, num_widths)
-num_interp_pts=2000
+num_interp_pts = 2000
 
 
 def modes_n_gain(inc_a_x):
     inc_a_y = inc_a_x
     # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                            bkg_material=materials.Material(1.0 + 0.0j),
-                            inc_a_material=materials.Material(n_inc_a),
-                            loss=False, inc_a_AC=inc_a_AC_props,
+                            bkg_material=materials.Air,
+                            inc_a_material=materials.Si,
                             lc_bkg=3, lc2=1000.0, lc3=5.0)
 
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
@@ -95,11 +82,6 @@ gain_array = np.zeros((num_interp_pts, num_widths))
 for w, width_interp in enumerate(width_objs):
     gain_array[:,w] = width_interp[::-1]
 
-# np.savez('wguide_data_AC_gain', gain_array=gain_array)
-# npzfile = np.load('wguide_data_AC_gain.npz')
-# gain_array = npzfile['gain_array']
-
-# plt.clf()
 fig = plt.figure()
 ax1 = fig.add_subplot(1,1,1)
 blah = ax1.matshow(gain_array, aspect='auto', interpolation = 'none')

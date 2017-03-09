@@ -26,45 +26,14 @@ inc_a_x = 150
 inc_a_y = 190
 inc_shape = 'slot'
 inc_b_x = 250
-# Assumed in current mesh template
-# inc_b_y = inc_a_y
+# Current mesh template assume inc_b_y = inc_a_y
 slab_a_y = wl_nm
 
-# Optical Parameters
-n_As2S3 = 2.44
-n_Si = 3.5
-n_SiO2 = 1.44
 num_EM_modes = 20
 num_AC_modes = 40
-EM_ival1=0
-EM_ival2=EM_ival1
-AC_ival='All'
-
-
-# As2S3
-s = 3210  # kg/m3
-c_11 = 2.10e10; c_12 = 8.36e9; c_44 =6.34e9 # Pa
-p_11 = 0.25; p_12 = 0.24; p_44 = 0.005
-eta_11 = 9e-3 ; eta_12 = 7.5e-3 ; eta_44 = 0.75e-3  # Pa s
-inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-#  Silicon
-s = 2330  # kg/m3
-c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
-p_11 = -0.09; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
-inc_b_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-# Silca
-s = 2203  # kg/m3
-c_11 = 78.5e9; c_12 = 16.1e9; c_44 = 31.2e9
-p_11 = 0.121; p_12 = 0.270; p_44 = -0.075
-eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
-slab_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-coat_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-
+EM_ival1 = 0
+EM_ival2 = EM_ival1
+AC_ival = 'All'
 
 
 coat_y_list = np.linspace(50,200,4)
@@ -73,18 +42,15 @@ for coat_y in coat_y_list:
     # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             inc_b_x =inc_b_x, slab_a_y=slab_a_y, coat_y=coat_y,
-                            bkg_material=materials.Material(1.0),
-                            inc_a_material=materials.Material(n_As2S3),
-                            inc_b_material=materials.Material(n_Si),
-                            slab_a_material=materials.Material(n_SiO2),
-                            coat_material=materials.Material(n_SiO2),
-                            loss=False, inc_a_AC=inc_a_AC_props,
-                            inc_b_AC=inc_b_AC_props, slab_a_AC=slab_a_AC_props,
-                            coat_AC=coat_AC_props,
+                            bkg_material=materials.Air,
+                            inc_a_material=materials.As2S3,
+                            inc_b_material=materials.Si,
+                            slab_a_material=materials.SiO2,
+                            coat_material=materials.SiO2,
                             lc_bkg=3, lc2=1500.0, lc3=700.0)
 
     # Expected effective index of fundamental guided mode.
-    n_eff=2.8
+    n_eff = 2.8
 
     # Calculate Electromagnetic Modes
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)

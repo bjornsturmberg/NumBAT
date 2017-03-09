@@ -46,14 +46,14 @@ class Simmo(object):
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
         n_list = []
-        n_list_tmp = np.array([self.structure.bkg_material.n(self.wl_m),
-                               self.structure.inc_a_material.n(self.wl_m),
-                               self.structure.slab_a_material.n(self.wl_m),
-                               self.structure.slab_a_bkg_material.n(self.wl_m),
-                               self.structure.slab_b_material.n(self.wl_m),
-                               self.structure.slab_b_bkg_material.n(self.wl_m),
-                               self.structure.inc_b_material.n(self.wl_m),
-                               self.structure.coat_material.n(self.wl_m)])
+        n_list_tmp = np.array([self.structure.bkg_material.n,
+                               self.structure.inc_a_material.n,
+                               self.structure.slab_a_material.n,
+                               self.structure.slab_a_bkg_material.n,
+                               self.structure.slab_b_material.n,
+                               self.structure.slab_b_bkg_material.n,
+                               self.structure.inc_b_material.n,
+                               self.structure.coat_material.n])
         self.el_conv_table_n = {}
         i = 1; j = 1
         for n in n_list_tmp:
@@ -185,7 +185,7 @@ class Simmo(object):
         el_conv_table = {}
         i = 1; j = 1
         for matter in self.structure.acoustic_props_tmp:
-            if matter != None:
+            if matter.s != None:
                 el_conv_table[i] = j
                 j += 1
             i += 1

@@ -32,28 +32,18 @@ num_cores = 6
 wl_nm = 1550
 inc_shape = 'rectangular'
 
-# Optical Parameters
-eps = 12.25
 num_EM_modes = 20
 num_AC_modes = 20
-EM_ival1=0
-EM_ival2=EM_ival1
-AC_ival='All'
-
-# Acoustic Parameters
-s = 2330  # kg/m3
-c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
-p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
-inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
+EM_ival1 = 0
+EM_ival2 = EM_ival1
+AC_ival = 'All'
 
 # Width previous simo's done for, with known meshing params
 known_geo = 315.
 
 def modes_n_gain(wguide):
     # Expected effective index of fundamental guided mode.
-    n_eff = (np.real(np.sqrt(eps))-0.1) * wguide.inc_a_x/known_geo
+    n_eff = (wguide.inc_a_material.n-0.1) * wguide.inc_a_x/known_geo
     # Calculate Electromagnetic Modes
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
@@ -84,9 +74,8 @@ for width in waveguide_widths:
     # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
-                            bkg_material=materials.Material(1.0 + 0.0j),
-                            inc_a_material=materials.Material(np.sqrt(eps)),
-                            loss=False, inc_a_AC=inc_a_AC_props,
+                            bkg_material=materials.Air,
+                            inc_a_material=materials.Si,
                             lc_bkg=2, lc2=1000.0, lc3=10.0)
     geo_objects_list.append(wguide)
 

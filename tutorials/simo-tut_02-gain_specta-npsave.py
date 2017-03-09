@@ -31,42 +31,30 @@ inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 
-# Optical Parameters
-eps = 12.25
 num_EM_modes = 20
 num_AC_modes = 20
-EM_ival1=0
-EM_ival2=EM_ival1
-AC_ival='All'
+EM_ival1 = 0
+EM_ival2 = EM_ival1
+AC_ival = 'All'
 
-# Acoustic Parameters
-s = 2330  # kg/m3
-c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
-p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
-inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-
-# Use a more refined mesh.
-# Use all specified parameters to create a waveguide object.
+# Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        bkg_material=materials.Material(1.0 + 0.0j),
-                        inc_a_material=materials.Material(np.sqrt(eps)),
-                        loss=False, inc_a_AC=inc_a_AC_props,
+                        bkg_material=materials.Air,
+                        inc_a_material=materials.Si,
                         lc_bkg=2, lc2=1000.0, lc3=10.0)
 
 
 # Expected effective index of fundamental guided mode.
-n_eff = np.real(np.sqrt(eps))-0.1
+n_eff = wguide.inc_a_material.n-0.1
 
 # Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
 # Save calculated :Simmo: object for EM calculation.
 np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-
-# The previous two lines can be commented out and the following
+# The previous three lines can be commented out and the following
 # two uncommented to provide precisely the same objects for the
 # remainder of the simulation.
+
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 
@@ -84,20 +72,17 @@ plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4,
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 print "n_eff", np.round(n_eff_sim, 4)
 
-# Choose acoustic wavenumber to solve for
-# Backward SBS
-# AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
+# Choose acoustic wavenumber to solve for backward SBS
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
 # Calculate Acoustic Modes
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
-    EM_sim=sim_EM_wguide)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC, EM_sim=sim_EM_wguide)
 # Save calculated :Simmo: object for AC calculation.
 np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-
-# The previous two lines can be commented out and the following
+# The previous three lines can be commented out and the following
 # two uncommented to provide precisely the same objects for the
 # remainder of the simulation.
+
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 
@@ -110,7 +95,7 @@ print 'Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e
 plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
 
 # Do not calculate the acoustic loss from our fields, but instead set a 
-# predetirmined Q factor. (Useful for instance when replicating others results).
+# predetirmined Q factor, which is useful for instance when replicating others results.
 set_q_factor = 1000.
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
@@ -118,13 +103,11 @@ set_q_factor = 1000.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival, fixed_Q=set_q_factor)
-
 # Save the gain calculation results
 np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, 
             SBS_gain_MB=SBS_gain_MB, alpha=alpha)
-
-# The previous two lines can be commented out and the following
-# three uncommented to provide precisely the same objects for the
+# The previous six lines can be commented out and the following
+# five uncommented to provide precisely the same objects for the
 # remainder of the simulation.
 # npzfile = np.load('wguide_data_AC_gain.npz')
 # SBS_gain = npzfile['SBS_gain']

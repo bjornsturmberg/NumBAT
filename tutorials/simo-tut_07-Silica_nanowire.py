@@ -31,33 +31,20 @@ inc_a_x = 550
 inc_a_y = inc_a_x
 inc_shape = 'circular'
 
-# Optical Parameters
-n_inc_a = 1.44
 num_EM_modes = 20
 num_AC_modes = 40
-EM_ival1=0
-EM_ival2=EM_ival1
-AC_ival='All'
-
-
-# Silca - Laude AIP Advances 2013
-s = 2203  # kg/m3
-c_11 = 78e9; c_12 = 16e9; c_44 = 31e9
-p_11 = 0.12; p_12 = 0.270; p_44 = -0.073
-eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
-
-inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
+EM_ival1 = 0
+EM_ival2 = EM_ival1
+AC_ival = 'All'
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        bkg_material=materials.Material(1.0 + 0.0j),
-                        inc_a_material=materials.Material(n_inc_a),
-                        loss=False, inc_a_AC=inc_a_AC_props,
+                        bkg_material=materials.Air,
+                        inc_a_material=materials.SiO2,
                         lc_bkg=3, lc2=2000.0, lc3=20.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff=1.4
+n_eff = 1.4
 
 # Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)

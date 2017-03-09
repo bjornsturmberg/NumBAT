@@ -27,50 +27,27 @@ inc_a_x = 1900
 inc_a_y = 680
 inc_shape = 'rectangular'
 
-# Optical parameters
-n_b = 1.44
-n_i = 2.44
 num_EM_modes = 20
 # There are lots of leaky acoustic modes!
 num_AC_modes = 350
-EM_ival1=0
-EM_ival2=EM_ival1
-AC_ival='All'
-
-
-# Silca - Laude AIP Advances 2013
-s = 2203  # kg/m3
-c_11 = 78e9; c_12 = 16e9; c_44 = 31e9
-p_11 = 0.12; p_12 = 0.270; p_44 = -0.073
-
-eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
-bkg_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-# Inclusion a - As2S3
-s = 3210  # kg/m3
-c_11 = 2.104e10; c_12 = 8.363e9; c_44 =6.337e9 # Pa
-p_11 = 0.25; p_12 = 0.24; p_44 = 0.005
-eta_11 = 9e-3 ; eta_12 = 7.5e-3 ; eta_44 = 0.75e-3  # Pa s
-inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
+EM_ival1 = 0
+EM_ival2 = EM_ival1
+AC_ival = 'All'
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        bkg_material=materials.Material(n_b),
-                        inc_a_material=materials.Material(n_i),
-                        loss=False, 
-                        bkg_AC=bkg_AC_props,
-                        inc_a_AC=inc_a_AC_props,plotting_fields=False,
-                        lc_bkg=3, lc2=2500.0, lc3=10.0)
+                        bkg_material=materials.SiO2,
+                        inc_a_material=materials.As2S3,
+                        lc_bkg=3, lc2=2000.0, lc3=10.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = 2.
 
 # Calculate Electromagnetic Modes
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 # np.savez('wguide_data-chalc', sim_EM_wguide=sim_EM_wguide)
-npzfile = np.load('wguide_data-chalc.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+# npzfile = np.load('wguide_data-chalc.npz')
+# sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 # plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, 
 #                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM', add_name='As2S3')
 
@@ -78,20 +55,15 @@ sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 print 'k_z of EM wave \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
 n_eff_sim = np.real((sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi))))
 print 'n_eff of fund. EM mode \n', np.round(n_eff_sim, 4)
-n_eff_sim = np.real((sim_EM_wguide.Eig_values[2]*((wl_nm*1e-9)/(2.*np.pi))))
-print 'n_eff of 3rd EM mode \n', np.round(n_eff_sim, 4)
 
-# Choose acoustic wavenumber to solve for
-# Backward SBS
-# AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
 # Calculate Acoustic Modes
-# sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
-#     EM_sim=sim_EM_wguide)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
+    EM_sim=sim_EM_wguide)
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-npzfile = np.load('wguide_data_AC.npz')
-sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 # plotting.plt_mode_fields(sim_AC_wguide, xlim_min=0.4, xlim_max=0.4, 
 #                           ylim_min=0.4, ylim_max=0.4, EM_AC='AC', add_name='As2S3')
 

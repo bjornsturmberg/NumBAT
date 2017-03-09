@@ -135,37 +135,32 @@ class Struct(object):
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
                  coat_y=None, inc_b_x=None, inc_b_y=None,
                  two_inc_sep=None, incs_y_offset=None,
-                 bkg_material=materials.Material(1.0 + 0.0j),
-                 inc_a_material=materials.Material(1.0 + 0.0j),
-                 slab_a_material=materials.Material(0.0 + 0.0j),
-                 slab_a_bkg_material=materials.Material(0.0 + 0.0j),
-                 slab_b_material=materials.Material(0.0 + 0.0j),
-                 slab_b_bkg_material=materials.Material(0.0 + 0.0j),
-                 coat_material=materials.Material(0.0 + 0.0j),
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
                  inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
                  inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
                  inc_o_x=None,
-                 inc_b_material=materials.Material(0.0 + 0.0j),
-                 inc_c_material=materials.Material(0.0 + 0.0j),
-                 inc_d_material=materials.Material(0.0 + 0.0j),
-                 inc_e_material=materials.Material(0.0 + 0.0j),
-                 inc_f_material=materials.Material(0.0 + 0.0j),
-                 inc_g_material=materials.Material(0.0 + 0.0j),
-                 inc_h_material=materials.Material(0.0 + 0.0j),
-                 inc_i_material=materials.Material(0.0 + 0.0j),
-                 inc_j_material=materials.Material(0.0 + 0.0j),
-                 inc_k_material=materials.Material(0.0 + 0.0j),
-                 inc_l_material=materials.Material(0.0 + 0.0j),
-                 inc_m_material=materials.Material(0.0 + 0.0j),
-                 inc_n_material=materials.Material(0.0 + 0.0j),
-                 inc_o_material=materials.Material(0.0 + 0.0j),
-                 inc_b_AC=None,
-                 inc_c_AC=None, inc_d_AC=None,inc_e_AC=None,inc_f_AC=None,inc_g_AC=None,
-                 inc_h_AC=None,inc_i_AC=None,inc_j_AC=None,inc_k_AC=None,inc_l_AC=None,
-                 inc_m_AC=None,inc_n_AC=None,inc_o_AC=None,
-                 loss=True, bkg_AC=None, inc_a_AC=None, slab_a_AC=None,
-                 slab_a_bkg_AC=None, slab_b_AC=None, slab_b_bkg_AC=None, coat_AC=None,
+                 bkg_material=materials.Air,
+                 inc_a_material=materials.Air,
+                 slab_a_material=materials.Air,
+                 slab_a_bkg_material=materials.Air,
+                 slab_b_material=materials.Air,
+                 slab_b_bkg_material=materials.Air,
+                 coat_material=materials.Air,
+                 inc_b_material=materials.Air,
+                 inc_c_material=materials.Air,
+                 inc_d_material=materials.Air,
+                 inc_e_material=materials.Air,
+                 inc_f_material=materials.Air,
+                 inc_g_material=materials.Air,
+                 inc_h_material=materials.Air,
+                 inc_i_material=materials.Air,
+                 inc_j_material=materials.Air,
+                 inc_k_material=materials.Air,
+                 inc_l_material=materials.Air,
+                 inc_m_material=materials.Air,
+                 inc_n_material=materials.Air,
+                 inc_o_material=materials.Air,
+                 loss=True, 
                  make_mesh_now=True, force_mesh=True,
                  mesh_file='NEED_FILE.mail', check_msh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
@@ -227,21 +222,6 @@ class Struct(object):
         self.inc_m_material = inc_m_material
         self.inc_n_material = inc_n_material
         self.inc_o_material = inc_o_material
-        self.inc_b_AC = inc_b_AC
-        self.inc_c_AC = inc_c_AC
-        self.inc_d_AC = inc_d_AC
-        self.inc_e_AC = inc_e_AC
-        self.inc_f_AC = inc_f_AC
-        self.inc_g_AC = inc_g_AC
-        self.inc_h_AC = inc_h_AC
-        self.inc_i_AC = inc_i_AC
-        self.inc_j_AC = inc_j_AC
-        self.inc_k_AC = inc_k_AC
-        self.inc_l_AC = inc_l_AC
-        self.inc_m_AC = inc_m_AC
-        self.inc_n_AC = inc_n_AC
-        self.inc_o_AC = inc_o_AC
-        self.coat_AC = coat_AC
         self.coat_material = coat_material
         self.loss = loss
         if slab_b_x is not None:
@@ -294,8 +274,10 @@ class Struct(object):
         self.plot_field_conc = plot_field_conc
 
         # Order must match msh templates!
-        self.acoustic_props_tmp = [bkg_AC, inc_a_AC, slab_a_AC, slab_a_bkg_AC, 
-                                   slab_b_AC, slab_b_bkg_AC, inc_b_AC, coat_AC]
+        self.acoustic_props_tmp = [bkg_material, inc_a_material, 
+                                   slab_a_material, slab_a_bkg_material, 
+                                   slab_b_material, slab_b_bkg_material, 
+                                   inc_b_material, coat_material]
         # el_conv_table = {}
         # i = 1; j = 1
         # for matter in acoustic_props:
@@ -305,7 +287,7 @@ class Struct(object):
         #     i += 1
         # self.typ_el_AC = el_conv_table
         # print el_conv_table
-        acoustic_props = [x for x in self.acoustic_props_tmp if x is not None]
+        acoustic_props = [x for x in self.acoustic_props_tmp if x.s is not None]
         self.nb_typ_el_AC = len(acoustic_props)
         # Any material not given acoustic_props assumed to be vacuum.
         rho = np.zeros(self.nb_typ_el_AC)
@@ -315,71 +297,71 @@ class Struct(object):
         eta_tensor = np.zeros((3,3,3,3,self.nb_typ_el_AC))
         for k_typ in range(self.nb_typ_el_AC):
             if acoustic_props[k_typ]:
-                rho[k_typ] = acoustic_props[k_typ][0]
-                c_tensor[0,0,k_typ] = acoustic_props[k_typ][1]
-                c_tensor[1,1,k_typ] = acoustic_props[k_typ][1]
-                c_tensor[2,2,k_typ] = acoustic_props[k_typ][1]
-                c_tensor[0,1,k_typ] = acoustic_props[k_typ][2]
-                c_tensor[0,2,k_typ] = acoustic_props[k_typ][2]
-                c_tensor[1,0,k_typ] = acoustic_props[k_typ][2]
-                c_tensor[1,2,k_typ] = acoustic_props[k_typ][2]
-                c_tensor[2,0,k_typ] = acoustic_props[k_typ][2]
-                c_tensor[2,1,k_typ] = acoustic_props[k_typ][2]
-                c_tensor[3,3,k_typ] = acoustic_props[k_typ][3]
-                c_tensor[4,4,k_typ] = acoustic_props[k_typ][3]
-                c_tensor[5,5,k_typ] = acoustic_props[k_typ][3]
+                rho[k_typ] = acoustic_props[k_typ].s
+                c_tensor[0,0,k_typ] = acoustic_props[k_typ].c_11
+                c_tensor[1,1,k_typ] = acoustic_props[k_typ].c_11
+                c_tensor[2,2,k_typ] = acoustic_props[k_typ].c_11
+                c_tensor[0,1,k_typ] = acoustic_props[k_typ].c_12
+                c_tensor[0,2,k_typ] = acoustic_props[k_typ].c_12
+                c_tensor[1,0,k_typ] = acoustic_props[k_typ].c_12
+                c_tensor[1,2,k_typ] = acoustic_props[k_typ].c_12
+                c_tensor[2,0,k_typ] = acoustic_props[k_typ].c_12
+                c_tensor[2,1,k_typ] = acoustic_props[k_typ].c_12
+                c_tensor[3,3,k_typ] = acoustic_props[k_typ].c_44
+                c_tensor[4,4,k_typ] = acoustic_props[k_typ].c_44
+                c_tensor[5,5,k_typ] = acoustic_props[k_typ].c_44
 
-                c_tensor_z[2,2,2,k_typ] = acoustic_props[k_typ][1]
-                c_tensor_z[2,0,0,k_typ] = acoustic_props[k_typ][2]
-                c_tensor_z[2,1,1,k_typ] = acoustic_props[k_typ][2]
-                c_tensor_z[1,1,2,k_typ] = acoustic_props[k_typ][3]
-                c_tensor_z[1,2,1,k_typ] = acoustic_props[k_typ][3]
-                c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ][3]
-                c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ][3]
+                c_tensor_z[2,2,2,k_typ] = acoustic_props[k_typ].c_11
+                c_tensor_z[2,0,0,k_typ] = acoustic_props[k_typ].c_12
+                c_tensor_z[2,1,1,k_typ] = acoustic_props[k_typ].c_12
+                c_tensor_z[1,1,2,k_typ] = acoustic_props[k_typ].c_44
+                c_tensor_z[1,2,1,k_typ] = acoustic_props[k_typ].c_44
+                c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ].c_44
+                c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ].c_44
 
-                p_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ][4]
-                p_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ][4]
-                p_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ][4]
-                p_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ][5]
-                p_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ][5]
-                p_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ][5]
-                p_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ][5]
-                p_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ][5]
-                p_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ][5]
-                p_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ][6]
-                p_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ][6]
+                p_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ].p_11
+                p_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ].p_11
+                p_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ].p_11
+                p_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ].p_12
+                p_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ].p_12
+                p_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ].p_12
+                p_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ].p_12
+                p_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ].p_12
+                p_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ].p_12
+                p_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ].p_44
+                p_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ].p_44
 
-                eta_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ][7]
-                eta_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ][7]
-                eta_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ][7]
-                eta_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ][8]
-                eta_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ][8]
-                eta_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ][8]
-                eta_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ][8]
-                eta_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ][8]
-                eta_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ][8]
-                eta_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ][9]
-                eta_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ][9]
+                eta_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ].eta_11
+                eta_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ].eta_11
+                eta_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ].eta_11
+                eta_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ].eta_12
+                eta_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ].eta_12
+                eta_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ].eta_12
+                eta_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ].eta_12
+                eta_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ].eta_12
+                eta_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ].eta_12
+                eta_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ].eta_44
+                eta_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ].eta_44
         self.rho = rho
         self.c_tensor = c_tensor
         self.c_tensor_z = c_tensor_z
