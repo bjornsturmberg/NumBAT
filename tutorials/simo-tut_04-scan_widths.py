@@ -124,10 +124,10 @@ for i_w, width_obj in enumerate(width_objs):
         freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
         interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
         interp_values += interp_spectrum
-    freqs_gains.append(zip(interp_grid, interp_values))
+    freqs_gains.append(list(zip(interp_grid, interp_values)))
 
-print 'Widths', waveguide_widths
-print 'n_effs', n_effs
+print('Widths', waveguide_widths)
+print('n_effs', n_effs)
 
 # Plot a 'waterfall' plot.
 fig = plt.figure()

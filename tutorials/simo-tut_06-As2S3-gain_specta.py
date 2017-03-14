@@ -52,9 +52,9 @@ sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 #                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM', add_name='As2S3')
 
 # Print the wavevectors of EM modes.
-print 'k_z of EM wave \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
+print('k_z of EM wave \n', np.round(np.real(sim_EM_wguide.Eig_values), 4))
 n_eff_sim = np.real((sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi))))
-print 'n_eff of fund. EM mode \n', np.round(n_eff_sim, 4)
+print('n_eff of fund. EM mode \n', np.round(n_eff_sim, 4))
 
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
@@ -68,7 +68,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
 #                           ylim_min=0.4, ylim_max=0.4, EM_AC='AC', add_name='As2S3')
 
 # Print the frequencies of AC modes.
-print 'Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values*1e-9), 4)
+print('Res freq of AC wave (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values*1e-9), 4))
 
 # Experimentaly obtained Q factor.
 set_q_factor = 1600.

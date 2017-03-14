@@ -59,11 +59,11 @@ n_eff = 3.4
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 
 # Print the wavevectors of EM modes.
-print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
+print('k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4))
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
-print "n_eff = ", np.round(n_eff_sim, 4)
+print("n_eff = ", np.round(n_eff_sim, 4))
 
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
@@ -74,7 +74,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
     EM_sim=sim_EM_wguide, shift_Hz=shift_Hz)
 
 # Print the frequencies of AC modes.
-print 'Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4)
+print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.

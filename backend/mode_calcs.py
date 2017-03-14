@@ -69,7 +69,7 @@ class Simmo(object):
 
         if self.num_modes < 20:
             self.num_modes = 20
-            print "Warning: ARPACK needs >= 20 modes so set num_modes=20."
+            print("Warning: ARPACK needs >= 20 modes so set num_modes=20.")
 
         # Parameters that control how FEM routine runs
         self.E_H_field = 1  # Selected formulation (1=E-Field, 2=H-Field)
@@ -112,8 +112,8 @@ class Simmo(object):
             self.table_nod, self.type_el, self.type_nod, self.x_arr = resm
 
         except KeyboardInterrupt:
-            print "\n\n FEM routine calc_EM_modes",\
-            "interrupted by keyboard.\n\n"
+            print("\n\n FEM routine calc_EM_modes",\
+            "interrupted by keyboard.\n\n")
 
         # if not self.structure.plot_field_conc:
         #     self.mode_pol = None
@@ -149,13 +149,13 @@ class Simmo(object):
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
             else:
-                raise ValueError, "Do not know which EM overlap integral to use."
+                raise ValueError("Do not know which EM overlap integral to use.")
             # Bring Kokou's def into line with CW formulation.
             self.EM_mode_overlap = 2.0*self.EM_mode_overlap
 
         except KeyboardInterrupt:
-            print "\n\n FEM routine EM_mode_energy_int",\
-            "interrupted by keyboard.\n\n"
+            print("\n\n FEM routine EM_mode_energy_int",\
+            "interrupted by keyboard.\n\n")
         ### Not necessary because EM FEM mesh always normalised in area to unity.
         # print area
         # x_tmp = []
@@ -198,7 +198,7 @@ class Simmo(object):
 
         if self.num_modes < 20:
             self.num_modes = 20
-            print "Warning: ARPACK needs >= 20 modes so set num_modes=20."
+            print("Warning: ARPACK needs >= 20 modes so set num_modes=20.")
 
         # Parameters that control how FEM routine runs
         i_cond = 1  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
@@ -334,7 +334,7 @@ class Simmo(object):
             type_nod_AC = np.zeros(self.n_msh_pts)
 
         if AC_FEM_debug == 1:
-            print 'shift', shift
+            print('shift', shift)
             if not os.path.exists("Normed"):
                 os.mkdir("Normed")
             if not os.path.exists("Output"):
@@ -359,8 +359,8 @@ class Simmo(object):
             self.Omega_AC = self.Eig_values*2*np.pi
 
         except KeyboardInterrupt:
-            print "\n\n FEM routine calc_AC_modes",\
-            "interrupted by keyboard.\n\n"
+            print("\n\n FEM routine calc_AC_modes",\
+            "interrupted by keyboard.\n\n")
 
         if AC_FEM_debug == 1:
             plotting.plot_msh(x_arr_AC, 'in')
@@ -404,8 +404,8 @@ class Simmo(object):
                     self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
                     self.k_AC, self.Omega_AC, self.sol1, AC_FEM_debug)
             else:
-                raise ValueError, "Do not know which AC overlap integral to use."
+                raise ValueError("Do not know which AC overlap integral to use.")
 
         except KeyboardInterrupt:
-            print "\n\n FEM routine AC_mode_energy_int",\
-            "interrupted by keyboard.\n\n"
+            print("\n\n FEM routine AC_mode_energy_int",\
+            "interrupted by keyboard.\n\n")

@@ -49,7 +49,7 @@ time_list = []
 # Do not run in parallel, otherwise there are confusions reading the msh files!
 for i_lc, lc_ref in enumerate(lc_list):
     start = time.time()
-    print "\n Running simulation", i_lc+1, "/", nu_lcs
+    print("\n Running simulation", i_lc+1, "/", nu_lcs)
     lc3 = 0.01*lc_ref
     lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
@@ -219,4 +219,4 @@ ax2.set_yscale('log', nonposx='clip')
 plt.savefig('convergence-Gain_MB.pdf', bbox_inches='tight')
 plt.close()
 
-print "Calculation time", time_list
+print("Calculation time", time_list)

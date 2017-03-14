@@ -59,7 +59,7 @@ np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 # sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 
 # Print the wavevectors of EM modes.
-print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
+print('k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4))
 
 # Plot the EM modes fields, important to specify this with EM_AC='EM'.
 # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
@@ -70,7 +70,7 @@ plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4,
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
-print "n_eff", np.round(n_eff_sim, 4)
+print("n_eff", np.round(n_eff_sim, 4))
 
 # Choose acoustic wavenumber to solve for backward SBS
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
@@ -87,7 +87,7 @@ np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
 
 # Print the frequencies of AC modes.
-print 'Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4)
+print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
 
 # Plot the AC modes fields, important to specify this with EM_AC='AC'.
 # The AC modes are calculated on a subset of the full unitcell,

@@ -58,17 +58,17 @@ n_eff = wguide.inc_a_material.n-0.1
 # Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 # Print the wavevectors of EM modes.
-print '\n k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values),4)
+print('\n k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values),4))
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
-print "\n n_eff = ", np.round(n_eff_sim, 4)
+print("\n n_eff = ", np.round(n_eff_sim, 4))
 
 # Choose acoustic wavenumber to solve for
 # Backward SBS
 # AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
-print '\n AC wavenumber (1/m) = ', np.round(k_AC, 4)
+print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
 # Forward (intramode) SBS
 # EM modes on same lightline.
 # k_AC = 0.0
@@ -77,7 +77,7 @@ print '\n AC wavenumber (1/m) = ', np.round(k_AC, 4)
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, 
     k_AC=k_AC, EM_sim=sim_EM_wguide)
 # Print the frequencies of AC modes.
-print '\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4)
+print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
@@ -85,17 +85,17 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.
-print "\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha
-print "SBS_gain MB contribution \n", SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha
-print "SBS_gain total \n", SBS_gain[EM_ival1,EM_ival2,:]/alpha
+print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha)
+print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha)
+print("SBS_gain total \n", SBS_gain[EM_ival1,EM_ival2,:]/alpha)
 # Mask negligible gain values to improve clarity of print out.
 threshold = 1e-3
 masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
-print "\n SBS_gain PE contribution \n", masked_PE
-print "SBS_gain MB contribution \n", masked_MB
-print "SBS_gain total \n", masked
+print("\n SBS_gain PE contribution \n", masked_PE)
+print("SBS_gain MB contribution \n", masked_MB)
+print("SBS_gain total \n", masked)
 
 end = time.time()
-print "\n Simulation time (sec.)", (end - start)
+print("\n Simulation time (sec.)", (end - start))

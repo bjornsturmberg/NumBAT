@@ -229,7 +229,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
     """
 
     if EM_AC is not 'EM' and EM_AC is not 'AC':
-        raise ValueError, "EM_AC must be either 'AC' or 'EM'."
+        raise ValueError("EM_AC must be either 'AC' or 'EM'.")
 
     plt.clf()
 
@@ -442,13 +442,13 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             plt.savefig('fields/%(s)s_field_%(i)i%(add)s.pdf' %
                 {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
         else:
-            raise ValueError, "pdf_png must be either 'png' or 'pdf'."
+            raise ValueError("pdf_png must be either 'png' or 'pdf'.")
         plt.close()
 
 
         if EM_AC=='AC' and stress_fields is True:
             ### Interpolate onto rectangular Cartesian grid
-            xy = zip(v_x6p, v_y6p)
+            xy = list(zip(v_x6p, v_y6p))
             grid_x, grid_y = np.mgrid[x_min:x_max:n_pts_x*1j, y_min:y_max:n_pts_y*1j]
             m_ReEx = interpolate.griddata(xy, v_Ex6p.real, (grid_x, grid_y), method='linear')
             m_ReEy = interpolate.griddata(xy, v_Ey6p.real, (grid_x, grid_y), method='linear')

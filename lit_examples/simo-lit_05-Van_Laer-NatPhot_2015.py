@@ -81,7 +81,7 @@ sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
 #                          EM_AC='EM', add_name='slab', pdf_png='pdf')
 
 # Print the wavevectors of EM modes.
-print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
+print('k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4))
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))

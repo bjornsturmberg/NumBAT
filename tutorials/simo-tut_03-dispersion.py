@@ -76,7 +76,7 @@ for i_ac, q_ac in enumerate(np.linspace(0.0,k_AC,nu_ks)):
         if sym_list[i][0] == -1 and sym_list[i][1] == -1 and sym_list[i][2] == 1:
             sym_D, = plt.plot(np.real(q_ac/k_AC), Om, '^g')
 
-    print "wavevector loop", i_ac+1, "/", nu_ks
+    print("wavevector loop", i_ac+1, "/", nu_ks)
 ax.set_ylim(0,20)
 ax.set_xlim(0,1)
 plt.legend([sym_A, sym_B, sym_C, sym_D],['E',r'C$_2$',r'$\sigma_y$',r'$\sigma_x$'], loc='lower right')

@@ -51,11 +51,11 @@ plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4,
                          ylim_min=0.4, ylim_max=0.4, EM_AC='EM', pdf_png='pdf')
 
 # Print the wavevectors of EM modes.
-print 'k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4)
+print('k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4))
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
-print "n_eff = ", np.round(n_eff_sim, 4)
+print("n_eff = ", np.round(n_eff_sim, 4))
 
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
@@ -68,7 +68,7 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
 plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', add_name='NW')
 
 # Print the frequencies of AC modes.
-print 'Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4)
+print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
 
 set_q_factor = 1000.
 

@@ -229,8 +229,8 @@ class Struct(object):
                 self.nb_typ_el = 6
             elif coat_y != None and inc_b_x != None:
                 self.nb_typ_el = 8
-                raise NotImplementedError, "Have not implemented 2 coated " \
-                    "inclusions."
+                raise NotImplementedError("Have not implemented 2 coated " \
+                    "inclusions.")
             else:
                 self.nb_typ_el = 7
         elif slab_a_x is not None:
@@ -238,8 +238,8 @@ class Struct(object):
                 self.nb_typ_el = 4
             elif coat_y != None and inc_b_x != None:
                 self.nb_typ_el = 7
-                raise NotImplementedError, "Have not implemented 2 coated " \
-                    "inclusions."
+                raise NotImplementedError("Have not implemented 2 coated " \
+                    "inclusions.")
             else:
                 self.nb_typ_el = 5
         else:
@@ -401,11 +401,11 @@ class Struct(object):
                    'diasss': dec_float_str(self.slab_b_x),
                    'diassss': dec_float_str(self.slab_b_y)}
                 elif self.coat_y is not None and self.inc_b_x is not None:
-                    raise NotImplementedError, "Have not implemented 2 coated inclusions."
+                    raise NotImplementedError("Have not implemented 2 coated inclusions.")
                 elif self.coat_y is not None and self.inc_b_x is None:
-                        raise NotImplementedError, "Have not implemented 1 coated inclusions."
+                        raise NotImplementedError("Have not implemented 1 coated inclusions.")
                 else:
-                    raise ValueError, "NumBAT doesn't understand you geometry."
+                    raise ValueError("NumBAT doesn't understand you geometry.")
             elif self.slab_a_x is not None:
                 if self.coat_y is None and self.inc_b_x is None:
                     msh_template = '1_on_slab'
@@ -428,11 +428,11 @@ class Struct(object):
                    'dias': dec_float_str(self.slab_a_x),
                    'diass': dec_float_str(self.slab_a_y)}
                 elif self.coat_y is not None and self.inc_b_x is not None:
-                    raise NotImplementedError, "Have not implemented 2 coated inclusions."
+                    raise NotImplementedError("Have not implemented 2 coated inclusions.")
                 elif self.coat_y is not None and self.inc_b_x is None:
-                        raise NotImplementedError, "Have not implemented 1 coated inclusions."
+                        raise NotImplementedError("Have not implemented 1 coated inclusions.")
                 else:
-                    raise ValueError, "NumBAT doesn't understand you geometry."
+                    raise ValueError("NumBAT doesn't understand you geometry.")
             elif self.inc_a_x is not None:
                 if self.coat_y is None and self.inc_b_x is None:
                     msh_template = '1'
@@ -451,13 +451,13 @@ class Struct(object):
                    'diab': dec_float_str(self.inc_a_x),
                    'diasb': dec_float_str(self.inc_a_y)}
                 elif self.coat_y is not None and self.inc_b_x is not None:
-                    raise NotImplementedError, "Have not implemented 2 coated inclusions."
+                    raise NotImplementedError("Have not implemented 2 coated inclusions.")
                 elif self.coat_y is not None and self.inc_b_x is None:
-                        raise NotImplementedError, "Have not implemented 1 coated inclusions."
+                        raise NotImplementedError("Have not implemented 1 coated inclusions.")
                 else:
-                    raise ValueError, "NumBAT doesn't understand you geometry."
+                    raise ValueError("NumBAT doesn't understand you geometry.")
             else:
-                raise ValueError, "must have at least one nonzero inclusion."
+                raise ValueError("must have at least one nonzero inclusion.")
             if self.inc_shape == 'circular': msh_name+='-c'
 
             if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
@@ -582,9 +582,9 @@ class Struct(object):
                 geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
         else:
-            raise NotImplementedError, "\n Selected inc_shape = '%s' \n " \
+            raise NotImplementedError("\n Selected inc_shape = '%s' \n " \
             "is not currently implemented. Please make a mesh with gmsh, & \n " \
-            "consider contributing this to NumBAT via gitlab." % self.inc_shape
+            "consider contributing this to NumBAT via gitlab." % self.inc_shape)
 
         self.mesh_file = msh_name + '.mail'
         open(msh_location + msh_name + '.geo', "w").write(geo)

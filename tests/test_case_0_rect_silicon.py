@@ -51,9 +51,6 @@ inc_a_y = 0.9*inc_a_x
 # Shape of the waveguide could also be 'circular'.
 inc_shape = 'rectangular'
 
-# Optical Parameters
-# Permittivity
-eps = 12.25
 # Number of electromagnetic modes to solve for.
 num_EM_modes = 20
 # Number of acoustic modes to solve for.
@@ -67,6 +64,8 @@ EM_ival2=EM_ival1
 AC_ival='All'
 
 # Acoustic Parameters
+# Silicon
+n = 3.5
 # Density
 s = 2330  # kg/m3
 # Stiffness tensor components.
@@ -76,20 +75,19 @@ p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
 # Acoustic loss tensor components.
 eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
 # Put acoustic parameters together for convenience.
-inc_a_AC_props = [s, c_11, c_12, c_44, p_11, p_12, p_44,
+Si_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]
 
 start = time.time()
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        bkg_material=materials.Material(1.0 + 0.0j),
-                        inc_a_material=materials.Material(np.sqrt(eps)),
-                        loss=False, inc_a_AC=inc_a_AC_props, plotting_fields=False,
-                        lc_bkg=2, lc2=2000.0, lc3=10.0)
+                        bkg_material=materials.Air,
+                        inc_a_material=materials.Material(Si_props),
+                        lc_bkg=2, lc2=1000.0, lc3=10.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff = np.real(np.sqrt(eps))-0.1
+n_eff = wguide.inc_a_material.n-0.1
 
 # Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
@@ -111,8 +109,8 @@ masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha, 0, thres
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 
-test_list = zip(sim_EM_wguide.Eig_values, sim_AC_wguide.Eig_values, 
-                   masked_PE, masked_MB, masked)
+test_list = list(zip(sim_EM_wguide.Eig_values, sim_AC_wguide.Eig_values, 
+                   masked_PE, masked_MB, masked))
 
 # SAVE DATA AS REFERENCE
 # Only run this after changing what is simulated - this
@@ -120,11 +118,15 @@ test_list = zip(sim_EM_wguide.Eig_values, sim_AC_wguide.Eig_values,
 # in the future
 # np.savez_compressed("ref/%s.npz" % casefile_name, 
 #         test_list = test_list)
+# assert False, "Reference results saved successfully, \
+# but tests will now pass trivially so let's not run them now."
 
 def test_list_matches_saved(casefile_name = casefile_name):
     rtol = 1e-6
     atol = 1e-6
     ref = np.load("ref/%s.npz" % casefile_name)
-    yield assert_equal, len(test_list), len(ref['test_list'])
+# print(repr(ref))
+# print(repr(ref['test_list']))
+# print(repr(ref['test_list'][0]))
     for case, rcase in zip(test_list, ref['test_list']):
         yield assert_ac, case, rcase, rtol, atol
