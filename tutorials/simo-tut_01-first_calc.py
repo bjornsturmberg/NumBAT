@@ -45,8 +45,8 @@ EM_ival2 = EM_ival1
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
-# Use all specified parameters to create a waveguide object.
-# Note use of very rough mesh for demonstration purposes
+# Use specified parameters to create a waveguide object.
+# Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Air,
                         inc_a_material=materials.Si,
@@ -55,8 +55,8 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.inc_a_material.n-0.1
 
-# Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
+# Calculate Electromagnetic modes.
+sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
 # Print the wavevectors of EM modes.
 print('\n k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values),4))
 
@@ -64,16 +64,14 @@ print('\n k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values),4))
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 print("\n n_eff = ", np.round(n_eff_sim, 4))
 
-# Choose acoustic wavenumber to solve for
-# Backward SBS
-# AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
+# Choose acoustic wavenumber to solve for.
+# Backward SBS - AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
-# Forward (intramode) SBS
-# EM modes on same lightline.
+# Forward (intramode) SBS - EM modes on same lightline.
 # k_AC = 0.0
 
-# Calculate Acoustic Modes
+# Calculate Acoustic modes.
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, 
     k_AC=k_AC, EM_sim=sim_EM_wguide)
 # Print the frequencies of AC modes.

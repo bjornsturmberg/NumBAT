@@ -1,4 +1,8 @@
-""" 
+""" Calculate the backward SBS gain spectra of a Si
+    slot waveguide containing As2S3 surrounded in SiO2.
+
+    This time include a capping layer of SiO2 and 
+    investigate the effect of this layer's thickness.
 """
 
 import time
@@ -38,8 +42,6 @@ AC_ival = 'All'
 
 coat_y_list = np.linspace(50,200,4)
 for coat_y in coat_y_list:
-
-    # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             inc_b_x =inc_b_x, slab_a_y=slab_a_y, coat_y=coat_y,
                             bkg_material=materials.Air,
@@ -52,30 +54,25 @@ for coat_y in coat_y_list:
     # Expected effective index of fundamental guided mode.
     n_eff = 2.8
 
-    # Calculate Electromagnetic Modes
+    # Calculate Electromagnetic modes.
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 
     k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
     shift_Hz = 4e9
 
-    # Calculate Acoustic Modes
+    # Calculate Acoustic modes.
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
         EM_sim=sim_EM_wguide, shift_Hz=shift_Hz)
 
     # plotting.plt_mode_fields(sim_AC_wguide, xlim_min=0.4, xlim_max=0.4, 
     #                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', add_name='_%i' %int(coat_y))
 
-    # Do not calculate the acoustic loss from our fields, but instead set a 
-    # predetirmined Q factor. (Useful for instance when replicating others results).
     set_q_factor = 1000.
 
-    # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
-    # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
         sim_EM_wguide, sim_AC_wguide, k_AC,
         EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival, fixed_Q=set_q_factor)
-
 
     # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
     freq_min = 5  # GHz

@@ -26,14 +26,13 @@ unitcell_y = unitcell_x
 inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
-
+# Choose modes to include.
 num_EM_modes = 20
 num_AC_modes = 20
 EM_ival1 = 0
 EM_ival2 = EM_ival1
 AC_ival = 'All'
 
-# Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         bkg_material=materials.Air,
                         inc_a_material=materials.Si,
@@ -42,7 +41,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.inc_a_material.n-0.1
 
-# Calculate Electromagnetic Modes
+# Calculate Electromagnetic modes.
 # sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 
@@ -50,7 +49,6 @@ n_eff = wguide.inc_a_material.n-0.1
 # we don't need to recalculate EM modes, but can load them in.
 npzfile = np.load('wguide_data.npz')
 sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
-
 
 # Will scan from forward to backward SBS so need to know k_AC of backward SBS.
 k_AC = 2*sim_EM_wguide.Eig_values[0]

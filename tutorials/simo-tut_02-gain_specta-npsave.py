@@ -1,7 +1,7 @@
 """ Calculate the backward SBS gain spectra of a
     silicon waveguide surrounded in air.
 
-    Show how to save simulation objects (eg EM mode calcs)
+    Show how to save simulation objects (eg. EM mode calcs)
     to expedite the process of altering later parts of
     simulations.
 """
@@ -47,14 +47,15 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.inc_a_material.n-0.1
 
-# Calculate Electromagnetic Modes
+# Calculate Electromagnetic modes.
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
 # Save calculated :Simmo: object for EM calculation.
 np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
-# The previous three lines can be commented out and the following
-# two uncommented to provide precisely the same objects for the
-# remainder of the simulation.
 
+# Once npz files have been saved from one simulation run,
+# the previous three lines can be commented and the following
+# two line uncommented. This provides precisely the same objects
+# for the remainder of the simulation.
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
 
@@ -63,10 +64,8 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4))
 
 # Plot the EM modes fields, important to specify this with EM_AC='EM'.
 # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
-# We want to get pdf files so set pdf_png='pdf' (default is png 
-# as these are easier to flick through).
 plotting.plt_mode_fields(sim_EM_wguide, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM', pdf_png='pdf')
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM')
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
@@ -75,13 +74,10 @@ print("n_eff", np.round(n_eff_sim, 4))
 # Choose acoustic wavenumber to solve for backward SBS
 k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
-# Calculate Acoustic Modes
+# Calculate Acoustic modes.
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC, EM_sim=sim_EM_wguide)
 # Save calculated :Simmo: object for AC calculation.
 np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
-# The previous three lines can be commented out and the following
-# two uncommented to provide precisely the same objects for the
-# remainder of the simulation.
 
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
@@ -92,23 +88,26 @@ print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e
 # Plot the AC modes fields, important to specify this with EM_AC='AC'.
 # The AC modes are calculated on a subset of the full unitcell,
 # which excludes vacuum regions, so no need to restrict area plotted.
-plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC')
+# We want to get pdf files so set pdf_png='pdf' 
+# (default is png as these are easier to flick through).
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', pdf_png='pdf')
 
-# Do not calculate the acoustic loss from our fields, but instead set a 
-# predetirmined Q factor, which is useful for instance when replicating others results.
+# Do not calculate the acoustic loss from our fields, instead set a Q factor.
 set_q_factor = 1000.
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
-# as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
+# as well as just for PE, and just for MB.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
     EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival, fixed_Q=set_q_factor)
 # Save the gain calculation results
 np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, 
             SBS_gain_MB=SBS_gain_MB, alpha=alpha)
-# The previous six lines can be commented out and the following
-# five uncommented to provide precisely the same objects for the
-# remainder of the simulation.
+
+# Once npz files have been saved from one simulation run,
+# the previous six lines can be commented and the following
+# five line uncommented. This provides precisely the same objects
+# for the remainder of the simulation.
 # npzfile = np.load('wguide_data_AC_gain.npz')
 # SBS_gain = npzfile['SBS_gain']
 # SBS_gain_PE = npzfile['SBS_gain_PE']

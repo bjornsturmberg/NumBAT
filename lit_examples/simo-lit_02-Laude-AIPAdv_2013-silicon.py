@@ -55,7 +55,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 # Expected effective index of fundamental guided mode.
 n_eff = 3.4
 
-# Calculate Electromagnetic Modes
+# Calculate Electromagnetic modes.
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
 
 # Print the wavevectors of EM modes.
@@ -69,7 +69,7 @@ k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
 shift_Hz = 31e9
 
-# Calculate Acoustic Modes
+# Calculate Acoustic modes.
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
     EM_sim=sim_EM_wguide, shift_Hz=shift_Hz)
 

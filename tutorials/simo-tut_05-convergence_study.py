@@ -1,7 +1,5 @@
 """ Calculate the convergence as a function of FEM mesh for 
     backward SBS gain spectra of a silicon waveguide surrounded in air.
-
-    Again utilises python multiprocessing.
 """
 
 import time
@@ -60,14 +58,14 @@ for i_lc, lc_ref in enumerate(lc_list):
 
     # Expected effective index of fundamental guided mode.
     n_eff = wguide.inc_a_material.n-0.1
-    # Calculate Electromagnetic Modes
+    # Calculate Electromagnetic modes.
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
     k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
-    # Calculate Acoustic Modes
+    # Calculate Acoustic modes.
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
         EM_sim=sim_EM_wguide)
-    # Calculate interaction integrals and SBS gain
+    # Calculate interaction integrals and SBS gain.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
         sim_EM_wguide, sim_AC_wguide, k_AC,
         EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
@@ -83,7 +81,6 @@ rel_mode_freq_AC = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 rel_mode_gain = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 rel_mode_gain_MB = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 rel_mode_gain_PE = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
-# rel_mode_alpha = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 for i_conv, conv_obj in enumerate(conv_list):
     rel_mode_freq_EM[i_conv] = conv_obj[0].Eig_values[0]
     for i_m, rel_mode in enumerate(rel_modes):

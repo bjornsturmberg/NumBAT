@@ -44,14 +44,14 @@ known_geo = 315.
 def modes_n_gain(wguide):
     # Expected effective index of fundamental guided mode.
     n_eff = (wguide.inc_a_material.n-0.1) * wguide.inc_a_x/known_geo
-    # Calculate Electromagnetic Modes
+    # Calculate Electromagnetic modes.
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
     k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
-    # Calculate Acoustic Modes
+    # Calculate Acoustic modes.
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
         EM_sim=sim_EM_wguide)
-    # Calculate interaction integrals and SBS gain
+    # Calculate interaction integrals and SBS gain.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
         sim_EM_wguide, sim_AC_wguide, k_AC,
         EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
@@ -62,16 +62,14 @@ def modes_n_gain(wguide):
 nu_widths = 6
 waveguide_widths = np.linspace(300,400,nu_widths)
 geo_objects_list = []
-# Scale meshing to new structures
+# Scale meshing to new structures.
 for width in waveguide_widths:
     msh_ratio = (width/known_geo)
-    # Geometric Parameters - all in nm.
     unitcell_x = 2.5*wl_nm*msh_ratio
     unitcell_y = unitcell_x
     inc_a_x = width
     inc_a_y = 0.9*inc_a_x
 
-    # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
                             bkg_material=materials.Air,
