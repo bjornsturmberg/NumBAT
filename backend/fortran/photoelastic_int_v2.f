@@ -195,14 +195,14 @@ C If only want overlap of one given combination of EM modes and AC mode.
               ind_ip = i_eq + 3*(itrial-1)
 C               E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
               E1star = soln_EM(i_eq,itrial,ival1,iel)
-              if (i_eq .eq. 3) then
+              if (i_eq .eq. 3) then ! Normalisation of the z-comp of E-field
                 E1star = -ii*betas_EM(ival1)*E1star
               endif
               do jtest=1,nnodes0
                 do j_eq=1,3
                   ind_jp = j_eq + 3*(jtest-1)
                   E2 = soln_EM(j_eq,jtest,ival2,iel)
-                  if (j_eq .eq. 3) then
+                  if (j_eq .eq. 3) then ! Normalisation of the z-comp of E-field
                     E2 = -ii*betas_EM(ival2)*E2
                   endif
                   do ltest=1,nnodes0

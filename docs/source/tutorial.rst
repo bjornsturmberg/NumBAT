@@ -237,22 +237,3 @@ Waveguide on a Pedestal
 
 
 
-
-Making New Mesh
-------------------------------------------------
-
-At some point you may well wish to study a structure that is not described by an existing NumBAT mesh template. In this section we provide an example of how to create a new mesh. In this case we will create a rib waveguide that is has a coating surrounding the guiding region.
-
-Creating a mesh is typically a two step process: first we define the points that define the outline of the structures, then we define the lines connecting the points and the surfaces formed out of the lines. The first step is best done in a text editor in direct code, while the second can be done using the gmsh GUI. 
-
-To start we are going to make a copy of NumBAT/backend/fortran/msh/empty_msh_template.geo ::
-
-    $ cd NumBAT/backend/fortran/msh/
-    $ cp empty_msh_template.geo rib_coated_msh_template.geo
-
-Opening the new file in a text editor you see it contains points defining the unit cell. The points are defines as ::
-
-    Point(1) = {x, y, z, meshing_value}
-
-We now add in new points that define the corners of the structure. For example the central rib is defined as ::
-
