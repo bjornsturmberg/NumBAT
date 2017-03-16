@@ -156,6 +156,13 @@ class Simmo(object):
         except KeyboardInterrupt:
             print("\n\n FEM routine EM_mode_energy_int",\
             "interrupted by keyboard.\n\n")
+
+
+        # Store physical E_z field rather than normalised field output from solver!
+        for ival in range(len(self.Eig_values)):
+            self.sol1[2,:,ival,:] = -1j*self.Eig_values[ival]*self.sol1[2,:,ival,:]
+
+
         ### Not necessary because EM FEM mesh always normalised in area to unity.
         # print area
         # x_tmp = []

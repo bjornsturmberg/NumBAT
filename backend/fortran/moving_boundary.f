@@ -240,8 +240,9 @@ c             Nodes of the edge
 c               (x,y,z)-components of the electric field
                 vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
                 vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-                vec(3,1) = -ii*betas_EM(ival1) * 
-     *            soln_EM(3,ls_inod(j_1),ival1,iel)
+C                 vec(3,1) = -ii*betas_EM(ival1) * 
+C      *            soln_EM(3,ls_inod(j_1),ival1,iel)
+                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
 c               ls_n_dot(1): Normal component of vec(:,1)
                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *              + vec(2,1) * edge_perp(2)
@@ -253,8 +254,9 @@ c               ls_n_dot(1): Normal component of vec(:,1)
 c                 (x,y,z)-components of the electric field
                   vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
                   vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-                  vec(3,2)=-ii*betas_EM(ival2) * 
-     *            soln_EM(3,ls_inod(j_2),ival2,iel)
+C                   vec(3,2)=-ii*betas_EM(ival2) * 
+C      *            soln_EM(3,ls_inod(j_2),ival2,iel)
+                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
 c                 ls_n_dot(2): Normal component of vec(:,2)
                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                + vec(2,2) * edge_perp(2)
@@ -294,8 +296,9 @@ c             Nodes of the edge
 c               (x,y,z)-components of the electric field
                 vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
                 vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-                vec(3,1) = -ii*betas_EM(ival1) * 
-     *            soln_EM(3,ls_inod(j_1),ival1,iel)
+C                 vec(3,1) = -ii*betas_EM(ival1) * 
+C      *            soln_EM(3,ls_inod(j_1),ival1,iel)
+                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
 c               ls_n_dot(1): Normal component of vec(:,1)
                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *              + vec(2,1) * edge_perp(2)
@@ -307,8 +310,9 @@ c               ls_n_dot(1): Normal component of vec(:,1)
 c                 (x,y,z)-components of the electric field
                   vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
                   vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-                  vec(3,2)=-ii*betas_EM(ival2) * 
-     *              soln_EM(3,ls_inod(j_2),ival2,iel)
+C                   vec(3,2)=-ii*betas_EM(ival2) * 
+C      *              soln_EM(3,ls_inod(j_2),ival2,iel)
+                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
 c                 ls_n_dot(2): Normal component of vec(:,2)
                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                + vec(2,2) * edge_perp(2)
@@ -350,8 +354,9 @@ c             Nodes of the edge
 c               (x,y,z)-components of the electric field
                 vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
                 vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-                vec(3,1) = -ii*betas_EM(ival1) * 
-     *            soln_EM(3,ls_inod(j_1),ival1,iel)
+C                 vec(3,1) = -ii*betas_EM(ival1) * 
+C      *            soln_EM(3,ls_inod(j_1),ival1,iel)
+                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
 c               ls_n_dot(1): Normal component of vec(:,1)
                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *              + vec(2,1) * edge_perp(2)
@@ -364,8 +369,9 @@ c               ls_n_dot(1): Normal component of vec(:,1)
 c                   (x,y,z)-components of the electric field
                     vec(1,2)=soln_EM(1,ls_inod(j_2),ival2s,iel)
                     vec(2,2)=soln_EM(2,ls_inod(j_2),ival2s,iel)
-                    vec(3,2)=-ii*betas_EM(ival2s) * 
-     *                soln_EM(3,ls_inod(j_2),ival2s,iel)
+C                     vec(3,2)=-ii*betas_EM(ival2s) * 
+C      *                soln_EM(3,ls_inod(j_2),ival2s,iel)
+                    vec(3,2)=soln_EM(3,ls_inod(j_2),ival2s,iel)
 c                   ls_n_dot(2): Normal component of vec(:,2)
                     ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                  + vec(2,2) * edge_perp(2)
@@ -409,8 +415,9 @@ c             Nodes of the edge
 c                 (x,y,z)-components of the electric field
                   vec(1,1) = soln_EM(1,ls_inod(j_1),ival1s,iel)
                   vec(2,1) = soln_EM(2,ls_inod(j_1),ival1s,iel)
-                  vec(3,1) = -ii*betas_EM(ival1s) * 
-     *              soln_EM(3,ls_inod(j_1),ival1s,iel)
+C                   vec(3,1) = -ii*betas_EM(ival1s) * 
+C      *              soln_EM(3,ls_inod(j_1),ival1s,iel)
+                  vec(3,1) = soln_EM(3,ls_inod(j_1),ival1s,iel)
 c                 ls_n_dot(1): Normal component of vec(:,1)
                   ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *                + vec(2,1) * edge_perp(2)
@@ -422,8 +429,9 @@ c                 ls_n_dot(1): Normal component of vec(:,1)
 c                   (x,y,z)-components of the electric field
                     vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
                     vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-                    vec(3,2)=-ii*betas_EM(ival2) * 
-     *                soln_EM(3,ls_inod(j_2),ival2,iel)
+C                     vec(3,2)=-ii*betas_EM(ival2) * 
+C      *                soln_EM(3,ls_inod(j_2),ival2,iel)
+                    vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
 c                   ls_n_dot(2): Normal component of vec(:,2)
                     ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                  + vec(2,2) * edge_perp(2)
@@ -467,8 +475,9 @@ c             Nodes of the edge
 c                 (x,y,z)-components of the electric field
                   vec(1,1) = soln_EM(1,ls_inod(j_1),ival1s,iel)
                   vec(2,1) = soln_EM(2,ls_inod(j_1),ival1s,iel)
-                  vec(3,1) = -ii*betas_EM(ival1s) * 
-     *              soln_EM(3,ls_inod(j_1),ival1s,iel)
+C                   vec(3,1) = -ii*betas_EM(ival1s) * 
+C      *              soln_EM(3,ls_inod(j_1),ival1s,iel)
+                  vec(3,1) = soln_EM(3,ls_inod(j_1),ival1s,iel)
 c                 ls_n_dot(1): Normal component of vec(:,1)
                   ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *                + vec(2,1) * edge_perp(2)
@@ -481,8 +490,9 @@ c                 ls_n_dot(1): Normal component of vec(:,1)
 c                     (x,y,z)-components of the electric field
                       vec(1,2)=soln_EM(1,ls_inod(j_2),ival2s,iel)
                       vec(2,2)=soln_EM(2,ls_inod(j_2),ival2s,iel)
-                      vec(3,2)=-ii*betas_EM(ival2s) * 
-     *                  soln_EM(3,ls_inod(j_2),ival2s,iel)
+C                       vec(3,2)=-ii*betas_EM(ival2s) * 
+C      *                  soln_EM(3,ls_inod(j_2),ival2s,iel)
+                      vec(3,2)=soln_EM(3,ls_inod(j_2),ival2s,iel)
 c                     ls_n_dot(2): Normal component of vec(:,2)
                       ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                    + vec(2,2) * edge_perp(2)
@@ -527,8 +537,9 @@ c             Nodes of the edge
 c                 (x,y,z)-components of the electric field
                   vec(1,1) = soln_EM(1,ls_inod(j_1),ival1s,iel)
                   vec(2,1) = soln_EM(2,ls_inod(j_1),ival1s,iel)
-                  vec(3,1) = -ii*betas_EM(ival1s) * 
-     *              soln_EM(3,ls_inod(j_1),ival1s,iel)
+C                   vec(3,1) = -ii*betas_EM(ival1s) * 
+C      *              soln_EM(3,ls_inod(j_1),ival1s,iel)
+                  vec(3,1) = soln_EM(3,ls_inod(j_1),ival1s,iel)
 c                 ls_n_dot(1): Normal component of vec(:,1)
                   ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *                + vec(2,1) * edge_perp(2)
@@ -541,8 +552,9 @@ c                 ls_n_dot(1): Normal component of vec(:,1)
 c                     (x,y,z)-components of the electric field
                       vec(1,2)=soln_EM(1,ls_inod(j_2),ival2s,iel)
                       vec(2,2)=soln_EM(2,ls_inod(j_2),ival2s,iel)
-                      vec(3,2)=-ii*betas_EM(ival2s) * 
-     *                  soln_EM(3,ls_inod(j_2),ival2s,iel)
+C                       vec(3,2)=-ii*betas_EM(ival2s) * 
+C      *                  soln_EM(3,ls_inod(j_2),ival2s,iel)
+                      vec(3,2)=soln_EM(3,ls_inod(j_2),ival2s,iel)
 c                     ls_n_dot(2): Normal component of vec(:,2)
                       ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                    + vec(2,2) * edge_perp(2)

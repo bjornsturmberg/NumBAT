@@ -164,8 +164,8 @@ C               Gradient of transverse components of basis function
                         zt1 = p2_p2_p2y(itrial,jtest,ltest)
                       elseif ( k_eq .eq. 3) then
                         zt1 = p2_p2_p2(itrial,jtest,ltest)
-C                         zt1 = zt1 * (-ii * beta_AC)
-                        zt1 = zt1 * (ii * beta_AC)
+                        zt1 = zt1 * (-ii * beta_AC)
+C                         zt1 = zt1 * (ii * beta_AC)
                       else
                         write(*,*) "--- photoelastic_int_v2: "
                         write(*,*) "k_eq has illegal value:"
@@ -195,21 +195,21 @@ C If only want overlap of one given combination of EM modes and AC mode.
               ind_ip = i_eq + 3*(itrial-1)
 C               E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
               E1star = soln_EM(i_eq,itrial,ival1,iel)
-              if (i_eq .eq. 3) then ! Normalisation of the z-comp of E-field
-                E1star = -ii*betas_EM(ival1)*E1star
-              endif
+C               if (i_eq .eq. 3) then ! Normalisation of the z-comp of E-field
+C                 E1star = -ii*betas_EM(ival1)*E1star
+C               endif
               do jtest=1,nnodes0
                 do j_eq=1,3
                   ind_jp = j_eq + 3*(jtest-1)
                   E2 = soln_EM(j_eq,jtest,ival2,iel)
-                  if (j_eq .eq. 3) then ! Normalisation of the z-comp of E-field
-                    E2 = -ii*betas_EM(ival2)*E2
-                  endif
+C                   if (j_eq .eq. 3) then ! Normalisation of the z-comp of E-field
+C                     E2 = -ii*betas_EM(ival2)*E2
+C                   endif
                   do ltest=1,nnodes0
                     do l_eq=1,3
                       ind_lp = l_eq + 3*(ltest-1)
-C                       Ustar = conjg(soln_AC(l_eq,ltest,ival3,iel))
-                      Ustar = soln_AC(l_eq,ltest,ival3,iel)
+                      Ustar = conjg(soln_AC(l_eq,ltest,ival3,iel))
+C                       Ustar = soln_AC(l_eq,ltest,ival3,iel)
                       do k_eq=1,3
                         zt1 = basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
                         zt1 = E1star * E2 * Ustar * zt1
@@ -231,22 +231,22 @@ C If want overlap of given EM mode 1 and 2 and all AC modes.
               ind_ip = i_eq + 3*(itrial-1)
 C               E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
                 E1star = soln_EM(i_eq,itrial,ival1,iel)
-              if (i_eq .eq. 3) then
-                E1star = -ii*betas_EM(ival1)*E1star
-              endif
+C               if (i_eq .eq. 3) then
+C                 E1star = -ii*betas_EM(ival1)*E1star
+C               endif
               do jtest=1,nnodes0
                 do j_eq=1,3
                   ind_jp = j_eq + 3*(jtest-1)
                   E2 = soln_EM(j_eq,jtest,ival2,iel)
-                  if (j_eq .eq. 3) then
-                    E2 = -ii*betas_EM(ival2)*E2
-                  endif
+C                   if (j_eq .eq. 3) then
+C                     E2 = -ii*betas_EM(ival2)*E2
+C                   endif
                   do ltest=1,nnodes0
                     do l_eq=1,3
                       ind_lp = l_eq + 3*(ltest-1)
                       do ival3s = 1,nval_AC
-C                         Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
-                        Ustar = soln_AC(l_eq,ltest,ival3s,iel)
+                        Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
+C                         Ustar = soln_AC(l_eq,ltest,ival3s,iel)
                         do k_eq=1,3
                           zt1 = basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
                           zt1 = E1star * E2 * Ustar * zt1
@@ -269,23 +269,23 @@ C If want overlap of given EM mode 1 and all EM modes 2 and all AC modes.
               ind_ip = i_eq + 3*(itrial-1)
 C               E1star = conjg(soln_EM(i_eq,itrial,ival1,iel))
               E1star = soln_EM(i_eq,itrial,ival1,iel)
-              if (i_eq .eq. 3) then
-                E1star = -ii*betas_EM(ival1)*E1star
-              endif
+C               if (i_eq .eq. 3) then
+C                 E1star = -ii*betas_EM(ival1)*E1star
+C               endif
               do jtest=1,nnodes0
                 do j_eq=1,3
                   ind_jp = j_eq + 3*(jtest-1)
                   do ival2s = 1,nval_EM
                     E2 = soln_EM(j_eq,jtest,ival2s,iel)
-                    if (j_eq .eq. 3) then
-                      E2 = -ii*betas_EM(ival2s)*E2
-                    endif
+C                     if (j_eq .eq. 3) then
+C                       E2 = -ii*betas_EM(ival2s)*E2
+C                     endif
                     do ltest=1,nnodes0
                       do l_eq=1,3
                         ind_lp = l_eq + 3*(ltest-1)
                         do ival3s = 1,nval_AC
-C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
-                          Ustar = soln_AC(l_eq,ltest,ival3s,iel)
+                          Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
+C                           Ustar = soln_AC(l_eq,ltest,ival3s,iel)
                           do k_eq=1,3
                             zt1=basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
                             zt1 = E1star * E2 * Ustar * zt1
@@ -310,22 +310,22 @@ C If want overlap of given EM mode 2 and all EM modes 1 and all AC modes.
               do ival1s = 1,nval_EM
 C                 E1star = conjg(soln_EM(i_eq,itrial,ival1s,iel))
                 E1star = soln_EM(i_eq,itrial,ival1s,iel)
-                if (i_eq .eq. 3) then
-                  E1star = -ii*betas_EM(ival1s)*E1star
-                endif
+C                 if (i_eq .eq. 3) then
+C                   E1star = -ii*betas_EM(ival1s)*E1star
+C                 endif
                 do jtest=1,nnodes0
                   do j_eq=1,3
                     ind_jp = j_eq + 3*(jtest-1)
                     E2 = soln_EM(j_eq,jtest,ival2,iel)
-                    if (j_eq .eq. 3) then
-                      E2 = -ii*betas_EM(ival2)*E2
-                    endif
+C                     if (j_eq .eq. 3) then
+C                       E2 = -ii*betas_EM(ival2)*E2
+C                     endif
                     do ltest=1,nnodes0
                       do l_eq=1,3
                         ind_lp = l_eq + 3*(ltest-1)
                         do ival3s = 1,nval_AC
-C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
-                          Ustar = soln_AC(l_eq,ltest,ival3s,iel)
+                          Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
+C                           Ustar = soln_AC(l_eq,ltest,ival3s,iel)
                           do k_eq=1,3
                             zt1=basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
                             zt1 = E1star * E2 * Ustar * zt1
@@ -350,23 +350,23 @@ C If want overlap of all EM mode 1, all EM modes 2 and all AC modes.
               do ival1s = 1,nval_EM
 C                 E1star = conjg(soln_EM(i_eq,itrial,ival1s,iel))
                 E1star = soln_EM(i_eq,itrial,ival1s,iel)
-                if (i_eq .eq. 3) then
-                  E1star = -ii*betas_EM(ival1s)*E1star
-                endif
+C                 if (i_eq .eq. 3) then
+C                   E1star = -ii*betas_EM(ival1s)*E1star
+C                 endif
                 do jtest=1,nnodes0
                   do j_eq=1,3
                     ind_jp = j_eq + 3*(jtest-1)
                     do ival2s = 1,nval_EM
                     E2 = soln_EM(j_eq,jtest,ival2s,iel)
-                    if (j_eq .eq. 3) then
-                      E2 = -ii*betas_EM(ival2s)*E2
-                    endif
+C                     if (j_eq .eq. 3) then
+C                       E2 = -ii*betas_EM(ival2s)*E2
+C                     endif
                     do ltest=1,nnodes0
                       do l_eq=1,3
                         ind_lp = l_eq + 3*(ltest-1)
                         do ival3s = 1,nval_AC
-C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
-                          Ustar = soln_AC(l_eq,ltest,ival3s,iel)
+                          Ustar = conjg(soln_AC(l_eq,ltest,ival3s,iel))
+C                           Ustar = soln_AC(l_eq,ltest,ival3s,iel)
                           do k_eq=1,3
                           zt1=basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
                             zt1 = E1star * E2 * Ustar * zt1
@@ -392,22 +392,22 @@ C If want overlap of all EM mode 1, all EM modes 2 and one AC mode.
               do ival1s = 1,nval_EM
 C                 E1star = conjg(soln_EM(i_eq,itrial,ival1s,iel))
                 E1star = soln_EM(i_eq,itrial,ival1s,iel)
-                if (i_eq .eq. 3) then
-                  E1star = -ii*betas_EM(ival1s)*E1star
-                endif
+C                 if (i_eq .eq. 3) then
+C                   E1star = -ii*betas_EM(ival1s)*E1star
+C                 endif
                 do jtest=1,nnodes0
                   do j_eq=1,3
                     ind_jp = j_eq + 3*(jtest-1)
                     do ival2s = 1,nval_EM
                       E2 = soln_EM(j_eq,jtest,ival2s,iel)
-                      if (j_eq .eq. 3) then
-                        E2 = -ii*betas_EM(ival2s)*E2
-                      endif
+C                       if (j_eq .eq. 3) then
+C                         E2 = -ii*betas_EM(ival2s)*E2
+C                       endif
                       do ltest=1,nnodes0
                         do l_eq=1,3
                           ind_lp = l_eq + 3*(ltest-1)
-C                           Ustar = conjg(soln_AC(l_eq,ltest,ival3,iel))
-                          Ustar = soln_AC(l_eq,ltest,ival3,iel)
+                          Ustar = conjg(soln_AC(l_eq,ltest,ival3,iel))
+C                           Ustar = soln_AC(l_eq,ltest,ival3,iel)
                           do k_eq=1,3
                             zt1=basis_overlap(ind_ip,ind_jp,k_eq,ind_lp)
                             zt1 = E1star * E2 * Ustar * zt1
