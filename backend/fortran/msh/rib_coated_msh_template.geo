@@ -50,7 +50,6 @@ Point(16) = {d/2+rx/2+cx, -h+s1+s2+cy, 0, lc};
 Point(17) = {d/2-rx/2-cx, -h+s1+s2+2*cy, 0, lc};
 Point(18) = {d/2+rx/2+cx, -h+s1+s2+2*cy, 0, lc};Line(1) = {1, 4};
 
-
 Line(2) = {4, 14};
 Line(3) = {14, 8};
 Line(4) = {8, 6};
@@ -62,7 +61,6 @@ Line(9) = {7, 13};
 Line(10) = {13, 1};
 Line(11) = {5, 6};
 Line(12) = {8, 10};
-Line(13) = {10, 9};
 Line(14) = {9, 7};
 Line(15) = {13, 15};
 Line(16) = {15, 17};
@@ -72,3 +70,21 @@ Line(19) = {14, 16};
 Line(20) = {10, 12};
 Line(21) = {12, 11};
 Line(22) = {11, 9};
+Line Loop(23) = {10, 1, 2, 19, -18, -17, -16, -15};
+Plane Surface(24) = {23};
+Line Loop(25) = {14, 9, 15, 16, 17, 18, -19, 3, 12, 20, 21, 22};
+Plane Surface(26) = {25};
+Line Loop(27) = {4, -11, 8, -14, -22, -21, -20, -12};
+Plane Surface(28) = {27};
+Line Loop(29) = {11, 5, 6, 7};
+Plane Surface(30) = {29};
+
+Physical Line(31) = {10, 9, 8, 7};
+Physical Line(32) = {6};
+Physical Line(33) = {1};
+Physical Line(35) = {2, 3, 4, 5};
+
+Physical Surface(1) = {24};
+Physical Surface(2) = {28};
+Physical Surface(3) = {30};
+Physical Surface(4) = {26};

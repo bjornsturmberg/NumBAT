@@ -66,9 +66,15 @@ To create the lines that connect the points, and the mesh surfaces it is easiest
 	
 	NumBAT/backend/fortran/msh$ gmsh rib_coated_msh_template.geo
 
-Navigate through the side menu to Modules/Geometry/Elementary Entities/Add and click "Straight Line". Now click consecutively on the point you wish to connect.
+Navigate through the side menu to Modules/Geometry/Elementary entities/Add and click "Straight line". Now click consecutively on the point you wish to connect.
 
-Next navigate through the side menu to Modules/Geometry/Elementary Entities/Add and click "Plane Surface".
+Navigate through the side menu to Modules/Geometry/Elementary entities/Add and click "Plane surface". Now click on the boundary of each enclosed area.
+
+Navigate through the side menu to Modules/Geometry/Physical groups/Add and click "Line". Now click on the lines that make up each side of the unit cell boundary, pressing the "e" key to end your selection once the each side is fully highlighted. 
+
+Navigate through the side menu to Modules/Geometry/Physical groups/Add and click "Surface". Now click on all the surfaces of a given material type (in this example there is only one surface per material). It is crucial to remember the order you defined the physical surfaces in. Now open the .geo file in a word editor, scroll to the bottom, and change the numbering of the physical surfaces so that the background material corresponds to 1, the waveguide is 2, the bottom substrate is 3, and the cladding is 4. ::
+
+
 
 
 FEM Errors
