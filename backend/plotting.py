@@ -54,7 +54,20 @@ def zeros_int_str(zero_int):
 def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
                 EM_ival1, EM_ival2, AC_ival, freq_min, freq_max, num_interp_pts=3000,
                 pdf_png='png', add_name=''):
-    """ Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
+    r""" Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
+        Note the we use the spectral linewidth of the resonances
+
+        .. math:: 
+
+            \gamma = v_g \alpha
+        where $v_g$ the group velocity of the mode and $\theta$ is the detuning frequency. 
+        We transform from k-space of Eq. 91 to frequency space
+
+        .. math:: 
+
+            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_e P_e P_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \kappa^2},
+            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_e P_e P_{ac}} \frac{1}{\alpha} \frac{\gamma^2}{\gamma^2 + \theta^2},
+            
 
         Args:
             sim_AC_wguide : An AC :Struct: instance that has had calc_modes calculated

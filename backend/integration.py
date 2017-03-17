@@ -20,12 +20,30 @@ from fortran import NumBAT
 
 def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                 EM_ival1=0, EM_ival2=0, AC_ival=0, fixed_Q=None, typ_select_out=None):
-    """ Calculate interaction integrals and SBS gain.
+    r""" Calculate interaction integrals and SBS gain.
 
-        Implements Eqs. 33, 41, 45 of
+        Implements Eqs. 33, 41, 45, 91 of
         Wolff et al. PRA 92, 013836 (2015) doi/10.1103/PhysRevA.92.013836
-        These are for Q_photoelastic, Q_moving_boundary, and the Acoustic loss
-        "alpha" respectively.
+        These are for Q_photoelastic, Q_moving_boundary, the Acoustic loss "alpha",
+        and the SBS gain respectively.
+
+        Note there is a sign error in published Eq. 41. Also, in implementing Eq. 45 we use integration by parts, with a 
+        boundary integral term set to zero on physical grounds, and filled in some missing subscripts. We prefer to express
+        Eq. 91 with the Lorentzian explicitly visible, which makes it clear how to transform to frequency space.
+        The final integrals are
+
+        .. math:: 
+            Q^{\rm PE} = \varepsilon_0 \int_A {\rm d}^2r \sum_{ijkl} \varepsilon^2_r e_i e_j p_{ijkl} \partial_k u_l^{*},\\
+
+            Q^{\rm MB} =  \int_C {\rm d \mathbf{r} (\mathbf{u}^{*} \cdot \hat n}) \big[ (\varepsilon_a - \varepsilon_b)  
+            \varepsilon_0 ({\rm \hat n \times \mathbf{e}}) \cdot ({\rm \hat n \times \mathbf{e}}) - 
+            (\varepsilon_a^{-1} - \varepsilon_b^{-1})  \varepsilon_0^{-1} ({\rm \hat n \cdot \mathbf{d}}) 
+            \cdot ({\rm \hat n \cdot \mathbf{d}}) \big],\\
+
+            \alpha = \frac{\Omega^2}{P_b} \int {\rm d}^2r \sum_{ijkl} \partial_i u_j^{*} \eta_{ijkl} \partial_k u_l,\\
+
+            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_e P_e P_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \kappa^2}.
+  
 
         Args:
             sim_EM_wguide  (:Simmo: object): Contains all info on EM modes
