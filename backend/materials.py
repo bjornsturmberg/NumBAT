@@ -18,16 +18,10 @@ data_location = '../backend/data/'
 class Material(object):
     """ Represents a material with a refractive index n.
 
-        If the material is dispersive, the refractive index at a given
-        wavelength is calculated by linear interpolation from the
-        initially given data `n`. Materials may also have `n` calculated
-        from a Drude model with input parameters.
+        TODO
 
         Args:
-            n  : Either a scalar refractive index, \
-                an array of values `(wavelength, n)`, or \
-                `(wavelength, real(n), imag(n))`, \
-                or omega_p, omega_g, eps_inf for Drude model.
+            todo
 
         Currently included materials are;
 
