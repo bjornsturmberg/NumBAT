@@ -43,7 +43,7 @@ class Mock(object):
 
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-    'fortran', 'make_axes_locatable', 'mpl_toolkits.axes_grid1']
+    'fortran', 'make_axes_locatable', 'mpl_toolkits.axes_grid1', 'mpl_toolkits.axes_grid1.make_axes_locatable']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
 
