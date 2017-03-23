@@ -29,7 +29,7 @@ c     Local variables
       complex*16 Ez_field_el_P3(nnodes_P3_0)  !  P3 Ez-field
       double precision p2_p2(nnodes_P2_0,nnodes_P2_0)
       integer*8 i, j, j1
-      integer*8 iel, ival
+      integer*8 iel, ival, inod
       integer*8 itrial, jtest, ui
       complex*16 vec_i(3), vec_j(3)
       complex*16 z_tmp1, ii
@@ -108,20 +108,20 @@ c         The component E_z of the mode ival. The FEM code uses the scaling:
 c         E_z = ii * beta1 * \hat{E}_z
           j=3
             z_tmp1 = soln_k1(j,i,ival,iel)
-            E_field_el(j,i) = z_tmp1 * ii * beta1
+            E_field_el(j,i) = z_tmp1 !* ii * beta1
         enddo
 c       E_z-field:
         do i=1,3
 c         The longitudinal component at the vertices (P3 elements)
           j=3
           z_tmp1 = soln_k1(j,i,ival,iel)
-          Ez_field_el_P3(i) = z_tmp1 * ii * beta1
+          Ez_field_el_P3(i) = z_tmp1 !* ii * beta1
         enddo
         do i=4,nnodes_P3_0
 c         The longitudinal component at the edge nodes and interior node (P3 elements)
           j=3
           z_tmp1 = soln_k1(j,i+nnodes_P2-3,ival,iel)
-          Ez_field_el_P3(i) = z_tmp1 * ii * beta1
+          Ez_field_el_P3(i) = z_tmp1 !* ii * beta1
         enddo
 c
         call get_H_field_p3 (nnodes_P2, k_0, beta1, mat_T,
@@ -132,7 +132,7 @@ c       The matrix p2_p2 contains the overlap integrals between the P2-polynomia
         do itrial=1,nnodes_P2_0
           do i=1,3
             z_tmp1 = E_field_el(i,itrial)
-            vec_i(i) = z_tmp1   !!!!    conjg(z_tmp1)
+            vec_i(i) = z_tmp1
           enddo
           do jtest=1,nnodes_P2_0
             do i=1,3

@@ -109,15 +109,15 @@ masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha, 0, thres
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 
-test_list = list(zip(sim_EM_wguide.Eig_values, sim_AC_wguide.Eig_values, 
-                   masked_PE, masked_MB, masked))
+test_list1 = list(zip(sim_EM_wguide.Eig_values, sim_AC_wguide.Eig_values))
+test_list2 = list(zip(masked_PE, masked_MB, masked))
 
 # SAVE DATA AS REFERENCE
 # Only run this after changing what is simulated - this
 # generates a new set of reference answers to check against
-# in the future
+# # in the future
 # np.savez_compressed("ref/%s.npz" % casefile_name, 
-#         test_list = test_list)
+#         test_list1 = test_list1, test_list2 = test_list2)
 # assert False, "Reference results saved successfully, \
 # but tests will now pass trivially so let's not run them now."
 
@@ -128,5 +128,7 @@ def test_list_matches_saved(casefile_name = casefile_name):
 # print(repr(ref))
 # print(repr(ref['test_list']))
 # print(repr(ref['test_list'][0]))
-    for case, rcase in zip(test_list, ref['test_list']):
+    for case, rcase in zip(test_list1, ref['test_list1']):
+        yield assert_ac, case, rcase, rtol, atol
+    for case, rcase in zip(test_list2, ref['test_list2']):
         yield assert_ac, case, rcase, rtol, atol

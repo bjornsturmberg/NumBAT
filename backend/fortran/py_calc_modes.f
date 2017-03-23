@@ -82,6 +82,7 @@ c      integer*8 ip_row_ptr, ip_bandw_1, ip_adjncy
 c      integer*8 len_adj, len_adj_max, len_0_adj_max
 c, iout, nonz_1, nonz_2
       integer*8 i, j!, mesh_format
+      integer*8 ival, iel, inod
 c     Wavelength lambda in units of m
       double precision lambda, d_in_m
       double precision freq, lat_vecs(2,2), tol
@@ -105,6 +106,7 @@ C  Names and Controls
       integer*8 plot_modes
       integer*8 pair_warning, homogeneous_check
       integer*8 q_average, plot_real, plot_imag, plot_abs
+      complex*16 ii
 
 c     Declare the pointers of the real super-vector
       integer*8 kp_rhs_re, kp_rhs_im, kp_lhs_re, kp_lhs_im
@@ -153,6 +155,9 @@ c      3*npt+nel+nnodes*nel
 C      write(*,*) "cmplx_max = ", cmplx_max
 C      write(*,*) "real_max = ", real_max
 C      write(*,*) "int_max = ", int_max
+
+c     ii = sqrt(-1)
+      ii = cmplx(0.0d0, 1.0d0)
 
 C     Old inputs now internal to here and commented out by default.
 C      mesh_format = 1
@@ -733,6 +738,19 @@ C  Orthogonal integral
         write(ui,*) "py_calc_modes.f: CPU time for orthogonal :",
      *  (time2_J-time1_J)
       endif
+
+c     The z-component must be multiplied by -ii*beta in order to 
+C     get the physical, un-normalised z-component
+C     (see Eq. (25) of the JOSAA 2012 paper)
+      do ival=1,nval
+        do iel=1,nel
+          do inod=1,nnodes+7
+            sol1(3,inod,ival,iel) 
+     *        = - ii * beta(ival) * sol1(3,inod,ival,iel)
+          enddo
+        enddo
+      enddo
+
 C
 C    Save Original solution
       if (plot_modes .eq. 1) then

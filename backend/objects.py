@@ -160,7 +160,7 @@ class Struct(object):
                  inc_m_material=materials.Air,
                  inc_n_material=materials.Air,
                  inc_o_material=materials.Air,
-                 loss=True, 
+                 loss=True, symmetry_flag=True,
                  make_mesh_now=True, force_mesh=True,
                  mesh_file='NEED_FILE.mail', check_msh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
@@ -272,6 +272,11 @@ class Struct(object):
         self.plot_imag = plot_imag
         self.plot_abs = plot_abs
         self.plot_field_conc = plot_field_conc
+
+        if symmetry_flag is True:
+            self.symmetry_flag = 1
+        else:
+            self.symmetry_flag = 0
 
         # Order must match msh templates!
         self.acoustic_props_tmp = [bkg_material, inc_a_material, 

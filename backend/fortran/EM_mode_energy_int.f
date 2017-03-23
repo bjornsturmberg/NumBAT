@@ -25,7 +25,7 @@ c     Local variables
       complex*16 vec_1(2*nnodes_0)
       complex*16 basis_overlap(2*nnodes_0,2*nnodes_0+10)
       integer*8 i, j, j1
-      integer*8 iel, ival
+      integer*8 iel, ival, inod
       integer*8 jtest, ind_jp, j_eq
       integer*8 itrial, ind_ip, i_eq
       integer*8 info_curved, n_curved, debug, ui
@@ -37,7 +37,7 @@ c     Local variables
       double precision vec_phi_j(2), vec_phi_i(2)
       double precision ZERO, ONE, r_tmp1
       parameter ( ZERO = 0.0D0, ONE = 1.0D0)
-      complex*16 z_tmp1, z_tmp2, coeff_1
+      complex*16 z_tmp1, z_tmp2, coeff_1, ii
 c
 c     NQUAD: The number of quadrature points used in each element.
       integer*8 nquad, nquad_max, iq
@@ -65,6 +65,7 @@ C
       ui = 6
       speed_c = 299792458
       mu_0 = 1.2566370614d-6
+      ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
         write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes

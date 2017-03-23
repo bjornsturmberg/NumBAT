@@ -3,7 +3,7 @@
      *  shift, beta, nb_typ_el, rho, c_tensor, 
      *  table_nod, type_el, ineq, 
      *  x, nonz, row_ind, col_ptr, 
-     *  mat1_re, mat1_im, mat2, i_work, debug)
+     *  mat1_re, mat1_im, mat2, i_work, symmetry_flag, debug)
 
 
       implicit none
@@ -12,7 +12,7 @@
       integer*8 row_ind(nonz), col_ptr(neq+1)
       integer*8 type_el(nel)
       integer*8 table_nod(nnodes,nel), ineq(3,npt)
-      integer*8 i_work(3*npt)
+      integer*8 i_work(3*npt), symmetry_flag
       complex*16 shift, beta
       double precision x(2,npt)
 c     rho: density
@@ -95,7 +95,18 @@ cc        write(ui,*) "asmbly_AC: iel, nel", iel, nel
             c_tensor_el(i,j) = c_tensor(i,j,typ_e)
           enddo
         enddo
-        call mat_el_v2 (xel,beta,c_tensor_el,rho_el,mat_K,mat_M,debug)
+C       If c_tensor has regular symmetries use more efficient formulation
+        if (symmetry_flag .eq. 1) then
+          call mat_el_v2 (xel,beta,c_tensor_el,rho_el,mat_K,mat_M,debug)
+        elseif (symmetry_flag .eq. 0) then
+          call mat_el_v3 (xel,beta,c_tensor_el,rho_el,mat_K,mat_M,debug)
+        else
+          write(ui,*) "asmbly_AC: problem with symmetry_flag "
+          write(ui,*) "asmbly_AC: c_tensor = ", symmetry_flag
+          write(ui,*) "asmbly_AC: Aborting..."
+          stop
+        endif
+
         do jtest=1,nnodes
           jp = table_nod(jtest,iel)
           do j_eq=1,3

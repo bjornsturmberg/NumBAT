@@ -357,8 +357,8 @@ class Simmo(object):
                 self.structure.c_tensor, self.structure.rho,
                 self.d_in_m, shift, i_cond, itermax, ARPACK_tol,
                 self.structure.plotting_fields,
-                cmplx_max, real_max, int_max, suplied_geo_flag, type_nod_AC,
-                table_nod_AC, type_el_AC, x_arr_AC)
+                cmplx_max, real_max, int_max, suplied_geo_flag, type_nod_AC, 
+                self.structure.symmetry_flag, table_nod_AC, type_el_AC, x_arr_AC)
             table_nod_out, type_el_out, x_arr_out, \
             self.Eig_values, self.sol1, self.mode_pol = resm
 

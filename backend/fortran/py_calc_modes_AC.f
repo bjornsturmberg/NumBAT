@@ -5,7 +5,7 @@ c     Explicit inputs
      *    nb_typ_el,  c_tensor, rho, d_in_m, shift,
      *    i_cond, itermax, tol,
      *    plot_modes, cmplx_max, real_max,
-     *    int_max, supplied_geo_flag, type_nod,
+     *    int_max, supplied_geo_flag, type_nod, symmetry_flag,
 c     Inputs and outputs
      *    table_nod, type_el, x_arr,
 c     Outputs
@@ -31,7 +31,7 @@ C  Local parameters:
       integer*8, dimension(:), allocatable :: a   !  (int_max)
       complex*16, dimension(:), allocatable :: b   !  (cmplx_max)
       double precision, dimension(:), allocatable :: c   !  (real_max)
-      integer*8 supplied_geo_flag
+      integer*8 supplied_geo_flag, symmetry_flag
 
 C  Declare the pointers of the integer super-vector
       integer*8 ip_eq
@@ -70,6 +70,7 @@ C     ! Number of nodes per element
 
       complex*16 shift
       integer*8  i_base
+      complex*16 ii
 
 C  Variable used by valpr
       integer*8 ltrav, n_conv
@@ -100,6 +101,8 @@ C       complex*16, target :: sol1(3,nnodes+7,nval,nel)
       complex*16, target :: beta1(nval)
       complex*16 mode_pol(4,nval)
 
+      integer*8 ival, iel, inod
+
 Cf2py intent(in) beta_in, nval
 Cf2py intent(in) debug, mesh_file, npt, nel
 Cf2py intent(in) d_in_m, shift
@@ -107,7 +110,7 @@ Cf2py intent(in) i_cond, itermax, tol
 Cf2py intent(in) plot_modes, c_tensor, rho
 Cf2py intent(in) cmplx_max, real_max, int_max
 Cf2py intent(in) nb_typ_el, supplied_geo_flag,
-Cf2py intent(in) type_nod, table_nod, type_el, x_arr,
+Cf2py intent(in) type_nod, table_nod, type_el, x_arr, symmetry_flag
 
 C  Note: the dependent variables must be listed AFTER the
 C  independent variables that they depend on in the function call!
@@ -129,6 +132,8 @@ C
       ui = 6     !ui = Unite dImpression
 C      nnodes = 6 ! Number of nodes per element
       pi = 3.141592653589793d0
+c     ii = sqrt(-1)
+      ii = cmplx(0.0d0, 1.0d0)
 
 C       nvect = 2*nval + nval/2 +3
       nvect = 3*nval + 3
@@ -402,7 +407,8 @@ C     Assemble the coefficient matrix K and M of the finite element equations
      *  shift, beta_in, nb_typ_el, rho, c_tensor,
      *  table_nod, type_el, a(ip_eq),
      *  x_arr, nonz, a(ip_row), a(ip_col_ptr),
-     *  c(kp_mat1_re), c(kp_mat1_im), b(jp_mat2), a(ip_work), debug)
+     *  c(kp_mat1_re), c(kp_mat1_im), b(jp_mat2), a(ip_work), 
+     *  symmetry_flag, debug)
       call cpu_time(time2)
       write(ui,*) '    assembly time (sec.)  = ', (time2-time1)
 C
@@ -470,6 +476,19 @@ C         write(ui,*) "sqrt(shift)/(2*pi) = ", sqrt(shift) / (2.0d0 * pi)
         do i=1,nval
           write(ui,"(i4,2(g22.14),2(g18.10))") i,
      *       beta1(i)
+        enddo
+      endif
+C     If c_tensor has regular symmetries use more efficient formulation
+      if (symmetry_flag .eq. 0) then
+c     The z-component must be multiplied by ii in order to get the 
+C     physical, un-normalised z-component 
+C     (because mat_el_v3 follows formulation of Hladky-Hennion JSV 1996)
+        do ival=1,nval
+          do iel=1,nel
+            do inod=1,nnodes
+              sol1(3,inod,ival,iel) = ii * sol1(3,inod,ival,iel)
+            enddo
+          enddo
         enddo
       endif
 
