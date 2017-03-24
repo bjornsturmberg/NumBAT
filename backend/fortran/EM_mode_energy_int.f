@@ -66,6 +66,8 @@ C
       speed_c = 299792458
       mu_0 = 1.2566370614d-6
       ii = cmplx(0.0d0, 1.0d0)
+
+      debug = 0
 C
       if ( nnodes .ne. 6 ) then
         write(ui,*) "EM_mode_energy_int: problem nnodes = ", nnodes

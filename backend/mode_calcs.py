@@ -128,12 +128,13 @@ class Simmo(object):
         #     self.n_msh_pts = None
         #     self.n_msh_el = None
 
+
 ### Calc unnormalised power in each EM mode Kokou equiv. of Eq. 8.
         try:
             nnodes = 6
             if self.structure.inc_shape in ['rectangular', 'slot']:
             ## Integration using analytically evaluated basis function integrals. Fast.
-                self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2(
+                self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_ez(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
@@ -144,7 +145,7 @@ class Simmo(object):
                 #     self.x_arr, self.Eig_values, self.sol1, self.type_el)
             elif self.structure.inc_shape == 'circular':
             # Integration by quadrature. Slowest.
-                self.EM_mode_overlap = NumBAT.em_mode_energy_int(
+                self.EM_mode_overlap = NumBAT.em_mode_energy_int_ez(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
@@ -156,12 +157,6 @@ class Simmo(object):
         except KeyboardInterrupt:
             print("\n\n FEM routine EM_mode_energy_int",\
             "interrupted by keyboard.\n\n")
-
-
-        # Store physical E_z field rather than normalised field output from solver!
-        for ival in range(len(self.Eig_values)):
-            self.sol1[2,:,ival,:] = -1j*self.Eig_values[ival]*self.sol1[2,:,ival,:]
-
 
         ### Not necessary because EM FEM mesh always normalised in area to unity.
         # print area

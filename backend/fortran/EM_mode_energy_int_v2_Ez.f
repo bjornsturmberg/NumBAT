@@ -1,7 +1,7 @@
 C Calculate the overlap integral of an EM mode with itself using
 C analytic expressions for basis function overlaps on linear elements.
 C
-      subroutine EM_mode_energy_int_v2 (k_0, nval, nel, npt,
+      subroutine EM_mode_energy_int_v2_Ez (k_0, nval, nel, npt,
      *  nnodes_P2, table_nod,
      *  x, betas, soln_k1, overlap)
 c
@@ -81,7 +81,7 @@ c       maps the current triangle to the reference triangle.
         det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
         if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
 cc        if (abs(det_b) .le. 1.0d-8) then
-          write(*,*) '?? EM_mode_energy_int_v2: Deter. = 0 :', det_b
+          write(*,*) '?? EM_mode_energy_int_v2_Ez: Deter. = 0 :', det_b
           write(*,*) "xel = ", xel
           write(*,*) 'Aborting...'
           stop
@@ -107,20 +107,20 @@ c         The component E_z of the mode ival. The FEM code uses the scaling:
 c         E_z = ii * beta1 * \hat{E}_z
           j=3
             z_tmp1 = soln_k1(j,i,ival,iel)
-            E_field_el(j,i) = z_tmp1 * ii * beta1
+            E_field_el(j,i) = z_tmp1 ! * ii * beta1
         enddo
 c       E_z-field:
         do i=1,3
 c         The longitudinal component at the vertices (P3 elements)
           j=3
           z_tmp1 = soln_k1(j,i,ival,iel)
-          Ez_field_el_P3(i) = z_tmp1 * ii * beta1
+          Ez_field_el_P3(i) = z_tmp1 ! * ii * beta1
         enddo
         do i=4,nnodes_P3_0
 c         The longitudinal component at the edge nodes and interior node (P3 elements)
           j=3
           z_tmp1 = soln_k1(j,i+nnodes_P2-3,ival,iel)
-          Ez_field_el_P3(i) = z_tmp1 * ii * beta1
+          Ez_field_el_P3(i) = z_tmp1 ! * ii * beta1
         enddo
 c
         call get_H_field_p3 (nnodes_P2, k_0, beta1, mat_T,
@@ -150,4 +150,4 @@ C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
 C
-      end subroutine EM_mode_energy_int_v2
+      end subroutine EM_mode_energy_int_v2_Ez
