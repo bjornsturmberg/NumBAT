@@ -746,7 +746,7 @@ C     (see Eq. (25) of the JOSAA 2012 paper)
         do iel=1,nel
           do inod=1,nnodes+7
             sol1(3,inod,ival,iel) 
-     *        = - ii * beta(ival) * sol1(3,inod,ival,iel)
+     *        = ii * beta(ival) * sol1(3,inod,ival,iel)
           enddo
         enddo
       enddo
