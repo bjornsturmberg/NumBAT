@@ -606,7 +606,7 @@ C     finite element equations
 C       if (debug .eq. 1) then
 C         write(ui,*) "py_calc_modes.f: Asmbly: call to asmbly"
 C       endif
-      write(ui,*) "EM FEM, assmbling linear system"
+      write(ui,*) "EM FEM, assembling linear system"
       call cpu_time(time1_asmbl)
       call cpu_time(time1)
       call asmbly (i_cond, i_base, nel, npt, n_ddl, neq, nnodes,

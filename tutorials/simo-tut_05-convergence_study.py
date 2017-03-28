@@ -19,9 +19,6 @@ import plotting
 from fortran import NumBAT
 
 
-# Select the number of CPUs to use in simulation.
-num_cores = 6
-
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
