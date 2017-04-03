@@ -79,7 +79,7 @@ Navigate through the side menu to Modules/Geometry/Physical groups/Add and click
     Physical Surface(3) = {30};
     Physical Surface(4) = {26};
 
-The important thing is to make a note of the chosen labeling! This is best done by taking a screen-shot of the geometry in gmsh, labeling this and adding this file to the NumBAT/backend/fortran/msh folder.
+The important thing is to make a note of the chosen labeling! This is best done by taking a screen-shot of the geometry in gmsh, labeling this with material types and physical dimensions, and then adding this file to the NumBAT/backend/msh_type_lib folder.
 
 
 Step 3
