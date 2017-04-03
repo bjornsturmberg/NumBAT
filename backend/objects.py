@@ -133,39 +133,28 @@ class Struct(object):
     def __init__(self, unitcell_x, inc_a_x,
                  unitcell_y=None, inc_a_y=None, inc_shape='rectangular',
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
-                 coat_y=None, inc_b_x=None, inc_b_y=None,
+                 coat_x=None, coat_y=None, inc_b_x=None, inc_b_y=None,
                  two_inc_sep=None, incs_y_offset=None,
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
                  inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
                  inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
                  inc_o_x=None,
-                 bkg_material=materials.Air,
-                 inc_a_material=materials.Air,
-                 slab_a_material=materials.Air,
-                 slab_a_bkg_material=materials.Air,
-                 slab_b_material=materials.Air,
-                 slab_b_bkg_material=materials.Air,
-                 coat_material=materials.Air,
-                 inc_b_material=materials.Air,
-                 inc_c_material=materials.Air,
-                 inc_d_material=materials.Air,
-                 inc_e_material=materials.Air,
-                 inc_f_material=materials.Air,
-                 inc_g_material=materials.Air,
-                 inc_h_material=materials.Air,
-                 inc_i_material=materials.Air,
-                 inc_j_material=materials.Air,
-                 inc_k_material=materials.Air,
-                 inc_l_material=materials.Air,
-                 inc_m_material=materials.Air,
-                 inc_n_material=materials.Air,
-                 inc_o_material=materials.Air,
+                 material_a=materials.Air, material_b=materials.Air, 
+                 material_c=materials.Air, material_d=materials.Air, 
+                 material_e=materials.Air, material_f=materials.Air, 
+                 material_g=materials.Air, material_h=materials.Air, 
+                 material_i=materials.Air, material_j=materials.Air, 
+                 material_k=materials.Air, material_l=materials.Air, 
+                 material_m=materials.Air, material_n=materials.Air, 
+                 material_o=materials.Air, material_p=materials.Air, 
+                 material_q=materials.Air, material_r=materials.Air, 
                  loss=True, symmetry_flag=True,
                  make_mesh_now=True, force_mesh=True,
                  mesh_file='NEED_FILE.mail', check_msh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
                  plotting_fields=False, plot_real=1, plot_imag=0, plot_abs=0,
                  plot_field_conc=False):
+        # Structures geometric shapes
         self.unitcell_x = float(unitcell_x)
         self.inc_a_x = inc_a_x
         if unitcell_y is None:
@@ -200,29 +189,30 @@ class Struct(object):
         self.inc_m_x = inc_m_x
         self.inc_n_x = inc_n_x
         self.inc_o_x = inc_o_x
+        self.coat_x = coat_x
         self.coat_y = coat_y
         self.two_inc_sep = two_inc_sep
-        self.bkg_material = bkg_material
-        self.inc_a_material = inc_a_material
-        self.inc_b_material = inc_b_material
-        self.slab_a_material = slab_a_material
-        self.slab_a_bkg_material = slab_a_bkg_material
-        self.slab_b_material = slab_b_material
-        self.slab_b_bkg_material = slab_b_bkg_material
-        self.inc_c_material = inc_c_material
-        self.inc_d_material = inc_d_material
-        self.inc_e_material = inc_e_material
-        self.inc_f_material = inc_f_material
-        self.inc_g_material = inc_g_material
-        self.inc_h_material = inc_h_material
-        self.inc_i_material = inc_i_material
-        self.inc_j_material = inc_j_material
-        self.inc_k_material = inc_k_material
-        self.inc_l_material = inc_l_material
-        self.inc_m_material = inc_m_material
-        self.inc_n_material = inc_n_material
-        self.inc_o_material = inc_o_material
-        self.coat_material = coat_material
+        # Structures material properties - need to check geometry definition 
+        # to ensure connecting material type with correct surface of geometry
+        self.material_a = material_a
+        self.material_b = material_b
+        self.material_c = material_c
+        self.material_d = material_d
+        self.material_e = material_e
+        self.material_f = material_f
+        self.material_g = material_g
+        self.material_h = material_h
+        self.material_i = material_i
+        self.material_j = material_j
+        self.material_k = material_k
+        self.material_l = material_l
+        self.material_m = material_m
+        self.material_n = material_n
+        self.material_o = material_o
+        self.material_p = material_p
+        self.material_q = material_q
+        self.material_r = material_r
+
         self.loss = loss
         if slab_b_x is not None:
             if coat_y is None and inc_b_x is None:
@@ -279,10 +269,17 @@ class Struct(object):
             self.symmetry_flag = 0
 
         # Order must match msh templates!
-        self.acoustic_props_tmp = [bkg_material, inc_a_material, 
-                                   slab_a_material, slab_a_bkg_material, 
-                                   slab_b_material, slab_b_bkg_material, 
-                                   inc_b_material, coat_material]
+        # self.acoustic_props_tmp = [bkg_material, inc_a_material, 
+        #                            slab_a_material, slab_a_bkg_material, 
+        #                            slab_b_material, slab_b_bkg_material, 
+        #                            inc_b_material, coat_material]
+
+        self.acoustic_props_tmp = [material_a, material_b, material_c,
+                                   material_d, material_e, material_f, 
+                                   material_g, material_h, material_i, 
+                                   material_j, material_k, material_l, 
+                                   material_m, material_n, material_o, 
+                                   material_p, material_q, material_r]
         # el_conv_table = {}
         # i = 1; j = 1
         # for matter in acoustic_props:
@@ -372,6 +369,8 @@ class Struct(object):
         self.c_tensor_z = c_tensor_z
         self.p_tensor = p_tensor
         self.eta_tensor = eta_tensor
+
+        self.linear_element_shapes = ['rectangular', 'slot', 'rib_coated']
 
 
     def make_mesh(self):
@@ -494,7 +493,9 @@ class Struct(object):
                     geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
 
         elif self.inc_shape in ['slot']:
-            if self.coat_AC:
+            if self.coat_y is not None:
+                msh_template = 'slot_coated'
+                self.nb_typ_el = 5
                 msh_name = 'slot_c_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(cc)s_%(ccc)s' % {
                 'd': dec_float_str(self.unitcell_x),
                 'dy': dec_float_str(self.unitcell_y),
@@ -503,7 +504,6 @@ class Struct(object):
                 'c': dec_float_str(self.inc_b_x),
                 'cc': dec_float_str(self.slab_a_y),
                 'ccc': dec_float_str(self.coat_y)}
-                msh_template = 'slot_coated'
                 if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                     geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
                     geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
@@ -516,16 +516,16 @@ class Struct(object):
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
                     geo = geo.replace('c1y = 10;', "c1y = %f;" % self.coat_y)
-                self.nb_typ_el = 5
             else:
-                msh_name = 'slot_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(cc)s_%(ccc)s' % {
+                msh_template = 'slot'
+                self.nb_typ_el = 4
+                msh_name = 'slot_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(cc)s' % {
                 'd': dec_float_str(self.unitcell_x),
                 'dy': dec_float_str(self.unitcell_y),
                 'a': dec_float_str(self.inc_a_x),
                 'b': dec_float_str(self.inc_a_y),
                 'c': dec_float_str(self.inc_b_x),
                 'cc': dec_float_str(self.slab_a_y)}
-                msh_template = 'slot'
                 if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                     geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
                     geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
@@ -537,12 +537,10 @@ class Struct(object):
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-                self.nb_typ_el = 4
-
-
-
 
         elif self.inc_shape in ['SMF']:
+            msh_template = 'SMF'
+            self.nb_typ_el = 15
             msh_name = 'SMF_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
             'd': dec_float_str(self.unitcell_x),
             'dy': dec_float_str(self.unitcell_y),
@@ -562,7 +560,6 @@ class Struct(object):
             'm': dec_float_str(self.inc_m_x),
             'n': dec_float_str(self.inc_n_x),
             'o': dec_float_str(self.inc_o_x)}
-            msh_template = 'SMF'
             if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                 geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
                 geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
@@ -585,6 +582,33 @@ class Struct(object):
                 geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                 geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                 geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+
+
+        elif self.inc_shape in ['rib_coated']:
+                msh_template = 'rib_coated'
+                self.nb_typ_el = 4
+                msh_name = 'rib_coated%(d)s_%(dy)s_%(a)s_%(b)s_%(cz)s_%(c)s_%(cc)s_%(ccc)s' % {
+                'd': dec_float_str(self.unitcell_x),
+                'dy': dec_float_str(self.unitcell_y),
+                'a': dec_float_str(self.inc_a_x),
+                'b': dec_float_str(self.inc_a_y),
+                'cz': dec_float_str(self.coat_x),
+                'c': dec_float_str(self.coat_y),
+                'cc': dec_float_str(self.slab_a_y),
+                'ccc': dec_float_str(self.slab_b_y)}
+                if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                    geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                    geo = geo.replace('ribx = 200;', "ribx = %f;" % self.inc_a_x)
+                    geo = geo.replace('riby = 30;', "riby = %f;" % self.inc_a_y)
+                    geo = geo.replace('coatx = 20;', "coatx = %f;" % self.coat_x)
+                    geo = geo.replace('coaty = 20;', "coaty = %f;" % self.coat_y)
+                    geo = geo.replace('slab1 = 100;', "slab1 = %f;" % self.slab_a_y)
+                    geo = geo.replace('slab2 = 50;', "slab2 = %f;" % self.slab_b_y)
+                    geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
         else:
             raise NotImplementedError("\n Selected inc_shape = '%s' \n " \
@@ -658,7 +682,7 @@ class Struct(object):
 def dec_float_str(dec_float):
     """ Convert float with decimal point into string with '_' in place of '.' """
     # string = str(dec_float)
-    string = '%8.4f' %dec_float
+    string = '%8.2f' %dec_float
     string = string.replace('.', '_')
     string = string.replace(" ", "")
     return string

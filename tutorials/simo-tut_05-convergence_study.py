@@ -23,8 +23,8 @@ from fortran import NumBAT
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 2000
-inc_a_y = 680
+inc_a_x = 314.7
+inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 
 num_EM_modes = 20
@@ -36,7 +36,7 @@ AC_ival = 'All'
 
 nu_lcs = 4
 lc_bkg_list = 2*np.ones(nu_lcs)
-lc_list = np.linspace(2e2,3e3,nu_lcs)
+lc_list = np.linspace(2e2,5e3,nu_lcs)
 x_axis = lc_bkg_list
 x_axis = lc_list
 conv_list = []
@@ -45,16 +45,17 @@ time_list = []
 for i_lc, lc_ref in enumerate(lc_list):
     start = time.time()
     print("\n Running simulation", i_lc+1, "/", nu_lcs)
-    lc3 = 0.01*lc_ref
+    # lc3 = 0.01*lc_ref
+    lc3 = 30
     lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
-                            bkg_material=materials.Air,
-                            inc_a_material=materials.Si,
+                            material_a=materials.Air,
+                            material_b=materials.Si,
                             lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc3, force_mesh=True)
 
     # Expected effective index of fundamental guided mode.
-    n_eff = wguide.inc_a_material.n-0.1
+    n_eff = wguide.material_b.n-0.1
     # Calculate Electromagnetic modes.
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS

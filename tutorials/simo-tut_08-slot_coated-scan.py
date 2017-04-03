@@ -44,11 +44,11 @@ coat_y_list = np.linspace(50,200,4)
 for coat_y in coat_y_list:
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             inc_b_x =inc_b_x, slab_a_y=slab_a_y, coat_y=coat_y,
-                            bkg_material=materials.Air,
-                            inc_a_material=materials.As2S3,
-                            inc_b_material=materials.Si,
-                            slab_a_material=materials.SiO2,
-                            coat_material=materials.SiO2,
+                            material_a=materials.Air,
+                            material_b=materials.As2S3,
+                            material_c=materials.SiO2,
+                            material_d=materials.Si,
+                            material_e=materials.SiO2,
                             lc_bkg=3, lc2=1500.0, lc3=700.0)
 
     # Expected effective index of fundamental guided mode.

@@ -43,7 +43,7 @@ known_geo = 315.
 
 def modes_n_gain(wguide):
     # Expected effective index of fundamental guided mode.
-    n_eff = (wguide.inc_a_material.n-0.1) * wguide.inc_a_x/known_geo
+    n_eff = (wguide.material_b.n-0.1) * wguide.inc_a_x/known_geo
     # Calculate Electromagnetic modes.
     sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
     # Backward SBS
@@ -72,8 +72,8 @@ for width in waveguide_widths:
 
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
-                            bkg_material=materials.Air,
-                            inc_a_material=materials.Si,
+                            material_a=materials.Air,
+                            material_b=materials.Si,
                             lc_bkg=2, lc2=1000.0, lc3=10.0)
     geo_objects_list.append(wguide)
 
@@ -100,7 +100,7 @@ for i_w, width_obj in enumerate(width_objs):
     alpha = width_obj[5]
     k_AC = width_obj[6]
     # Calculate the EM effective index of the waveguide (k_AC = 2*k_EM).
-    n_eff_sim = round(np.real((k_AC/2.)*((wl_nm*1e-9)/(2.*np.pi))), 4)
+    n_eff_sim = np.round(np.real((k_AC/2.)*((wl_nm*1e-9)/(2.*np.pi))), 4)
     n_effs.append(n_eff_sim)
 
     # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.

@@ -34,12 +34,12 @@ EM_ival2 = EM_ival1
 AC_ival = 'All'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        bkg_material=materials.Air,
-                        inc_a_material=materials.Si,
+                        material_a=materials.Air,
+                        material_b=materials.Si,
                         lc_bkg=2, lc2=500.0, lc3=10.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.inc_a_material.n-0.1
+n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic modes.
 # sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)

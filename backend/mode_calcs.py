@@ -46,14 +46,20 @@ class Simmo(object):
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
         n_list = []
-        n_list_tmp = np.array([self.structure.bkg_material.n,
-                               self.structure.inc_a_material.n,
-                               self.structure.slab_a_material.n,
-                               self.structure.slab_a_bkg_material.n,
-                               self.structure.slab_b_material.n,
-                               self.structure.slab_b_bkg_material.n,
-                               self.structure.inc_b_material.n,
-                               self.structure.coat_material.n])
+        n_list_tmp = np.array([self.structure.material_a.n, self.structure.material_b.n, self.structure.material_c.n,
+                               self.structure.material_d.n, self.structure.material_e.n, self.structure.material_f.n,
+                               self.structure.material_g.n, self.structure.material_h.n, self.structure.material_i.n,
+                               self.structure.material_j.n, self.structure.material_k.n, self.structure.material_l.n,
+                               self.structure.material_m.n, self.structure.material_n.n, self.structure.material_o.n,
+                               self.structure.material_p.n, self.structure.material_q.n, self.structure.material_r.n])
+                               # self.structure.bkg_material.n,
+                               # self.structure.inc_a_material.n,
+                               # self.structure.slab_a_material.n,
+                               # self.structure.slab_a_bkg_material.n,
+                               # self.structure.slab_b_material.n,
+                               # self.structure.slab_b_bkg_material.n,
+                               # self.structure.inc_b_material.n,
+                               # self.structure.coat_material.n])
         self.el_conv_table_n = {}
         i = 1; j = 1
         for n in n_list_tmp:
@@ -132,31 +138,26 @@ class Simmo(object):
 ### Calc unnormalised power in each EM mode Kokou equiv. of Eq. 8.
         try:
             nnodes = 6
-            if self.structure.inc_shape in ['rectangular', 'slot']:
+            if self.structure.inc_shape in self.structure.linear_element_shapes:
             ## Integration using analytically evaluated basis function integrals. Fast.
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_ez(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
-            # Only calculate energy in waveguide region
-                # self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_wg(
-                #     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
-                #     nnodes, self.table_nod,
-                #     self.x_arr, self.Eig_values, self.sol1, self.type_el)
-            elif self.structure.inc_shape == 'circular':
+            else:
+                if self.structure.inc_shape != 'circular':
+                    print("Warning: em_mode_energy_int - not sure if mesh contains curvi-linear elements", 
+                        "\n using slow quadrature integration by default.\n\n")
             # Integration by quadrature. Slowest.
                 self.EM_mode_overlap = NumBAT.em_mode_energy_int_ez(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
-            else:
-                raise ValueError("Do not know which EM overlap integral to use.")
             # Bring Kokou's def into line with CW formulation.
             self.EM_mode_overlap = 2.0*self.EM_mode_overlap
 
         except KeyboardInterrupt:
-            print("\n\n FEM routine EM_mode_energy_int",\
-            "interrupted by keyboard.\n\n")
+            print("\n\n FEM routine EM_mode_energy_int interrupted by keyboard.\n\n")
 
         ### Not necessary because EM FEM mesh always normalised in area to unity.
         # print area
@@ -385,29 +386,22 @@ class Simmo(object):
             nnodes = 6
             # import time
             # start = time.time()
-            if self.structure.inc_shape in ['rectangular', 'slot']:
-            # Integration following KD 9/9/16 notes. Fastest!
+            if self.structure.inc_shape in self.structure.linear_element_shapes:
+            # Semi-analytic integration following KD 9/9/16 notes. Fastest!
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v4(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor,
                     self.k_AC, self.Omega_AC, self.sol1)
-            ## Integration using analytically evaluated basis function integrals. Fast.
-            #     self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v2(
-            #         self.num_modes, self.n_msh_el, self.n_msh_pts,
-            #         nnodes, self.table_nod, self.type_el, self.x_arr,
-            #         self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
-            #         self.k_AC, self.Omega_AC, self.sol1)
-            elif self.structure.inc_shape == 'circular':
+            else:
+                if self.structure.inc_shape != 'circular':
+                    print("Warning: ac_mode_energy_int - not sure if mesh contains curvi-linear elements", 
+                        "\n using slow quadrature integration by default.\n\n")
             # Integration by quadrature. Slowest.
                 self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
                     self.k_AC, self.Omega_AC, self.sol1, AC_FEM_debug)
-            else:
-                raise ValueError("Do not know which AC overlap integral to use.")
-
         except KeyboardInterrupt:
-            print("\n\n FEM routine AC_mode_energy_int",\
-            "interrupted by keyboard.\n\n")
+            print("\n\n FEM routine AC_mode_energy_int interrupted by keyboard.\n\n")

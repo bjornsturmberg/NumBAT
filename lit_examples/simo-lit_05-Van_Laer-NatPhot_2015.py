@@ -62,16 +62,16 @@ SiO2_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         slab_b_x=slab_b_x, slab_b_y=slab_b_y,
-                        bkg_material=materials.Air,
-                        inc_a_material=materials.Material(Si_props),
-                        slab_a_material=materials.Material(SiO2_props),
-                        slab_a_bkg_material=materials.Air,
-                        slab_b_material=materials.Material(SiO2_props),
-                        slab_b_bkg_material=materials.Air,
+                        material_a=materials.Air,
+                        material_b=materials.Material(Si_props),
+                        material_c=materials.Material(SiO2_props),
+                        material_d=materials.Air,
+                        material_e=materials.Material(SiO2_props),
+                        material_f=materials.Air,
                         lc_bkg=2, lc2=4000.0, lc3=20.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.inc_a_material.n-0.1
+n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)

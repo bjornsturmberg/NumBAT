@@ -138,22 +138,23 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
         print("Acoustic loss calc")
         start = time.time()
         try:
-            if sim_EM_wguide.structure.inc_shape in ['rectangular', 'slot']:
+            if sim_EM_wguide.structure.inc_shape in sim_EM_wguide.structure.linear_element_shapes:
                 alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
                     sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
                     sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                     sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
                     k_AC, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
                     sim_AC_wguide.AC_mode_overlap)
-            elif sim_EM_wguide.structure.inc_shape == 'circular':
+            else:
+                if sim_EM_wguide.structure.inc_shape != 'circular':
+                    print("Warning: ac_alpha_int - not sure if mesh contains curvi-linear elements", 
+                        "\n using slow quadrature integration by default.\n\n")
                 alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
                     sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
                     sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
                     sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
                     k_AC, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
                     sim_AC_wguide.AC_mode_overlap, Fortran_debug)
-            else:
-                raise ValueError("Do not know which alpha overlap integral to use.")
         except KeyboardInterrupt:
             print("\n\n Routine ac_alpha_int interrupted by keyboard.\n\n")
         alpha = np.real(alpha)
@@ -167,7 +168,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     print("Photoelastic calc")
     start = time.time()
     try:
-        if sim_EM_wguide.structure.inc_shape in ['rectangular', 'slot']:
+        if sim_EM_wguide.structure.inc_shape in sim_EM_wguide.structure.linear_element_shapes:
             Q_PE = NumBAT.photoelastic_int_v2(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
@@ -176,7 +177,10 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, sim_EM_wguide.Eig_values, Fortran_debug)
-        elif sim_EM_wguide.structure.inc_shape == 'circular':
+        else:
+            if sim_EM_wguide.structure.inc_shape != 'circular':
+                print("Warning: photoelastic_int - not sure if mesh contains curvi-linear elements", 
+                    "\n using slow quadrature integration by default.\n\n")
             Q_PE = NumBAT.photoelastic_int(
                 sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
                 EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
@@ -185,8 +189,6 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                 sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
                 k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, sim_EM_wguide.Eig_values, Fortran_debug)
-        else:
-            raise ValueError("Do not know which PE overlap integral to use.")
     except KeyboardInterrupt:
         print("\n\n Routine photoelastic_int interrupted by keyboard.\n\n")
     end = time.time()
