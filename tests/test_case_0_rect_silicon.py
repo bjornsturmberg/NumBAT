@@ -65,9 +65,9 @@ AC_ival='All'
 
 # Acoustic Parameters
 # Silicon
-n = 3.5
+n = 3.48
 # Density
-s = 2330  # kg/m3
+s = 2329  # kg/m3
 # Stiffness tensor components.
 c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
 # Photoelastic tensor components
@@ -82,12 +82,12 @@ start = time.time()
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        bkg_material=materials.Air,
-                        inc_a_material=materials.Material(Si_props),
-                        lc_bkg=2, lc2=1000.0, lc3=10.0)
+                        material_a=materials.Air,
+                        material_b=materials.Material(Si_props),
+                        lc_bkg=2, lc2=2000.0, lc3=20.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.inc_a_material.n-0.1
+n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic Modes
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
@@ -109,13 +109,17 @@ masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha, 0, thres
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 
+# print("\n SBS_gain PE contribution \n", masked_PE)
+# print("SBS_gain MB contribution \n", masked_MB)
+# print("SBS_gain total \n", masked)
+
 test_list1 = list(zip(sim_EM_wguide.Eig_values, sim_AC_wguide.Eig_values))
 test_list2 = list(zip(masked_PE, masked_MB, masked))
 
 # SAVE DATA AS REFERENCE
 # Only run this after changing what is simulated - this
 # generates a new set of reference answers to check against
-# # in the future
+# in the future
 # np.savez_compressed("ref/%s.npz" % casefile_name, 
 #         test_list1 = test_list1, test_list2 = test_list2)
 # assert False, "Reference results saved successfully, \

@@ -43,7 +43,7 @@ class Material(object):
     def __init__(self, mat_props):
         self.n = mat_props[0]
         self.s = mat_props[1]
-        if self.structure.symmetry_flag == 1:
+        if len(mat_props) == 11:
             self.c_11 = mat_props[2]
             self.c_12 = mat_props[3]
             self.c_44 = mat_props[4]
