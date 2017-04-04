@@ -42,12 +42,12 @@ n = 3.48
 # Density
 s = 2329  # kg/m3
 # Stiffness tensor components in Pa
-c_11 = 165.7e9; c_12 = 63.9e9; c_13 = 63.9e9; c_14 = 0.0; c_15 = 0.0; c_16 = 0.0 
-c_21 = 63.9e9; c_22 = 165.7e9; c_23 = 63.9e9; c_24 = 0.0; c_25 = 0.0; c_26 = 0.0 
-c_31 = 63.9e9; c_32 = 63.9e9; c_33 = 165.7e9; c_34 = 0.0; c_35 = 0.0; c_36 = 0.0 
-c_41 = 0.0; c_42 = 0.0; c_43 = 0.0; c_44 = 79.6e9; c_45 = 0.0; c_46 = 0.0 
-c_51 = 0.0; c_52 = 0.0; c_53 = 0.0; c_54 = 0.0; c_55 = 79.6e9; c_56 = 0.0 
-c_61 = 0.0; c_62 = 0.0; c_63 = 0.0; c_64 = 0.0; c_65 = 0.0; c_66 = 79.6e9 
+c_11 = 165.6e9; c_12 = 63.9e9; c_13 = 63.9e9; c_14 = 0.0; c_15 = 0.0; c_16 = 0.0 
+c_21 = 63.9e9; c_22 = 165.6e9; c_23 = 63.9e9; c_24 = 0.0; c_25 = 0.0; c_26 = 0.0 
+c_31 = 63.9e9; c_32 = 63.9e9; c_33 = 165.6e9; c_34 = 0.0; c_35 = 0.0; c_36 = 0.0 
+c_41 = 0.0; c_42 = 0.0; c_43 = 0.0; c_44 = 79.5e9; c_45 = 0.0; c_46 = 0.0 
+c_51 = 0.0; c_52 = 0.0; c_53 = 0.0; c_54 = 0.0; c_55 = 79.5e9; c_56 = 0.0 
+c_61 = 0.0; c_62 = 0.0; c_63 = 0.0; c_64 = 0.0; c_65 = 0.0; c_66 = 79.5e9 
 # Photoelastic tensor components
 p_11 = -0.094; p_12 = 0.017; p_13 = 0.017; p_14 = 0.0; p_15 = 0.0; p_16 = 0.0 
 p_21 = 0.017; p_22 = -0.094; p_23 = 0.017; p_24 = 0.0; p_25 = 0.0; p_26 = 0.0
@@ -78,8 +78,9 @@ eta_51, eta_52, eta_53, eta_54, eta_55, eta_56, eta_61, eta_62, eta_63, eta_64, 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.Air,
-                        material_b=materials.Material(test_props),
-                        symmetry_flag=False,
+                        material_b=materials.Si,
+                        # material_b=materials.Material(test_props),
+                        # symmetry_flag=False,
                         lc_bkg=2, lc2=1000.0, lc3=10.0)
 
 

@@ -69,7 +69,7 @@ n = 3.48
 # Density
 s = 2329  # kg/m3
 # Stiffness tensor components.
-c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
+c_11 = 165.6e9; c_12 = 63.9e9; c_44 = 79.5e9  # Pa
 # Photoelastic tensor components
 p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
 # Acoustic loss tensor components.
@@ -84,7 +84,7 @@ start = time.time()
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.Air,
                         material_b=materials.Material(Si_props),
-                        lc_bkg=2, lc2=2000.0, lc3=20.0)
+                        lc_bkg=2, lc2=1000.0, lc3=10.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_b.n-0.1
@@ -116,10 +116,10 @@ masked = np.ma.masked_inside(SBS_gain[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
 test_list1 = list(zip(sim_EM_wguide.Eig_values, sim_AC_wguide.Eig_values))
 test_list2 = list(zip(masked_PE, masked_MB, masked))
 
-# SAVE DATA AS REFERENCE
-# Only run this after changing what is simulated - this
-# generates a new set of reference answers to check against
-# in the future
+# # SAVE DATA AS REFERENCE
+# # Only run this after changing what is simulated - this
+# # generates a new set of reference answers to check against
+# # in the future
 # np.savez_compressed("ref/%s.npz" % casefile_name, 
 #         test_list1 = test_list1, test_list2 = test_list2)
 # assert False, "Reference results saved successfully, \
