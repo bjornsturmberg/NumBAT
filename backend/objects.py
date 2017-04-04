@@ -301,50 +301,6 @@ class Struct(object):
             if acoustic_props[k_typ]:
                 rho[k_typ] = acoustic_props[k_typ].s
 
-                p_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ].p_11
-                p_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ].p_11
-                p_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ].p_11
-                p_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ].p_12
-                p_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ].p_12
-                p_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ].p_12
-                p_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ].p_12
-                p_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ].p_12
-                p_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ].p_12
-                p_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ].p_44
-                p_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ].p_44
-
-                eta_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ].eta_11
-                eta_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ].eta_11
-                eta_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ].eta_11
-                eta_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ].eta_12
-                eta_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ].eta_12
-                eta_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ].eta_12
-                eta_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ].eta_12
-                eta_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ].eta_12
-                eta_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ].eta_12
-                eta_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ].eta_44
-                eta_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ].eta_44
-
                 if symmetry_flag is True:
                     c_tensor[0,0,k_typ] = acoustic_props[k_typ].c_11
                     c_tensor[1,1,k_typ] = acoustic_props[k_typ].c_11
@@ -366,6 +322,50 @@ class Struct(object):
                     c_tensor_z[1,2,1,k_typ] = acoustic_props[k_typ].c_44
                     c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ].c_44
                     c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ].c_44
+
+                    p_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ].p_11
+                    p_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ].p_11
+                    p_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ].p_11
+                    p_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ].p_12
+                    p_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ].p_12
+                    p_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ].p_12
+                    p_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ].p_12
+                    p_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ].p_12
+                    p_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ].p_12
+                    p_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ].p_44
+                    p_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ].p_44
+
+                    eta_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ].eta_11
+                    eta_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ].eta_11
+                    eta_tensor[2,2,2,2,k_typ] = acoustic_props[k_typ].eta_11
+                    eta_tensor[0,0,1,1,k_typ] = acoustic_props[k_typ].eta_12
+                    eta_tensor[0,0,2,2,k_typ] = acoustic_props[k_typ].eta_12
+                    eta_tensor[1,1,0,0,k_typ] = acoustic_props[k_typ].eta_12
+                    eta_tensor[1,1,2,2,k_typ] = acoustic_props[k_typ].eta_12
+                    eta_tensor[2,2,0,0,k_typ] = acoustic_props[k_typ].eta_12
+                    eta_tensor[2,2,1,1,k_typ] = acoustic_props[k_typ].eta_12
+                    eta_tensor[1,2,1,2,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[1,2,2,1,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[2,1,1,2,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[2,1,2,1,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[0,2,0,2,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[0,2,2,0,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[2,0,0,2,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[2,0,2,0,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[0,1,0,1,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ].eta_44
+                    eta_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ].eta_44
 
                 elif symmetry_flag is False:
                     c_tensor[0,0,k_typ] = acoustic_props[k_typ].c_11

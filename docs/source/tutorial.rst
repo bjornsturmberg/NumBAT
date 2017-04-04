@@ -11,11 +11,11 @@ Throughout the tutorial the script file will be called simo.py.
 To start a simulation open a terminal and change into the directory containing the simo.py file.
 To run this script::
 
-    $ python simo.py
+    $ python3 simo.py
 
 To have direct access to the simulation objects upon the completion of the script use,::
 
-    $ python -i simo.py
+    $ python3 -i simo.py
 
 This will return you into an interactive python session in which all simulation objects are accessible. In this session you can access the docstrings of objects, classes and methods. For example::
 
@@ -106,7 +106,7 @@ Terminating NumBAT simos
 
 If a simulation hangs, we can kill all python instances upon the machine::
 
-    $ pkill python
+    $ pkill python3
 
 If a calculation hangs from within a screen session one must first detach from that session then kill python, or if it affects multiple instances, you can kill screen. A more targeted way to kill processes is using their PID::
 
