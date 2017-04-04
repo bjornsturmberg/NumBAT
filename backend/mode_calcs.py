@@ -145,7 +145,7 @@ class Simmo(object):
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
             else:
-                if self.structure.inc_shape != 'circular':
+                if self.structure.inc_shape not in self.structure.curvilinear_element_shapes:
                     print("Warning: em_mode_energy_int - not sure if mesh contains curvi-linear elements", 
                         "\n using slow quadrature integration by default.\n\n")
             # Integration by quadrature. Slowest.
@@ -394,7 +394,7 @@ class Simmo(object):
                     self.structure.nb_typ_el_AC, self.structure.c_tensor,
                     self.k_AC, self.Omega_AC, self.sol1)
             else:
-                if self.structure.inc_shape != 'circular':
+                if self.structure.inc_shape not in self.structure.curvilinear_element_shapes:
                     print("Warning: ac_mode_energy_int - not sure if mesh contains curvi-linear elements", 
                         "\n using slow quadrature integration by default.\n\n")
             # Integration by quadrature. Slowest.

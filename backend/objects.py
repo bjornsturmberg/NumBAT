@@ -371,6 +371,7 @@ class Struct(object):
         self.eta_tensor = eta_tensor
 
         self.linear_element_shapes = ['rectangular', 'slot', 'rib_coated']
+        self.curvilinear_element_shapes = ['circular', 'onion']
 
 
     def make_mesh(self):
@@ -538,10 +539,10 @@ class Struct(object):
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
-        elif self.inc_shape in ['SMF']:
-            msh_template = 'SMF'
+        elif self.inc_shape in ['onion']:
+            msh_template = 'onion'
             self.nb_typ_el = 15
-            msh_name = 'SMF_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
+            msh_name = 'onion_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
             'd': dec_float_str(self.unitcell_x),
             'dy': dec_float_str(self.unitcell_y),
             'a': dec_float_str(self.inc_a_x),

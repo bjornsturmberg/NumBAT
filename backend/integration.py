@@ -146,7 +146,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                     k_AC, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
                     sim_AC_wguide.AC_mode_overlap)
             else:
-                if sim_EM_wguide.structure.inc_shape != 'circular':
+                if sim_EM_wguide.structure.inc_shape not in sim_EM_wguide.structure.curvilinear_element_shapes:
                     print("Warning: ac_alpha_int - not sure if mesh contains curvi-linear elements", 
                         "\n using slow quadrature integration by default.\n\n")
                 alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
@@ -178,7 +178,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
                 k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
                 relevant_eps_effs, sim_EM_wguide.Eig_values, Fortran_debug)
         else:
-            if sim_EM_wguide.structure.inc_shape != 'circular':
+            if sim_EM_wguide.structure.inc_shape not in sim_EM_wguide.structure.curvilinear_element_shapes:
                 print("Warning: photoelastic_int - not sure if mesh contains curvi-linear elements", 
                     "\n using slow quadrature integration by default.\n\n")
             Q_PE = NumBAT.photoelastic_int(
