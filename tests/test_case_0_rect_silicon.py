@@ -1,5 +1,5 @@
 """
-    test_case_0_rect_silicon.py is a simulation example for EMUstack.
+    test_case_0_rect_silicon.py is a simulation example for NumBAT.
 
     Copyright (C) 2015  Bjorn Sturmberg, Kokou Dossou.
 
@@ -73,7 +73,7 @@ c_11 = 165.7e9; c_12 = 63.9e9; c_44 = 79.6e9  # Pa
 # Photoelastic tensor components
 p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
 # Acoustic loss tensor components.
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
+eta_11 = 5.9e-3; eta_12 = 5.16e-3; eta_44 = 0.620e-3  # Pa
 # Put acoustic parameters together for convenience.
 Si_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
                   eta_11, eta_12, eta_44]

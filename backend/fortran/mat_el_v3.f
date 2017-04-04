@@ -35,7 +35,7 @@ c
 c
 ccccccccccccccccccccccccccccccccccccccc
 c
-      debug = 1
+      debug = 0
 
 c  ii = sqrt(-1)
       ii = dcmplx(0.0d0, 1.0d0)

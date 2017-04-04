@@ -35,6 +35,8 @@ class Struct(object):
             unitcell_y  (float): The vertical period of the unit cell \
                 in nanometers. If None, unitcell_y = unitcell_x.
 
+            SPECIFY WHAT IS RADIUS WHAT IS DIAMETER
+
             inc_a_y  (float): The vertical diameter of the inclusion in nm.
 
             inc_shape  (str): Shape of inclusions that have template mesh, \
@@ -61,35 +63,15 @@ class Struct(object):
             coat_y  (float): The thickness of any coat layer around \
                 the inclusion.
 
-            SPECIFY WHAT IS RADIUS WHAT IS DIAMETER
+            symmetry_flag  (bool): True if materials all have sufficient \
+                symmetry that their tensors contain only 3 unique values.
+                If False must specify full [3,3,3,3] tensors.
 
-            background  : A :Material: instance for the background medium.
+            material_a  : A :Material: instance - check backend/msh_type_lib
 
-            inc_a_material  : A :Material: instance for the
+            material_b  : A :Material: instance - check backend/msh_type_lib
 
-            inc_b_material  : A :Material: instance for the
-
-            slab_a_material  : A :Material: instance for the
-
-            slab_a_bkg_material  : A :Material: instance for the
-
-            slab_b_material  : A :Material: instance for the
-
-            slab_b_bkg_material  : A :Material: instance for the
-
-            coat_material  : A :Material: instance for the
-
-            bkg_AC  : A list of acoustic parameters
-
-            inc_a_AC  : A list of acoustic parameters
-
-            slab_a_AC  : A list of acoustic parameters
-
-            slab_a_bkg_AC  : A list of acoustic parameters
-
-            slab_b_AC  : A list of acoustic parameters
-
-            slab_b_bkg_AC  : A list of acoustic parameters
+            material_c-r  : A :Material: instance - check backend/msh_type_lib
 
             loss  (bool): If False, Im(n) = 0, if True n as in \
                 :Material: instance.
