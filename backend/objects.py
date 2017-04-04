@@ -651,8 +651,8 @@ class Struct(object):
                 'ccc': dec_float_str(self.slab_b_y)}
                 if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                     geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
-                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
-                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                    geo = geo_tmp.replace('d_in_nm = 1000;', "d_in_nm = %f;" % self.unitcell_x)
+                    geo = geo.replace('dy_in_nm = 600;', "dy_in_nm = %f;" % self.unitcell_y)
                     geo = geo.replace('ribx = 200;', "ribx = %f;" % self.inc_a_x)
                     geo = geo.replace('riby = 30;', "riby = %f;" % self.inc_a_y)
                     geo = geo.replace('coatx = 20;', "coatx = %f;" % self.coat_x)
