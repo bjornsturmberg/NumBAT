@@ -300,26 +300,6 @@ class Struct(object):
         for k_typ in range(self.nb_typ_el_AC):
             if acoustic_props[k_typ]:
                 rho[k_typ] = acoustic_props[k_typ].s
-                c_tensor[0,0,k_typ] = acoustic_props[k_typ].c_11
-                c_tensor[1,1,k_typ] = acoustic_props[k_typ].c_11
-                c_tensor[2,2,k_typ] = acoustic_props[k_typ].c_11
-                c_tensor[0,1,k_typ] = acoustic_props[k_typ].c_12
-                c_tensor[0,2,k_typ] = acoustic_props[k_typ].c_12
-                c_tensor[1,0,k_typ] = acoustic_props[k_typ].c_12
-                c_tensor[1,2,k_typ] = acoustic_props[k_typ].c_12
-                c_tensor[2,0,k_typ] = acoustic_props[k_typ].c_12
-                c_tensor[2,1,k_typ] = acoustic_props[k_typ].c_12
-                c_tensor[3,3,k_typ] = acoustic_props[k_typ].c_44
-                c_tensor[4,4,k_typ] = acoustic_props[k_typ].c_44
-                c_tensor[5,5,k_typ] = acoustic_props[k_typ].c_44
-
-                c_tensor_z[2,2,2,k_typ] = acoustic_props[k_typ].c_11
-                c_tensor_z[2,0,0,k_typ] = acoustic_props[k_typ].c_12
-                c_tensor_z[2,1,1,k_typ] = acoustic_props[k_typ].c_12
-                c_tensor_z[1,1,2,k_typ] = acoustic_props[k_typ].c_44
-                c_tensor_z[1,2,1,k_typ] = acoustic_props[k_typ].c_44
-                c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ].c_44
-                c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ].c_44
 
                 p_tensor[0,0,0,0,k_typ] = acoustic_props[k_typ].p_11
                 p_tensor[1,1,1,1,k_typ] = acoustic_props[k_typ].p_11
@@ -364,6 +344,78 @@ class Struct(object):
                 eta_tensor[0,1,1,0,k_typ] = acoustic_props[k_typ].eta_44
                 eta_tensor[1,0,0,1,k_typ] = acoustic_props[k_typ].eta_44
                 eta_tensor[1,0,1,0,k_typ] = acoustic_props[k_typ].eta_44
+
+                if symmetry_flag is True:
+                    c_tensor[0,0,k_typ] = acoustic_props[k_typ].c_11
+                    c_tensor[1,1,k_typ] = acoustic_props[k_typ].c_11
+                    c_tensor[2,2,k_typ] = acoustic_props[k_typ].c_11
+                    c_tensor[0,1,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor[0,2,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor[1,0,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor[1,2,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor[2,0,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor[2,1,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor[3,3,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor[4,4,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor[5,5,k_typ] = acoustic_props[k_typ].c_44
+
+                    c_tensor_z[2,2,2,k_typ] = acoustic_props[k_typ].c_11
+                    c_tensor_z[2,0,0,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor_z[2,1,1,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor_z[1,1,2,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor_z[1,2,1,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ].c_44
+
+                elif symmetry_flag is False:
+                    c_tensor[0,0,k_typ] = acoustic_props[k_typ].c_11
+                    c_tensor[0,1,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor[0,2,k_typ] = acoustic_props[k_typ].c_13
+                    c_tensor[0,3,k_typ] = acoustic_props[k_typ].c_14
+                    c_tensor[0,4,k_typ] = acoustic_props[k_typ].c_15
+                    c_tensor[0,5,k_typ] = acoustic_props[k_typ].c_16
+                    c_tensor[1,0,k_typ] = acoustic_props[k_typ].c_21
+                    c_tensor[1,1,k_typ] = acoustic_props[k_typ].c_22
+                    c_tensor[1,2,k_typ] = acoustic_props[k_typ].c_23
+                    c_tensor[1,3,k_typ] = acoustic_props[k_typ].c_24
+                    c_tensor[1,4,k_typ] = acoustic_props[k_typ].c_25
+                    c_tensor[1,5,k_typ] = acoustic_props[k_typ].c_26
+                    c_tensor[2,0,k_typ] = acoustic_props[k_typ].c_31
+                    c_tensor[2,1,k_typ] = acoustic_props[k_typ].c_32
+                    c_tensor[2,2,k_typ] = acoustic_props[k_typ].c_33
+                    c_tensor[2,3,k_typ] = acoustic_props[k_typ].c_34
+                    c_tensor[2,4,k_typ] = acoustic_props[k_typ].c_35
+                    c_tensor[2,5,k_typ] = acoustic_props[k_typ].c_36
+                    c_tensor[3,0,k_typ] = acoustic_props[k_typ].c_41
+                    c_tensor[3,1,k_typ] = acoustic_props[k_typ].c_42
+                    c_tensor[3,2,k_typ] = acoustic_props[k_typ].c_43
+                    c_tensor[3,3,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor[3,4,k_typ] = acoustic_props[k_typ].c_45
+                    c_tensor[3,5,k_typ] = acoustic_props[k_typ].c_46
+                    c_tensor[4,0,k_typ] = acoustic_props[k_typ].c_51
+                    c_tensor[4,1,k_typ] = acoustic_props[k_typ].c_52
+                    c_tensor[4,2,k_typ] = acoustic_props[k_typ].c_53
+                    c_tensor[4,3,k_typ] = acoustic_props[k_typ].c_54
+                    c_tensor[4,4,k_typ] = acoustic_props[k_typ].c_55
+                    c_tensor[4,5,k_typ] = acoustic_props[k_typ].c_56
+                    c_tensor[5,0,k_typ] = acoustic_props[k_typ].c_61
+                    c_tensor[5,1,k_typ] = acoustic_props[k_typ].c_62
+                    c_tensor[5,2,k_typ] = acoustic_props[k_typ].c_63
+                    c_tensor[5,3,k_typ] = acoustic_props[k_typ].c_64
+                    c_tensor[5,4,k_typ] = acoustic_props[k_typ].c_65
+                    c_tensor[5,5,k_typ] = acoustic_props[k_typ].c_66
+
+                    c_tensor_z[2,2,2,k_typ] = acoustic_props[k_typ].c_11
+                    c_tensor_z[2,0,0,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor_z[2,1,1,k_typ] = acoustic_props[k_typ].c_12
+                    c_tensor_z[1,1,2,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor_z[1,2,1,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor_z[0,0,2,k_typ] = acoustic_props[k_typ].c_44
+                    c_tensor_z[0,2,0,k_typ] = acoustic_props[k_typ].c_44
+
+                else:
+                    raise ValueError("symmetry_flag must be True or False.")
+
         self.rho = rho
         self.c_tensor = c_tensor
         self.c_tensor_z = c_tensor_z

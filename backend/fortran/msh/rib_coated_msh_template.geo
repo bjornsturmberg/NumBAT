@@ -47,8 +47,8 @@ Point(13) = {0, -h+s1+s2+cy, 0, lc};
 Point(14) = {d, -h+s1+s2+cy, 0, lc};
 Point(15) = {d/2-rx/2-cx, -h+s1+s2+cy, 0, lc};
 Point(16) = {d/2+rx/2+cx, -h+s1+s2+cy, 0, lc};
-Point(17) = {d/2-rx/2-cx, -h+s1+s2+2*cy+ry, 0, lc};
-Point(18) = {d/2+rx/2+cx, -h+s1+s2+2*cy+ry, 0, lc};
+Point(17) = {d/2-rx/2-cx, -h+s1+s2+cy+ry, 0, lc};
+Point(18) = {d/2+rx/2+cx, -h+s1+s2+cy+ry, 0, lc};
 
 Line(1) = {1, 4};
 Line(2) = {4, 14};
