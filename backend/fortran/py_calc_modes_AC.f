@@ -474,23 +474,23 @@ C
 C         write(ui,*) "lambda, 1/lambda = ", lambda, 1.0d0/lambda
 C         write(ui,*) "sqrt(shift)/(2*pi) = ", sqrt(shift) / (2.0d0 * pi)
         do i=1,nval
-          write(ui,"(i4,2(g22.14),2(g18.10))") i,
-     *       beta1(i)
+          write(ui,"(i4,2(g22.14),2(g18.10))") i, beta1(i)
         enddo
       endif
-C     If c_tensor has regular symmetries use more efficient formulation
-      if (symmetry_flag .eq. 0) then
-c     The z-component must be multiplied by ii in order to get the 
-C     physical, un-normalised z-component 
-C     (because mat_el_v3 follows formulation of Hladky-Hennion JSV 1996)
-        do ival=1,nval
-          do iel=1,nel
-            do inod=1,nnodes
-              sol1(3,inod,ival,iel) = ii * sol1(3,inod,ival,iel)
-            enddo
-          enddo
-        enddo
-      endif
+      
+C C     If c_tensor has regular symmetries use more efficient formulation
+C       if (symmetry_flag .eq. 0) then
+C c     The z-component must be multiplied by ii in order to get the 
+C C     physical, un-normalised z-component 
+C C     (because mat_el_v3 follows formulation of Hladky-Hennion JSV 1996)
+C         do ival=1,nval
+C           do iel=1,nel
+C             do inod=1,nnodes
+C               sol1(3,inod,ival,iel) = ii * sol1(3,inod,ival,iel)
+C             enddo
+C           enddo
+C         enddo
+C       endif
 
 C    Save Original solution
       if (plot_modes .eq. 1) then

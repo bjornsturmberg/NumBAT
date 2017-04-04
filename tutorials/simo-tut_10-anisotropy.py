@@ -78,9 +78,9 @@ eta_51, eta_52, eta_53, eta_54, eta_55, eta_56, eta_61, eta_62, eta_63, eta_64, 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.Air,
-                        material_b=materials.Si,
-                        # material_b=materials.Material(test_props),
-                        # symmetry_flag=False,
+                        # material_b=materials.Si,
+                        material_b=materials.Material(test_props),
+                        symmetry_flag=False,
                         lc_bkg=2, lc2=1000.0, lc3=10.0)
 
 
@@ -89,7 +89,6 @@ n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic modes.
 sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
-
 # np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
@@ -106,7 +105,6 @@ k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
 
 # Calculate Acoustic modes.
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC, EM_sim=sim_EM_wguide)
-
 # np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
@@ -114,11 +112,15 @@ sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC, EM_sim=sim_EM_wg
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
 
+plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', pdf_png='png')
+
+# set_q_factor = 1000.
+
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
     sim_EM_wguide, sim_AC_wguide, k_AC,
-    EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
+    EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)#, fixed_Q=set_q_factor)
 
 # Print the Backward SBS gain of the AC modes.
 print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha)

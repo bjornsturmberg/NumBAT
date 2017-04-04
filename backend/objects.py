@@ -587,8 +587,6 @@ class Struct(object):
         self.p_tensor = p_tensor
         self.eta_tensor = eta_tensor
 
-        print(self.c_tensor)
-
         self.linear_element_shapes = ['rectangular', 'slot', 'rib_coated']
         self.curvilinear_element_shapes = ['circular', 'onion']
 
