@@ -186,7 +186,7 @@ Air = Material([1,None,None,None,None,None,None,None,None,None,None])
 
 # Silicon - http://dx.doi.org/10.1364/OL.41.002338
 # Refractive index
-n = 3.48
+n = 3.475686982#3.48
 # Density
 s = 2329  # kg/m3
 # Stiffness tensor components.

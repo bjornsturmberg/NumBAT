@@ -1,5 +1,5 @@
 C Calculate the overlap integral of an AC mode with itself using
-C numerical quadrature.  
+C analytic expressions for basis function overlaps on linear elements. 
 C
       subroutine AC_mode_energy_int_v2 (nval, 
      *  nel, npt, nnodes, table_nod, type_el, x,
