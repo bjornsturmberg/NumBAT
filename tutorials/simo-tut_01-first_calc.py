@@ -30,8 +30,6 @@ unitcell_y = unitcell_x
 # Waveguide widths.
 inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
-inc_a_x = 450
-inc_a_y = 220
 # Shape of the waveguide.
 inc_shape = 'rectangular'
 
