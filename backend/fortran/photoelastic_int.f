@@ -57,6 +57,7 @@ Cf2py depend(x) npt
 Cf2py depend(soln_EM) nnodes, nval_EM, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(p_tensor) nb_typ_el
+Cf2py depend(eps_lst) nb_typ_el
 C
 Cf2py intent(out) overlap
 C

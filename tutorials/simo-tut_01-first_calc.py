@@ -30,6 +30,8 @@ unitcell_y = unitcell_x
 # Waveguide widths.
 inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
+inc_a_x = 450
+inc_a_y = 220
 # Shape of the waveguide.
 inc_shape = 'rectangular'
 
@@ -62,7 +64,11 @@ print('\n k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values),4))
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_wguide.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
-print("\n n_eff = ", np.round(n_eff_sim, 4))
+print("\n Fundamental optical mode ")
+print(" n_eff = ", np.round(n_eff_sim, 4))
+print(" v_g = ", np.round(np.real(sim_EM_wguide.group_velocity_EM[0]), 4))
+speed_c = 299792458
+print(" n_g = ", np.round(np.real(speed_c/sim_EM_wguide.group_velocity_EM[0]), 4))
 
 # Choose acoustic wavenumber to solve for.
 # Backward SBS - AC mode couples EM modes on +ve to -ve lightline, hence factor 2.

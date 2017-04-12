@@ -16,7 +16,7 @@ c      complex*16 x(2,npt)
       complex*16 soln_AC(3,nnodes,nval,nel)
       complex*16 Omega_AC(nval)
       complex*16, dimension(nval) :: overlap
-      double precision rho
+      complex*16 rho(nb_typ_el)
 
 c     Local variables
       integer*8 nnodes0
@@ -53,6 +53,7 @@ Cf2py depend(type_el) npt
 Cf2py depend(x) npt
 Cf2py depend(soln_AC) nnodes, nval, nel
 Cf2py depend(Omega_AC) nval
+Cf2py depend(rho) nb_typ_el
 C
 Cf2py intent(out) overlap
 C
@@ -143,7 +144,8 @@ C now multiply by specific field values for modes of interest.
             do i_eq=1,3
               Ustar = conjg(soln_AC(i_eq,itrial,ival,iel))
               U = soln_AC(i_eq,itrial,ival,iel)
-              overlap(ival)=overlap(ival)+ Ustar*U*basis_overlap(itrial)
+              overlap(ival) = overlap(ival) + 
+     *          rho(typ_e) * Ustar * U * basis_overlap(itrial)
             enddo
           enddo
         enddo
@@ -153,7 +155,7 @@ cccccccccccc
       enddo
 C Multiply through prefactor
       do i=1,nval
-        overlap(i) = 2.0 * Omega_AC(i)**2 * rho * overlap(i)
+        overlap(i) = 2.0 * Omega_AC(i)**2 * overlap(i)
       enddo
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

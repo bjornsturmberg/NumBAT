@@ -159,6 +159,29 @@ class Simmo(object):
         except KeyboardInterrupt:
             print("\n\n FEM routine EM_mode_energy_int interrupted by keyboard.\n\n")
 
+
+### Calc energy (not power) in each EM mode - PRA Eq. 6.
+        try:
+            nnodes = 6
+            # import time
+            # start = time.time()
+            if self.structure.inc_shape in self.structure.linear_element_shapes:
+            # # Semi-analytic integration. Fastest!
+            # else:
+            #     if self.structure.inc_shape not in self.structure.curvilinear_element_shapes:
+            #         print("Warning: em_mode_e_energy_int - not sure if mesh contains curvi-linear elements", 
+            #             "\n using slow quadrature integration by default.\n\n")
+            # # Integration by quadrature. Slowest.
+                self.EM_mode_overlap_energy = NumBAT.em_mode_e_energy_int(
+                    self.num_modes, self.n_msh_el, self.n_msh_pts, nnodes,
+                    self.table_nod, self.type_el, self.structure.nb_typ_el, self.n_list,
+                    self.x_arr, self.sol1)
+        except KeyboardInterrupt:
+            print("\n\n FEM routine em_mode_e_energy_int interrupted by keyboard.\n\n")
+
+        self.group_velocity_EM = self.EM_mode_overlap/self.EM_mode_overlap_energy
+
+
         ### Not necessary because EM FEM mesh always normalised in area to unity.
         # print area
         # x_tmp = []
@@ -434,3 +457,4 @@ class Simmo(object):
 
         # print(self.AC_mode_overlap/self.AC_mode_overlap_elastic)
         # print(3e8/(self.AC_mode_overlap/self.AC_mode_overlap_elastic))
+        # print(np.shape(self.structure.rho))
