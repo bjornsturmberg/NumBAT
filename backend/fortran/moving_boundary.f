@@ -1,9 +1,10 @@
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccc
 c
-      subroutine moving_boundary (nval_EM, nval_AC, ival1,
+      subroutine moving_boundary (nval_EM_p, nval_EM_S, nval_AC, ival1,
      *    ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
-     *    nb_typ_el, typ_select_in, typ_select_out, betas_EM, soln_EM, 
+     *    nb_typ_el, typ_select_in, typ_select_out, 
+     *    soln_EM_p, soln_EM_S, 
      *    soln_AC, eps_lst, debug, overlap)
 c
       implicit none
@@ -11,13 +12,14 @@ c
       integer*8 type_el(nel)
       integer*8 table_nod(6,nel)
       double precision x(2,npt)
-      integer*8 nval_EM, nval_AC, ival1, ival2, ival3
+      integer*8 nval_EM_p, nval_EM_S, nval_AC, ival1, ival2, ival3
       integer*8 ival3s, ival2s, ival1s
       integer*8 typ_select_in, typ_select_out
-      complex*16 soln_EM(3,nnodes,nval_EM,nel), betas_EM(nval_EM)
+      complex*16 soln_EM_p(3,nnodes,nval_EM_p,nel)
+      complex*16 soln_EM_S(3,nnodes,nval_EM_S,nel)
       complex*16 soln_AC(3,nnodes,nval_AC,nel)
       complex*16 eps_lst(nb_typ_el)
-      complex*16 overlap(nval_EM, nval_EM, nval_AC)
+      complex*16 overlap(nval_EM_S, nval_EM_p, nval_AC)
 
 c     Local variables
       integer debug
@@ -48,16 +50,17 @@ c     Local variables
       complex*16 ii
 C
 C
-Cf2py intent(in) nval_EM, nval_AC, ival1, ival2, ival3, nb_typ_el
+Cf2py intent(in) nval_EM_p, nval_EM_S, nval_AC
+Cf2py intent(in) ival1, ival2, ival3, nb_typ_el
 Cf2py intent(in) nel, npt, nnodes, table_nod, debug
-Cf2py intent(in) type_el, x, soln_EM, soln_AC, betas_EM
+Cf2py intent(in) type_el, x, soln_EM_p, soln_EM_S, soln_AC
 Cf2py intent(in) typ_select_in, typ_select_out, eps_lst, debug
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
 Cf2py depend(x) npt
-Cf2py depend(betas_EM)nval_EM
-Cf2py depend(soln_EM) nnodes, nval_EM, nel
+Cf2py depend(soln_EM_p) nnodes, nval_EM_p, nel
+Cf2py depend(soln_EM_S) nnodes, nval_EM_S, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(eps_lst) nb_typ_el
 C
@@ -96,8 +99,8 @@ C     i = 1 is inod = 4 etc
       opposite_node(3) = 2
 c
 ccccccccccccccccccccccccccccccccccccc
-      do i=1,nval_EM
-        do j=1,nval_EM
+      do i=1,nval_EM_S
+        do j=1,nval_EM_p
           do k=1,nval_AC
             overlap(i,j,k) = 0.0d0
           enddo
@@ -238,11 +241,9 @@ C If only want overlap of one given combination of EM modes and AC mode.
 c             Nodes of the edge
               do j_1=1,3
 c               (x,y,z)-components of the electric field
-                vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
-                vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-C                 vec(3,1) = -ii*betas_EM(ival1) * 
-C      *            soln_EM(3,ls_inod(j_1),ival1,iel)
-                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+                vec(1,1) = soln_EM_p(1,ls_inod(j_1),ival1,iel)
+                vec(2,1) = soln_EM_p(2,ls_inod(j_1),ival1,iel)
+                vec(3,1) = soln_EM_p(3,ls_inod(j_1),ival1,iel)
 c               ls_n_dot(1): Normal component of vec(:,1)
                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *              + vec(2,1) * edge_perp(2)
@@ -252,11 +253,9 @@ c               ls_n_dot(1): Normal component of vec(:,1)
      *              - vec(1,1) * edge_perp(2)
                 do j_2=1,3
 c                 (x,y,z)-components of the electric field
-                  vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
-                  vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-C                   vec(3,2)=-ii*betas_EM(ival2) * 
-C      *            soln_EM(3,ls_inod(j_2),ival2,iel)
-                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+                  vec(1,2)=soln_EM_p(1,ls_inod(j_2),ival2,iel)
+                  vec(2,2)=soln_EM_p(2,ls_inod(j_2),ival2,iel)
+                  vec(3,2)=soln_EM_p(3,ls_inod(j_2),ival2,iel)
 c                 ls_n_dot(2): Normal component of vec(:,2)
                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                + vec(2,2) * edge_perp(2)
@@ -294,11 +293,9 @@ C If want overlap of given EM mode 1 and 2 and all AC modes.
 c             Nodes of the edge
               do j_1=1,3
 c               (x,y,z)-components of the electric field
-                vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
-                vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-C                 vec(3,1) = -ii*betas_EM(ival1) * 
-C      *            soln_EM(3,ls_inod(j_1),ival1,iel)
-                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+                vec(1,1) = conjg(soln_EM_S(1,ls_inod(j_1),ival1,iel))
+                vec(2,1) = conjg(soln_EM_S(2,ls_inod(j_1),ival1,iel))
+                vec(3,1) = conjg(soln_EM_S(3,ls_inod(j_1),ival1,iel))
 c               ls_n_dot(1): Normal component of vec(:,1)
                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *              + vec(2,1) * edge_perp(2)
@@ -308,11 +305,9 @@ c               ls_n_dot(1): Normal component of vec(:,1)
      *              - vec(1,1) * edge_perp(2)
                 do j_2=1,3
 c                 (x,y,z)-components of the electric field
-                  vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
-                  vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-C                   vec(3,2)=-ii*betas_EM(ival2) * 
-C      *              soln_EM(3,ls_inod(j_2),ival2,iel)
-                  vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+                  vec(1,2)=soln_EM_p(1,ls_inod(j_2),ival2,iel)
+                  vec(2,2)=soln_EM_p(2,ls_inod(j_2),ival2,iel)
+                  vec(3,2)=soln_EM_p(3,ls_inod(j_2),ival2,iel)
 c                 ls_n_dot(2): Normal component of vec(:,2)
                   ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                + vec(2,2) * edge_perp(2)
@@ -352,11 +347,9 @@ C If want overlap of given EM mode 1 and all EM modes 2 and all AC modes.
 c             Nodes of the edge
               do j_1=1,3
 c               (x,y,z)-components of the electric field
-                vec(1,1) = soln_EM(1,ls_inod(j_1),ival1,iel)
-                vec(2,1) = soln_EM(2,ls_inod(j_1),ival1,iel)
-C                 vec(3,1) = -ii*betas_EM(ival1) * 
-C      *            soln_EM(3,ls_inod(j_1),ival1,iel)
-                vec(3,1) = soln_EM(3,ls_inod(j_1),ival1,iel)
+                vec(1,1) = conjg(soln_EM_S(1,ls_inod(j_1),ival1,iel))
+                vec(2,1) = conjg(soln_EM_S(2,ls_inod(j_1),ival1,iel))
+                vec(3,1) = conjg(soln_EM_S(3,ls_inod(j_1),ival1,iel))
 c               ls_n_dot(1): Normal component of vec(:,1)
                 ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *              + vec(2,1) * edge_perp(2)
@@ -364,14 +357,12 @@ c               ls_n_dot(1): Normal component of vec(:,1)
                 ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
                 ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
      *              - vec(1,1) * edge_perp(2)
-                do ival2s = 1,nval_EM
+                do ival2s = 1,nval_EM_p
                   do j_2=1,3
 c                   (x,y,z)-components of the electric field
-                    vec(1,2)=soln_EM(1,ls_inod(j_2),ival2s,iel)
-                    vec(2,2)=soln_EM(2,ls_inod(j_2),ival2s,iel)
-C                     vec(3,2)=-ii*betas_EM(ival2s) * 
-C      *                soln_EM(3,ls_inod(j_2),ival2s,iel)
-                    vec(3,2)=soln_EM(3,ls_inod(j_2),ival2s,iel)
+                    vec(1,2)=soln_EM_p(1,ls_inod(j_2),ival2s,iel)
+                    vec(2,2)=soln_EM_p(2,ls_inod(j_2),ival2s,iel)
+                    vec(3,2)=soln_EM_p(3,ls_inod(j_2),ival2s,iel)
 c                   ls_n_dot(2): Normal component of vec(:,2)
                     ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                  + vec(2,2) * edge_perp(2)
@@ -410,14 +401,12 @@ C If want overlap of given EM mode 2 and all EM modes 1 and all AC modes.
               else if (ival1 .eq. -1 .and. ival2 .ge. 0 .and. 
      *                 ival3 .eq. -1) then
 c             Nodes of the edge
-              do ival1s = 1,nval_EM
+              do ival1s = 1,nval_EM_S
                 do j_1=1,3
 c                 (x,y,z)-components of the electric field
-                  vec(1,1) = soln_EM(1,ls_inod(j_1),ival1s,iel)
-                  vec(2,1) = soln_EM(2,ls_inod(j_1),ival1s,iel)
-C                   vec(3,1) = -ii*betas_EM(ival1s) * 
-C      *              soln_EM(3,ls_inod(j_1),ival1s,iel)
-                  vec(3,1) = soln_EM(3,ls_inod(j_1),ival1s,iel)
+                  vec(1,1) = conjg(soln_EM_S(1,ls_inod(j_1),ival1s,iel))
+                  vec(2,1) = conjg(soln_EM_S(2,ls_inod(j_1),ival1s,iel))
+                  vec(3,1) = conjg(soln_EM_S(3,ls_inod(j_1),ival1s,iel))
 c                 ls_n_dot(1): Normal component of vec(:,1)
                   ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *                + vec(2,1) * edge_perp(2)
@@ -427,11 +416,9 @@ c                 ls_n_dot(1): Normal component of vec(:,1)
      *              - vec(1,1) * edge_perp(2)
                   do j_2=1,3
 c                   (x,y,z)-components of the electric field
-                    vec(1,2)=soln_EM(1,ls_inod(j_2),ival2,iel)
-                    vec(2,2)=soln_EM(2,ls_inod(j_2),ival2,iel)
-C                     vec(3,2)=-ii*betas_EM(ival2) * 
-C      *                soln_EM(3,ls_inod(j_2),ival2,iel)
-                    vec(3,2)=soln_EM(3,ls_inod(j_2),ival2,iel)
+                    vec(1,2)=soln_EM_p(1,ls_inod(j_2),ival2,iel)
+                    vec(2,2)=soln_EM_p(2,ls_inod(j_2),ival2,iel)
+                    vec(3,2)=soln_EM_p(3,ls_inod(j_2),ival2,iel)
 c                   ls_n_dot(2): Normal component of vec(:,2)
                     ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                  + vec(2,2) * edge_perp(2)
@@ -470,14 +457,12 @@ C If want overlap of all EM mode 1, all EM modes 2 and all AC modes.
               else if (ival1 .eq. -1 .and. ival2 .eq. -1 .and. 
      *                 ival3 .eq. -1) then
 c             Nodes of the edge
-              do ival1s = 1,nval_EM
+              do ival1s = 1,nval_EM_S
                 do j_1=1,3
 c                 (x,y,z)-components of the electric field
-                  vec(1,1) = soln_EM(1,ls_inod(j_1),ival1s,iel)
-                  vec(2,1) = soln_EM(2,ls_inod(j_1),ival1s,iel)
-C                   vec(3,1) = -ii*betas_EM(ival1s) * 
-C      *              soln_EM(3,ls_inod(j_1),ival1s,iel)
-                  vec(3,1) = soln_EM(3,ls_inod(j_1),ival1s,iel)
+                  vec(1,1) = conjg(soln_EM_S(1,ls_inod(j_1),ival1s,iel))
+                  vec(2,1) = conjg(soln_EM_S(2,ls_inod(j_1),ival1s,iel))
+                  vec(3,1) = conjg(soln_EM_S(3,ls_inod(j_1),ival1s,iel))
 c                 ls_n_dot(1): Normal component of vec(:,1)
                   ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *                + vec(2,1) * edge_perp(2)
@@ -485,14 +470,12 @@ c                 ls_n_dot(1): Normal component of vec(:,1)
                   ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
                   ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
      *              - vec(1,1) * edge_perp(2)
-                  do ival2s = 1,nval_EM
+                  do ival2s = 1,nval_EM_p
                     do j_2=1,3
 c                     (x,y,z)-components of the electric field
-                      vec(1,2)=soln_EM(1,ls_inod(j_2),ival2s,iel)
-                      vec(2,2)=soln_EM(2,ls_inod(j_2),ival2s,iel)
-C                       vec(3,2)=-ii*betas_EM(ival2s) * 
-C      *                  soln_EM(3,ls_inod(j_2),ival2s,iel)
-                      vec(3,2)=soln_EM(3,ls_inod(j_2),ival2s,iel)
+                      vec(1,2)=soln_EM_p(1,ls_inod(j_2),ival2s,iel)
+                      vec(2,2)=soln_EM_p(2,ls_inod(j_2),ival2s,iel)
+                      vec(3,2)=soln_EM_p(3,ls_inod(j_2),ival2s,iel)
 c                     ls_n_dot(2): Normal component of vec(:,2)
                       ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                    + vec(2,2) * edge_perp(2)
@@ -532,14 +515,12 @@ C If want overlap of all EM mode 1, all EM modes 2 and one AC mode.
               else if (ival1 .eq. -1 .and. ival2 .eq. -1 .and. 
      *                 ival3 .ge. 0) then
 c             Nodes of the edge
-              do ival1s = 1,nval_EM
+              do ival1s = 1,nval_EM_S
                 do j_1=1,3
 c                 (x,y,z)-components of the electric field
-                  vec(1,1) = soln_EM(1,ls_inod(j_1),ival1s,iel)
-                  vec(2,1) = soln_EM(2,ls_inod(j_1),ival1s,iel)
-C                   vec(3,1) = -ii*betas_EM(ival1s) * 
-C      *              soln_EM(3,ls_inod(j_1),ival1s,iel)
-                  vec(3,1) = soln_EM(3,ls_inod(j_1),ival1s,iel)
+                  vec(1,1) = conjg(soln_EM_S(1,ls_inod(j_1),ival1s,iel))
+                  vec(2,1) = conjg(soln_EM_S(2,ls_inod(j_1),ival1s,iel))
+                  vec(3,1) = conjg(soln_EM_S(3,ls_inod(j_1),ival1s,iel))
 c                 ls_n_dot(1): Normal component of vec(:,1)
                   ls_n_dot(1) = vec(1,1) * edge_perp(1)
      *                + vec(2,1) * edge_perp(2)
@@ -547,14 +528,12 @@ c                 ls_n_dot(1): Normal component of vec(:,1)
                   ls_n_cross(2,1) = -1*vec(3,1) * edge_perp(1)
                   ls_n_cross(3,1) = vec(2,1) * edge_perp(1)
      *              - vec(1,1) * edge_perp(2)
-                  do ival2s = 1,nval_EM
+                  do ival2s = 1,nval_EM_p
                     do j_2=1,3
 c                     (x,y,z)-components of the electric field
-                      vec(1,2)=soln_EM(1,ls_inod(j_2),ival2s,iel)
-                      vec(2,2)=soln_EM(2,ls_inod(j_2),ival2s,iel)
-C                       vec(3,2)=-ii*betas_EM(ival2s) * 
-C      *                  soln_EM(3,ls_inod(j_2),ival2s,iel)
-                      vec(3,2)=soln_EM(3,ls_inod(j_2),ival2s,iel)
+                      vec(1,2)=soln_EM_p(1,ls_inod(j_2),ival2s,iel)
+                      vec(2,2)=soln_EM_p(2,ls_inod(j_2),ival2s,iel)
+                      vec(3,2)=soln_EM_p(3,ls_inod(j_2),ival2s,iel)
 c                     ls_n_dot(2): Normal component of vec(:,2)
                       ls_n_dot(2) = vec(1,2) * edge_perp(1)
      *                    + vec(2,2) * edge_perp(2)

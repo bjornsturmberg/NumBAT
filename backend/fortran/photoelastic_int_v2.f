@@ -1,22 +1,22 @@
 C Calculate the overlap integral of two EM modes and an AC mode using
 C analytic expressions for basis function overlaps on linear elements.
 C
-      subroutine photoelastic_int_v2 (nval_EM, nval_AC, ival1,
-     *  ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
+      subroutine photoelastic_int_v2 (nval_EM_p, nval_EM_S, nval_AC, 
+     *  ival1, ival2, ival3, nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, p_tensor, beta_AC, soln_EM_p, soln_EM_S, soln_AC, 
      *  eps_lst, debug, overlap)
 c
       implicit none
-      integer*8 nval_EM, nval_AC, ival1, ival2, ival3
+      integer*8 nval_EM_p, nval_EM_S, nval_AC, ival1, ival2, ival3
       integer*8 nel, npt, nnodes, nb_typ_el
       integer*8 type_el(nel), debug
       integer*8 table_nod(nnodes,nel)
       double precision x(2,npt)
 c      complex*16 x(2,npt)
-      complex*16 soln_EM_p(3,nnodes,nval_EM,nel)
-      complex*16 soln_EM_S(3,nnodes,nval_EM,nel)
+      complex*16 soln_EM_p(3,nnodes,nval_EM_p,nel)
+      complex*16 soln_EM_S(3,nnodes,nval_EM_S,nel)
       complex*16 soln_AC(3,nnodes,nval_AC,nel)
-      complex*16 overlap(nval_EM, nval_EM, nval_AC), beta_AC
+      complex*16 overlap(nval_EM_S, nval_EM_p, nval_AC), beta_AC
       complex*16 p_tensor(3,3,3,3,nb_typ_el)
 
 c     Local variables
@@ -49,15 +49,16 @@ cc      integer*8 info_curved, n_curved
       double precision p2_p2_p2x(6,6,6), p2_p2_p2y(6,6,6)
 C
 C
-Cf2py intent(in) nval_EM, nval_AC, ival1, ival2, ival3, nb_typ_el
+Cf2py intent(in) nval_EM_p, nval_EM_S, nval_AC
+Cf2py intent(in) ival1, ival2, ival3, nb_typ_el
 Cf2py intent(in) nel, npt, nnodes, table_nod, p_tensor, beta_AC, debug
 Cf2py intent(in) type_el, x, soln_EM_p, soln_EM_S, soln_AC, eps_lst
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
 Cf2py depend(x) npt
-Cf2py depend(soln_EM_p) nnodes, nval_EM, nel
-Cf2py depend(soln_EM_S) nnodes, nval_EM, nel
+Cf2py depend(soln_EM_p) nnodes, nval_EM_p, nel
+Cf2py depend(soln_EM_S) nnodes, nval_EM_S, nel
 Cf2py depend(soln_AC) nnodes, nval_AC, nel
 Cf2py depend(p_tensor) nb_typ_el
 Cf2py depend(eps_lst) nb_typ_el
@@ -83,8 +84,8 @@ C
      *              nquad, nquad_max
       endif
 cccccccccccc
-      do i=1,nval_EM
-        do j=1,nval_EM
+      do i=1,nval_EM_S
+        do j=1,nval_EM_p
           do k=1,nval_AC
             overlap(i,j,k) = 0.0d0
           enddo
@@ -261,7 +262,7 @@ C               E1star = soln_EM_p(i_eq,itrial,ival1,iel)
               do jtest=1,nnodes0
                 do j_eq=1,3
                   ind_jp = j_eq + 3*(jtest-1)
-                  do ival2s = 1,nval_EM
+                  do ival2s = 1,nval_EM_p
                     E2 = soln_EM_p(j_eq,jtest,ival2s,iel)
                     do ltest=1,nnodes0
                       do l_eq=1,3
@@ -290,7 +291,7 @@ C If want overlap of given EM mode 2 and all EM modes 1 and all AC modes.
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
-              do ival1s = 1,nval_EM
+              do ival1s = 1,nval_EM_S
                 E1star = conjg(soln_EM_S(i_eq,itrial,ival1s,iel))
 C                 E1star = soln_EM_p(i_eq,itrial,ival1s,iel)
                 do jtest=1,nnodes0
@@ -324,13 +325,13 @@ C If want overlap of all EM mode 1, all EM modes 2 and all AC modes.
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
-              do ival1s = 1,nval_EM
+              do ival1s = 1,nval_EM_S
                 E1star = conjg(soln_EM_S(i_eq,itrial,ival1s,iel))
 C                 E1star = soln_EM_p(i_eq,itrial,ival1s,iel)
                 do jtest=1,nnodes0
                   do j_eq=1,3
                     ind_jp = j_eq + 3*(jtest-1)
-                    do ival2s = 1,nval_EM
+                    do ival2s = 1,nval_EM_p
                     E2 = soln_EM_p(j_eq,jtest,ival2s,iel)
                     do ltest=1,nnodes0
                       do l_eq=1,3
@@ -360,13 +361,13 @@ C If want overlap of all EM mode 1, all EM modes 2 and one AC mode.
           do itrial=1,nnodes0
             do i_eq=1,3
               ind_ip = i_eq + 3*(itrial-1)
-              do ival1s = 1,nval_EM
+              do ival1s = 1,nval_EM_S
                 E1star = conjg(soln_EM_S(i_eq,itrial,ival1s,iel))
 C                 E1star = soln_EM_p(i_eq,itrial,ival1s,iel)
                 do jtest=1,nnodes0
                   do j_eq=1,3
                     ind_jp = j_eq + 3*(jtest-1)
-                    do ival2s = 1,nval_EM
+                    do ival2s = 1,nval_EM_p
                       E2 = soln_EM_p(j_eq,jtest,ival2s,iel)
                       do ltest=1,nnodes0
                         do l_eq=1,3
@@ -393,8 +394,8 @@ C Loop over elements - end
 cccccccccccc
       enddo
 C Apply scaling that sits outside of integration.
-      do i=1,nval_EM
-        do j=1,nval_EM
+      do i=1,nval_EM_S
+        do j=1,nval_EM_p
           do k=1,nval_AC
             overlap(i,j,k) = overlap(i,j,k) * eps_0
           enddo

@@ -77,9 +77,9 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
                 calculating the acoustic loss (alpha).
 
         Returns:
-            SBS_gain  (num_modes_EM,num_modes_EM,num_modes_AC): The SBS gain including both photoelastic and moving boundary contributions.
-            SBS_gain_PE  (num_modes_EM,num_modes_EM,num_modes_AC): The SBS gain for only the photoelastic effect.
-            SBS_gain_MB  (num_modes_EM,num_modes_EM,num_modes_AC): The SBS gain for only the moving boundary effect.
+            SBS_gain  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain including both photoelastic and moving boundary contributions.
+            SBS_gain_PE  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain for only the photoelastic effect.
+            SBS_gain_MB  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain for only the moving boundary effect.
             alpha  (num_modes_AC): The acoustic loss for each mode.
     """
 
@@ -111,18 +111,21 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     Fortran_debug = 0
     ncomps = 3
     nnodes = 6
-    num_modes_EM = sim_EM_pump.num_modes
+    num_modes_EM_pump = sim_EM_pump.num_modes
+    num_modes_EM_Stokes = sim_EM_Stokes.num_modes
     num_modes_AC = sim_AC.num_modes
     n_msh_el_AC = sim_AC.n_msh_el
-    trimmed_EM_pump_field = np.zeros((ncomps,nnodes,num_modes_EM,n_msh_el_AC), dtype=complex)
-    trimmed_EM_Stokes_field = np.zeros((ncomps,nnodes,num_modes_EM,n_msh_el_AC), dtype=complex)
+    trimmed_EM_pump_field = np.zeros((ncomps,nnodes,num_modes_EM_pump,n_msh_el_AC), dtype=complex)
+    trimmed_EM_Stokes_field = np.zeros((ncomps,nnodes,num_modes_EM_Stokes,n_msh_el_AC), dtype=complex)
     for el in range(n_msh_el_AC):
         new_el = sim_AC.el_convert_tbl[el]
-        for ival in range(num_modes_EM):
-            for n in range(nnodes):
-                for x in range(ncomps):
+        for n in range(nnodes):
+            for x in range(ncomps):
+                for ival in range(num_modes_EM_pump):
                     trimmed_EM_pump_field[x,n,ival,el] = sim_EM_pump.sol1[x,n,ival,new_el]
+                for ival in range(num_modes_EM_Stokes):
                     trimmed_EM_Stokes_field[x,n,ival,el] = sim_EM_Stokes.sol1[x,n,ival,new_el]
+
     # sim_EM_pump.sol1 = trimmed_EM_pump_field
     # sim_EM_pump.n_msh_el = sim_AC.n_msh_el
     # sim_EM_pump.n_msh_pts = sim_AC.n_msh_pts
@@ -174,7 +177,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     try:
         if sim_EM_pump.structure.inc_shape in sim_EM_pump.structure.linear_element_shapes:
             Q_PE = NumBAT.photoelastic_int_v2(
-                sim_EM_pump.num_modes, sim_AC.num_modes, EM_ival_pump_fortran,
+                sim_EM_pump.num_modes, sim_EM_Stokes.num_modes, sim_AC.num_modes, EM_ival_pump_fortran,
                 EM_ival_Stokes_fortran, AC_ival_fortran, sim_AC.n_msh_el,
                 sim_AC.n_msh_pts, nnodes,
                 sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
@@ -186,7 +189,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
                 print("Warning: photoelastic_int - not sure if mesh contains curvi-linear elements", 
                     "\n using slow quadrature integration by default.\n\n")
             Q_PE = NumBAT.photoelastic_int(
-                sim_EM_pump.num_modes, sim_AC.num_modes, EM_ival_pump_fortran,
+                sim_EM_pump.num_modes, sim_EM_Stokes.num_modes, sim_AC.num_modes, EM_ival_pump_fortran,
                 EM_ival_Stokes_fortran, AC_ival_fortran, sim_AC.n_msh_el,
                 sim_AC.n_msh_pts, nnodes,
                 sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
@@ -206,13 +209,13 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     print("Moving boundary calc")
     start = time.time()
     try:
-        Q_MB = NumBAT.moving_boundary(sim_EM_pump.num_modes,
+        Q_MB = NumBAT.moving_boundary(sim_EM_pump.num_modes, sim_EM_Stokes.num_modes,
             sim_AC.num_modes, EM_ival_pump_fortran, EM_ival_Stokes_fortran,
             AC_ival_fortran, sim_AC.n_msh_el,
             sim_AC.n_msh_pts, nnodes, sim_AC.table_nod, 
             sim_AC.type_el, sim_AC.x_arr,
             sim_AC.structure.nb_typ_el_AC, typ_select_in, typ_select_out,
-            sim_EM_pump.Eig_values, trimmed_EM_pump_field, sim_AC.sol1,
+            trimmed_EM_pump_field, trimmed_EM_Stokes_field, sim_AC.sol1,
             relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print("\n\n Routine moving_boundary interrupted by keyboard.\n\n")
@@ -227,10 +230,10 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     gain = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q*np.conj(Q))
     gain_PE = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_PE*np.conj(Q_PE))
     gain_MB = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_MB*np.conj(Q_MB))
-    normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
-    for i in range(num_modes_EM):
-        P1 = sim_EM_pump.EM_mode_overlap[i]
-        for j in range(num_modes_EM):
+    normal_fact = np.zeros((num_modes_EM_Stokes, num_modes_EM_pump, num_modes_AC), dtype=complex)
+    for i in range(num_modes_EM_Stokes):
+        P1 = sim_EM_Stokes.EM_mode_overlap[i]
+        for j in range(num_modes_EM_pump):
             P2 = sim_EM_pump.EM_mode_overlap[j]
             for k in range(num_modes_AC):
                 P3 = sim_AC.AC_mode_overlap[k]
