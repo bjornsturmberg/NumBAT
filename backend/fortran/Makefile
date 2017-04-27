@@ -7,8 +7,7 @@ SUBROUTINES_FOR_PYTHON = conv_gmsh.f py_calc_modes.f \
 	py_calc_modes_AC.f EM_mode_energy_int_v2_Ez.f\
 	EM_mode_energy_int_Ez.f photoelastic_int.f photoelastic_int_v2.f \
 	AC_mode_energy_int.f AC_mode_energy_int_v2.f AC_mode_energy_int_v4.f\
-	AC_alpha_int.f AC_alpha_int_v2.f \
-	photoelastic_int_check.f moving_boundary.f \
+	AC_alpha_int.f AC_alpha_int_v2.f moving_boundary.f \
 	AC_mode_elastic_energy_int.f EM_mode_E_energy_int.f
 
 LIB_LOCATION = lib

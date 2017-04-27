@@ -18,8 +18,8 @@ import plotting
 from fortran import NumBAT
 
 
-def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
-                EM_ival1=0, EM_ival2=0, AC_ival=0, fixed_Q=None, typ_select_out=None):
+def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
+                EM_ival_pump=0, EM_ival_Stokes=0, AC_ival=0, fixed_Q=None, typ_select_out=None):
     r""" Calculate interaction integrals and SBS gain.
 
         Implements Eqs. 33, 41, 45, 91 of
@@ -33,7 +33,7 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
         The final integrals are
 
         .. math:: 
-            Q^{\rm PE} = \varepsilon_0 \int_A {\rm d}^2r \sum_{ijkl} \varepsilon^2_r e_i e_j p_{ijkl} \partial_k u_l^{*},\\
+            Q^{\rm PE} = \varepsilon_0 \int_A {\rm d}^2r \sum_{ijkl} \varepsilon^2_r e^{(s)\star}_i e^{(p)}_j p_{ijkl} \partial_k u_l^{*},\\
 
             Q^{\rm MB} =  \int_C {\rm d \mathbf{r} (\mathbf{u}^{*} \cdot \hat n}) \big[ (\varepsilon_a - \varepsilon_b)  
             \varepsilon_0 ({\rm \hat n \times \mathbf{e}}) \cdot ({\rm \hat n \times \mathbf{e}}) - 
@@ -46,20 +46,22 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
   
 
         Args:
-            sim_EM_wguide  (:Simmo: object): Contains all info on EM modes
+            sim_EM_pump  (:Simmo: object): Contains all info on pump EM modes
 
-            sim_AC_wguide  (:Simmo: object): Contains all info on AC modes
+            sim_EM_Stokes  (:Simmo: object): Contains all info on Stokes EM modes
+
+            sim_AC  (:Simmo: object): Contains all info on AC modes
 
             k_AC  (float): Propagation constant of acoustic modes.
 
         Keyword Args:
-            EM_ival1  (int/string): Specify mode number of EM mode 1 (pump mode)
+            EM_ival_pump  (int/string): Specify mode number of EM mode 1 (pump mode)
                 to calculate interactions for.
                 Numbering is python index so runs from 0 to num_EM_modes-1,
                 with 0 being fundamental mode (largest prop constant).
                 Can also set to 'All' to include all modes.
 
-            EM_ival2  (int/string): Specify mode number of EM mode 2 (stokes mode)
+            EM_ival_Stokes  (int/string): Specify mode number of EM mode 2 (stokes mode)
                 to calculate interactions for.
                 Numbering is python index so runs from 0 to num_EM_modes-1,
                 with 0 being fundamental mode (largest prop constant).
@@ -93,14 +95,14 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     # coeff numerical integration
 
 
-    if EM_ival1 == 'All':
-        EM_ival1_fortran = -1
+    if EM_ival_pump == 'All':
+        EM_ival_pump_fortran = -1
     else:
-        EM_ival1_fortran = EM_ival1+1  # convert back to Fortran indexing
-    if EM_ival2 == 'All':
-        EM_ival2_fortran = -1
+        EM_ival_pump_fortran = EM_ival_pump+1  # convert back to Fortran indexing
+    if EM_ival_Stokes == 'All':
+        EM_ival_Stokes_fortran = -1
     else:
-        EM_ival2_fortran = EM_ival2+1  # convert back to Fortran indexing
+        EM_ival_Stokes_fortran = EM_ival_Stokes+1  # convert back to Fortran indexing
     if AC_ival == 'All':
         AC_ival_fortran = -1
     else:
@@ -109,28 +111,30 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     Fortran_debug = 0
     ncomps = 3
     nnodes = 6
-    num_modes_EM = sim_EM_wguide.num_modes
-    num_modes_AC = sim_AC_wguide.num_modes
-    n_msh_el_AC = sim_AC_wguide.n_msh_el
-    trimmed_EM_field = np.zeros((ncomps,nnodes,num_modes_EM,n_msh_el_AC), dtype=complex)
+    num_modes_EM = sim_EM_pump.num_modes
+    num_modes_AC = sim_AC.num_modes
+    n_msh_el_AC = sim_AC.n_msh_el
+    trimmed_EM_pump_field = np.zeros((ncomps,nnodes,num_modes_EM,n_msh_el_AC), dtype=complex)
+    trimmed_EM_Stokes_field = np.zeros((ncomps,nnodes,num_modes_EM,n_msh_el_AC), dtype=complex)
     for el in range(n_msh_el_AC):
-        new_el = sim_AC_wguide.el_convert_tbl[el]
+        new_el = sim_AC.el_convert_tbl[el]
         for ival in range(num_modes_EM):
             for n in range(nnodes):
                 for x in range(ncomps):
-                    trimmed_EM_field[x,n,ival,el] = sim_EM_wguide.sol1[x,n,ival,new_el]
-    # sim_EM_wguide.sol1 = trimmed_EM_field
-    # sim_EM_wguide.n_msh_el = sim_AC_wguide.n_msh_el
-    # sim_EM_wguide.n_msh_pts = sim_AC_wguide.n_msh_pts
-    # sim_EM_wguide.type_el = sim_AC_wguide.type_el
-    # sim_EM_wguide.table_nod = sim_AC_wguide.table_nod
-    # sim_EM_wguide.x_arr = sim_AC_wguide.x_arr
-    # plotting.plt_mode_fields(sim_EM_wguide, EM_AC='EM', add_name='trim')
+                    trimmed_EM_pump_field[x,n,ival,el] = sim_EM_pump.sol1[x,n,ival,new_el]
+                    trimmed_EM_Stokes_field[x,n,ival,el] = sim_EM_Stokes.sol1[x,n,ival,new_el]
+    # sim_EM_pump.sol1 = trimmed_EM_pump_field
+    # sim_EM_pump.n_msh_el = sim_AC.n_msh_el
+    # sim_EM_pump.n_msh_pts = sim_AC.n_msh_pts
+    # sim_EM_pump.type_el = sim_AC.type_el
+    # sim_EM_pump.table_nod = sim_AC.table_nod
+    # sim_EM_pump.x_arr = sim_AC.x_arr
+    # plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM', add_name='trim')
 
     relevant_eps_effs =[]
-    for el_typ in range(sim_EM_wguide.structure.nb_typ_el):
-        if el_typ+1 in sim_AC_wguide.typ_el_AC:
-            relevant_eps_effs.append(sim_EM_wguide.n_list[el_typ]**2)
+    for el_typ in range(sim_EM_pump.structure.nb_typ_el):
+        if el_typ+1 in sim_AC.typ_el_AC:
+            relevant_eps_effs.append(sim_EM_pump.n_list[el_typ]**2)
 
     print("\n -----------------------------------------------")
     if fixed_Q is None:
@@ -138,23 +142,23 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
         print("Acoustic loss calc")
         start = time.time()
         try:
-            if sim_EM_wguide.structure.inc_shape in sim_EM_wguide.structure.linear_element_shapes:
-                alpha = NumBAT.ac_alpha_int_v2(sim_AC_wguide.num_modes,
-                    sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
-                    sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-                    sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
-                    k_AC, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
-                    sim_AC_wguide.AC_mode_overlap)
+            if sim_EM_pump.structure.inc_shape in sim_EM_pump.structure.linear_element_shapes:
+                alpha = NumBAT.ac_alpha_int_v2(sim_AC.num_modes,
+                    sim_AC.n_msh_el, sim_AC.n_msh_pts, nnodes,
+                    sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
+                    sim_AC.structure.nb_typ_el_AC, sim_AC.structure.eta_tensor,
+                    k_AC, sim_AC.Omega_AC, sim_AC.sol1,
+                    sim_AC.AC_mode_overlap)
             else:
-                if sim_EM_wguide.structure.inc_shape not in sim_EM_wguide.structure.curvilinear_element_shapes:
+                if sim_EM_pump.structure.inc_shape not in sim_EM_pump.structure.curvilinear_element_shapes:
                     print("Warning: ac_alpha_int - not sure if mesh contains curvi-linear elements", 
                         "\n using slow quadrature integration by default.\n\n")
-                alpha = NumBAT.ac_alpha_int(sim_AC_wguide.num_modes,
-                    sim_AC_wguide.n_msh_el, sim_AC_wguide.n_msh_pts, nnodes,
-                    sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-                    sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.eta_tensor,
-                    k_AC, sim_AC_wguide.Omega_AC, sim_AC_wguide.sol1,
-                    sim_AC_wguide.AC_mode_overlap, Fortran_debug)
+                alpha = NumBAT.ac_alpha_int(sim_AC.num_modes,
+                    sim_AC.n_msh_el, sim_AC.n_msh_pts, nnodes,
+                    sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
+                    sim_AC.structure.nb_typ_el_AC, sim_AC.structure.eta_tensor,
+                    k_AC, sim_AC.Omega_AC, sim_AC.sol1,
+                    sim_AC.AC_mode_overlap, Fortran_debug)
         except KeyboardInterrupt:
             print("\n\n Routine ac_alpha_int interrupted by keyboard.\n\n")
         alpha = np.real(alpha)
@@ -168,27 +172,27 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     print("Photoelastic calc")
     start = time.time()
     try:
-        if sim_EM_wguide.structure.inc_shape in sim_EM_wguide.structure.linear_element_shapes:
+        if sim_EM_pump.structure.inc_shape in sim_EM_pump.structure.linear_element_shapes:
             Q_PE = NumBAT.photoelastic_int_v2(
-                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
-                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
-                sim_AC_wguide.n_msh_pts, nnodes,
-                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-                k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
-                relevant_eps_effs, sim_EM_wguide.Eig_values, Fortran_debug)
+                sim_EM_pump.num_modes, sim_AC.num_modes, EM_ival_pump_fortran,
+                EM_ival_Stokes_fortran, AC_ival_fortran, sim_AC.n_msh_el,
+                sim_AC.n_msh_pts, nnodes,
+                sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
+                sim_AC.structure.nb_typ_el_AC, sim_AC.structure.p_tensor,
+                k_AC, trimmed_EM_pump_field, trimmed_EM_Stokes_field, sim_AC.sol1,
+                relevant_eps_effs, Fortran_debug)
         else:
-            if sim_EM_wguide.structure.inc_shape not in sim_EM_wguide.structure.curvilinear_element_shapes:
+            if sim_EM_pump.structure.inc_shape not in sim_EM_pump.structure.curvilinear_element_shapes:
                 print("Warning: photoelastic_int - not sure if mesh contains curvi-linear elements", 
                     "\n using slow quadrature integration by default.\n\n")
             Q_PE = NumBAT.photoelastic_int(
-                sim_EM_wguide.num_modes, sim_AC_wguide.num_modes, EM_ival1_fortran,
-                EM_ival2_fortran, AC_ival_fortran, sim_AC_wguide.n_msh_el,
-                sim_AC_wguide.n_msh_pts, nnodes,
-                sim_AC_wguide.table_nod, sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-                sim_AC_wguide.structure.nb_typ_el_AC, sim_AC_wguide.structure.p_tensor,
-                k_AC, trimmed_EM_field, sim_AC_wguide.sol1,
-                relevant_eps_effs, sim_EM_wguide.Eig_values, Fortran_debug)
+                sim_EM_pump.num_modes, sim_AC.num_modes, EM_ival_pump_fortran,
+                EM_ival_Stokes_fortran, AC_ival_fortran, sim_AC.n_msh_el,
+                sim_AC.n_msh_pts, nnodes,
+                sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
+                sim_AC.structure.nb_typ_el_AC, sim_AC.structure.p_tensor,
+                k_AC, trimmed_EM_pump_field, trimmed_EM_Stokes_field, sim_AC.sol1,
+                relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print("\n\n Routine photoelastic_int interrupted by keyboard.\n\n")
     end = time.time()
@@ -202,13 +206,13 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
     print("Moving boundary calc")
     start = time.time()
     try:
-        Q_MB = NumBAT.moving_boundary(sim_EM_wguide.num_modes,
-            sim_AC_wguide.num_modes, EM_ival1_fortran, EM_ival2_fortran,
-            AC_ival_fortran, sim_AC_wguide.n_msh_el,
-            sim_AC_wguide.n_msh_pts, nnodes, sim_AC_wguide.table_nod, 
-            sim_AC_wguide.type_el, sim_AC_wguide.x_arr,
-            sim_AC_wguide.structure.nb_typ_el_AC, typ_select_in, typ_select_out,
-            sim_EM_wguide.Eig_values, trimmed_EM_field, sim_AC_wguide.sol1,
+        Q_MB = NumBAT.moving_boundary(sim_EM_pump.num_modes,
+            sim_AC.num_modes, EM_ival_pump_fortran, EM_ival_Stokes_fortran,
+            AC_ival_fortran, sim_AC.n_msh_el,
+            sim_AC.n_msh_pts, nnodes, sim_AC.table_nod, 
+            sim_AC.type_el, sim_AC.x_arr,
+            sim_AC.structure.nb_typ_el_AC, typ_select_in, typ_select_out,
+            sim_EM_pump.Eig_values, trimmed_EM_pump_field, sim_AC.sol1,
             relevant_eps_effs, Fortran_debug)
     except KeyboardInterrupt:
         print("\n\n Routine moving_boundary interrupted by keyboard.\n\n")
@@ -218,18 +222,18 @@ def gain_and_qs(sim_EM_wguide, sim_AC_wguide, k_AC,
 
     Q = Q_PE + Q_MB
 
-    # Note: sim_EM_wguide.omega_EM is the optical angular freq in units of Hz
-    # Note: sim_AC_wguide.Omega_AC is the acoustic angular freq in units of Hz
-    gain = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q*np.conj(Q))
-    gain_PE = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q_PE*np.conj(Q_PE))
-    gain_MB = 2*sim_EM_wguide.omega_EM*sim_AC_wguide.Omega_AC*np.real(Q_MB*np.conj(Q_MB))
+    # Note: sim_EM_pump.omega_EM is the optical angular freq in units of Hz
+    # Note: sim_AC.Omega_AC is the acoustic angular freq in units of Hz
+    gain = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q*np.conj(Q))
+    gain_PE = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_PE*np.conj(Q_PE))
+    gain_MB = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_MB*np.conj(Q_MB))
     normal_fact = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
     for i in range(num_modes_EM):
-        P1 = sim_EM_wguide.EM_mode_overlap[i]
+        P1 = sim_EM_pump.EM_mode_overlap[i]
         for j in range(num_modes_EM):
-            P2 = sim_EM_wguide.EM_mode_overlap[j]
+            P2 = sim_EM_pump.EM_mode_overlap[j]
             for k in range(num_modes_AC):
-                P3 = sim_AC_wguide.AC_mode_overlap[k]
+                P3 = sim_AC.AC_mode_overlap[k]
                 normal_fact[i, j, k] = P1*P2*P3
     SBS_gain = np.real(gain/normal_fact)
     SBS_gain_PE = np.real(gain_PE/normal_fact)

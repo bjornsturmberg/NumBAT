@@ -8,6 +8,7 @@
 import numpy as np
 import sys
 import os
+import copy
 sys.path.append("../backend/")
 
 import plotting
@@ -37,7 +38,7 @@ class Simmo(object):
     def calc_EM_modes(self):
         """ Run a Fortran FEM calculation to find the optical modes.
 
-        Returns a :Simmo: object that now has these key values:
+        Returns a :Simmo: object that has these key values:
 
         Eig_values: a 1d array of Eigenvalues (propagation constants) in [1/m]
 
@@ -199,7 +200,7 @@ class Simmo(object):
     def calc_AC_modes(self):
         """ Run a Fortran FEM calculation to find the acoustic modes.
 
-        Returns a :Simmo: object that now has these key values:
+        Returns a :Simmo: object that has these key values:
 
         Eig_values: a 1d array of Eigenvalues (frequencies) in [1/s]
 
@@ -458,3 +459,20 @@ class Simmo(object):
         # print(self.AC_mode_overlap/self.AC_mode_overlap_elastic)
         # print(3e8/(self.AC_mode_overlap/self.AC_mode_overlap_elastic))
         # print(np.shape(self.structure.rho))
+
+
+def bkwd_Stokes_modes(EM_sim):
+    """ Defines the backward travelling Stokes waves as the conjugate
+        of the forward travelling pump waves.
+
+    Returns a :Simmo: object that has these key values:
+
+    Eig_values: a 1d array of Eigenvalues (propagation constants) in [1/m]
+
+    sol1: the associated Eigenvectors, ie. the fields, stored as
+           [field comp, node nu on element, Eig value, el nu]
+    """
+    Stokes_modes = copy.deepcopy(EM_sim)
+    Stokes_modes.sol1 = np.conj(Stokes_modes.sol1)
+    Stokes_modes.Eig_values = -1.0*(Stokes_modes.Eig_values)
+    return Stokes_modes
