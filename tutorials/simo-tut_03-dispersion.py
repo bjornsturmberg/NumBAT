@@ -54,7 +54,7 @@ npzfile = np.load('wguide_data2.npz')
 sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # Will scan from forward to backward SBS so need to know k_AC of backward SBS.
-k_AC = 2*sim_EM_pump.Eig_values[0]
+k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 # Number of wavevectors steps.
 nu_ks = 20
 

@@ -106,7 +106,7 @@ n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff", np.round(n_eff_sim, 4))
 
 # Choose acoustic wavenumber to solve for backward SBS
-k_AC = 2*np.real(sim_EM_pump.Eig_values[0])
+k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
 # Calculate Acoustic modes.
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC, EM_sim=sim_EM_pump)

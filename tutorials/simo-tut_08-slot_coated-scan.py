@@ -59,7 +59,7 @@ for coat_y in coat_y_list:
     sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff=n_eff)
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 
-    k_AC = 2*np.real(sim_EM_pump.Eig_values[0])
+    k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
     shift_Hz = 4e9
 

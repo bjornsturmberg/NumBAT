@@ -18,7 +18,7 @@ from fortran import NumBAT
 # Naming conventions
 # AC: acoustic
 # EM: electromagnetic
-# k_AC: acoustic wavenumber
+# k_AC: acoustic wavevector
 
 start = time.time()
 
@@ -71,10 +71,8 @@ sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 print("\n Fundamental optical mode ")
 print(" n_eff = ", np.round(n_eff_sim, 4))
-
-# Choose acoustic wavenumber to solve for.
-# Backward SBS - AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
-k_AC = 2*np.real(sim_EM_pump.Eig_values[0])
+# Acoustic wavevector
+k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
 
 # Calculate Acoustic modes, using the mesh from the EM calculation.

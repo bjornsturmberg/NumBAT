@@ -88,7 +88,7 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 
-k_AC = 2*np.real(sim_EM_pump.Eig_values[0])
+k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
 shift_Hz = 10e9
 

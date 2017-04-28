@@ -48,8 +48,7 @@ def modes_n_gain(wguide):
     # Calculate Electromagnetic modes.
     sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
-    # Backward SBS
-    k_AC = 2*np.real(sim_EM_pump.Eig_values[0])
+    k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
     # Calculate Acoustic modes.
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
         EM_sim=sim_EM_pump)
