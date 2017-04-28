@@ -168,7 +168,9 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         end = time.time()
         print("     time (sec.)", (end - start))
     else:
-        alpha = (np.pi*k_AC/fixed_Q)*np.ones(num_modes_AC)
+        # alpha = Omega_AC/(vg*fixed_Q) = k_AC/fixed_Q
+        # factor of a half because alpha is for power!
+        alpha = 0.5*(k_AC/fixed_Q)*np.ones(num_modes_AC)
 
 
     # Calc Q_photoelastic Eq. 33

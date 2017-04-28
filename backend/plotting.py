@@ -97,8 +97,8 @@ def gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     # Line width of resonances should be v_g * alpha,
     # but we don't have convenient access to v_g, therefore
     # phase velocity as approximation to group velocity
-    phase_v = sim_AC_wguide.Eig_values/k_AC
-    linewidth = phase_v*alpha
+    phase_v = 2*np.pi*sim_AC_wguide.Eig_values/k_AC
+    linewidth = phase_v*alpha/(2*np.pi)
 
     interp_grid = np.linspace(freq_min, freq_max, num_interp_pts)
     interp_values = np.zeros(num_interp_pts)

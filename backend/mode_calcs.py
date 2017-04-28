@@ -184,7 +184,6 @@ class Simmo(object):
         # This group velocity calc is not accurate in the presence of dispersion!
         # self.group_velocity_EM = self.EM_mode_overlap/self.EM_mode_overlap_energy
 
-        print(self.Stokes)
         # If considering a the backwards propagating Stokes field.
         if self.Stokes == True:
             self.Eig_values = -1*self.Eig_values
