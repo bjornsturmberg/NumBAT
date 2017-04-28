@@ -845,7 +845,7 @@ class Struct(object):
             os.system(gmsh_cmd)
 
 
-    def calc_EM_modes(self, wl_nm, num_modes, n_eff, **args):
+    def calc_EM_modes(self, wl_nm, num_modes, n_eff, Stokes=False, **args):
         """ Run a simulation to find the Struct's EM modes.
 
             Args:
@@ -859,7 +859,7 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo = Simmo(self, wl_nm, num_modes=num_modes, n_eff=n_eff)
+        simmo = Simmo(self, wl_nm, num_modes=num_modes, n_eff=n_eff, Stokes=Stokes)
 
         simmo.calc_EM_modes(**args)
         return simmo

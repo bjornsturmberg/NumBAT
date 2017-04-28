@@ -27,10 +27,11 @@ inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 # Choose modes to include.
-num_EM_modes = 20
-num_AC_modes = 20
-EM_ival1 = 0
-EM_ival2 = EM_ival1
+num_modes_EM_pump = 20
+num_modes_EM_Stokes = num_modes_EM_pump
+num_modes_AC = 20
+EM_ival_pump = 0
+EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
@@ -42,16 +43,18 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic modes.
-# sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
-# np.savez('wguide_data', sim_EM_wguide=sim_EM_wguide)
+# sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)
+# np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
 
 # Assuming this calculation is run directly after simo-tut_02
 # we don't need to recalculate EM modes, but can load them in.
 npzfile = np.load('wguide_data.npz')
-sim_EM_wguide = npzfile['sim_EM_wguide'].tolist()
+sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+npzfile = np.load('wguide_data2.npz')
+sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # Will scan from forward to backward SBS so need to know k_AC of backward SBS.
-k_AC = 2*sim_EM_wguide.Eig_values[0]
+k_AC = 2*sim_EM_pump.Eig_values[0]
 # Number of wavevectors steps.
 nu_ks = 20
 
@@ -59,7 +62,7 @@ plt.clf()
 plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)
 for i_ac, q_ac in enumerate(np.linspace(0.0,k_AC,nu_ks)):
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, q_ac, EM_sim=sim_EM_wguide)
+    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, q_ac, EM_sim=sim_EM_pump)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_values if abs(np.real(x)) > abs(np.imag(x))])
     sym_list = integration.symmetries(sim_AC_wguide)
 

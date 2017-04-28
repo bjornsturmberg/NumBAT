@@ -35,9 +35,9 @@ inc_shape = 'rectangular'
 
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
-num_modes_EM_Stokes = num_modes_EM_pump#+10
+num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
-num_AC_modes = 20
+num_modes_AC = 20
 # The first EM mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival_pump = 0
@@ -63,32 +63,22 @@ print('\n k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values),4))
 # Calculate the Electromagnetic modes of the Stokes field.
 # For an idealised backward SBS simulation the Stokes modes are identical 
 # to the pump modes but travel in the opposite direction.
-sim_EM_stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # # Alt
-
-# wguide2 = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-#                         material_a=materials.Air,
-#                         material_b=materials.Si,
-#                         lc_bkg=2, lc2=200.0, lc3=5.0)
-# sim_EM_stokes = wguide2.calc_EM_modes(wl_nm, num_modes_EM_Stokes, n_eff)
+# sim_EM_Stokes = wguide.calc_EM_modes(wl_nm, num_modes_EM_Stokes, n_eff, Stokes=True)
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 print("\n Fundamental optical mode ")
 print(" n_eff = ", np.round(n_eff_sim, 4))
-print(" v_g = ", np.round(np.real(sim_EM_pump.group_velocity_EM[0]), 4))
-speed_c = 299792458
-print(" n_g = ", np.round(np.real(speed_c/sim_EM_pump.group_velocity_EM[0]), 4))
 
 # Choose acoustic wavenumber to solve for.
 # Backward SBS - AC mode couples EM modes on +ve to -ve lightline, hence factor 2.
 k_AC = 2*np.real(sim_EM_pump.Eig_values[0])
 print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
-# Forward (intramode) SBS - EM modes on same lightline.
-# k_AC = 0.0
 
 # Calculate Acoustic modes, using the mesh from the EM calculation.
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, 
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, 
     k_AC=k_AC, EM_sim=sim_EM_pump)
 # Print the frequencies of AC modes.
 print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
@@ -96,17 +86,17 @@ print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
-    sim_EM_pump, sim_EM_stokes, sim_AC_wguide, k_AC,
+    sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.
-print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:]/alpha)
-print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:]/alpha)
-print("SBS_gain total \n", SBS_gain[EM_ival_pump,EM_ival_Stokes,:]/alpha)
+print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]/alpha)
+print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:]/alpha)
+print("SBS_gain total \n", SBS_gain[EM_ival_Stokes,EM_ival_pump,:]/alpha)
 # Mask negligible gain values to improve clarity of print out.
 threshold = 1e-3
-masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:]/alpha, 0, threshold)
-masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:]/alpha, 0, threshold)
-masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:]/alpha, 0, threshold)
+masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
+masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
+masked = np.ma.masked_inside(SBS_gain[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
 print("\n SBS_gain PE contribution \n", masked_PE)
 print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)

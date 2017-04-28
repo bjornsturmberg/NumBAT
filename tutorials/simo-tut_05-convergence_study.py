@@ -27,10 +27,11 @@ inc_a_x = 314.7
 inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 
-num_EM_modes = 20
-num_AC_modes = 20
-EM_ival1 = 0
-EM_ival2 = EM_ival1
+num_modes_EM_pump = 20
+num_modes_EM_Stokes = num_modes_EM_pump
+num_modes_AC = 20
+EM_ival_pump = 0
+EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
 
@@ -57,22 +58,23 @@ for i_lc, lc_ref in enumerate(lc_list):
     # Expected effective index of fundamental guided mode.
     n_eff = wguide.material_b.n-0.1
     # Calculate Electromagnetic modes.
-    sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff)
+    sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)
+    sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
     # Backward SBS
-    k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
+    k_AC = 2*np.real(sim_EM_pump.Eig_values[0])
     # Calculate Acoustic modes.
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC,
-        EM_sim=sim_EM_wguide)
+    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
+        EM_sim=sim_EM_pump)
     # Calculate interaction integrals and SBS gain.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
-        sim_EM_wguide, sim_AC_wguide, k_AC,
-        EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
+        sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+        EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
-    conv_list.append([sim_EM_wguide, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha])
+    conv_list.append([sim_EM_pump, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha])
     end = time.time()
     time_list.append(end - start)
 
-
+# Crucial that you preselect modes with significant gain.
 rel_modes = [2,4,8]
 rel_mode_freq_EM = np.zeros(nu_lcs,dtype=complex)
 rel_mode_freq_AC = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
@@ -83,9 +85,9 @@ for i_conv, conv_obj in enumerate(conv_list):
     rel_mode_freq_EM[i_conv] = conv_obj[0].Eig_values[0]
     for i_m, rel_mode in enumerate(rel_modes):
         rel_mode_freq_AC[i_conv,i_m] = conv_obj[1].Eig_values[rel_mode]
-        rel_mode_gain[i_conv,i_m] = conv_obj[2][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
-        rel_mode_gain_PE[i_conv,i_m] = conv_obj[3][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
-        rel_mode_gain_MB[i_conv,i_m] = conv_obj[4][EM_ival1,EM_ival2,rel_mode]/conv_obj[5][rel_mode]
+        rel_mode_gain[i_conv,i_m] = conv_obj[2][EM_ival_Stokes,EM_ival_pump,rel_mode]/conv_obj[5][rel_mode]
+        rel_mode_gain_PE[i_conv,i_m] = conv_obj[3][EM_ival_Stokes,EM_ival_pump,rel_mode]/conv_obj[5][rel_mode]
+        rel_mode_gain_MB[i_conv,i_m] = conv_obj[4][EM_ival_Stokes,EM_ival_pump,rel_mode]/conv_obj[5][rel_mode]
 
 
 
@@ -98,7 +100,7 @@ ax2.yaxis.tick_left()
 ax2.yaxis.set_label_position("left")
 EM_plot_Mk = rel_mode_freq_EM*1e-6
 error0 = np.abs((np.array(EM_plot_Mk[0:-1])-EM_plot_Mk[-1])/EM_plot_Mk[-1])
-ax2.plot(x_axis[0:-1], error0, 'b-v',label='Mode #%i'%EM_ival1)
+ax2.plot(x_axis[0:-1], error0, 'b-v',label='Mode #%i'%EM_ival_pump)
 ax1.plot(x_axis, np.real(EM_plot_Mk), 'r-.o',label=r'EM k$_z$')
 ax1.yaxis.tick_right()
 ax1.spines['right'].set_color('red')

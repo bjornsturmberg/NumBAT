@@ -30,10 +30,11 @@ inc_a_y = 1000
 inc_shape = 'rectangular'
 
 # Optical Parameters
-num_EM_modes = 20
-num_AC_modes = 120
-EM_ival1 = 0
-EM_ival2 = EM_ival1
+num_modes_EM_pump = 20
+num_modes_EM_Stokes = num_modes_EM_pump
+num_modes_AC = 120
+EM_ival_pump = 0
+EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
 # Material parameters as in paper 
@@ -56,22 +57,23 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 n_eff = 1.3
 
 # Calculate Electromagnetic modes.
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
+sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff=n_eff)
+sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 
 # Print the wavevectors of EM modes.
-print('k_z of EM modes \n', np.round(np.real(sim_EM_wguide.Eig_values), 4))
+print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 
 # Calculate the EM effective index of the waveguide.
-n_eff_sim = np.real(sim_EM_wguide.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
+n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff = ", np.round(n_eff_sim, 4))
 
-k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
+k_AC = 2*np.real(sim_EM_pump.Eig_values[0])
 
 shift_Hz = 8e9
 
 # Calculate Acoustic modes.
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, k_AC=k_AC,
-    EM_sim=sim_EM_wguide, shift_Hz=shift_Hz)
+sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC=k_AC,
+    EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
@@ -79,11 +81,11 @@ print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
-    sim_EM_wguide, sim_AC_wguide, k_AC,
-    EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
+    sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+    EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = 4  # GHz
 freq_max = 13  # GHz
 plotting.gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-    EM_ival1, EM_ival2, AC_ival, freq_min=freq_min, freq_max=freq_max)
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max)

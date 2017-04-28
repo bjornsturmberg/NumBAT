@@ -19,7 +19,7 @@ class Simmo(object):
     """ Calculates the modes of a :Struc: object at a wavelength of wl_nm.
     """
     def __init__(self, structure, wl_nm, num_modes=20, n_eff=None, shift_Hz=None, 
-                 k_AC=None, EM_sim=None):
+                 k_AC=None, EM_sim=None, Stokes=False):
         self.structure = structure
         self.wl_m = wl_nm*1e-9
         self.n_eff = n_eff
@@ -27,6 +27,7 @@ class Simmo(object):
         self.k_AC = k_AC
         self.EM_sim = EM_sim
         self.num_modes = num_modes
+        self.Stokes = Stokes
         self.mode_pol = None
         self.k_0 = 2 * np.pi / self.wl_m
         # just off normal incidence to avoid degeneracies
@@ -180,8 +181,14 @@ class Simmo(object):
         except KeyboardInterrupt:
             print("\n\n FEM routine em_mode_e_energy_int interrupted by keyboard.\n\n")
 
-        self.group_velocity_EM = self.EM_mode_overlap/self.EM_mode_overlap_energy
+        # This group velocity calc is not accurate in the presence of dispersion!
+        # self.group_velocity_EM = self.EM_mode_overlap/self.EM_mode_overlap_energy
 
+        print(self.Stokes)
+        # If considering a the backwards propagating Stokes field.
+        if self.Stokes == True:
+            self.Eig_values = -1*self.Eig_values
+            self.sol1 = np.conj(self.sol1)
 
         ### Not necessary because EM FEM mesh always normalised in area to unity.
         # print area
