@@ -52,14 +52,15 @@ inc_a_y = 0.9*inc_a_x
 inc_shape = 'rectangular'
 
 # Number of electromagnetic modes to solve for.
-num_EM_modes = 20
+num_modes_EM_pump = 20
+num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
 num_AC_modes = 20
 # The first EM mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
-EM_ival1=0
+EM_ival_pump = 0
 # The second EM mode(s) for which to calculate interaction with AC modes.
-EM_ival2=EM_ival1
+EM_ival_Stokes = EM_ival_pump
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival='All'
 
@@ -90,30 +91,32 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic Modes
-sim_EM_wguide = wguide.calc_EM_modes(wl_nm, num_EM_modes, n_eff=n_eff)
+sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff=n_eff)
 
-k_AC = 2*np.real(sim_EM_wguide.Eig_values[0])
+sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+
+k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
 # Calculate Acoustic Modes
 sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_AC_modes, 
-    k_AC=k_AC, EM_sim=sim_EM_wguide)
+    k_AC=k_AC, EM_sim=sim_EM_pump)
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
-    sim_EM_wguide, sim_AC_wguide, k_AC,
-    EM_ival1=EM_ival1, EM_ival2=EM_ival2, AC_ival=AC_ival)
+    sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+    EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Mask negligible gain values to improve clarity of print out.
 threshold = 1e-3
-masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
-masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
-masked = np.ma.masked_inside(SBS_gain[EM_ival1,EM_ival2,:]/alpha, 0, threshold)
+masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
+masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
+masked = np.ma.masked_inside(SBS_gain[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
 
 # print("\n SBS_gain PE contribution \n", masked_PE)
 # print("SBS_gain MB contribution \n", masked_MB)
 # print("SBS_gain total \n", masked)
 
-test_list1 = list(zip(sim_EM_wguide.Eig_values, sim_AC_wguide.Eig_values))
+test_list1 = list(zip(sim_EM_pump.Eig_values, sim_AC_wguide.Eig_values))
 test_list2 = list(zip(masked_PE, masked_MB, masked))
 
 # # SAVE DATA AS REFERENCE
@@ -129,9 +132,6 @@ def test_list_matches_saved(casefile_name = casefile_name):
     rtol = 1e-6
     atol = 1e-6
     ref = np.load("ref/%s.npz" % casefile_name)
-# print(repr(ref))
-# print(repr(ref['test_list']))
-# print(repr(ref['test_list'][0]))
     for case, rcase in zip(test_list1, ref['test_list1']):
         yield assert_ac, case, rcase, rtol, atol
     for case, rcase in zip(test_list2, ref['test_list2']):

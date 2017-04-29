@@ -4,7 +4,7 @@ function makeBAT() {
 ## install dependencies
   sudo apt-get update
   sudo apt-get upgrade
-  sudo apt-get install -y python3-numpy python3-scipy python3-matplotlib python3-nose gfortran make gmsh libatlas-dev libblas-dev liblapack-dev libsuitesparse-dev
+  sudo apt-get install -y python3-numpy python3-dev python3-scipy python3-matplotlib python3-nose gfortran make gmsh libatlas-dev libblas-dev liblapack-dev libsuitesparse-dev
 ## compile Fortran routines
   cd backend/fortran/
   make
