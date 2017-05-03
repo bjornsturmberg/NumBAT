@@ -115,8 +115,8 @@ for i_w, width_obj in enumerate(width_objs):
     tune_range = 10 # GHz
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
-    phase_v = sim_AC.Eig_values/k_AC
-    line_width = phase_v*alpha
+    phase_v = 2*np.pi*sim_AC_wguide.Eig_values/k_AC
+    linewidth = phase_v*alpha/(2*np.pi)
     for AC_i in range(len(alpha)):
         gain_list = np.real(SBS_gain[EM_ival_Stokes,EM_ival_pump,AC_i]/alpha[AC_i]
                      *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))

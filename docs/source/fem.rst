@@ -102,15 +102,18 @@ One last thing, if the geometry contains only rectangular shapes, and all elemen
 FEM Errors
 -----------
 
-There are 2 errors that can be easily triggered within the Fortran FEM routines. These both cause them to simulation to abort and the terminal to be unresponsive (until you kill python or the screen session).
+There are 2 main errors that can be easily triggered within the Fortran FEM routines. These cause them to simulation to abort and the terminal to be unresponsive (until you kill python or the screen session).
 
 The first of these is ::
 
-    Error with _naupd, info_32 =           -3
-    Check the documentation in _naupd.
-    Aborting...
+    VALPR_64: info_32 != 0 : 
+    VALPR_64: iparam_32(5) = 
+    VALPR_64: number of converged values =    
+    py_calc_modes.f: convergence problem with valpr_64
+    py_calc_modes.f: You should probably increase resolution of mesh!
+    py_calc_modes.f: n_conv != nval :
 
-Long story short, this indicates that the FEM mesh is too coarse for solutions for higher order Bloch modes (Eigenvaules) to converge. To see this run the simulation with FEM_debug = 1 (in mode_calcs.py) and it will print the number of converged Eigenvalues nconv != nval.
+Long story short, this indicates that the FEM mesh is too coarse for solutions for higher order Bloch modes (Eigenvaules) to converge. 
 This error is easily fixed by increasing the mesh resolution. Decrease 'lc_bkg' and/or increase 'lc2' etc.
 
 
