@@ -37,7 +37,7 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.Air,
                         material_b=materials.Si,
-                        lc_bkg=2, lc2=500.0, lc3=10.0)
+                        lc_bkg=2, lc2=500.0, lc3=20.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_b.n-0.1

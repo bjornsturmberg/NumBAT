@@ -60,7 +60,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_b=materials.As2S3,
                         material_c=materials.SiO2,
                         material_d=materials.SiO2,
-                        lc_bkg=2, lc2=200.0, lc3=5.0)
+                        lc_bkg=2, lc2=500.0, lc3=10.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_b.n-0.1
@@ -100,7 +100,7 @@ print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
-SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
+SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
     sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.

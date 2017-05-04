@@ -42,7 +42,7 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.Air,
                         material_b=materials.Si,
-                        lc_bkg=2, lc2=1000.0, lc3=10.0)
+                        lc_bkg=2, lc2=1000.0, lc3=20.0)
 
 
 # Expected effective index of fundamental guided mode.
@@ -102,7 +102,7 @@ set_q_factor = 1000.
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
-SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
+SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
     sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
 # Save the gain calculation results

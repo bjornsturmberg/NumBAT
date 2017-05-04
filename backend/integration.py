@@ -165,12 +165,14 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         except KeyboardInterrupt:
             print("\n\n Routine ac_alpha_int interrupted by keyboard.\n\n")
         alpha = np.real(alpha)
+        Q_factors = 0.5*(k_AC/alpha)*np.ones(num_modes_AC)
         end = time.time()
         print("     time (sec.)", (end - start))
     else:
         # alpha = Omega_AC/(vg*fixed_Q) = k_AC/fixed_Q
         # factor of a half because alpha is for power!
         alpha = 0.5*(k_AC/fixed_Q)*np.ones(num_modes_AC)
+        Q_factors = fixed_Q*np.ones(num_modes_AC)
 
 
     # Calc Q_photoelastic Eq. 33
@@ -244,7 +246,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     SBS_gain_PE = np.real(gain_PE/normal_fact)
     SBS_gain_MB = np.real(gain_MB/normal_fact)
 
-    return SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha
+    return SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors
 
 
 #### Categorise modes by their symmetries #############################################

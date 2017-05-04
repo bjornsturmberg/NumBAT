@@ -53,7 +53,7 @@ def modes_n_gain(wguide):
     sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
         EM_sim=sim_EM_pump)
     # Calculate interaction integrals and SBS gain.
-    SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha = integration.gain_and_qs(
+    SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
         sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
@@ -75,7 +75,7 @@ for width in waveguide_widths:
                             inc_a_y,inc_shape,
                             material_a=materials.Air,
                             material_b=materials.Si,
-                            lc_bkg=2, lc2=1000.0, lc3=10.0)
+                            lc_bkg=2, lc2=1000.0, lc3=20.0)
     geo_objects_list.append(wguide)
 
 
