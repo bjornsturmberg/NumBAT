@@ -41,14 +41,14 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         inc_b_x =inc_b_x, slab_a_y=slab_a_y,
                         material_a=materials.Air,
-                        material_b=materials.As2S3,
+                        material_b=materials.As2S3_exp,
                         material_c=materials.SiO2,
                         material_d=materials.Si,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 # In this case lc3 is meshing around ribs encasing the slot (the Si)
 
 # Expected effective index of fundamental guided mode.
-n_eff = 2.8
+n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic modes.
 sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff=n_eff)

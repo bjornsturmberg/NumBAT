@@ -57,7 +57,7 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 						coat_x=coat_x, coat_y=coat_y, slab_a_y=slab_a_y, slab_b_y=slab_b_y,
                         material_a=materials.Air,
-                        material_b=materials.As2S3,
+                        material_b=materials.As2S3_exp,
                         material_c=materials.SiO2,
                         material_d=materials.SiO2,
                         lc_bkg=2, lc2=500.0, lc3=10.0)

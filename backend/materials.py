@@ -208,13 +208,22 @@ eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
 SiO2 = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
                eta_11, eta_12, eta_44])
 
-# As2S3 - http://dx.doi.org/10.1364/OL.41.002338
+# As2S3 - from theoretical paper http://dx.doi.org/10.1364/OL.41.002338
 n = 2.37
 s = 3200  # kg/m3
 c_11 = 18.7e9; c_12 = 6.1e9; c_44 =6.4e9 # Pa
 p_11 = 0.25; p_12 = 0.24; p_44 = 0.005
 eta_11 = 1.8e-3 ; eta_12 = 1.45e-3 ; eta_44 = 0.18e-3  # Pa s
-As2S3 = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
+As2S3_theory = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
+               eta_11, eta_12, eta_44])
+
+# As2S3 - experimental values at wl = 1550 nm http://arxiv.org/abs/1702.05233
+n = 2.44
+s = 3200  # kg/m3
+c_11 = 1.95e10; c_12 = 8.363e9; c_44 =6.337e9 # Pa
+p_11 = 0.25; p_12 = 0.24; p_44 = 0.005
+eta_11 = 1.8e-3 ; eta_12 = 1.45e-3 ; eta_44 = 0.18e-3  # Pa s
+As2S3_exp = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
                eta_11, eta_12, eta_44])
 
 # GaAs - http://dx.doi.org/10.1364/OL.41.002338
