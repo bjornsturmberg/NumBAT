@@ -15,7 +15,7 @@ Or, if you prefer to do things manually, this is equivalent to ::
     $ cd backend/fortran/
     $ make
     $ cd ../../tests/
-    $ nosetests
+    $ nosetests3
 
 where the <dependencies> packages are listed dependencies.txt.
 
