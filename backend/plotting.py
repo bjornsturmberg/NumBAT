@@ -18,7 +18,7 @@ import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 try: plt.style.use('bjornstyle')
-except (IOError, AttributeError): "Preferred matplotlib style file not found."
+except (ValueError, IOError, AttributeError): "Preferred matplotlib style file not found."
 
 # font = {'family' : 'normal',
 #         'weight' : 'bold',
