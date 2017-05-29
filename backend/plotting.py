@@ -21,11 +21,6 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 try: plt.style.use('bjornstyle')
 except (ValueError, IOError, AttributeError): "Preferred matplotlib style file not found."
 
-try:
-    plt.rcParams['image.cmap'] = 'inferno'
-    # cmap = matplotlib.cm.inferno
-except(ValueError,AttributeError): ""
-
 
 # font = {'family' : 'normal',
 #         'weight' : 'bold',
@@ -368,9 +363,9 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             ax = plt.subplot(3,3,i_p+1)
             if np.max(np.abs(plot[~np.isnan(plot)])) < plot_threshold:
                 # im = plt.imshow(plot.T,cmap='viridis');
-                im = plt.imshow(np.zeros(np.shape(plot.T)));#,cmap='inferno');
+                im = plt.imshow(np.zeros(np.shape(plot.T)));
             else:
-                im = plt.imshow(plot.T);#,cmap='inferno');
+                im = plt.imshow(plot.T);
             # ax.set_aspect('equal')
             # no ticks
             plt.xticks([])
@@ -408,8 +403,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
                 (m_ReEx_q+m_ImEx_q), (m_ReEy_q+m_ImEy_q),      # data
                 np.sqrt(np.real((m_ReEx_q+1j*m_ImEx_q)*(m_ReEx_q-1j*m_ImEx_q)
                 +(m_ReEy_q+1j*m_ImEy_q)*(m_ReEy_q-1j*m_ImEy_q))),  #colour the arrows based on this array
-                linewidths=(0.2,), edgecolors=('k'), #cmap='inferno',     # colour map
-                pivot='mid', headlength=5)        # length of the arrows
+                linewidths=(0.2,), edgecolors=('k'), pivot='mid', headlength=5) # length of the arrows
             ax.set_aspect('equal')
             plt.xticks([])
             plt.yticks([])
@@ -513,7 +507,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             fig = plt.figure(figsize=(15,30))
             for i_p,plot in enumerate(del_mat):
                 ax = plt.subplot(6,3,i_p+1)
-                im = plt.imshow(plot.T);#,cmap='inferno');
+                im = plt.imshow(plot.T);
                 # no ticks
                 plt.xticks([])
                 plt.yticks([])
