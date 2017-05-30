@@ -24,6 +24,8 @@ This will return you into an interactive python session in which all simulation 
 
 where we have accessed the docstring of the Struct class from objects.py
 
+To review how material types and physical dimensions are represented in the mesh geometries go to NumBAT/docs/msh_type_lib and view the relevant .png file.
+
 
 In the remainder of this chapter we go through a number of example simo.py files. But before we do, another quick tip about running simulations within screen sessions, which allow you to disconnect from servers leaving them to continue your processes.
 

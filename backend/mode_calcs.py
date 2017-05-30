@@ -45,6 +45,8 @@ class Simmo(object):
 
         sol1: the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
+
+        EM_mode_power: the power in the optical modes.
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
         n_list = []
@@ -142,7 +144,7 @@ class Simmo(object):
             nnodes = 6
             if self.structure.inc_shape in self.structure.linear_element_shapes:
             ## Integration using analytically evaluated basis function integrals. Fast.
-                self.EM_mode_overlap = NumBAT.em_mode_energy_int_v2_ez(
+                self.EM_mode_power = NumBAT.em_mode_energy_int_v2_ez(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
@@ -151,12 +153,12 @@ class Simmo(object):
                     print("Warning: em_mode_energy_int - not sure if mesh contains curvi-linear elements", 
                         "\n using slow quadrature integration by default.\n\n")
             # Integration by quadrature. Slowest.
-                self.EM_mode_overlap = NumBAT.em_mode_energy_int_ez(
+                self.EM_mode_power = NumBAT.em_mode_energy_int_ez(
                     self.k_0, self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod,
                     self.x_arr, self.Eig_values, self.sol1)
             # Bring Kokou's def into line with CW formulation.
-            self.EM_mode_overlap = 2.0*self.EM_mode_overlap
+            self.EM_mode_power = 2.0*self.EM_mode_power
 
         except KeyboardInterrupt:
             print("\n\n FEM routine EM_mode_energy_int interrupted by keyboard.\n\n")
@@ -174,7 +176,7 @@ class Simmo(object):
             #         print("Warning: em_mode_e_energy_int - not sure if mesh contains curvi-linear elements", 
             #             "\n using slow quadrature integration by default.\n\n")
             # # Integration by quadrature. Slowest.
-                self.EM_mode_overlap_energy = NumBAT.em_mode_e_energy_int(
+                self.EM_mode_power_energy = NumBAT.em_mode_e_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts, nnodes,
                     self.table_nod, self.type_el, self.structure.nb_typ_el, self.n_list,
                     self.x_arr, self.sol1)
@@ -182,7 +184,7 @@ class Simmo(object):
             print("\n\n FEM routine em_mode_e_energy_int interrupted by keyboard.\n\n")
 
         # This group velocity calc is not accurate in the presence of dispersion!
-        # self.group_velocity_EM = self.EM_mode_overlap/self.EM_mode_overlap_energy
+        # self.group_velocity_EM = self.EM_mode_power/self.EM_mode_power_energy
 
         # If considering a the backwards propagating Stokes field.
         if self.Stokes == True:
@@ -200,7 +202,7 @@ class Simmo(object):
         # y_min = np.min(y_tmp); y_max=np.max(y_tmp)
         # area = abs((x_max-x_min)*(y_max-y_min))
         # print area
-        # self.EM_mode_overlap = self.EM_mode_overlap*area
+        # self.EM_mode_power = self.EM_mode_power*area
 
 
     def calc_AC_modes(self):
@@ -212,6 +214,8 @@ class Simmo(object):
 
         sol1: the associated Eigenvectors, ie. the fields, stored as
                [field comp, node nu on element, Eig value, el nu]
+
+        AC_mode_energy_elastic: the elastic power in the acoutic modes.
         """
         self.d_in_m = self.structure.inc_a_x*1e-9
 
@@ -418,7 +422,7 @@ class Simmo(object):
             # start = time.time()
             if self.structure.inc_shape in self.structure.linear_element_shapes:
             # Semi-analytic integration following KD 9/9/16 notes. Fastest!
-                self.AC_mode_overlap = NumBAT.ac_mode_energy_int_v4(
+                self.AC_mode_power = NumBAT.ac_mode_energy_int_v4(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor,
@@ -428,7 +432,7 @@ class Simmo(object):
                     print("Warning: ac_mode_energy_int - not sure if mesh contains curvi-linear elements", 
                         "\n using slow quadrature integration by default.\n\n")
             # Integration by quadrature. Slowest.
-                self.AC_mode_overlap = NumBAT.ac_mode_energy_int(
+                self.AC_mode_power = NumBAT.ac_mode_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
@@ -444,7 +448,7 @@ class Simmo(object):
             # start = time.time()
             if self.structure.inc_shape in self.structure.linear_element_shapes:
             # # Semi-analytic integration. Fastest!
-            #     self.AC_mode_overlap_elastic = NumBAT.ac_mode_elastic_energy_int_v4(
+            #     self.AC_mode_energy_elastic = NumBAT.ac_mode_elastic_energy_int_v4(
             #         self.num_modes, self.n_msh_el, self.n_msh_pts,
             #         nnodes, self.table_nod, self.type_el, self.x_arr,
             #         self.structure.nb_typ_el_AC, self.structure.rho,
@@ -454,7 +458,7 @@ class Simmo(object):
             #         print("Warning: ac_mode_elastic_energy_int - not sure if mesh contains curvi-linear elements", 
             #             "\n using slow quadrature integration by default.\n\n")
             # # Integration by quadrature. Slowest.
-                self.AC_mode_overlap_elastic = NumBAT.ac_mode_elastic_energy_int(
+                self.AC_mode_energy_elastic = NumBAT.ac_mode_elastic_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
                     self.structure.nb_typ_el_AC, self.structure.rho,
@@ -462,8 +466,8 @@ class Simmo(object):
         except KeyboardInterrupt:
             print("\n\n FEM routine AC_mode_elastic_energy_int interrupted by keyboard.\n\n")
 
-        # print(self.AC_mode_overlap/self.AC_mode_overlap_elastic)
-        # print(3e8/(self.AC_mode_overlap/self.AC_mode_overlap_elastic))
+        # print(self.AC_mode_power/self.AC_mode_energy_elastic)
+        # print(3e8/(self.AC_mode_power/self.AC_mode_energy_elastic))
         # print(np.shape(self.structure.rho))
 
 

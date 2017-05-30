@@ -4,7 +4,7 @@ C
       subroutine AC_alpha_int_v2 (nval, 
      *  nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, eta_tensor, beta_AC, Omega_AC, soln_AC,
-     *  AC_mode_overlap, overlap)
+     *  AC_mode_power, overlap)
 c
       implicit none
       integer*8 nval, ival
@@ -15,7 +15,7 @@ c
 C       complex*16 x(2,npt)
       complex*16 soln_AC(3,nnodes,nval,nel)
       complex*16 Omega_AC(nval)
-      complex*16 beta_AC, AC_mode_overlap(nval)
+      complex*16 beta_AC, AC_mode_power(nval)
       complex*16, dimension(nval) :: overlap
       complex*16 eta_tensor(3,3,3,3,nb_typ_el)
 
@@ -44,7 +44,7 @@ C
 C
 Cf2py intent(in) nval, nel, npt, nnodes, table_nod
 Cf2py intent(in) type_el, x, nb_typ_el, eta_tensor, beta_AC 
-Cf2py intent(in) soln_AC, debug, Omega_AC, AC_mode_overlap
+Cf2py intent(in) soln_AC, debug, Omega_AC, AC_mode_power
 C
 Cf2py depend(table_nod) nnodes, nel
 Cf2py depend(type_el) npt
@@ -52,7 +52,7 @@ Cf2py depend(x) npt
 Cf2py depend(soln_AC) nnodes, nval, nel
 Cf2py depend(eta_tensor) nb_typ_el
 Cf2py depend(Omega_AC) nval
-Cf2py depend(AC_mode_overlap) nval
+Cf2py depend(AC_mode_power) nval
 C
 Cf2py intent(out) overlap
 C
@@ -194,16 +194,16 @@ cccccccccccc
       enddo
 C Multiply through prefactor
       do i=1,nval
-C         z_tmp1 = -1.0 * Omega_AC(i)**2 / AC_mode_overlap(i)
+C         z_tmp1 = -1.0 * Omega_AC(i)**2 / AC_mode_power(i)
 C       Flipped sign as assuming did not do integration by parts - going off CW advice.
-        z_tmp1 = Omega_AC(i)**2 / AC_mode_overlap(i)
+        z_tmp1 = Omega_AC(i)**2 / AC_mode_power(i)
         overlap(i) = z_tmp1 * overlap(i)
       enddo
 
 C       open (unit=26,file="Output/overlap_alpha_v2.txt")
 C       do i=1,nval
 C         write(26,*) i, Omega_AC(i), abs(overlap(i)), overlap(i), 
-C      *              AC_mode_overlap(i)
+C      *              AC_mode_power(i)
 C       enddo
 C       close (unit=26)
 

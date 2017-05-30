@@ -151,7 +151,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
                     sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
                     sim_AC.structure.nb_typ_el_AC, sim_AC.structure.eta_tensor,
                     k_AC, sim_AC.Omega_AC, sim_AC.sol1,
-                    sim_AC.AC_mode_overlap)
+                    sim_AC.AC_mode_power)
             else:
                 if sim_EM_pump.structure.inc_shape not in sim_EM_pump.structure.curvilinear_element_shapes:
                     print("Warning: ac_alpha_int - not sure if mesh contains curvi-linear elements", 
@@ -161,7 +161,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
                     sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
                     sim_AC.structure.nb_typ_el_AC, sim_AC.structure.eta_tensor,
                     k_AC, sim_AC.Omega_AC, sim_AC.sol1,
-                    sim_AC.AC_mode_overlap, Fortran_debug)
+                    sim_AC.AC_mode_power, Fortran_debug)
         except KeyboardInterrupt:
             print("\n\n Routine ac_alpha_int interrupted by keyboard.\n\n")
         alpha = np.real(alpha)
@@ -236,11 +236,11 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     gain_MB = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_MB*np.conj(Q_MB))
     normal_fact = np.zeros((num_modes_EM_Stokes, num_modes_EM_pump, num_modes_AC), dtype=complex)
     for i in range(num_modes_EM_Stokes):
-        P1 = sim_EM_Stokes.EM_mode_overlap[i]
+        P1 = sim_EM_Stokes.EM_mode_power[i]
         for j in range(num_modes_EM_pump):
-            P2 = sim_EM_pump.EM_mode_overlap[j]
+            P2 = sim_EM_pump.EM_mode_power[j]
             for k in range(num_modes_AC):
-                P3 = sim_AC.AC_mode_overlap[k]
+                P3 = sim_AC.AC_mode_power[k]
                 normal_fact[i, j, k] = P1*P2*P3
     SBS_gain = np.real(gain/normal_fact)
     SBS_gain_PE = np.real(gain_PE/normal_fact)
