@@ -62,15 +62,15 @@ def modes_n_gain(inc_a_x):
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
     k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
     shift_Hz = 4e9
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC=k_AC,
+    sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC=k_AC,
         EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
     set_q_factor = 600.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-        sim_EM_pump, sim_AC_wguide, k_AC,
+        sim_EM_pump, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
 
-    interp_values = plotting.gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+    interp_values = plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
         EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min, freq_max, num_interp_pts=num_interp_pts)
 
     return interp_values

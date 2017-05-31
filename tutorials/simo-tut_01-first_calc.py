@@ -76,15 +76,15 @@ k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
 
 # Calculate Acoustic modes, using the mesh from the EM calculation.
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, 
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, 
     k_AC=k_AC, EM_sim=sim_EM_pump)
 # Print the frequencies of AC modes.
-print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
+print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-    sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.
 print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]/alpha)

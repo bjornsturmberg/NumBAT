@@ -109,22 +109,22 @@ print("n_eff", np.round(n_eff_sim, 4))
 k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
 # Calculate Acoustic modes.
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC, EM_sim=sim_EM_pump)
-# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC, EM_sim=sim_EM_pump)
+# np.savez('wguide_data_AC', sim_AC=sim_AC)
 # npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.
-print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
+print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', pdf_png='png')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='png')
 
 # set_q_factor = 1000.
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-    sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)#, fixed_Q=set_q_factor)
 
 # Print the Backward SBS gain of the AC modes.

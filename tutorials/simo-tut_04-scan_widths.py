@@ -50,14 +50,14 @@ def modes_n_gain(wguide):
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
     k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
     # Calculate Acoustic modes.
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
+    sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
         EM_sim=sim_EM_pump)
     # Calculate interaction integrals and SBS gain.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-        sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+        sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
-    return [sim_EM_pump, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC]
+    return [sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC]
 
 
 nu_widths = 6
@@ -105,8 +105,8 @@ for i_w, width_obj in enumerate(width_objs):
     n_effs.append(n_eff_sim)
 
     # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-    freq_min = np.real(sim_AC_wguide.Eig_values[0])*1e-9 - 5  # GHz
-    freq_max = np.real(sim_AC_wguide.Eig_values[-])*1e-9 + 5  # GHz
+    freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 5  # GHz
+    freq_max = np.real(sim_AC.Eig_values[-])*1e-9 + 5  # GHz
     plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
         EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_scan%i' % i_w)
 
@@ -115,7 +115,7 @@ for i_w, width_obj in enumerate(width_objs):
     tune_range = 10 # GHz
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
-    phase_v = 2*np.pi*sim_AC_wguide.Eig_values/k_AC
+    phase_v = 2*np.pi*sim_AC.Eig_values/k_AC
     linewidth = phase_v*alpha/(2*np.pi)
     for AC_i in range(len(alpha)):
         gain_list = np.real(SBS_gain[EM_ival_Stokes,EM_ival_pump,AC_i]/alpha[AC_i]

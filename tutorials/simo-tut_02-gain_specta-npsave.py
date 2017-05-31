@@ -80,22 +80,22 @@ print("n_eff", np.round(n_eff_sim, 4))
 k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
 # Calculate Acoustic modes.
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC, EM_sim=sim_EM_pump)
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # Save calculated :Simmo: object for AC calculation.
-np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+np.savez('wguide_data_AC', sim_AC=sim_AC)
 
 # npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.
-print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
+print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
 # Plot the AC modes fields, important to specify this with EM_AC='AC'.
 # The AC modes are calculated on a subset of the full unitcell,
 # which excludes vacuum regions, so no need to restrict area plotted.
 # We want to get pdf files so set pdf_png='pdf' 
 # (default is png as these are easier to flick through).
-plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', pdf_png='pdf')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='pdf')
 
 # Do not calculate the acoustic loss from our fields, instead set a Q factor.
 set_q_factor = 1000.
@@ -103,7 +103,7 @@ set_q_factor = 1000.
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-    sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
 # Save the gain calculation results
 np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, 
@@ -120,12 +120,12 @@ np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE,
 # alpha = npzfile['alpha']
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = np.real(sim_AC_wguide.Eig_values[0])*1e-9 - 2  # GHz
-freq_max = np.real(sim_AC_wguide.Eig_values[-])*1e-9 + 2  # GHz
-plotting.gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz
+freq_max = np.real(sim_AC.Eig_values[-])*1e-9 + 2  # GHz
+plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max)
 # Zoomed in version
 freq_min = 11  # GHz
 freq_max = 15  # GHz
-plotting.gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_zoom')

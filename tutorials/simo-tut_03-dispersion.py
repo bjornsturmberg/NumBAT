@@ -62,9 +62,9 @@ plt.clf()
 plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)
 for i_ac, q_ac in enumerate(np.linspace(0.0,k_AC,nu_ks)):
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, q_ac, EM_sim=sim_EM_pump)
-    prop_AC_modes = np.array([np.real(x) for x in sim_AC_wguide.Eig_values if abs(np.real(x)) > abs(np.imag(x))])
-    sym_list = integration.symmetries(sim_AC_wguide)
+    sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, q_ac, EM_sim=sim_EM_pump)
+    prop_AC_modes = np.array([np.real(x) for x in sim_AC.Eig_values if abs(np.real(x)) > abs(np.imag(x))])
+    sym_list = integration.symmetries(sim_AC)
 
     for i in range(len(prop_AC_modes)):
         Om = prop_AC_modes[i]*1e-9

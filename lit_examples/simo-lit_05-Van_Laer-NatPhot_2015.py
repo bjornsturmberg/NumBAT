@@ -93,7 +93,7 @@ k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 shift_Hz = 10e9
 
 # Calculate Acoustic Modes
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
     EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
-plotting.plt_mode_fields(sim_AC_wguide, EM_AC='AC', add_name='slab', pdf_png='png')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', add_name='slab', pdf_png='png')

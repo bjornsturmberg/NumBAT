@@ -77,22 +77,22 @@ k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 shift_Hz = 4e9
 
 # Calculate Acoustic modes.
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC=k_AC,
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC=k_AC,
     EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
-# np.savez('wguide_data_AC', sim_AC_wguide=sim_AC_wguide)
+# np.savez('wguide_data_AC', sim_AC=sim_AC)
 # npzfile = np.load('wguide_data_AC.npz')
-# sim_AC_wguide = npzfile['sim_AC_wguide'].tolist()
+# sim_AC = npzfile['sim_AC'].tolist()
 
-# plotting.plt_mode_fields(sim_AC_wguide, xlim_min=0.4, xlim_max=0.4, 
+# plotting.plt_mode_fields(sim_AC, xlim_min=0.4, xlim_max=0.4, 
 #                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', add_name='slot')
 
 # Print the frequencies of AC modes.
-print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
+print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
 set_q_factor = 1000.
 
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-    sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
 # np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, SBS_gain_MB=SBS_gain_MB, alpha=alpha)
 # npzfile = np.load('wguide_data_AC_gain.npz')
@@ -102,7 +102,7 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
 # alpha = npzfile['alpha']
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = np.real(sim_AC_wguide.Eig_values[0])*1e-9 - 2  # GHz
-freq_max = np.real(sim_AC_wguide.Eig_values[-])*1e-9 + 2  # GHz
-plotting.gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz
+freq_max = np.real(sim_AC.Eig_values[-])*1e-9 + 2  # GHz
+plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_slot')

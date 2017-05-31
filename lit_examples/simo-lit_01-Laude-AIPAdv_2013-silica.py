@@ -72,20 +72,20 @@ k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 shift_Hz = 8e9
 
 # Calculate Acoustic modes.
-sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC=k_AC,
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC=k_AC,
     EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
 # Print the frequencies of AC modes.
-print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC_wguide.Eig_values)*1e-9, 4))
+print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-    sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = 4  # GHz
 freq_max = 13  # GHz
-plotting.gain_specta(sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max)

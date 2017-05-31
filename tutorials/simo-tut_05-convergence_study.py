@@ -62,14 +62,14 @@ for i_lc, lc_ref in enumerate(lc_list):
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
     k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
     # Calculate Acoustic modes.
-    sim_AC_wguide = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
+    sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
         EM_sim=sim_EM_pump)
     # Calculate interaction integrals and SBS gain.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-        sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
+        sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
-    conv_list.append([sim_EM_pump, sim_AC_wguide, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha])
+    conv_list.append([sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha])
     end = time.time()
     time_list.append(end - start)
 
