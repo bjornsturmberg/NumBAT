@@ -140,39 +140,39 @@ def gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
         plt.savefig('gain_spectra-mode_comps%(add)s.pdf' % {'add' : add_name})
     plt.close()
 
-    plt.figure()
-    plt.clf()
-    if AC_ival == 'All':
-        for AC_i in range(len(alpha)):
-            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
-                         *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-            freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
-            plt.plot(freq_list_GHz, 20*np.log10(abs(gain_list)))
-            if save_txt:
-                save_array = (freq_list_GHz, 20*np.log10(abs(gain_list)))
-                np.savetxt('gain_spectra-mode_comps-dB%(add)s-%(mode)i.csv' 
-                            % {'add' : add_name, 'mode' : AC_i}, 
-                            save_array, delimiter=',')
-            # set up an interpolation for summing all the gain peaks
-            interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
-            interp_values += interp_spectrum
-    plt.plot(interp_grid, 20*np.log10(abs(interp_values)), 'k', linewidth=3, label="Total")
-    if save_txt:
-        save_array = (interp_grid, 20*np.log10(abs(interp_values)))
-        np.savetxt('gain_spectra-mode_comps-dB%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
-                    save_array, delimiter=',')
-    plt.legend(loc=0)
-    if freq_min and freq_max:
-        plt.xlim(freq_min,freq_max)
-    plt.xlabel('Frequency (GHz)')
-    plt.ylabel('Gain (dB)')
+    # plt.figure()
+    # plt.clf()
+    # if AC_ival == 'All':
+    #     for AC_i in range(len(alpha)):
+    #         gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+    #                      *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
+    #         freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
+    #         plt.plot(freq_list_GHz, 20*np.log10(abs(gain_list)))
+    #         if save_txt:
+    #             save_array = (freq_list_GHz, 20*np.log10(abs(gain_list)))
+    #             np.savetxt('gain_spectra-mode_comps-dB%(add)s-%(mode)i.csv' 
+    #                         % {'add' : add_name, 'mode' : AC_i}, 
+    #                         save_array, delimiter=',')
+    #         # set up an interpolation for summing all the gain peaks
+    #         interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
+    #         interp_values += interp_spectrum
+    # plt.plot(interp_grid, 20*np.log10(abs(interp_values)), 'k', linewidth=3, label="Total")
+    # if save_txt:
+    #     save_array = (interp_grid, 20*np.log10(abs(interp_values)))
+    #     np.savetxt('gain_spectra-mode_comps-dB%(add)s-Total.csv' 
+    #                 % {'add' : add_name}, 
+    #                 save_array, delimiter=',')
+    # plt.legend(loc=0)
+    # if freq_min and freq_max:
+    #     plt.xlim(freq_min,freq_max)
+    # plt.xlabel('Frequency (GHz)')
+    # plt.ylabel('Gain (dB)')
 
-    if pdf_png=='png':
-        plt.savefig('gain_spectra-mode_comps-dB%(add)s.png' % {'add' : add_name})
-    elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-mode_comps-dB%(add)s.pdf' % {'add' : add_name})
-    plt.close()
+    # if pdf_png=='png':
+    #     plt.savefig('gain_spectra-mode_comps-dB%(add)s.png' % {'add' : add_name})
+    # elif pdf_png=='pdf':
+    #     plt.savefig('gain_spectra-mode_comps-dB%(add)s.pdf' % {'add' : add_name})
+    # plt.close()
 
 
     interp_values = np.zeros(num_interp_pts)
@@ -226,36 +226,36 @@ def gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
                     % {'add' : add_name}, 
                     save_array, delimiter=',')
 
-    plt.figure()
-    plt.clf()
-    plt.plot(interp_grid, 20*np.log10(abs(interp_values)), 'k', linewidth=3, label="Total")
-    plt.plot(interp_grid, 20*np.log10(abs(interp_values_PE)), 'r', linewidth=3, label="PE")
-    plt.plot(interp_grid, 20*np.log10(abs(interp_values_MB)), 'g', linewidth=3, label="MB")
-    plt.legend(loc=0)
-    if freq_min and freq_max:
-        plt.xlim(freq_min,freq_max)
-    plt.xlabel('Frequency (GHz)')
-    plt.ylabel('Gain (dB)')
+    # plt.figure()
+    # plt.clf()
+    # plt.plot(interp_grid, 20*np.log10(abs(interp_values)), 'k', linewidth=3, label="Total")
+    # plt.plot(interp_grid, 20*np.log10(abs(interp_values_PE)), 'r', linewidth=3, label="PE")
+    # plt.plot(interp_grid, 20*np.log10(abs(interp_values_MB)), 'g', linewidth=3, label="MB")
+    # plt.legend(loc=0)
+    # if freq_min and freq_max:
+    #     plt.xlim(freq_min,freq_max)
+    # plt.xlabel('Frequency (GHz)')
+    # plt.ylabel('Gain (dB)')
 
-    if pdf_png=='png':
-        plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.png' % {'add' : add_name})
-    elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.pdf' % {'add' : add_name})
-    plt.close()
+    # if pdf_png=='png':
+    #     plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.png' % {'add' : add_name})
+    # elif pdf_png=='pdf':
+    #     plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.pdf' % {'add' : add_name})
+    # plt.close()
 
-    if save_txt:
-        save_array = (interp_grid, 20*np.log10(abs(interp_values)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
-                    save_array, delimiter=',')
-        save_array = (interp_grid, 20*np.log10(abs(interp_values_PE)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-PE.csv' 
-                    % {'add' : add_name}, 
-                    save_array, delimiter=',')
-        save_array = (interp_grid, 20*np.log10(abs(interp_values_MB)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-MB.csv' 
-                    % {'add' : add_name}, 
-                    save_array, delimiter=',')
+    # if save_txt:
+    #     save_array = (interp_grid, 20*np.log10(abs(interp_values)))
+    #     np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-Total.csv' 
+    #                 % {'add' : add_name}, 
+    #                 save_array, delimiter=',')
+    #     save_array = (interp_grid, 20*np.log10(abs(interp_values_PE)))
+    #     np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-PE.csv' 
+    #                 % {'add' : add_name}, 
+    #                 save_array, delimiter=',')
+    #     save_array = (interp_grid, 20*np.log10(abs(interp_values_MB)))
+    #     np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-MB.csv' 
+    #                 % {'add' : add_name}, 
+    #                 save_array, delimiter=',')
 
     return interp_values
 
