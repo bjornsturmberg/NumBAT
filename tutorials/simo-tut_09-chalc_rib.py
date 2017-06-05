@@ -6,8 +6,8 @@ import time
 import datetime
 import numpy as np
 import sys
-sys.path.append("../backend/")
 
+sys.path.append("../backend/")
 import materials
 import objects
 import mode_calcs

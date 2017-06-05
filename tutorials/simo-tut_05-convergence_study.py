@@ -6,11 +6,11 @@ import time
 import datetime
 import numpy as np
 import sys
-sys.path.append("../backend/")
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 
+sys.path.append("../backend/")
 import materials
 import objects
 import mode_calcs
@@ -46,8 +46,7 @@ time_list = []
 for i_lc, lc_ref in enumerate(lc_list):
     start = time.time()
     print("\n Running simulation", i_lc+1, "/", nu_lcs)
-    # lc3 = 0.01*lc_ref
-    lc3 = 30
+    lc3 = 0.01*lc_ref
     lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,

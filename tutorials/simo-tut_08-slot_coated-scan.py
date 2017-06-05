@@ -9,11 +9,11 @@ import time
 import datetime
 import numpy as np
 import sys
-sys.path.append("../backend/")
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 
+sys.path.append("../backend/")
 import materials
 import objects
 import mode_calcs

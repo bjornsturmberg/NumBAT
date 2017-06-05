@@ -9,7 +9,6 @@ import datetime
 import numpy as np
 import sys
 from multiprocessing import Pool
-sys.path.append("../backend/")
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
@@ -17,6 +16,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.collections import PolyCollection
 from matplotlib.colors import colorConverter
 
+sys.path.append("../backend/")
 import materials
 import objects
 import mode_calcs
