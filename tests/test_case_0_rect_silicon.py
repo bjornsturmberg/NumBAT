@@ -25,8 +25,8 @@ import time
 import datetime
 import numpy as np
 import sys
-sys.path.append("../backend/")
 
+sys.path.append("../backend/")
 import materials
 import objects
 import mode_calcs
@@ -108,13 +108,15 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Mask negligible gain values to improve clarity of print out.
 threshold = 1e-3
-masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
-masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
-masked = np.ma.masked_inside(SBS_gain[EM_ival_Stokes,EM_ival_pump,:]/alpha, 0, threshold)
-
-# print("\n SBS_gain PE contribution \n", masked_PE)
-# print("SBS_gain MB contribution \n", masked_MB)
-# print("SBS_gain total \n", masked)
+threshold_indices = SBS_gain_PE/alpha < threshold
+SBS_gain_PE[threshold_indices] = 0
+threshold_indices = SBS_gain_MB/alpha < threshold
+SBS_gain_MB[threshold_indices] = 0
+threshold_indices = SBS_gain/alpha < threshold
+SBS_gain[threshold_indices] = 0
+masked_PE = SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]/alpha
+masked_MB = SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:]/alpha
+masked = SBS_gain[EM_ival_Stokes,EM_ival_pump,:]/alpha
 
 test_list1 = list(zip(sim_EM_pump.Eig_values, sim_AC_wguide.Eig_values))
 test_list2 = list(zip(masked_PE, masked_MB, masked))
