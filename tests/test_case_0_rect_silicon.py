@@ -85,7 +85,7 @@ start = time.time()
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.Air,
                         material_b=materials.Material(Si_props),
-                        lc_bkg=2, lc2=1000.0, lc3=10.0)
+                        lc_bkg=2, lc2=3000.0, lc3=50.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_b.n-0.1
@@ -127,8 +127,7 @@ test_list2 = list(zip(masked_PE, masked_MB, masked))
 # # in the future
 # np.savez_compressed("ref/%s.npz" % casefile_name, 
 #         test_list1 = test_list1, test_list2 = test_list2)
-# assert False, "Reference results saved successfully, \
-# but tests will now pass trivially so let's not run them now."
+# assert False, "Reference results saved successfully, \n tests would pass trivially so we'll skip them."
 
 def test_list_matches_saved(casefile_name = casefile_name):
     rtol = 1e-6
