@@ -106,7 +106,7 @@ for i_w, width_obj in enumerate(width_objs):
 
     # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
     freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 5  # GHz
-    freq_max = np.real(sim_AC.Eig_values[-])*1e-9 + 5  # GHz
+    freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 5  # GHz
     plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
         EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_scan%i' % i_w)
 
