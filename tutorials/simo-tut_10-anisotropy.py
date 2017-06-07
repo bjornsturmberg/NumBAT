@@ -82,7 +82,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         # material_b=materials.Si,
                         material_b=materials.Material(test_props),
                         symmetry_flag=False,
-                        lc_bkg=2, lc2=1000.0, lc3=20.0)
+                        lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 
 # Expected effective index of fundamental guided mode.

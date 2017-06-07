@@ -56,7 +56,7 @@ def modes_n_gain(inc_a_x):
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             material_a=materials.Air,
                             material_b=materials.Si,
-                            lc_bkg=3, lc2=1000.0, lc3=5.0)
+                            lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
     sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff=n_eff)
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)

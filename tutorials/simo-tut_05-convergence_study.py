@@ -36,8 +36,8 @@ AC_ival = 'All'
 
 
 nu_lcs = 4
-lc_bkg_list = 2*np.ones(nu_lcs)
-lc_list = np.linspace(2e2,5e3,nu_lcs)
+lc_bkg_list = 4*np.ones(nu_lcs)
+lc_list = np.linspace(5e2,5e3,nu_lcs)
 x_axis = lc_bkg_list
 x_axis = lc_list
 conv_list = []
@@ -46,7 +46,7 @@ time_list = []
 for i_lc, lc_ref in enumerate(lc_list):
     start = time.time()
     print("\n Running simulation", i_lc+1, "/", nu_lcs)
-    lc3 = 0.01*lc_ref
+    lc3 = lc_ref
     lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
@@ -72,8 +72,12 @@ for i_lc, lc_ref in enumerate(lc_list):
     end = time.time()
     time_list.append(end - start)
 
-# Crucial that you preselect modes with significant gain.
+# It is crucial that you preselect modes with significant gain!
+# Otherwise you will observe large relative errors similar to dividing by zero.
 rel_modes = [2,4,8]
+# If you do not know the mode numbers of the significant AC modes you may wish to simply plot them all
+# by uncommenting the line below and check if the modes with large gain have low relative errors.
+# rel_modes = np.linspace(0,num_modes_AC-1,num_modes_AC)
 rel_mode_freq_EM = np.zeros(nu_lcs,dtype=complex)
 rel_mode_freq_AC = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)
 rel_mode_gain = np.zeros((nu_lcs,len(rel_modes)),dtype=complex)

@@ -51,7 +51,7 @@ SiO2_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.Air,
                         material_b=materials.Material(SiO2_props),
-                        lc_bkg=3, lc2=2000.0, lc3=20.0)
+                        lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = 1.3

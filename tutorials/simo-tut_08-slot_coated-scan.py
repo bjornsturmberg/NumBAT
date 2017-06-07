@@ -50,7 +50,7 @@ for coat_y in coat_y_list:
                             material_c=materials.SiO2,
                             material_d=materials.Si,
                             material_e=materials.SiO2,
-                            lc_bkg=3, lc2=1500.0, lc3=700.0)
+                            lc_bkg=3, lc2=3000.0, lc3=2000.0)
 
     # Expected effective index of fundamental guided mode.
     n_eff = wguide.material_b.n-0.1

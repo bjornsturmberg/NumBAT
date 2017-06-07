@@ -75,7 +75,7 @@ for width in waveguide_widths:
                             inc_a_y,inc_shape,
                             material_a=materials.Air,
                             material_b=materials.Si,
-                            lc_bkg=2, lc2=1000.0, lc3=20.0)
+                            lc_bkg=3, lc2=2000.0, lc3=1000.0)
     geo_objects_list.append(wguide)
 
 
