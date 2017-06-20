@@ -68,10 +68,11 @@ np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 
-# Plot the EM modes fields, important to specify this with EM_AC='EM_E'.
+# Plot the E fields of the EM modes fields - specified with EM_AC='EM_E'.
 # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
                          ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E')
+# Plot the H fields of the EM modes - specified with EM_AC='EM_H'.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
                          ylim_min=0.4, ylim_max=0.4, EM_AC='EM_H')
 
