@@ -52,8 +52,8 @@ sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff=n_eff)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 # plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-#                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM', add_name='NW')
-# plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM', add_name='NW')
+#                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', add_name='NW')
+# plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM_E', add_name='NW')
 
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)

@@ -68,10 +68,12 @@ np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 
-# Plot the EM modes fields, important to specify this with EM_AC='EM'.
+# Plot the EM modes fields, important to specify this with EM_AC='EM_E'.
 # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM')
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E')
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_H')
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))

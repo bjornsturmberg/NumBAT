@@ -16,7 +16,8 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-# import matplotlib.cm as cm
+
+from fortran import NumBAT
 
 try: plt.style.use('bjornstyle')
 except (ValueError, IOError, AttributeError): "Preferred matplotlib style file not found."
@@ -264,7 +265,7 @@ def gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 #### Standard plotting of spectra #############################################
 def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, 
                   xlim_min=None, xlim_max=None, ylim_min=None, ylim_max=None,
-                  EM_AC='EM', stress_fields=False, pdf_png='png', add_name=''):
+                  EM_AC='EM_E', stress_fields=False, pdf_png='png', add_name=''):
     """ Plot EM mode fields.
     NOTE: z component of EM field needs comes scaled by 1/(i beta),
     which must be reintroduced!
@@ -293,8 +294,16 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             add_name  (str): Add a string to the file name.
     """
 
-    if EM_AC is not 'EM' and EM_AC is not 'AC':
-        raise ValueError("EM_AC must be either 'AC' or 'EM'.")
+    if EM_AC is not 'EM_E' and EM_AC is not 'EM_H' and EM_AC is not 'AC':
+        raise ValueError("EM_AC must be either 'AC', 'EM_E' or 'EM_H'.")
+
+    # Calculate the magnetic field from the electric field
+    if EM_AC == 'EM_H':
+        nnodes = 6
+        sim_wguide.sol1_H = NumBAT.h_mode_field_ez(sim_wguide.k_0, sim_wguide.num_modes, 
+            sim_wguide.n_msh_el, sim_wguide.n_msh_pts, nnodes, sim_wguide.table_nod, 
+            sim_wguide.x_arr, sim_wguide.Eig_values, sim_wguide.sol1)
+
 
     plt.clf()
 
@@ -351,13 +360,15 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
                 # values
                 v_x6p[i] = x_arr[i_ex, 0]
                 v_y6p[i] = x_arr[i_ex, 1]
-                v_Ex6p[i] = sim_wguide.sol1[0,i_node,ival,i_el]
-                v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
-    #             if EM_AC == 'EM':
-    # # Note physical z-comp of EM modes is -i beta E_z, where E_z is FEM output sol
-    #                 v_Ez6p[i] = -1j*sim_wguide.Eig_values[ival]*sim_wguide.sol1[2,i_node,ival,i_el]
-    #             else:
-                v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
+
+                if EM_AC == 'EM_E':
+                    v_Ex6p[i] = sim_wguide.sol1[0,i_node,ival,i_el]
+                    v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
+                    v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
+                if EM_AC == 'EM_H':
+                    v_Ex6p[i] = sim_wguide.sol1_H[0,i_node,ival,i_el]
+                    v_Ey6p[i] = sim_wguide.sol1_H[1,i_node,ival,i_el]
+                    v_Ez6p[i] = sim_wguide.sol1_H[2,i_node,ival,i_el]
                 i += 1
 
         v_E6p = np.sqrt(np.abs(v_Ex6p)**2 +
@@ -400,8 +411,10 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
 
         # Flip y order as imshow has origin at top left
         v_plots = [m_ReEx[:,::-1],m_ReEy[:,::-1],m_ReEz[:,::-1],m_ImEx[:,::-1],m_ImEy[:,::-1],m_ImEz[:,::-1],m_AbsE[:,::-1]]
-        if EM_AC=='EM':
+        if EM_AC=='EM_E':
             v_labels = ["Re(E_x)","Re(E_y)","Re(E_z)","Im(E_x)","Im(E_y)","Im(E_z)","Abs(E)"]
+        elif EM_AC == 'EM_H':
+            v_labels = ["Re(H_x)","Re(H_y)","Re(H_z)","Im(H_x)","Im(H_y)","Im(H_z)","Abs(H)"]
         else:
             v_labels = ["Re(u_x)","Re(u_y)","Re(u_z)","Im(u_x)","Im(u_y)","Im(u_z)","Abs(u)"]
 
@@ -466,7 +479,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
                 ax.set_ylim((1-ylim_min)*ymin, ylim_max*ymin)
             plt.title('Transverse',fontsize=title_font-4)
 
-        if EM_AC=='EM':
+        if EM_AC=='EM_E' or EM_AC=='EM_H':
             n_eff = sim_wguide.Eig_values[ival] * sim_wguide.wl_m / (2*np.pi)
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
                 k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \

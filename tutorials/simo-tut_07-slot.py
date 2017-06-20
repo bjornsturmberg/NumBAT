@@ -62,7 +62,7 @@ sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-#                           ylim_min=0.1, ylim_max=0.8, EM_AC='EM', add_name='slot')
+#                           ylim_min=0.1, ylim_max=0.8, EM_AC='EM_E', add_name='slot')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
