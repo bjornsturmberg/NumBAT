@@ -68,7 +68,7 @@ for i_lc, lc_ref in enumerate(lc_list):
         sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
-    conv_list.append([sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha])
+    conv_list.append([sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB])
     end = time.time()
     time_list.append(end - start)
 
@@ -87,9 +87,9 @@ for i_conv, conv_obj in enumerate(conv_list):
     rel_mode_freq_EM[i_conv] = conv_obj[0].Eig_values[0]
     for i_m, rel_mode in enumerate(rel_modes):
         rel_mode_freq_AC[i_conv,i_m] = conv_obj[1].Eig_values[rel_mode]
-        rel_mode_gain[i_conv,i_m] = conv_obj[2][EM_ival_Stokes,EM_ival_pump,rel_mode]/conv_obj[5][rel_mode]
-        rel_mode_gain_PE[i_conv,i_m] = conv_obj[3][EM_ival_Stokes,EM_ival_pump,rel_mode]/conv_obj[5][rel_mode]
-        rel_mode_gain_MB[i_conv,i_m] = conv_obj[4][EM_ival_Stokes,EM_ival_pump,rel_mode]/conv_obj[5][rel_mode]
+        rel_mode_gain[i_conv,i_m] = conv_obj[2][EM_ival_Stokes,EM_ival_pump,rel_mode]
+        rel_mode_gain_PE[i_conv,i_m] = conv_obj[3][EM_ival_Stokes,EM_ival_pump,rel_mode]
+        rel_mode_gain_MB[i_conv,i_m] = conv_obj[4][EM_ival_Stokes,EM_ival_pump,rel_mode]
 
 
 

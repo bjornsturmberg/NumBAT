@@ -241,7 +241,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
             P2 = sim_EM_pump.EM_mode_power[j]
             for k in range(num_modes_AC):
                 P3 = sim_AC.AC_mode_power[k]
-                normal_fact[i, j, k] = P1*P2*P3
+                normal_fact[i, j, k] = P1*P2*P3*alpha[k]
     SBS_gain = np.real(gain/normal_fact)
     SBS_gain_PE = np.real(gain_PE/normal_fact)
     SBS_gain_MB = np.real(gain_MB/normal_fact)

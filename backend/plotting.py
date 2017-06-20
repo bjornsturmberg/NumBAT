@@ -109,7 +109,7 @@ def gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.clf()
     if AC_ival == 'All':
         for AC_i in range(len(alpha)):
-            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
             plt.plot(freq_list_GHz, gain_list)
@@ -144,7 +144,7 @@ def gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.clf()
     if AC_ival == 'All':
         for AC_i in range(len(alpha)):
-            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
             plt.plot(freq_list_GHz, 10*np.log10(np.exp(abs(gain_list)*6.5e-3))) 
@@ -183,18 +183,18 @@ def gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.clf()
     if AC_ival == 'All':
         for AC_i in range(len(alpha)):
-            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
             interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
             interp_values += interp_spectrum
 
-            gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+            gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             interp_spectrum_PE = np.interp(interp_grid, freq_list_GHz, gain_list_PE)
             interp_values_PE += interp_spectrum_PE
 
-            gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]/alpha[AC_i]
+            gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
             interp_values_MB += interp_spectrum_MB

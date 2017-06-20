@@ -118,7 +118,7 @@ for i_w, width_obj in enumerate(width_objs):
     phase_v = 2*np.pi*sim_AC.Eig_values/k_AC
     linewidth = phase_v*alpha/(2*np.pi)
     for AC_i in range(len(alpha)):
-        gain_list = np.real(SBS_gain[EM_ival_Stokes,EM_ival_pump,AC_i]/alpha[AC_i]
+        gain_list = np.real(SBS_gain[EM_ival_Stokes,EM_ival_pump,AC_i]
                      *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
         freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
         interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
