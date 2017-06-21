@@ -40,7 +40,11 @@ class Material(object):
         +--------------------+
 
     """
-    def __init__(self, mat_props):
+    def __init__(self, mat_props,
+                 doi=None, date=None, author=None):
+        self.doi = doi
+        self.date = date
+        self.author = author
         self.n = mat_props[0]
         self.s = mat_props[1]
         if len(mat_props) == 11:
@@ -173,7 +177,7 @@ def isotropic_stiffness(E, v):
     E: Youngs_modulus
     v: Poisson_ratio
 
-    Ref: http://www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
+    Ref: www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
     """
     c_11 = E*(1-v)/((1+v)*(1-2*v))
     c_12 = E*(v)/((1+v)*(1-2*v))
@@ -184,7 +188,7 @@ def isotropic_stiffness(E, v):
 
 Air = Material([1,None,None,None,None,None,None,None,None,None,None])
 
-# Silicon - http://dx.doi.org/10.1364/OL.41.002338
+# Silicon
 # Refractive index
 n = 3.475686982#3.48
 # Density
@@ -197,49 +201,61 @@ p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
 eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.62e-3  # Pa s
 # Put acoustic parameters together for convenience.
 Si = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-               eta_11, eta_12, eta_44])
+               eta_11, eta_12, eta_44], 
+               doi='dx.doi.org/10.1364/OL.41.002338',
+               date=2016, author='Smith')
 
-# Silica - http://dx.doi.org/10.1364/OL.41.002338
+# Silica
 n = 1.45
 s = 2200  # kg/m3
 c_11 = 78.6e9; c_12 = 16.1e9; c_44 = 31.2e9
 p_11 = 0.12; p_12 = 0.27; p_44 = -0.075
 eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
 SiO2 = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-               eta_11, eta_12, eta_44])
+               eta_11, eta_12, eta_44], 
+               doi='dx.doi.org/10.1364/OL.41.002338',
+               date=2016, author='Smith')
 
-# Silca - Laude AIP Advances 2013
+# Silca
 n = 1.44
 s = 2203  # kg/m3
 c_11 = 78e9; c_12 = 16e9; c_44 = 31e9
 p_11 = 0.12; p_12 = 0.270; p_44 = -0.073
 eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
 SiO2_Laude = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-               eta_11, eta_12, eta_44])
+               eta_11, eta_12, eta_44], 
+               doi='dx.doi.org/10.1063/1.4801936',
+               date=2013, author='Laude')
 
-# As2S3 - from theoretical paper http://dx.doi.org/10.1364/OL.41.002338
+# As2S3 - from theoretical paper
 n = 2.37
 s = 3200  # kg/m3
 c_11 = 18.7e9; c_12 = 6.1e9; c_44 = 6.4e9 # Pa
 p_11 = 0.25; p_12 = 0.24; p_44 = 0.005
 eta_11 = 1.8e-3 ; eta_12 = 1.45e-3 ; eta_44 = 0.18e-3  # Pa s
 As2S3_theory = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-               eta_11, eta_12, eta_44])
+               eta_11, eta_12, eta_44], 
+               doi='dx.doi.org/10.1364/OL.41.002338',
+               date=2016, author='Smith')
 
-# As2S3 - experimental values at wl = 1550 nm http://arxiv.org/abs/1702.05233
+# As2S3 - experimental values at wl = 1550 nm
 n = 2.44
 s = 3200  # kg/m3
 c_11 = 1.95e10; c_12 = 8.363e9; c_44 = 6.337e9 # Pa
 p_11 = 0.25; p_12 = 0.24; p_44 = 0.005
 eta_11 = 1.8e-3 ; eta_12 = 1.45e-3 ; eta_44 = 0.18e-3  # Pa s
 As2S3_exp = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-               eta_11, eta_12, eta_44])
+               eta_11, eta_12, eta_44], 
+               doi='arxiv.org/abs/1702.05233',
+               date=2017, author='Morrison')
 
-# GaAs - http://dx.doi.org/10.1364/OL.41.002338
+# GaAs
 n = 3.37
 s = 5320  # kg/m3
 c_11 = 119e9; c_12 = 53.4e9; c_44 = 59.6e9
 p_11 = -0.165; p_12 = -0.14; p_44 = -0.072
 eta_11 = 7.49e-3 ; eta_12 = 0.72e-3 ; eta_44 = 0.72e-3  # Pa s
 GaAs = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-               eta_11, eta_12, eta_44])
+               eta_11, eta_12, eta_44], 
+               doi='dx.doi.org/10.1364/OL.41.002338',
+               date=2016, author='Smith')

@@ -53,6 +53,12 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_b=materials.Si,
                         lc_bkg=2, lc2=200.0, lc3=5.0)
 
+# Explicitly remind ourselves what data we're using.
+print('\n Using the material data from')
+print('Author:', wguide.material_b.author)
+print('Year:', wguide.material_b.date)
+print('Ref:', wguide.material_b.doi)
+
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_b.n-0.1
 
