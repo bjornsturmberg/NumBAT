@@ -25,10 +25,8 @@ from fortran import NumBAT
 wl_nm = 1550
 unitcell_x = 7*wl_nm
 unitcell_y = unitcell_x
-#inc_a_x = 1500
-#inc_a_y = 1000
-inc_a_x = 500
-inc_a_y = 500
+inc_a_x = 1500
+inc_a_y = 1000
 inc_shape = 'rectangular'
 
 # Optical Parameters

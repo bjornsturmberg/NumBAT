@@ -49,9 +49,15 @@ AC_ival = 'All'
 # Use specified parameters to create a waveguide object.
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
+<<<<<<< HEAD:tutorials/tut_01/simo-tut_01-first_calc.py
                         material_a=materials.Air,
                         material_b=materials.Si,
                         lc_bkg=2, lc2=200.0, lc3=5.0)
+=======
+                        material_bkg=materials.Air,
+                        material_a=materials.Si_2016_Smith,
+                        lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=False)
+>>>>>>> upstream/master:tutorials/simo-tut_01-first_calc.py
 
 # Explicitly remind ourselves what data we're using.
 print('\n Using the material data from')
@@ -60,7 +66,7 @@ print('Year:', wguide.material_b.date)
 print('Ref:', wguide.material_b.doi)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.material_b.n-0.1
+n_eff = wguide.material_a.n-0.1
 
 # Calculate the Electromagnetic modes of the pump field.
 sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)

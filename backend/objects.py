@@ -95,7 +95,7 @@ class Struct(object):
                 (smaller = finer mesh)
 
             lc2  (float): factor by which lc_bkg will be reduced on inclusion
-                surfaces; lc_surface = cl_bkg / lc2.
+                surfaces; lc_surface = lc_bkg / lc2. Larger lc2 = finer mesh.
 
             lc3-6'  (float): factor by which lc_bkg will be reduced at center
                 of inclusions.
@@ -179,7 +179,7 @@ class Struct(object):
         # Structures material properties - need to check geometry definition 
         # to ensure connecting material type with correct surface of geometry
         self.material_bkg = material_bkg
-        self.material_a = material_a, material_a
+        self.material_a = material_a
         self.material_b = material_b
         self.material_c = material_c
         self.material_d = material_d
