@@ -63,19 +63,19 @@ SiO2_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         slab_b_x=slab_b_x, slab_b_y=slab_b_y,
-                        material_bkg=materials.Air,
-                        material_a=materials.Material(Si_props),
-                        material_b=materials.Material(SiO2_props),
-                        material_c=materials.Air,
-                        material_d=materials.Material(SiO2_props),
-                        material_e=materials.Air,
+                        material_a=materials.Air,
+                        material_b=materials.Material(Si_props),
+                        material_c=materials.Material(SiO2_props),
+                        material_d=materials.Air,
+                        material_e=materials.Material(SiO2_props),
+                        material_f=materials.Air,
                         lc_bkg=2, lc2=4000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.material_a.n-0.1
+n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic Modes
-sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
+sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 
 # plotting.plt_mode_fields(sim_EM_pump, 
@@ -93,6 +93,7 @@ k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 shift_Hz = 10e9
 
 # Calculate Acoustic Modes
-sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC,
+    EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
 plotting.plt_mode_fields(sim_AC, EM_AC='AC', add_name='slab', pdf_png='png')

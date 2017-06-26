@@ -40,16 +40,16 @@ AC_ival = 'All'
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
-                        material_a=materials.Si,
+                        material_a=materials.Air,
+                        material_b=materials.Si,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.material_a.n-0.1
+n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic modes.
-sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
+sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)
 # Save calculated :Simmo: object for EM calculation.
 np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
 
@@ -83,7 +83,7 @@ print("n_eff", np.round(n_eff_sim, 4))
 k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
 # Calculate Acoustic modes.
-sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # Save calculated :Simmo: object for AC calculation.
 np.savez('wguide_data_AC', sim_AC=sim_AC)
 

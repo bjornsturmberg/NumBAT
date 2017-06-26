@@ -143,58 +143,83 @@ In this section we go through a number of simple simulations that demonstrate th
 
 Basic SBS Gain Calculation
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+This example, contained in ``tutorials/simo-tut_01-first_calc.py`` calculates the backward SBS gain for a rectangular silicon waveguide surrounded by air.
 
-.. literalinclude:: ../../tutorials/simo-tut_01-first_calc.py
+The sequence of operations is
+
+  #. Import NumBAT modules
+  #. Define the structure shape and dimensions
+  #. Specify the electromagnetic and acoustic modes to be solved for
+  #. Construct the waveguide with ``objects.Struct``
+  #. Solve the electromagnetic problem. ``mode_calcs.calc_EM_modes`` returns an object containing modes and their propagation constants as ``Eig_values`` in 1/m.
+  #. Convert the EM eigenvalue to an effective index
+  #. Identify the desired acoustic wavenumber and solve the acoustic problem. ``mode_calcs.calc_AC_modes`` returns an object containing the modes for propagation constant ``k_AC`` and acoustic frequencies as ``Eig_values`` in Hz.
+  #. Calculate the total SBS gain, contributions from photoelasticity and moving boundary effects, and the acoustic loss
+
+
+.. literalinclude:: ../../tutorials/tut_01/simo-tut_01-first_calc.py
     :lines: 0-
 
 
 SBS Gain Spectra
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_02-gain_specta-npsave.py
+.. literalinclude:: ../../tutorials/tut_02/simo-tut_02-gain_specta-npsave.py
     :lines: 0-
 
 
 Investigating Dispersion
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_03-dispersion.py
+.. literalinclude:: ../../tutorials/tut_03/simo-tut_03-dispersion.py
     :lines: 0-
 
 
 Parameter Scan of Widths
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_04-scan_widths.py
+.. literalinclude:: ../../tutorials/tut_04/simo-tut_04-scan_widths.py
     :lines: 0-
 
 
 Convergence Study
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_05-convergence_study.py
+.. literalinclude:: ../../tutorials/tut_05/simo-tut_05-convergence_study.py
     :lines: 0-
 
 
 Silica Nanowire 
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_06-Silica_nanowire.py
+.. literalinclude:: ../../tutorials/tut_06/simo-tut_06-silica_nanowire.py
     :lines: 0-
 
 
 Slot Waveguide
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_07-slot.py
+.. literalinclude:: ../../tutorials/tut_07/simo-tut_07-slot.py
     :lines: 0-
 
 
 Covered Slot Waveguide
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_08-slot_coated-scan.py
+.. literalinclude:: ../../tutorials/tut_08/simo-tut_08-slot_coated-scan.py
     :lines: 0-
+
+
+Chalcogenide Rib Waveguide
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../tutorials/tut_09/simo-tut_09-chalc_rib.py
+    :lines: 0-
+
+Anisotropic Elastic Materials 
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../tutorials/tut_10/simo-tut_10-anisotropy.py
 
 
 .. raw:: latex
@@ -212,35 +237,35 @@ Having gotten familiar with NumBAT, we now set out to replicate a number of exam
 Rectangular Waveguide - Silica
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_01-Laude-AIPAdv_2013-silica.py
+.. literalinclude:: ../../lit_examples/lit_01/simo-lit_01-Laude-AIPAdv_2013-silica.py
     :lines: 0-
 
 
 Rectangular Waveguide - Silicon
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_02-Laude-AIPAdv_2013-silicon.py
+.. literalinclude:: ../../lit_examples/lit_02/simo-lit_02-Laude-AIPAdv_2013-silicon.py
     :lines: 0-
 
 
 Tapered Fibre
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_03-Florez-NatComm_2016.py
+.. literalinclude:: ../../lit_examples/lit_03/simo-lit_03-Florez-NatComm_2016.py
     :lines: 0-
 
 
 Tapered Fibre - Scanning Widths
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_04-Beugnot-NatComm_2014.py
+.. literalinclude:: ../../lit_examples/lit_04/simo-lit_04-Beugnot-NatComm_2014.py
     :lines: 0-
 
 
 Waveguide on a Pedestal
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_05-Van_Laer-NatPhot_2015.py
+.. literalinclude:: ../../lit_examples/lit_05/simo-lit_05-Van_Laer-NatPhot_2015.py
     :lines: 0-
 
 

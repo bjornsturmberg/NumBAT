@@ -18,20 +18,26 @@ from fortran import NumBAT
 # Naming conventions
 # AC: acoustic
 # EM: electromagnetic
-# k_AC: acoustic wavevector
+# k_AC: acoustic wavenumber
 
 start = time.time()
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
 # Unit cell must be large to ensure fields are zero at boundary.
-unitcell_x = 2.5*wl_nm
-unitcell_y = unitcell_x
+unitcell_x = 5*wl_nm
+unitcell_y = 0.5*unitcell_x
 # Waveguide widths.
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 1000
+inc_a_y = 400
 # Shape of the waveguide.
-inc_shape = 'rectangular'
+# inc_shape = 'rectangular'
+inc_shape = 'rib_coated'
+
+coat_x = 100
+coat_y = 200
+slab_a_y = 500
+slab_b_y = 200
 
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
@@ -49,42 +55,48 @@ AC_ival = 'All'
 # Use specified parameters to create a waveguide object.
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
-                        material_a=materials.Si_2016_Smith,
-                        lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=True)
-
-# # Explicitly remind ourselves what data we're using.
-# print('\n Using %s material data from' % wguide.material_b.chemical)
-# print('Author:', wguide.material_b.author)
-# print('Year:', wguide.material_b.date)
-# print('Ref:', wguide.material_b.doi)
+						coat_x=coat_x, coat_y=coat_y, slab_a_y=slab_a_y, slab_b_y=slab_b_y,
+                        material_a=materials.Air,
+                        material_b=materials.As2S3_exp,
+                        material_c=materials.SiO2,
+                        material_d=materials.SiO2,
+                        lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_b.n-0.1
 
 # Calculate the Electromagnetic modes of the pump field.
-sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
+sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)
+# # np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+
+# Calculate the Electromagnetic modes of the Stokes field.
+sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+# np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
+# npzfile = np.load('wguide_data2.npz')
+# sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
+
 # Print the wavevectors of EM modes.
 print('\n k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values),4))
-# Calculate the Electromagnetic modes of the Stokes field.
-# For an idealised backward SBS simulation the Stokes modes are identical 
-# to the pump modes but travel in the opposite direction.
-sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
-# # Alt
-# sim_EM_Stokes = wguide.calc_EM_modes(wl_nm, num_modes_EM_Stokes, n_eff, Stokes=True)
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
-print("\n Fundamental optical mode ")
-print(" n_eff = ", np.round(n_eff_sim, 4))
-# Acoustic wavevector
+print("\n n_eff = ", np.round(n_eff_sim, 4))
+
 k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
 
-# Calculate Acoustic modes, using the mesh from the EM calculation.
-sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
+# Calculate Acoustic modes.
+sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, 
+    k_AC=k_AC, EM_sim=sim_EM_pump)
+# # np.savez('wguide_data_AC', sim_AC=sim_AC)
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC = npzfile['sim_AC'].tolist()
+
 # Print the frequencies of AC modes.
 print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
+
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.

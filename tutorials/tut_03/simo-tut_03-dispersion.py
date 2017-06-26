@@ -35,15 +35,15 @@ EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
-                        material_a=materials.Si,
+                        material_a=materials.Air,
+                        material_b=materials.Si,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.material_a.n-0.1
+n_eff = wguide.material_b.n-0.1
 
 # Calculate Electromagnetic modes.
-# sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
+# sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)
 # np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
 
 # Assuming this calculation is run directly after simo-tut_02
@@ -62,7 +62,7 @@ plt.clf()
 plt.figure(figsize=(10,6))
 ax = plt.subplot(1,1,1)
 for i_ac, q_ac in enumerate(np.linspace(0.0,k_AC,nu_ks)):
-    sim_AC = wguide.calc_AC_modes(num_modes_AC, q_ac, EM_sim=sim_EM_pump)
+    sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, q_ac, EM_sim=sim_EM_pump)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC.Eig_values if abs(np.real(x)) > abs(np.imag(x))])
     sym_list = integration.symmetries(sim_AC)
 
