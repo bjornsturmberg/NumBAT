@@ -56,14 +56,14 @@ AC_ival = 'All'
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 						coat_x=coat_x, coat_y=coat_y, slab_a_y=slab_a_y, slab_b_y=slab_b_y,
-                        material_a=materials.Air,
-                        material_b=materials.As2S3_exp,
+                        material_bkg=materials.Air,
+                        material_a=materials.As2S3_exp,
                         material_c=materials.SiO2,
                         material_d=materials.SiO2,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.material_b.n-0.1
+n_eff = wguide.material_a.n-0.1
 
 # Calculate the Electromagnetic modes of the pump field.
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)

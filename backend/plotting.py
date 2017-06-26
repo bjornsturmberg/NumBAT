@@ -73,7 +73,7 @@ def gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
             
 
         Args:
-            sim_AC : An AC :Struct: instance that has had calc_modes calculated
+            sim_AC : An AC ``Struct`` instance that has had calc_modes calculated
 
             SBS_gain  (array): Totlat SBS gain of modes.
 
@@ -266,15 +266,13 @@ def gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, 
                   xlim_min=None, xlim_max=None, ylim_min=None, ylim_max=None,
                   EM_AC='EM_E', stress_fields=False, pdf_png='png', add_name=''):
-    """ Plot EM mode fields.
-    NOTE: z component of EM field needs comes scaled by 1/(i beta),
-    which must be reintroduced!
+    """ Plot E or H fields of EM mode, or the AC modes displacement fields.
 
         Args:
-            sim_wguide : A :Struct: instance that has had calc_modes calculated
+            sim_wguide : A ``Struct`` instance that has had calc_modes calculated
 
         Keyword Args:
-            n_points  (int): The number of points across unitcell to \
+            n_points  (int): The number of points across unitcell to
                 interpolate the field onto.
 
             xlim_min  (float): Limit plotted xrange to xlim_min:(1-xlim_max) of unitcell
@@ -318,8 +316,6 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
     area = abs((x_max-x_min)*(y_max-y_min))
     n_pts_x = int(n_points*abs(x_max-x_min)/np.sqrt(area))
     n_pts_y = int(n_points*abs(y_max-y_min)/np.sqrt(area))
-    # n_pts_x = 100
-    # n_pts_y = 100
     v_x=np.zeros(n_pts_x*n_pts_y)
     v_y=np.zeros(n_pts_x*n_pts_y)
     i=0
@@ -614,7 +610,7 @@ def plot_msh(x_arr, add_name=''):
     """ Plot EM mode fields.
 
         Args:
-            sim_wguide : A :Struct: instance that has had calc_modes calculated
+            sim_wguide : A ``Struct`` instance that has had calc_modes calculated
 
         Keyword Args:
             n_points  (int): The number of points across unitcell to \

@@ -16,7 +16,7 @@ from fortran import NumBAT
 
 
 class Simmo(object):
-    """ Calculates the modes of a :Struc: object at a wavelength of wl_nm.
+    """ Calculates the modes of a ``Struct`` object at a wavelength of wl_nm.
     """
     def __init__(self, structure, num_modes=20, wl_nm=1, n_eff=None, shift_Hz=None, 
                  k_AC=None, EM_sim=None, Stokes=False):
@@ -39,7 +39,7 @@ class Simmo(object):
     def calc_EM_modes(self):
         """ Run a Fortran FEM calculation to find the optical modes.
 
-        Returns a :Simmo: object that has these key values:
+        Returns a ``Simmo`` object that has these key values:
 
         Eig_values: a 1d array of Eigenvalues (propagation constants) in [1/m]
 
@@ -49,20 +49,13 @@ class Simmo(object):
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
         n_list = []
-        n_list_tmp = np.array([self.structure.material_a.n, self.structure.material_b.n, self.structure.material_c.n,
+        n_list_tmp = np.array([self.structure.material_bkg.n, 
+                               self.structure.material_a.n, self.structure.material_b.n, self.structure.material_c.n,
                                self.structure.material_d.n, self.structure.material_e.n, self.structure.material_f.n,
                                self.structure.material_g.n, self.structure.material_h.n, self.structure.material_i.n,
                                self.structure.material_j.n, self.structure.material_k.n, self.structure.material_l.n,
                                self.structure.material_m.n, self.structure.material_n.n, self.structure.material_o.n,
                                self.structure.material_p.n, self.structure.material_q.n, self.structure.material_r.n])
-                               # self.structure.bkg_material.n,
-                               # self.structure.inc_a_material.n,
-                               # self.structure.slab_a_material.n,
-                               # self.structure.slab_a_bkg_material.n,
-                               # self.structure.slab_b_material.n,
-                               # self.structure.slab_b_bkg_material.n,
-                               # self.structure.inc_b_material.n,
-                               # self.structure.coat_material.n])
         self.el_conv_table_n = {}
         i = 1; j = 1
         for n in n_list_tmp:
@@ -207,7 +200,7 @@ class Simmo(object):
     def calc_AC_modes(self):
         """ Run a Fortran FEM calculation to find the acoustic modes.
 
-        Returns a :Simmo: object that has these key values:
+        Returns a ``Simmo`` object that has these key values:
 
         Eig_values: a 1d array of Eigenvalues (frequencies) in [1/s]
 
@@ -474,7 +467,7 @@ def bkwd_Stokes_modes(EM_sim):
     """ Defines the backward travelling Stokes waves as the conjugate
         of the forward travelling pump waves.
 
-    Returns a :Simmo: object that has these key values:
+    Returns a ``Simmo`` object that has these key values:
 
     Eig_values: a 1d array of Eigenvalues (propagation constants) in [1/m]
 

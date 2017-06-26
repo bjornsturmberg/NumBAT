@@ -26,83 +26,85 @@ class Struct(object):
     """ Represents a structured layer.
 
         Args:
-            unitcell_x  (float): The horizontal period of the unit cell \
+            unitcell_x  (float): The horizontal period of the unit cell
                 in nanometers.
 
             inc_a_x  (float): The horizontal diameter of the inclusion in nm.
 
         Keyword Args:
-            unitcell_y  (float): The vertical period of the unit cell \
+            unitcell_y  (float): The vertical period of the unit cell
                 in nanometers. If None, unitcell_y = unitcell_x.
 
             SPECIFY WHAT IS RADIUS WHAT IS DIAMETER
 
             inc_a_y  (float): The vertical diameter of the inclusion in nm.
 
-            inc_shape  (str): Shape of inclusions that have template mesh, \
-                currently: 'circular', 'rectangular', 'slot'. \
-                Rectangular is default.
+            inc_shape  (str): Shape of inclusions that have template mesh,
+                currently: 'circular', 'rectangular', 'slot', 'rib_coated',
+                'onion'. Rectangular is default.
 
-            slab_a_x  (float): The horizontal diameter in nm of the slab \
+            slab_a_x  (float): The horizontal diameter in nm of the slab
                 directly below the inclusion.
 
-            slab_a_y  (float): The vertical diameter in nm of the slab \
+            slab_a_y  (float): The vertical diameter in nm of the slab
                 directly below the inclusion.
 
-            slab_b_x  (float): The horizontal diameter in nm of the slab \
+            slab_b_x  (float): The horizontal diameter in nm of the slab
                 separated from the inclusion by slab_a.
 
-            slab_b_y  (float): The vertical diameter in nm of the slab \
+            slab_b_y  (float): The vertical diameter in nm of the slab
                 separated from the inclusion by slab_a.
 
             two_inc_sep  (float): Separation between edges of inclusions in nm.
 
-            incs_y_offset  (float): Vertical offset between centers of \
+            incs_y_offset  (float): Vertical offset between centers of
                 inclusions in nm.
 
-            coat_y  (float): The thickness of any coat layer around \
+            coat_y  (float): The thickness of any coat layer around
                 the inclusion.
 
-            symmetry_flag  (bool): True if materials all have sufficient \
+            symmetry_flag  (bool): True if materials all have sufficient
                 symmetry that their tensors contain only 3 unique values.
                 If False must specify full [3,3,3,3] tensors.
 
-            material_a  : A :Material: instance - check backend/msh_type_lib
+            material_bkg  : A ``Material`` instance - check backend/msh_type_lib
 
-            material_b  : A :Material: instance - check backend/msh_type_lib
+            material_a  : A ``Material`` instance - check backend/msh_type_lib
 
-            material_c-r  : A :Material: instance - check backend/msh_type_lib
+            material_b  : A ``Material`` instance - check backend/msh_type_lib
 
-            loss  (bool): If False, Im(n) = 0, if True n as in \
-                :Material: instance.
+            material_c-r  : A ``Material`` instance - check backend/msh_type_lib
 
-            make_mesh_now  (bool): If True, program creates a FEM mesh with \
-                provided :NanoStruct: parameters. If False, must provide \
-                mesh_file name of existing .mail that will be run despite \
+            loss  (bool): If False, Im(n) = 0, if True n as in
+                ``Material`` instance.
+
+            make_mesh_now  (bool): If True, program creates a FEM mesh with
+                provided :NanoStruct: parameters. If False, must provide
+                mesh_file name of existing .mail that will be run despite
                 :NanoStruct: parameters.
 
-            force_mesh  (bool): If True, a new mesh is created despite \
-                existence of mesh with same parameter. This is used to make \
+            force_mesh  (bool): If True, a new mesh is created despite
+                existence of mesh with same parameter. This is used to make
                 mesh with equal period etc. but different lc refinement.
 
-            mesh_file  (str): If using a set pre-made mesh give its name \
-                including .mail if 2D_array (eg. 600_60.mail), or .txt if \
+            mesh_file  (str): If using a set pre-made mesh give its name
+                including .mail if 2D_array (eg. 600_60.mail), or .txt if
                 1D_array. It must be located in backend/fortran/msh/
 
-            lc_bkg  (float): Length constant of meshing of background medium \
+            lc_bkg  (float): Length constant of meshing of background medium
                 (smaller = finer mesh)
 
-            lc2  (float): factor by which lc_bkg will be reduced on inclusion \
+            lc2  (float): factor by which lc_bkg will be reduced on inclusion
                 surfaces; lc_surface = cl_bkg / lc2.
 
-            lc3-6'  (float): factor by which lc_bkg will be reduced at center \
+            lc3-6'  (float): factor by which lc_bkg will be reduced at center
                 of inclusions.
 
-            plotting_fields  (bool): Unless set to true field data deleted.\
-                Also plots modes (ie. FEM solutions) in gmsh format. \
-                Plots epsilon*|E|^2 & choice of real/imag/abs of \
-                x,y,z components & field vectors. Fields are saved as gmsh \
-                files, but can be converted by running the .geo file found in \
+            plotting_fields  (bool): Unless set to true field data deleted.
+                Also plots modes (ie. FEM solutions) in gmsh format.
+                Plots epsilon*|E|^2 & choice of real/imag/abs of
+                x,y,z components & field vectors. Fields are saved as gmsh
+                files, but can be converted by running the .geo file found in
                 Bloch_fields/PNG/
 
             plot_real  (bool): Choose to plot real part of modal fields.
@@ -120,7 +122,7 @@ class Struct(object):
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
                  inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
                  inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
-                 inc_o_x=None,
+                 inc_o_x=None, material_bkg=materials.Air,
                  material_a=materials.Air, material_b=materials.Air, 
                  material_c=materials.Air, material_d=materials.Air, 
                  material_e=materials.Air, material_f=materials.Air, 
@@ -176,7 +178,8 @@ class Struct(object):
         self.two_inc_sep = two_inc_sep
         # Structures material properties - need to check geometry definition 
         # to ensure connecting material type with correct surface of geometry
-        self.material_a = material_a
+        self.material_bkg = material_bkg
+        self.material_a = material_a, material_a
         self.material_b = material_b
         self.material_c = material_c
         self.material_d = material_d
@@ -251,12 +254,7 @@ class Struct(object):
             self.symmetry_flag = 0
 
         # Order must match msh templates!
-        # self.acoustic_props_tmp = [bkg_material, inc_a_material, 
-        #                            slab_a_material, slab_a_bkg_material, 
-        #                            slab_b_material, slab_b_bkg_material, 
-        #                            inc_b_material, coat_material]
-
-        self.acoustic_props_tmp = [material_a, material_b, material_c,
+        self.acoustic_props_tmp = [material_bkg, material_a, material_b, material_c,
                                    material_d, material_e, material_f, 
                                    material_g, material_h, material_i, 
                                    material_j, material_k, material_l, 
@@ -857,7 +855,7 @@ class Struct(object):
                     fundamental mode, will be origin of FEM search.
 
             Returns:
-                :Simmo: object
+                ``Simmo`` object
         """
         simmo = Simmo(self, num_modes=num_modes, wl_nm=wl_nm, n_eff=n_eff, Stokes=Stokes)
 
@@ -880,14 +878,14 @@ class Struct(object):
                     an educated guess if shift_Hz=None.
                     (Technically the shift and invert parameter).
 
-                EM_sim  (:Simmo: object): Typically an acoustic
+                EM_sim  (``Simmo`` object): Typically an acoustic
                     simulation follows on from an optical one.
-                    Supply the EM :Simmo: object so the AC FEM mesh
+                    Supply the EM ``Simmo`` object so the AC FEM mesh
                     can be constructed from this.
                     This is done by removing vacuum regions.
 
             Returns:
-                :Simmo: object
+                ``Simmo`` object
         """
         simmo_AC = Simmo(self, num_modes=num_modes,
                          k_AC=k_AC, shift_Hz=shift_Hz,

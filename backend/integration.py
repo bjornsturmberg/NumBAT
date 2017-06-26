@@ -46,11 +46,11 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
   
 
         Args:
-            sim_EM_pump  (:Simmo: object): Contains all info on pump EM modes
+            sim_EM_pump  (``Simmo`` object): Contains all info on pump EM modes
 
-            sim_EM_Stokes  (:Simmo: object): Contains all info on Stokes EM modes
+            sim_EM_Stokes  (``Simmo`` object): Contains all info on Stokes EM modes
 
-            sim_AC  (:Simmo: object): Contains all info on AC modes
+            sim_AC  (``Simmo`` object): Contains all info on AC modes
 
             k_AC  (float): Propagation constant of acoustic modes.
 
@@ -257,7 +257,7 @@ def symmetries(sim_wguide, n_points=10):
     """ Plot EM mode fields.
 
         Args:
-            sim_wguide : A :Struct: instance that has had calc_modes calculated
+            sim_wguide : A ``Struct`` instance that has had calc_modes calculated
 
         Keyword Args:
             n_points  (int): The number of points across unitcell to \

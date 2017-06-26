@@ -44,7 +44,7 @@ known_geo = 315.
 
 def modes_n_gain(wguide):
     # Expected effective index of fundamental guided mode.
-    n_eff = (wguide.material_b.n-0.1) * wguide.inc_a_x/known_geo
+    n_eff = (wguide.material_a.n-0.1) * wguide.inc_a_x/known_geo
     # Calculate Electromagnetic modes.
     sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
@@ -72,8 +72,8 @@ for width in waveguide_widths:
 
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
-                            material_a=materials.Air,
-                            material_b=materials.Si,
+                            material_bkg=materials.Air,
+                            material_a=materials.Si,
                             lc_bkg=3, lc2=2000.0, lc3=1000.0)
     geo_objects_list.append(wguide)
 
