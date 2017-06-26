@@ -83,12 +83,12 @@ start = time.time()
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_a=materials.Air,
-                        material_b=materials.Material(Si_props),
+                        material_bkg=materials.Air,
+                        material_a=materials.Material(Si_props),
                         lc_bkg=3, lc2=3000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.material_b.n-0.1
+n_eff = wguide.material_a.n-0.1
 
 # Calculate Electromagnetic Modes
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)

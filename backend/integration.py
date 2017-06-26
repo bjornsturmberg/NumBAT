@@ -77,13 +77,13 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
                 calculating the acoustic loss (alpha).
 
         Returns:
-            SBS_gain  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain including both photoelastic and moving boundary contributions.
+            SBS_gain  : The SBS gain including both photoelastic and moving boundary contributions. Dimensions = (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC)
 
-            SBS_gain_PE  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain for only the photoelastic effect.
+            SBS_gain_PE  : The SBS gain for only the photoelastic effect. Dimensions = (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC)
             
-            SBS_gain_MB  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain for only the moving boundary effect.
+            SBS_gain_MB  : The SBS gain for only the moving boundary effect. Dimensions = (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC)
 
-            alpha  (num_modes_AC): The acoustic loss for each mode.
+            alpha  : The acoustic loss for each mode. Dimensions = (num_modes_AC)
     """
 
     # Notes about internals of fortran integration

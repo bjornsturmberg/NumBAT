@@ -51,7 +51,7 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Air,
                         material_a=materials.Si_2016_Smith,
-                        lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=True)
+                        lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=False)
 
 # # Explicitly remind ourselves what data we're using.
 # print('\n Using %s material data from' % wguide.material_b.chemical)
@@ -60,7 +60,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 # print('Ref:', wguide.material_b.doi)
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.material_b.n-0.1
+n_eff = wguide.material_a.n-0.1
 
 # Calculate the Electromagnetic modes of the pump field.
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
