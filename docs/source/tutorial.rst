@@ -143,7 +143,7 @@ In this section we go through a number of simple simulations that demonstrate th
 
 Basic SBS Gain Calculation
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-This example, contained in ``tutorials/simo-tut_01-first_calc.py`` calculates the backward SBS gain for a rectangular silicon waveguide surrounded by air.
+This example, contained in ``tutorials/tut_01/simo-tut_01-first_calc.py`` calculates the backward SBS gain for a rectangular silicon waveguide surrounded by air.
 
 The sequence of operations is
 
