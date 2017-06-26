@@ -78,8 +78,11 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
 
         Returns:
             SBS_gain  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain including both photoelastic and moving boundary contributions.
+
             SBS_gain_PE  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain for only the photoelastic effect.
+            
             SBS_gain_MB  (num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC): The SBS gain for only the moving boundary effect.
+
             alpha  (num_modes_AC): The acoustic loss for each mode.
     """
 

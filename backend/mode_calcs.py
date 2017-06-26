@@ -43,8 +43,7 @@ class Simmo(object):
 
         Eig_values: a 1d array of Eigenvalues (propagation constants) in [1/m]
 
-        sol1: the associated Eigenvectors, ie. the fields, stored as
-               [field comp, node nu on element, Eig value, el nu]
+        sol1: the associated Eigenvectors, ie. the fields, stored as [field comp, node nu on element, Eig value, el nu]
 
         EM_mode_power: the power in the optical modes.
         """
