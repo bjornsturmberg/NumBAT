@@ -56,7 +56,7 @@ for coat_y in coat_y_list:
     n_eff = wguide.material_b.n-0.1
 
     # Calculate Electromagnetic modes.
-    sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff=n_eff)
+    sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 
     k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
@@ -64,8 +64,7 @@ for coat_y in coat_y_list:
     shift_Hz = 4e9
 
     # Calculate Acoustic modes.
-    sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, k_AC=k_AC,
-        EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
+    sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
     # plotting.plt_mode_fields(sim_AC, xlim_min=0.4, xlim_max=0.4, 
     #                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', add_name='_%i' %int(coat_y))

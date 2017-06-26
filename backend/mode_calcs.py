@@ -18,7 +18,7 @@ from fortran import NumBAT
 class Simmo(object):
     """ Calculates the modes of a :Struc: object at a wavelength of wl_nm.
     """
-    def __init__(self, structure, wl_nm, num_modes=20, n_eff=None, shift_Hz=None, 
+    def __init__(self, structure, num_modes=20, wl_nm=1, n_eff=None, shift_Hz=None, 
                  k_AC=None, EM_sim=None, Stokes=False):
         self.structure = structure
         self.wl_m = wl_nm*1e-9

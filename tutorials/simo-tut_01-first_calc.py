@@ -50,20 +50,20 @@ AC_ival = 'All'
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.Air,
-                        material_b=materials.Si,
-                        lc_bkg=2, lc2=200.0, lc3=5.0)
+                        material_b=materials.Si_2016_Smith,
+                        lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=True)
 
-# Explicitly remind ourselves what data we're using.
-print('\n Using the material data from')
-print('Author:', wguide.material_b.author)
-print('Year:', wguide.material_b.date)
-print('Ref:', wguide.material_b.doi)
+# # Explicitly remind ourselves what data we're using.
+# print('\n Using %s material data from' % wguide.material_b.chemical)
+# print('Author:', wguide.material_b.author)
+# print('Year:', wguide.material_b.date)
+# print('Ref:', wguide.material_b.doi)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_b.n-0.1
 
 # Calculate the Electromagnetic modes of the pump field.
-sim_EM_pump = wguide.calc_EM_modes(wl_nm, num_modes_EM_pump, n_eff)
+sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
 # Print the wavevectors of EM modes.
 print('\n k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values),4))
 # Calculate the Electromagnetic modes of the Stokes field.
@@ -82,8 +82,7 @@ k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
 
 # Calculate Acoustic modes, using the mesh from the EM calculation.
-sim_AC = wguide.calc_AC_modes(wl_nm, num_modes_AC, 
-    k_AC=k_AC, EM_sim=sim_EM_pump)
+sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # Print the frequencies of AC modes.
 print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 

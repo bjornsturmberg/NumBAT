@@ -26,6 +26,12 @@ where we have accessed the docstring of the Struct class from objects.py
 
 To review how material types and physical dimensions are represented in the mesh geometries go to NumBAT/docs/msh_type_lib and view the relevant .png file.
 
+The parameters lc_bkg, lc2, lc3 set the fineness of the FEM mesh. lc_bkg sets the reference background mesh size, larger lc_bkg = larger (more coarse) mesh. At the interface between materials the mesh is refined to be lc_bkg/lc2, therefore larger lc2 = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh it typically also refined at the centers of important regions, eg in the center of a waveguide, which is done with lc3, which just like lc2 refines the mesh size at these points as lc_bkg/lc3.
+
+Choosing appropriate values of lc_bkg, lc2, lc3 is crucial NumBAT to give accurate results. The values depend strongly on the type of structure being studied, and so it is recommended to carry out a convergence test before delving into new structures (see Tutorial 5). You can also visually check the resolution of your mesh by setting check_msh=True when you define your objects.Struct (see Tutorial 1), or by running the following command ::
+    
+    NumBAT/backend/fortran/msh$ gmsh <msh_name>.msh
+
 
 In the remainder of this chapter we go through a number of example simo.py files. But before we do, another quick tip about running simulations within screen sessions, which allow you to disconnect from servers leaving them to continue your processes.
 

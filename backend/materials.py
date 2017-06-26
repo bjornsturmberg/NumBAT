@@ -170,14 +170,41 @@ class Material(object):
             self.eta_65 = mat_props[36+36+36]
             self.eta_66 = mat_props[36+36+37]
 
+
+def load_data_file(data_file, alt_path):    
+    """
+
+    Args:
+        data_file  (str): name of data file located in NumBAT/backend/material_data
+        alt_path  (str): non standard path to data_file
+    
+    """
+    with open(data_file,'r') as fin:
+        s_in=''.join(fin.readlines())
+        s_in=re.sub(r'//.*\n','\n', s_in)
+
+        self._params=json.loads(s_in)
+
+        self.field_nslices=self._params['field_nslices']
+        self.plot_field_evol=self._params['plot_field_evol']
+
+        self.beta2=self._params['beta2']  # ps^2/m
+
+
+# Si = Material("Si_2016_Smith")
+# Si = Material("Si_2016_Smith", alt_path="")
+
+
 def isotropic_stiffness(E, v):
     """
     Calculate the stiffness matrix components of isotropic 
-    materials, given the two free parameters:
-    E: Youngs_modulus
-    v: Poisson_ratio
+    materials, given the two free parameters.
 
     Ref: www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
+
+    Args:
+        E  (float): Youngs_modulus
+        v  (float): Poisson_ratio
     """
     c_11 = E*(1-v)/((1+v)*(1-2*v))
     c_12 = E*(v)/((1+v)*(1-2*v))
@@ -200,7 +227,7 @@ p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
 # Acoustic loss tensor components.
 eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.62e-3  # Pa s
 # Put acoustic parameters together for convenience.
-Si = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
+Si_2016_Smith = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
                eta_11, eta_12, eta_44], 
                doi='dx.doi.org/10.1364/OL.41.002338',
                date=2016, author='Smith')

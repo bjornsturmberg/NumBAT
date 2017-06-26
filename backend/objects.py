@@ -839,19 +839,19 @@ class Struct(object):
 
         if self.check_msh is True:
             # Automatically show created mesh in gmsh.
-            gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.msh'
-            os.system(gmsh_cmd)
             gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
             os.system(gmsh_cmd)
+            gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.msh'
+            os.system(gmsh_cmd)
 
 
-    def calc_EM_modes(self, wl_nm, num_modes, n_eff, Stokes=False, **args):
+    def calc_EM_modes(self, num_modes, wl_nm, n_eff, Stokes=False, **args):
         """ Run a simulation to find the Struct's EM modes.
 
             Args:
-                wl_nm  (float): Wavelength of EM wave in vacuum.
-
                 num_modes  (int): Number of EM modes to solve for.
+
+                wl_nm  (float): Wavelength of EM wave in vacuum.
 
                 n_eff  (float): Guesstimated effective index of
                     fundamental mode, will be origin of FEM search.
@@ -859,22 +859,22 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo = Simmo(self, wl_nm, num_modes=num_modes, n_eff=n_eff, Stokes=Stokes)
+        simmo = Simmo(self, num_modes=num_modes, wl_nm=wl_nm, n_eff=n_eff, Stokes=Stokes)
 
         simmo.calc_EM_modes(**args)
         return simmo
 
 
-    def calc_AC_modes(self, wl_nm, num_modes, k_AC,
+    def calc_AC_modes(self, num_modes, k_AC,
                       shift_Hz=None, EM_sim=None, **args):
         """ Run a simulation to find the Struct's acoustic modes.
 
             Args:
-                wl_nm  (float): Wavelength of AC wave in vacuum.
-
                 num_modes  (int): Number of AC modes to solve for.
 
             Keyword Args:
+                k_AC  (float): Wavevector of AC modes.
+
                 shift_Hz  (float): Guesstimated frequency of modes,
                     will be origin of FEM search. NumBAT will make
                     an educated guess if shift_Hz=None.
@@ -889,7 +889,7 @@ class Struct(object):
             Returns:
                 :Simmo: object
         """
-        simmo_AC = Simmo(self, wl_nm, num_modes=num_modes,
+        simmo_AC = Simmo(self, num_modes=num_modes,
                          k_AC=k_AC, shift_Hz=shift_Hz,
                          EM_sim=EM_sim)
 
