@@ -35,8 +35,6 @@ class Struct(object):
             unitcell_y  (float): The vertical period of the unit cell
                 in nanometers. If None, unitcell_y = unitcell_x.
 
-            SPECIFY WHAT IS RADIUS WHAT IS DIAMETER
-
             inc_a_y  (float): The vertical diameter of the inclusion in nm.
 
             inc_shape  (str): Shape of inclusions that have template mesh,
