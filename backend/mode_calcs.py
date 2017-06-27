@@ -78,12 +78,6 @@ class Simmo(object):
         i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
         EM_FEM_debug = 0  # Fortran routines will display & save add. info
-        # Size of Fortran's complex superarray (scales with mesh)
-        # In theory could do some python-based preprocessing
-        # on the mesh file to work out RAM requirements
-        cmplx_max = 2**28
-        real_max = 2**27
-        int_max = 2**26
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -99,6 +93,9 @@ class Simmo(object):
 
         with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
             self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
+
+        # Size of Fortran's complex superarray (scales with mesh)
+        int_max, cmplx_max, real_max = NumBAT.array_size(self.n_msh_el, self.num_modes)
 
         try:
             resm = NumBAT.calc_em_modes(
@@ -234,13 +231,6 @@ class Simmo(object):
         itermax = 30  # Maximum number of iterations for convergence
         AC_FEM_debug = 0  # Fortran routines will display & save add. info
         ARPACK_tol = 1e-10  # ARPACK accuracy (0.0 for machine precision)
-        # Size of Fortran's complex superarray (scales with mesh)
-        # In theory could do some python-based preprocessing
-        # on the mesh file to work out RAM requirements
-        cmplx_max = 2**28
-        real_max = 2**27
-        int_max = 2**26
-
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -370,6 +360,9 @@ class Simmo(object):
                 os.mkdir("Output")
             if not os.path.exists("Matrices"):
                 os.mkdir("Matrices")
+
+        # Size of Fortran's complex superarray (scales with mesh)
+        int_max, cmplx_max, real_max = NumBAT.array_size(self.n_msh_el, self.num_modes)
 
         try:
             resm = NumBAT.calc_ac_modes(
