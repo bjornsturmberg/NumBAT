@@ -49,7 +49,7 @@ Si_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
+                        material_bkg=materials.Vacuum,
                         material_a=materials.Material(Si_props),
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 

@@ -35,7 +35,7 @@ EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
+                        material_bkg=materials.Vacuum,
                         material_a=materials.Si,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 

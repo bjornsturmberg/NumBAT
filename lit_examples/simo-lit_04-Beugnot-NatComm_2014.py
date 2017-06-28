@@ -54,7 +54,7 @@ def modes_n_gain(inc_a_x):
     inc_a_y = inc_a_x
     # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                            material_bkg=materials.Air,
+                            material_bkg=materials.Vacuum,
                             material_a=materials.Si,
                             lc_bkg=3, lc2=2000.0, lc3=1000.0)
 

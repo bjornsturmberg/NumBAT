@@ -78,7 +78,7 @@ eta_51, eta_52, eta_53, eta_54, eta_55, eta_56, eta_61, eta_62, eta_63, eta_64, 
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
+                        material_bkg=materials.Vacuum,
                         # material_b=materials.Si,
                         material_a=materials.Material(test_props),
                         symmetry_flag=False,

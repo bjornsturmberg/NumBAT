@@ -49,7 +49,7 @@ AC_ival = 'All'
 # Use specified parameters to create a waveguide object.
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
+                        material_bkg=materials.Vacuum,
                         material_a=materials.Si_2016_Smith,
                         lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=False)
 

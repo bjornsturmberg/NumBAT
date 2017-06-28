@@ -1,5 +1,5 @@
 """ Calculate the backward SBS gain spectra of a Si
-    slot waveguide containing As2S3 surrounded by Air,
+    slot waveguide containing As2S3 surrounded by Vacuum,
     sitting on a SiO2 substrate.
 """
 
@@ -40,7 +40,7 @@ AC_ival = 'All'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         inc_b_x =inc_b_x, slab_a_y=slab_a_y,
-                        material_bkg=materials.Air,
+                        material_bkg=materials.Vacuum,
                         material_a=materials.As2S3_exp,
                         material_b=materials.SiO2,
                         material_c=materials.Si,
