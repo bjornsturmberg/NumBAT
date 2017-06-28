@@ -163,6 +163,14 @@ The sequence of operations is
 
 SBS Gain Spectra
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+This example, contained in ``tutorials/simo-tut_02-gain_spectra-npsave.py`` considers the same structure
+but adds plotting of fields, gain spectra and techniques for saving and reusing data from earlier
+calculations. 
+
+Elements to note:
+  #. Both electric and magnetic fields can be selected using ``'EM_E'`` or ``'EM_H'`` as the value of ``EM_AC` in 
+       ``plotting.mode_fields``.
+  #. ``np.savez`` and ``np.load`` allow storage of arbitrary data between simulations.
 
 .. literalinclude:: ../../tutorials/simo-tut_02-gain_spectra-npsave.py
     :lines: 0-
