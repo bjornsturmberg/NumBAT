@@ -164,7 +164,7 @@ The sequence of operations is
 SBS Gain Spectra
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_02-gain_specta-npsave.py
+.. literalinclude:: ../../tutorials/simo-tut_02-gain_spectra-npsave.py
     :lines: 0-
 
 
