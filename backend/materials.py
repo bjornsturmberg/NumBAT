@@ -232,6 +232,8 @@ Si_2016_Smith = Material([n, s, c_11, c_12, c_44, p_11, p_12, p_44,
                doi='dx.doi.org/10.1364/OL.41.002338',
                date=2016, author='Smith')
 
+Si=Si_2016_Smith
+
 # Silica
 n = 1.45
 s = 2200  # kg/m3
