@@ -43,6 +43,7 @@ AC_ival = 'All'
 known_geo = 315.
 
 def modes_n_gain(wguide):
+    print ('Commencing mode calculation for width a_x= %f'% wguide.inc_a_x)
     # Expected effective index of fundamental guided mode.
     n_eff = (wguide.material_a.n-0.1) * wguide.inc_a_x/known_geo
     # Calculate Electromagnetic modes.
@@ -56,6 +57,7 @@ def modes_n_gain(wguide):
         sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
+    print ('  Completed mode calculation for width a_x= %f'% wguide.inc_a_x)
     return [sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC]
 
 
@@ -91,6 +93,7 @@ freqs_gains = []
 interp_grid_points = 10000
 interp_grid = np.linspace(10, 25, interp_grid_points)
 for i_w, width_obj in enumerate(width_objs):
+    print('Calculating gain spectra for width a_x=%f'%width_obj.inc_a_x)
     interp_values = np.zeros(interp_grid_points)
     sim_EM = width_obj[0]
     sim_AC = width_obj[1]
@@ -115,7 +118,7 @@ for i_w, width_obj in enumerate(width_objs):
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
     phase_v = 2*np.pi*sim_AC.Eig_values/k_AC
-    linewidth = phase_v*alpha/(2*np.pi)
+    line_width = phase_v*alpha/(2*np.pi)
     for AC_i in range(len(alpha)):
         gain_list = np.real(SBS_gain[EM_ival_Stokes,EM_ival_pump,AC_i]
                      *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
