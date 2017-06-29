@@ -72,7 +72,7 @@ def modes_n_gain(inc_a_x):
         sim_EM_pump, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
 
-    interp_values = plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+    interp_values = plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
         EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min, freq_max, num_interp_pts=num_interp_pts)
 
     return interp_values
@@ -102,6 +102,9 @@ plt.xlabel(r'Width ($\mu m$)')
 plt.ylabel('Frequency (GHz)')
 plt.savefig('gain-width_scan.pdf')
 plt.close()
+<<<<<<< HEAD
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
+=======
+>>>>>>> 2279d8a890b40d95d8a3a0f31e6084041d738fdd
