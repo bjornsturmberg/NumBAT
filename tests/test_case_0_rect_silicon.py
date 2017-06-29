@@ -37,6 +37,8 @@ from fortran import NumBAT
 from numpy.testing import assert_allclose as assert_ac
 from numpy.testing import assert_equal
 
+start = time.time()
+
 casefile_name = 'case_0'
 
 # Geometric Parameters - all in nm.
@@ -64,27 +66,10 @@ EM_ival_Stokes = EM_ival_pump
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival='All'
 
-# Acoustic Parameters
-# Silicon
-n = 3.48
-# Density
-s = 2329  # kg/m3
-# Stiffness tensor components.
-c_11 = 165.6e9; c_12 = 63.9e9; c_44 = 79.5e9  # Pa
-# Photoelastic tensor components
-p_11 = -0.094; p_12 = 0.017; p_44 = -0.051
-# Acoustic loss tensor components.
-eta_11 = 5.9e-3; eta_12 = 5.16e-3; eta_44 = 0.620e-3  # Pa
-# Put acoustic parameters together for convenience.
-Si_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-
-start = time.time()
-
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
-                        material_a=materials.Material(Si_props),
+                        material_a=materials.Si_2016_Smith,
                         lc_bkg=3, lc2=3000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.

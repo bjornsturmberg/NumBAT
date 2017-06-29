@@ -5,7 +5,7 @@
   "date": "2016",  // Year of data publication/creation
   "institution": "Uni. of Sydney",  // Source institution
   "doi": "dx.doi.org/10.1364/OL.41.002338",  // doi or, failing that, the http address
-  "n": 3.475686982,  // Refractive index []
+  "n": 3.48,  // Refractive index []
   "s": 2329,  // Density [kg/m3]
   "c_11": 165.6e9,  // Stiffness tensor component [Pa]
   "c_12": 63.9e9,  // Stiffness tensor component [Pa]
