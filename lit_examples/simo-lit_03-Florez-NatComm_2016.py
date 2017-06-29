@@ -52,7 +52,8 @@ sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', pdf_png='pdf')
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', 
+                         prefix_str='lit_03-', pdf_png='pdf')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -68,7 +69,7 @@ shift_Hz = 4e9
 # Calculate Acoustic Modes
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', add_name='NW')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str='lit_03-', suffix_str='NW')
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
@@ -85,7 +86,8 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
 freq_min = 0  # GHz
 freq_max = 12  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max)
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
+    prefix_str='lit_03-')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))

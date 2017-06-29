@@ -135,7 +135,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     # sim_EM_pump.type_el = sim_AC.type_el
     # sim_EM_pump.table_nod = sim_AC.table_nod
     # sim_EM_pump.x_arr = sim_AC.x_arr
-    # plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM', add_name='trim')
+    # plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM', prefix_str='int_test-', suffix_str='trim')
 
     relevant_eps_effs =[]
     for el_typ in range(sim_EM_pump.structure.nb_typ_el):

@@ -54,10 +54,10 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=False)
 
 # Explicitly remind ourselves what data we're using.
-print('\n Using %s material data from' % wguide.material_b.chemical)
-print('Author:', wguide.material_b.author)
-print('Year:', wguide.material_b.date)
-print('Ref:', wguide.material_b.doi)
+print('\n Using %s material data from' % wguide.material_a.chemical)
+print('Author:', wguide.material_a.author)
+print('Year:', wguide.material_a.date)
+print('Ref:', wguide.material_a.doi)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1

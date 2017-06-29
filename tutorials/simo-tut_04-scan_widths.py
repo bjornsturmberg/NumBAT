@@ -112,7 +112,8 @@ for i_w, width_obj in enumerate(width_objs):
     freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 5  # GHz
     freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 5  # GHz
     plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_scan%i' % i_w)
+        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
+        prefix_str='tut_04-', suffix_str='_scan%i' % i_w)
 
     # Repeat calc to collect data for waterfall plot.
     tune_steps = 5e4

@@ -56,7 +56,7 @@ def zeros_int_str(zero_int):
 
 def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
                 EM_ival1, EM_ival2, AC_ival, freq_min, freq_max, num_interp_pts=3000,
-                pdf_png='png', save_txt=False, add_name=''):
+                pdf_png='png', save_txt=False, prefix_str='', suffix_str=''):
     r""" Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
         Note the we use the spectral linewidth of the resonances
 
@@ -117,7 +117,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
             if save_txt:
                 save_array = (freq_list_GHz, gain_list)
                 np.savetxt('gain_spectra-mode_comps%(add)s-%(mode)i.csv' 
-                            % {'add' : add_name, 'mode' : AC_i}, 
+                            % {'add' : suffix_str, 'mode' : AC_i}, 
                             save_array, delimiter=',')
             # set up an interpolation for summing all the gain peaks
             interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
@@ -126,7 +126,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     if save_txt:
         save_array = (interp_grid, interp_values)
         np.savetxt('gain_spectra-mode_comps%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
+                    % {'add' : suffix_str}, 
                     save_array, delimiter=',')
     plt.legend(loc=0)
     if freq_min and freq_max:
@@ -136,9 +136,9 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 
 
     if pdf_png=='png':
-        plt.savefig('gain_spectra-mode_comps%(add)s.png' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-mode_comps%(add)s.pdf' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
     plt.figure()
@@ -152,8 +152,8 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
             # 6.5e-3 is the estimated value of L_eff*P_pump/A_eff in https://arxiv.org/abs/1702.05233
             if save_txt:
                 save_array = (freq_list_GHz, 20*np.log10(abs(gain_list)))
-                np.savetxt('gain_spectra-mode_comps-dB%(add)s-%(mode)i.csv' 
-                            % {'add' : add_name, 'mode' : AC_i}, 
+                np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-%(mode)i.csv' 
+                            % {'pre' : prefix_str, 'add' : suffix_str, 'mode' : AC_i}, 
                             save_array, delimiter=',')
             # set up an interpolation for summing all the gain peaks
             interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
@@ -161,8 +161,8 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.plot(interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)), 'k', linewidth=3, label="Total")
     if save_txt:
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)))
-        np.savetxt('gain_spectra-mode_comps-dB%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-Total.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
     plt.legend(loc=0)
     if freq_min and freq_max:
@@ -171,9 +171,9 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.ylabel('Gain (dB)')
 
     if pdf_png=='png':
-        plt.savefig('gain_spectra-mode_comps-dB%(add)s.png' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-mode_comps-dB%(add)s.pdf' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
 
@@ -209,23 +209,23 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.ylabel('Gain (1/Wm)')
 
     if pdf_png=='png':
-        plt.savefig('gain_spectra-MB_PE_comps%(add)s.png' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-MB_PE_comps%(add)s.pdf' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
     if save_txt:
         save_array = (interp_grid, interp_values)
-        np.savetxt('gain_spectra-MB_PE_comps%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps%(add)s-Total.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
         save_array = (interp_grid, interp_values_PE)
-        np.savetxt('gain_spectra-MB_PE_comps%(add)s-PE.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps%(add)s-PE.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
         save_array = (interp_grid, interp_values_MB)
-        np.savetxt('gain_spectra-MB_PE_comps%(add)s-MB.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps%(add)s-MB.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
 
     plt.figure()
@@ -240,23 +240,23 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.ylabel('Gain (dB)')
 
     if pdf_png=='png':
-        plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.png' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.pdf' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
     if save_txt:
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s-Total.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values_PE)*6.5e-3)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-PE.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s-PE.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values_MB)*6.5e-3)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-MB.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s-MB.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
 
     return interp_values
@@ -265,7 +265,8 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 #### Standard plotting of spectra #############################################
 def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, 
                   xlim_min=None, xlim_max=None, ylim_min=None, ylim_max=None,
-                  EM_AC='EM_E', stress_fields=False, pdf_png='png', add_name=''):
+                  EM_AC='EM_E', stress_fields=False, pdf_png='png', 
+                  prefix_str='', suffix_str=''):
     """ Plot E or H fields of EM mode, or the AC modes displacement fields.
 
         Args:
@@ -289,7 +290,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
 
             pdf_png  (str): File type to save, either 'png' or 'pdf' 
 
-            add_name  (str): Add a string to the file name.
+            suffix_str  (str): Add a string to the file name.
     """
 
     if EM_AC is not 'EM_E' and EM_AC is not 'EM_H' and EM_AC is not 'AC':
@@ -505,15 +506,15 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
         # plt.tight_layout(pad=2.5, w_pad=0.5, h_pad=1.0)
         fig.set_tight_layout(True)
 
-        if not os.path.exists("fields"):
-            os.mkdir("fields")
+        if not os.path.exists("%sfields" % prefix_str):
+            os.mkdir("%sfields" % prefix_str)
         if pdf_png=='png':
-            plt.savefig('fields/%(s)s_field_%(i)i%(add)s.png' %
-                {'s' : EM_AC, 'i' : ival, 'add' : add_name})
+            plt.savefig('%(pre)sfields/%(s)s_field_%(i)i%(add)s.png' %
+                {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str})
                 #, bbox_inches='tight') - this caused error in Q calc... ?
         elif pdf_png=='pdf':
-            plt.savefig('fields/%(s)s_field_%(i)i%(add)s.pdf' %
-                {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
+            plt.savefig('%(pre)sfields/%(s)s_field_%(i)i%(add)s.pdf' %
+                {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str}, bbox_inches='tight')
         else:
             raise ValueError("pdf_png must be either 'png' or 'pdf'.")
         plt.close()
@@ -596,17 +597,17 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
 
             if pdf_png=='png':
-                plt.savefig('fields/%(s)s_S_field_%(i)i%(add)s.png' %
-                    {'s' : EM_AC, 'i' : ival, 'add' : add_name})
+                plt.savefig('%(pre)sfields/%(s)s_S_field_%(i)i%(add)s.png' %
+                    {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str})
             elif pdf_png=='pdf':
-                plt.savefig('fields/%(s)s_S_field_%(i)i%(add)s.pdf' %
-                    {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
+                plt.savefig('%(pre)sfields/%(s)s_S_field_%(i)i%(add)s.pdf' %
+                    {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str}, bbox_inches='tight')
             plt.close()
 
 
 
 #### Plot mesh #############################################
-def plot_msh(x_arr, add_name=''):
+def plot_msh(x_arr, suffix_str=''):
     """ Plot EM mode fields.
 
         Args:
@@ -623,8 +624,8 @@ def plot_msh(x_arr, add_name=''):
     for node in range(np.shape(x_arr)[1]):
         plt.plot(x_arr[0,node], x_arr[1,node], 'o')
     ax.set_aspect('equal')
-    plt.savefig('msh_%(add)s.pdf' %
-        {'add' : add_name}, bbox_inches='tight')
+    plt.savefig('%(pre)smsh_%(add)s.pdf' %
+        {'pre' : prefix_str, 'add' : suffix_str}, bbox_inches='tight')
     plt.close()
 
 

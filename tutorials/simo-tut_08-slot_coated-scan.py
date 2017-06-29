@@ -68,7 +68,8 @@ for coat_y in coat_y_list:
     sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
     # plotting.plt_mode_fields(sim_AC, xlim_min=0.4, xlim_max=0.4, 
-    #                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', add_name='_%i' %int(coat_y))
+    #                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', 
+    #                           prefix_str='tut_08-', suffix_str='_%i' %int(coat_y))
 
     set_q_factor = 1000.
 
@@ -81,7 +82,8 @@ for coat_y in coat_y_list:
     freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 2  # GHz
     
     plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_%i' %int(coat_y))
+        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
+        prefix_str='tut_08-', suffix_str='_%i' %int(coat_y))
     
 
 end = time.time()

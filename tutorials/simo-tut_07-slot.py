@@ -64,7 +64,8 @@ sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-#                           ylim_min=0.1, ylim_max=0.8, EM_AC='EM_E', add_name='slot')
+#                           ylim_min=0.1, ylim_max=0.8, EM_AC='EM_E', 
+#                           prefix_str='tut_07-', suffix_str='slot')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -85,7 +86,8 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 # sim_AC = npzfile['sim_AC'].tolist()
 
 # plotting.plt_mode_fields(sim_AC, xlim_min=0.4, xlim_max=0.4, 
-#                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', add_name='slot')
+#                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', 
+#                           prefix_str='tut_07-', suffix_str='slot')
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
@@ -107,7 +109,8 @@ freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz
 freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 2  # GHz
 
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_slot')
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
+    prefix_str='tut_07-', suffix_str='_slot')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
