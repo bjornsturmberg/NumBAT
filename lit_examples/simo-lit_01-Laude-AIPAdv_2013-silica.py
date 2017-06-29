@@ -21,6 +21,8 @@ import plotting
 from fortran import NumBAT
 
 
+start = time.time()
+
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 7*wl_nm
@@ -88,3 +90,6 @@ freq_min = 4  # GHz
 freq_max = 13  # GHz
 plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max)
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))

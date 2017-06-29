@@ -51,7 +51,7 @@ for i_lc, lc_ref in enumerate(lc_list):
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
                             material_bkg=materials.Vacuum,
-                            material_a=materials.Si,
+                            material_a=materials.Si_2016_Smith,
                             lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc3, force_mesh=True)
 
     # Expected effective index of fundamental guided mode.

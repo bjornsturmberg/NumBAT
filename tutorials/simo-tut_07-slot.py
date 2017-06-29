@@ -20,6 +20,8 @@ import plotting
 from fortran import NumBAT
 
 
+start = time.time()
+
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 4*wl_nm
@@ -41,9 +43,9 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         inc_b_x =inc_b_x, slab_a_y=slab_a_y,
                         material_bkg=materials.Vacuum,
-                        material_a=materials.As2S3_exp,
-                        material_b=materials.SiO2,
-                        material_c=materials.Si,
+                        material_a=materials.As2S3_2017_Morrison,
+                        material_b=materials.SiO2_2013_Laude,
+                        material_c=materials.Si_2016_Smith,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 # In this case lc3 is meshing around ribs encasing the slot (the Si)
 
@@ -105,3 +107,6 @@ freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz
 freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 2  # GHz
 plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_slot')
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))

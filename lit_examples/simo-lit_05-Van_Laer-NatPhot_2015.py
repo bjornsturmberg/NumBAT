@@ -21,6 +21,8 @@ import plotting
 from fortran import NumBAT
 
 
+start = time.time()
+
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
@@ -96,3 +98,6 @@ shift_Hz = 10e9
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
 plotting.plt_mode_fields(sim_AC, EM_AC='AC', add_name='slab', pdf_png='png')
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))

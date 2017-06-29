@@ -217,6 +217,7 @@ def isotropic_stiffness(E, v):
 
 Vacuum = Material("Vacuum")
 Si_2016_Smith = Material("Si_2016_Smith")
+Si_test_anisotropic = Material("Si_test_anisotropic")
 SiO2_2016_Smith = Material("SiO2_2016_Smith")
 SiO2_2013_Laude = Material("SiO2_2013_Laude")
 As2S3_2016_Smith = Material("As2S3_2016_Smith")

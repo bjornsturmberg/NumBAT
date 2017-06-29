@@ -23,6 +23,8 @@ import plotting
 from fortran import NumBAT
 
 
+start = time.time()
+
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
@@ -41,7 +43,7 @@ AC_ival = 'All'
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
-                        material_a=materials.Si,
+                        material_a=materials.Si_2016_Smith,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 
@@ -132,3 +134,7 @@ freq_min = 11  # GHz
 freq_max = 15  # GHz
 plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_zoom')
+
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))

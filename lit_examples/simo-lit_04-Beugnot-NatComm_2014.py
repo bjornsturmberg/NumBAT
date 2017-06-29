@@ -21,6 +21,9 @@ import integration
 import plotting
 from fortran import NumBAT
 
+
+start = time.time()
+
 # Select the number of CPUs to use in simulation.
 num_cores = 5
 
@@ -55,7 +58,7 @@ def modes_n_gain(inc_a_x):
     # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             material_bkg=materials.Vacuum,
-                            material_a=materials.Si,
+                            material_a=materials.Si_2016_Smith,
                             lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
     sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
@@ -99,3 +102,6 @@ plt.xlabel(r'Width ($\mu m$)')
 plt.ylabel('Frequency (GHz)')
 plt.savefig('gain-width_scan.pdf')
 plt.close()
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))

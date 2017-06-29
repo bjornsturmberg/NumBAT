@@ -19,6 +19,8 @@ import plotting
 from fortran import NumBAT
 
 
+start = time.time()
+
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
@@ -36,7 +38,7 @@ AC_ival = 'All'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
-                        material_a=materials.Si,
+                        material_a=materials.Si_2016_Smith,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
@@ -85,3 +87,6 @@ plt.xlabel(r'Axial wavevector (normalised)')
 plt.ylabel(r'Frequency (GHz)')
 plt.savefig('symetrised_dispersion.pdf', bbox_inches='tight')
 plt.close()
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))
