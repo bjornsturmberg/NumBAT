@@ -100,7 +100,8 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = 0  # GHz
 freq_max = 12  # GHz
-plotting.gain_specta(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+
+plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_SiO2_NW')
 
 end = time.time()

@@ -223,5 +223,3 @@ SiO2_2013_Laude = Material("SiO2_2013_Laude")
 As2S3_2016_Smith = Material("As2S3_2016_Smith")
 As2S3_2017_Morrison = Material("As2S3_2017_Morrison")
 GaAs_2016_Smith = Material("GaAs_2016_Smith")
-
-# wl = 1550 nm
