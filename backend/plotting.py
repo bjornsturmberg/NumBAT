@@ -357,7 +357,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
                 v_x6p[i] = x_arr[i_ex, 0]
                 v_y6p[i] = x_arr[i_ex, 1]
 
-                if EM_AC == 'EM_E':
+                if EM_AC == 'EM_E' or EM_AC == 'AC' :
                     v_Ex6p[i] = sim_wguide.sol1[0,i_node,ival,i_el]
                     v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
                     v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
