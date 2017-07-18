@@ -27,22 +27,6 @@ class Material(object):
             Photoelastic tensor component []
             Acoustic loss tensor component [Pa s]
 
-        Currently included materials are;
-
-        .. tabularcolumns:: |c|
-
-        +--------------------+
-        | **Semiconductors** |
-        +--------------------+
-        |    Si              |
-        +--------------------+
-        |    SiO2            |
-        +--------------------+
-        |    As2S3           |
-        +--------------------+
-        |    GaAs            |
-        +--------------------+
-
     """
     def __init__(self,data_file):
 
@@ -216,10 +200,17 @@ def isotropic_stiffness(E, v):
 
 
 Vacuum = Material("Vacuum")
+
 Si_2016_Smith = Material("Si_2016_Smith")
+Si_2015_Van_Laer = Material("Si_2015_Van_Laer")
+Si_2013_Laude = Material("Si_2013_Laude")
 Si_test_anisotropic = Material("Si_test_anisotropic")
+
 SiO2_2016_Smith = Material("SiO2_2016_Smith")
+SiO2_2015_Van_Laer = Material("SiO2_2015_Van_Laer")
 SiO2_2013_Laude = Material("SiO2_2013_Laude")
-As2S3_2016_Smith = Material("As2S3_2016_Smith")
+
 As2S3_2017_Morrison = Material("As2S3_2017_Morrison")
+As2S3_2016_Smith = Material("As2S3_2016_Smith")
+
 GaAs_2016_Smith = Material("GaAs_2016_Smith")

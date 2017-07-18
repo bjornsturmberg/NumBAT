@@ -42,34 +42,15 @@ EM_ival_pump=0
 EM_ival_Stokes=EM_ival_pump
 AC_ival='All'
 
-# Material parameters as in paper 
-# Silicon
-n = 3.5
-s = 2330  # kg/m3
-c_11 = 166e9; c_12 = 64e9; c_44 = 79e9  # Pa
-p_11 = -0.09; p_12 = 0.017; p_44 = -0.051
-eta_11 = 5.9e-3 ; eta_12 = 5.16e-3 ; eta_44 = 0.620e-3  # Pa
-Si_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-
-# Silica
-n = 1.44
-s = 2203  # kg/m3
-c_11 = 78e9; c_12 = 16e9; c_44 = 31e9
-p_11 = 0.12; p_12 = 0.270; p_44 = -0.073
-eta_11 = 1.6e-3 ; eta_12 = 1.29e-3 ; eta_44 = 0.16e-3  # Pa s
-SiO2_props = [n, s, c_11, c_12, c_44, p_11, p_12, p_44,
-                  eta_11, eta_12, eta_44]
-
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         slab_b_x=slab_b_x, slab_b_y=slab_b_y,
                         material_bkg=materials.Vacuum,
-                        material_a=materials.Material(Si_props),
-                        material_b=materials.Material(SiO2_props),
+                        material_a=materials.Si_2015_Van_Laer,
+                        material_b=materials.SiO2_2015_Van_Laer,
                         material_c=materials.Vacuum,
-                        material_d=materials.Material(SiO2_props),
+                        material_d=materials.SiO2_2015_Van_Laer,
                         material_e=materials.Vacuum,
                         lc_bkg=2, lc2=4000.0, lc3=1000.0)
 
