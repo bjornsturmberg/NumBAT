@@ -33,7 +33,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         The final integrals are
 
         .. math:: 
-            Q^{\rm PE} = \varepsilon_0 \int_A {\rm d}^2r \sum_{ijkl} \varepsilon^2_r e^{(s)\star}_i e^{(p)}_j p_{ijkl} \partial_k u_l^{*},\\
+            Q^{\rm PE} = -\varepsilon_0 \int_A {\rm d}^2r \sum_{ijkl} \varepsilon^2_r e^{(s)\star}_i e^{(p)}_j p_{ijkl} \partial_k u_l^{*},\\
 
             Q^{\rm MB} =  \int_C {\rm d \mathbf{r} (\mathbf{u}^{*} \cdot \hat n}) \big[ (\varepsilon_a - \varepsilon_b)  
             \varepsilon_0 ({\rm \hat n \times \mathbf{e}}) \cdot ({\rm \hat n \times \mathbf{e}}) - 
@@ -77,11 +77,19 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
                 calculating the acoustic loss (alpha).
 
         Returns:
-            SBS_gain  : The SBS gain including both photoelastic and moving boundary contributions. Dimensions = [num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC].
+            SBS_gain  : The SBS gain including both photoelastic and moving boundary contributions. 
+                        Note this will be negative for backwards SBS because gain is expressed as 
+                        gain in power as move along z-axis in positive direction, but the Stokes
+                        waves experience gain as they propagate in the negative z-direction.
+                        Dimensions = [num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC].
 
-            SBS_gain_PE  : The SBS gain for only the photoelastic effect. Dimensions = [num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC].
+            SBS_gain_PE  : The SBS gain for only the photoelastic effect.
+                           The comment about negative gain (see SBS_gain above) holds here also.
+                           Dimensions = [num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC].
             
-            SBS_gain_MB  : The SBS gain for only the moving boundary effect. Dimensions = [num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC].
+            SBS_gain_MB  : The SBS gain for only the moving boundary effect. 
+                           The comment about negative gain (see SBS_gain above) holds here also.
+                           Dimensions = [num_modes_EM_Stokes,num_modes_EM_pump,num_modes_AC].
 
             alpha  : The acoustic loss for each mode. Dimensions = [num_modes_AC].
     """

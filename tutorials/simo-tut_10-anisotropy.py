@@ -79,7 +79,7 @@ print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,
 print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:])
 print("SBS_gain total \n", SBS_gain[EM_ival_Stokes,EM_ival_pump,:])
 # Mask negligible gain values to improve clarity of print out.
-threshold = 1e-3
+threshold = -1e-3
 masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)

@@ -92,11 +92,11 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Mask negligible gain values to improve clarity of print out.
 threshold = 1e-3
-threshold_indices = SBS_gain_PE < threshold
+threshold_indices = abs(SBS_gain_PE) < threshold
 SBS_gain_PE[threshold_indices] = 0
-threshold_indices = SBS_gain_MB < threshold
+threshold_indices = abs(SBS_gain_MB) < threshold
 SBS_gain_MB[threshold_indices] = 0
-threshold_indices = SBS_gain < threshold
+threshold_indices = abs(SBS_gain) < threshold
 SBS_gain[threshold_indices] = 0
 masked_PE = SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]
 masked_MB = SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:]
