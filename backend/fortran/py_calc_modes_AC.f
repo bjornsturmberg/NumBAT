@@ -435,20 +435,8 @@ C       endif
 c         stop
       endif
 C
-      do i=1,nval
-        z_tmp0 = beta1(i)
-        z_tmp = 1.0d0/z_tmp0+shift
-        z_beta = sqrt(z_tmp) / (2.0d0 * pi)
-C       Mode classification - we want the forward propagating mode
-        if (abs(imag(z_beta)/z_beta) .lt. 1.0d-8) then
-C         re(z_beta) > 0 for forward propagating mode
-          if (dble(z_beta) .lt. 0) z_beta = -z_beta
-        else
-C         im(z_beta) > 0 for forward decaying evanescent mode
-          if (imag(z_beta) .lt. 0) z_beta = -z_beta
-        endif
-        beta1(i) = z_beta
-      enddo
+C     Choose z_beta such that re(z_beta) > 0
+      if (dble(z_beta) .lt. 0) z_beta = -z_beta
 c
       call z_indexx_AC (nval, beta1, index)
 C
