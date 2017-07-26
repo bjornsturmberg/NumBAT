@@ -263,7 +263,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 
 
 #### Standard plotting of spectra #############################################
-def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, 
+def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50, 
                   xlim_min=None, xlim_max=None, ylim_min=None, ylim_max=None,
                   EM_AC='EM_E', stress_fields=False, pdf_png='png', 
                   prefix_str='', suffix_str=''):
@@ -273,6 +273,8 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             sim_wguide : A ``Struct`` instance that has had calc_modes calculated
 
         Keyword Args:
+            ivals  (list): mode numbers of modes you wish to plot.
+
             n_points  (int): The number of points across unitcell to
                 interpolate the field onto.
 
@@ -332,7 +334,12 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
     table_nod = sim_wguide.table_nod.T
     x_arr = sim_wguide.x_arr.T
 
-    for ival in range(len(sim_wguide.Eig_values)):
+    if ivals:
+        ival_range = ivals
+    else:
+        ival_range = range(len(sim_wguide.Eig_values))
+
+    for ival in ival_range:
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)

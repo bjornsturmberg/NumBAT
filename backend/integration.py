@@ -375,13 +375,10 @@ def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
         m_Ey_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         Ex_sigma_y = 0
         Ey_sigma_y = 0
-        # Ez_sigma_y = 0
         Ex_sigma_x = 0
         Ey_sigma_x = 0
-        # Ez_sigma_x = 0
         Ex_C_2 = 0
         Ey_C_2 = 0
-        # Ez_C_2 = 0
         # max_E = max(np.max(np.abs(m_Ex)), np.max(np.abs(m_Ey)), np.max(np.abs(m_Ez)))
 
         for ix in range(n_pts_x):
@@ -392,15 +389,6 @@ def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
                 m_Ey_xmirror[ix,iy] = (m_Ey[n_pts_x-ix-1,iy])
                 m_Ex_rotated[ix,iy] = -1*(m_Ex[n_pts_x-ix-1,n_pts_y-iy-1])
                 m_Ey_rotated[ix,iy] = -1*(m_Ey[n_pts_x-ix-1,n_pts_y-iy-1])
-                # Ex_sigma_y += np.abs(m_Ex[ix,iy] - m_Ex_ymirror[ix,iy])/max_E
-                # Ey_sigma_y += np.abs(m_Ey[ix,iy] - m_Ey_ymirror[ix,iy])/max_E
-                # Ez_sigma_y += np.abs(m_Ez[ix,iy] - m_Ez_ymirror[ix,iy])/max_E
-                # Ex_sigma_x += np.abs(m_Ex[ix,iy] - m_Ex_xmirror[ix,iy])/max_E
-                # Ey_sigma_x += np.abs(m_Ey[ix,iy] - m_Ey_xmirror[ix,iy])/max_E
-                # Ez_sigma_x += np.abs(m_Ez[ix,iy] - m_Ez_xmirror[ix,iy])/max_E
-                # Ex_C_2 += np.abs(m_Ex[ix,iy] - m_Ex_rotated[ix,iy])/max_E
-                # Ey_C_2 += np.abs(m_Ey[ix,iy] - m_Ey_rotated[ix,iy])/max_E
-                # Ez_C_2 += np.abs(m_Ez[ix,iy] - m_Ez_rotated[ix,iy])/max_E
 
         Ex_sigma_y = np.sum(np.abs(m_Ex - m_Ex_ymirror))
         Ey_sigma_y = np.sum(np.abs(m_Ey - m_Ey_ymirror))
@@ -408,10 +396,6 @@ def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
         Ey_sigma_x = np.sum(np.abs(m_Ey - m_Ey_xmirror))
         Ex_C_2 = np.sum(np.abs(m_Ex - m_Ex_rotated))
         Ey_C_2 = np.sum(np.abs(m_Ey - m_Ey_rotated))
-        # Ez_C_2 = np.sum(np.abs(m_Ez - m_Ez_rotated))
-        # sigma_y = (Ex_sigma_y + Ey_sigma_y + Ez_sigma_y)/(n_pts_x*n_pts_y)
-        # sigma_x = (Ex_sigma_x + Ey_sigma_x + Ez_sigma_x)/(n_pts_x*n_pts_y)
-        # C_2 = (Ex_C_2 + Ey_C_2 + Ez_C_2)/(n_pts_x*n_pts_y)
         sigma_y = (Ex_sigma_y + Ey_sigma_y)/(n_pts_x*n_pts_y)
         sigma_x = (Ex_sigma_x + Ey_sigma_x)/(n_pts_x*n_pts_y)
         C_2 = (Ex_C_2 + Ey_C_2)/(n_pts_x*n_pts_y)
