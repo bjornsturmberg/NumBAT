@@ -261,7 +261,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
 
 
 #### Categorise modes by their symmetries #############################################
-def symmetries(sim_wguide, n_points=10):
+def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
     """ Plot EM mode fields.
 
         Args:
@@ -360,6 +360,11 @@ def symmetries(sim_wguide, n_points=10):
         m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_Ex = m_ReEx + 1j*m_ImEx
         m_Ey = m_ReEy + 1j*m_ImEy
+
+        if np.max(np.abs(m_Ex[~np.isnan(m_Ex)])) < negligible_threshold:
+            m_Ex = np.zeros(np.shape(m_Ex))
+        if np.max(np.abs(m_Ey[~np.isnan(m_Ey)])) < negligible_threshold:
+            m_Ey = np.zeros(np.shape(m_Ey))
 
 
         m_Ex_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
