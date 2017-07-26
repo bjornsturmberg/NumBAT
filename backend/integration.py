@@ -308,7 +308,6 @@ def symmetries(sim_wguide, n_points=10):
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
         v_Ex6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
         v_Ey6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
-        # v_Ez6p = np.zeros(6*sim_wguide.n_msh_el, dtype=np.complex128)
         v_triang6p = []
 
         i = 0
@@ -330,7 +329,6 @@ def symmetries(sim_wguide, n_points=10):
                 v_y6p[i] = x_arr[i_ex, 1]
                 v_Ex6p[i] = mode_fields[0,i_node,ival,i_el]
                 v_Ey6p[i] = mode_fields[1,i_node,ival,i_el]
-                # v_Ez6p[i] = mode_fields[2,i_node,ival,i_el]
                 i += 1
 
         # dense triangulation with unique points
@@ -353,20 +351,16 @@ def symmetries(sim_wguide, n_points=10):
         ImEx = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ex6p.imag,trifinder=finder)
         ReEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.real,trifinder=finder)
         ImEy = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ey6p.imag,trifinder=finder)
-        # ReEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.real,trifinder=finder)
-        # ImEz = matplotlib.tri.LinearTriInterpolator(triang6p,v_Ez6p.imag,trifinder=finder)
 
         ### plotting
         # interpolated fields
         m_ReEx = ReEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ReEy = ReEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_ReEz = ReEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ImEx = ImEx(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_ImEy = ImEy(v_x,v_y).reshape(n_pts_x,n_pts_y)
-        # m_ImEz = ImEz(v_x,v_y).reshape(n_pts_x,n_pts_y)
         m_Ex = m_ReEx + 1j*m_ImEx
         m_Ey = m_ReEy + 1j*m_ImEy
-        # m_Ez = m_ReEz + 1j*m_ImEz
+
 
         m_Ex_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         m_Ex_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
@@ -374,9 +368,6 @@ def symmetries(sim_wguide, n_points=10):
         m_Ey_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         m_Ey_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         m_Ey_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
-        # m_Ez_ymirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
-        # m_Ez_xmirror = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
-        # m_Ez_rotated = np.zeros((n_pts_x,n_pts_y), dtype=np.complex128)
         Ex_sigma_y = 0
         Ey_sigma_y = 0
         # Ez_sigma_y = 0
@@ -392,13 +383,10 @@ def symmetries(sim_wguide, n_points=10):
             for iy in range(n_pts_y):
                 m_Ex_ymirror[ix,iy] = (m_Ex[ix,n_pts_y-iy-1])
                 m_Ey_ymirror[ix,iy] = -1*(m_Ey[ix,n_pts_y-iy-1])
-                # m_Ez_ymirror[ix,iy] = m_Ez[ix,n_pts_y-iy-1]
                 m_Ex_xmirror[ix,iy] = -1*(m_Ex[n_pts_x-ix-1,iy])
                 m_Ey_xmirror[ix,iy] = (m_Ey[n_pts_x-ix-1,iy])
-                # m_Ez_xmirror[ix,iy] = m_Ez[n_pts_x-ix-1,iy]
                 m_Ex_rotated[ix,iy] = -1*(m_Ex[n_pts_x-ix-1,n_pts_y-iy-1])
                 m_Ey_rotated[ix,iy] = -1*(m_Ey[n_pts_x-ix-1,n_pts_y-iy-1])
-                # m_Ez_rotated[ix,iy] = m_Ez[n_pts_x-ix-1,iy]
                 # Ex_sigma_y += np.abs(m_Ex[ix,iy] - m_Ex_ymirror[ix,iy])/max_E
                 # Ey_sigma_y += np.abs(m_Ey[ix,iy] - m_Ey_ymirror[ix,iy])/max_E
                 # Ez_sigma_y += np.abs(m_Ez[ix,iy] - m_Ez_ymirror[ix,iy])/max_E
@@ -411,10 +399,8 @@ def symmetries(sim_wguide, n_points=10):
 
         Ex_sigma_y = np.sum(np.abs(m_Ex - m_Ex_ymirror))
         Ey_sigma_y = np.sum(np.abs(m_Ey - m_Ey_ymirror))
-        # Ez_sigma_y = np.sum(np.abs(m_Ez - m_Ez_ymirror))
         Ex_sigma_x = np.sum(np.abs(m_Ex - m_Ex_xmirror))
         Ey_sigma_x = np.sum(np.abs(m_Ey - m_Ey_xmirror))
-        # Ez_sigma_x = np.sum(np.abs(m_Ez - m_Ez_xmirror))
         Ex_C_2 = np.sum(np.abs(m_Ex - m_Ex_rotated))
         Ey_C_2 = np.sum(np.abs(m_Ey - m_Ey_rotated))
         # Ez_C_2 = np.sum(np.abs(m_Ez - m_Ez_rotated))
