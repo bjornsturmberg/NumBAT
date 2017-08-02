@@ -20,7 +20,9 @@ from matplotlib import ticker
 
 from fortran import NumBAT
 
-try: plt.style.use('bjornstyle')
+try: 
+    plt.style.use('bjornstyle')
+    colors = [color['color'] for color in list(plt.rcParams['axes.prop_cycle'])]
 except (ValueError, IOError, AttributeError): "Preferred matplotlib style file not found."
 
 
@@ -266,7 +268,8 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 #### Standard plotting of spectra #############################################
 def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50, 
                   xlim_min=None, xlim_max=None, ylim_min=None, ylim_max=None,
-                  EM_AC='EM_E', stress_fields=False, pdf_png='png', 
+                  EM_AC='EM_E', contours=False, contour_lst=None,
+                  stress_fields=False, pdf_png='png', 
                   prefix_str='', suffix_str=''):
     """ Plot E or H fields of EM mode, or the AC modes displacement fields.
 
@@ -288,6 +291,10 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             ylim_max  (float): Limit plotted yrange to ylim_min:(1-ylim_max) of unitcell
 
             EM_AC  (str): Either 'EM' or 'AC' modes
+
+            contours  (bool): Controls contours being overlaid on fields
+
+            contour_lst  (list): Specify contour values
 
             stress_fields  (bool): Calculate acoustic stress fields
 
@@ -322,8 +329,10 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
     area = abs((x_max-x_min)*(y_max-y_min))
     n_pts_x = int(n_points*abs(x_max-x_min)/np.sqrt(area))
     n_pts_y = int(n_points*abs(y_max-y_min)/np.sqrt(area))
-    v_x=np.zeros(n_pts_x*n_pts_y)
-    v_y=np.zeros(n_pts_x*n_pts_y)
+    v_x = np.zeros(n_pts_x*n_pts_y)
+    v_y = np.zeros(n_pts_x*n_pts_y)
+    if contours:
+        v_XX, v_YY = np.meshgrid(range(n_pts_x), range(n_pts_y))
     i=0
     for x in np.linspace(x_min,x_max,n_pts_x):
         for y in np.linspace(y_min,y_max,n_pts_y):
@@ -457,14 +466,21 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             cax = divider.append_axes("right", size="5%", pad=0.1)
             cbar = plt.colorbar(im, cax=cax)
             if xlim_min/ylim_min > 3:
-                cbarlabels = np.linspace(np.min(plot), np.max(plot), num=3)
+                cbarticks = np.linspace(np.min(plot), np.max(plot), num=3)
             if xlim_min/ylim_min > 1.5:
-                cbarlabels = np.linspace(np.min(plot), np.max(plot), num=5)
+                cbarticks = np.linspace(np.min(plot), np.max(plot), num=5)
             else:
-                cbarlabels = np.linspace(np.min(plot), np.max(plot), num=7)
-            cbar.set_ticks(cbarlabels)
-            cbarlabels = ['%.2f' %t for t in cbarlabels]
+                cbarticks = np.linspace(np.min(plot), np.max(plot), num=7)
+            cbar.set_ticks(cbarticks)
+            cbarlabels = ['%.2f' %t for t in cbarticks]
             cbar.set_ticklabels(cbarlabels)
+            if contours:
+                if contour_lst:
+                    cbarticks = contour_lst
+                    print(contour_lst)
+                if np.max(np.abs(plot[~np.isnan(plot)])) > plot_threshold:
+                    CS2 = ax.contour(v_XX, v_YY, plot.T, levels=cbarticks, colors=colors[::-1], linewidths=(1.5,))
+                cbar.add_lines(CS2)
             cbar.ax.tick_params(labelsize=title_font-10)
 
 
@@ -610,6 +626,13 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
                 cbar.set_ticks(cbarlabels)
                 cbarlabels = ['%.2f' %t for t in cbarlabels]
                 cbar.set_ticklabels(cbarlabels)
+                if contours:
+                    if contour_lst:
+                        cbarticks = contour_lst
+                        print(contour_lst)
+                    if np.max(np.abs(plot[~np.isnan(plot)])) > plot_threshold:
+                        CS2 = ax.contour(v_XX, v_YY, plot.T, levels=cbarticks, colors=colors[::-1], linewidths=(1.5,))
+                    cbar.add_lines(CS2)
                 cbar.ax.tick_params(labelsize=title_font-10)
             fig.set_tight_layout(True)
             n_str = ''
