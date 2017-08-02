@@ -456,16 +456,15 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.1)
             cbar = plt.colorbar(im, cax=cax)
-            if xlim_min/ylim_min > 1.5:
-                cbarlabels = np.linspace(np.min(plot), np.max(plot), num=5)
-                cbar.set_ticks(cbarlabels)
-                cbarlabels = ['%.2f' %t for t in cbarlabels]
-                cbar.set_ticklabels(cbarlabels)
             if xlim_min/ylim_min > 3:
                 cbarlabels = np.linspace(np.min(plot), np.max(plot), num=3)
-                cbar.set_ticks(cbarlabels)
-                cbarlabels = ['%.2f' %t for t in cbarlabels]
-                cbar.set_ticklabels(cbarlabels)
+            if xlim_min/ylim_min > 1.5:
+                cbarlabels = np.linspace(np.min(plot), np.max(plot), num=5)
+            else:
+                cbarlabels = np.linspace(np.min(plot), np.max(plot), num=7)
+            cbar.set_ticks(cbarlabels)
+            cbarlabels = ['%.2f' %t for t in cbarlabels]
+            cbar.set_ticklabels(cbarlabels)
             cbar.ax.tick_params(labelsize=title_font-10)
 
 
@@ -602,16 +601,15 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
                 divider = make_axes_locatable(ax)
                 cax = divider.append_axes("right", size="5%", pad=0.1)
                 cbar = plt.colorbar(im, cax=cax, format='%.2e')
-                if xlim_min/ylim_min > 1.5:
-                    cbarlabels = np.linspace(np.min(plot), np.max(plot), num=5)
-                    cbar.set_ticks(cbarlabels)
-                    cbarlabels = ['%.2f' %t for t in cbarlabels]
-                    cbar.set_ticklabels(cbarlabels)
                 if xlim_min/ylim_min > 3:
                     cbarlabels = np.linspace(np.min(plot), np.max(plot), num=3)
-                    cbar.set_ticks(cbarlabels)
-                    cbarlabels = ['%.2f' %t for t in cbarlabels]
-                    cbar.set_ticklabels(cbarlabels)
+                if xlim_min/ylim_min > 1.5:
+                    cbarlabels = np.linspace(np.min(plot), np.max(plot), num=5)
+                else:
+                    cbarlabels = np.linspace(np.min(plot), np.max(plot), num=7)
+                cbar.set_ticks(cbarlabels)
+                cbarlabels = ['%.2f' %t for t in cbarlabels]
+                cbar.set_ticklabels(cbarlabels)
                 cbar.ax.tick_params(labelsize=title_font-10)
             fig.set_tight_layout(True)
             n_str = ''
