@@ -16,6 +16,7 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib import ticker
 
 from fortran import NumBAT
 
@@ -273,10 +274,10 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             sim_wguide : A ``Struct`` instance that has had calc_modes calculated
 
         Keyword Args:
-            ivals  (list): mode numbers of modes you wish to plot.
+            ivals  (list): mode numbers of modes you wish to plot
 
             n_points  (int): The number of points across unitcell to
-                interpolate the field onto.
+                interpolate the field onto
 
             xlim_min  (float): Limit plotted xrange to xlim_min:(1-xlim_max) of unitcell
 
@@ -292,7 +293,9 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
 
             pdf_png  (str): File type to save, either 'png' or 'pdf' 
 
-            suffix_str  (str): Add a string to the file name.
+            prefix_str  (str): Add a string to start of file name
+            
+            suffix_str  (str): Add a string to end of file name.
     """
 
     if EM_AC is not 'EM_E' and EM_AC is not 'EM_H' and EM_AC is not 'AC':
@@ -453,6 +456,14 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.1)
             cbar = plt.colorbar(im, cax=cax)
+            if xlim_min/ylim_min > 1.6:
+                tick_locator = ticker.MaxNLocator(nbins=6)
+                cbar.locator = tick_locator
+                cbar.update_ticks()
+            if xlim_min/ylim_min > 3:
+                tick_locator = ticker.MaxNLocator(nbins=4)
+                cbar.locator = tick_locator
+                cbar.update_ticks()
             cbar.ax.tick_params(labelsize=title_font-10)
 
 
