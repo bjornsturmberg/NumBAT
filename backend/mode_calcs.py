@@ -476,3 +476,15 @@ def bkwd_Stokes_modes(EM_sim):
     Stokes_modes.Eig_values = -1.0*Stokes_modes.Eig_values
     Stokes_modes.EM_mode_power = -1.0*Stokes_modes.EM_mode_power
     return Stokes_modes
+
+
+
+def fwd_Stokes_modes(EM_sim):
+    """ Defines the forward travelling Stokes waves as a copy
+        of the forward travelling pump waves.
+
+    Returns a ``Simmo`` object that has these key values:
+
+    """
+    Stokes_modes = copy.deepcopy(EM_sim)
+    return Stokes_modes
