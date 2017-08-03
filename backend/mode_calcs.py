@@ -45,7 +45,8 @@ class Simmo(object):
 
         sol1: the associated Eigenvectors, ie. the fields, stored as [field comp, node nu on element, Eig value, el nu]
 
-        EM_mode_power: the power in the optical modes.
+        EM_mode_power: the power in the optical modes. Note this power is negative for modes travelling in the negative
+                       z-direction, eg the Stokes wave in backward SBS.
         """
         self.d_in_m = self.structure.unitcell_x*1e-9
         n_list = []
@@ -466,8 +467,24 @@ def bkwd_Stokes_modes(EM_sim):
 
     sol1: the associated Eigenvectors, ie. the fields, stored as
            [field comp, node nu on element, Eig value, el nu]
+
+    EM_mode_power: the power in the Stokes modes. Note this power is negative because the modes 
+                   are travelling in the negative z-direction.
     """
     Stokes_modes = copy.deepcopy(EM_sim)
     Stokes_modes.sol1 = np.conj(Stokes_modes.sol1)
-    Stokes_modes.Eig_values = -1.0*(Stokes_modes.Eig_values)
+    Stokes_modes.Eig_values = -1.0*Stokes_modes.Eig_values
+    Stokes_modes.EM_mode_power = -1.0*Stokes_modes.EM_mode_power
+    return Stokes_modes
+
+
+
+def fwd_Stokes_modes(EM_sim):
+    """ Defines the forward travelling Stokes waves as a copy
+        of the forward travelling pump waves.
+
+    Returns a ``Simmo`` object that has these key values:
+
+    """
+    Stokes_modes = copy.deepcopy(EM_sim)
     return Stokes_modes

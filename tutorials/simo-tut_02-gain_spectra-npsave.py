@@ -23,6 +23,8 @@ import plotting
 from fortran import NumBAT
 
 
+start = time.time()
+
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
@@ -40,8 +42,8 @@ AC_ival = 'All'
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
-                        material_a=materials.Si,
+                        material_bkg=materials.Vacuum,
+                        material_a=materials.Si_2016_Smith,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 
@@ -71,10 +73,10 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 # Plot the E fields of the EM modes fields - specified with EM_AC='EM_E'.
 # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E')
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', prefix_str='tut_02-')
 # Plot the H fields of the EM modes - specified with EM_AC='EM_H'.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_H')
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_H', prefix_str='tut_02-')
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
@@ -98,7 +100,7 @@ print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 # which excludes vacuum regions, so no need to restrict area plotted.
 # We want to get pdf files so set pdf_png='pdf' 
 # (default is png as these are easier to flick through).
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='pdf')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='pdf', prefix_str='tut_02-')
 
 # Do not calculate the acoustic loss from our fields, instead set a Q factor.
 set_q_factor = 1000.
@@ -107,7 +109,8 @@ set_q_factor = 1000.
 # as well as just for PE, and just for MB.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
     sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
-    EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
+    EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, 
+    fixed_Q=set_q_factor)
 # Save the gain calculation results
 np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, 
             SBS_gain_MB=SBS_gain_MB, alpha=alpha)
@@ -126,9 +129,15 @@ np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE,
 freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz
 freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 2  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max)
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
+    prefix_str='tut_02-')
 # Zoomed in version
 freq_min = 11  # GHz
 freq_max = 15  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_zoom')
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
+    prefix_str='tut_02-', suffix_str='_zoom')
+
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))

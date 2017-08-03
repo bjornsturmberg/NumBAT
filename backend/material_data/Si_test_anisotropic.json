@@ -1,0 +1,122 @@
+ {
+  "file_name": "Si_test_anisotropic",  // Name of this file, will be used as identifier
+  "chemical": "Si",  // Chemical composition
+  "author": "N/A",  // Author of data
+  "date": "N/A",  // Year of data publication/creation
+  "institution": "N/A",  // Source institution
+  "doi": "N/A",  // doi or, failing that, the http address
+  "n": 3.475686982,  // Refractive index []
+  "s": 2329,  // Density [kg/m3]
+  "c_11": 165.6e9,  // Stiffness tensor component [Pa]
+  "c_12": 63.9e9,  // Stiffness tensor component [Pa]
+  "c_44": 79.5e9,  // Stiffness tensor component [Pa]
+  "p_11": -0.094,  // Photoelastic tensor component []
+  "p_12": 0.017,  // Photoelastic tensor component []
+  "p_44": -0.051,  // Photoelastic tensor component []
+  "eta_11": 5.9e-3,  // Acoustic loss tensor component [Pa s]
+  "eta_12": 5.16e-3,  // Acoustic loss tensor component [Pa s]
+  "eta_44": 0.62e-3,  // Acoustic loss tensor component [Pa s] 
+// Enter all components of tensors 
+// (the chosen values reproduce the isotropic Si_2016_Smith material)
+"c_13": 63.9e9,
+"c_14": 0.0,
+"c_15": 0.0,
+"c_16": 0.0 ,
+"c_21": 63.9e9,
+"c_22": 165.6e9,
+"c_23": 63.9e9,
+"c_24": 0.0,
+"c_25": 0.0,
+"c_26": 0.0 ,
+"c_31": 63.9e9,
+"c_32": 63.9e9,
+"c_33": 165.6e9,
+"c_34": 0.0,
+"c_35": 0.0,
+"c_36": 0.0 ,
+"c_41": 0.0,
+"c_42": 0.0,
+"c_43": 0.0,
+"c_45": 0.0,
+"c_46": 0.0 ,
+"c_51": 0.0,
+"c_52": 0.0,
+"c_53": 0.0,
+"c_54": 0.0,
+"c_55": 79.5e9,
+"c_56": 0.0 ,
+"c_61": 0.0,
+"c_62": 0.0,
+"c_63": 0.0,
+"c_64": 0.0,
+"c_65": 0.0,
+"c_66": 79.5e9 ,
+
+"p_13": 0.017,
+"p_14": 0.0,
+"p_15": 0.0,
+"p_16": 0.0 ,
+"p_21": 0.017,
+"p_22": -0.094,
+"p_23": 0.017,
+"p_24": 0.0,
+"p_25": 0.0,
+"p_26": 0.0,
+"p_31": 0.017,
+"p_32": 0.017,
+"p_33": -0.094,
+"p_34": 0.0,
+"p_35": 0.0,
+"p_36": 0.0 ,
+"p_41": 0.0,
+"p_42": 0.0,
+"p_43": 0.0,
+"p_45": 0.0,
+"p_46": 0.0,
+"p_51": 0.0,
+"p_52": 0.0,
+"p_53": 0.0,
+"p_54": 0.0,
+"p_55": -0.051,
+"p_56": 0.0 ,
+"p_61": 0.0,
+"p_62": 0.0,
+"p_63": 0.0,
+"p_64": 0.0,
+"p_65": 0.0,
+"p_66": -0.051,
+
+"eta_13": 5.16e-3,
+"eta_14": 0.0,
+"eta_15": 0.0,
+"eta_16": 0.0,
+"eta_21": 5.16e-3,
+"eta_22": 5.9e-3,
+"eta_23": 5.16e-3,
+"eta_24": 0.0,
+"eta_25": 0.0,
+"eta_26": 0.0 ,
+"eta_31": 5.16e-3,
+"eta_32": 5.16e-3,
+"eta_33": 5.9e-3,
+"eta_34": 0.0,
+"eta_35": 0.0,
+"eta_36": 0.0,
+"eta_41": 0.0,
+"eta_42": 0.0,
+"eta_43": 0.0,
+"eta_45": 0.0,
+"eta_46": 0.0 ,
+"eta_51": 0.0,
+"eta_52": 0.0,
+"eta_53": 0.0,
+"eta_54": 0.0,
+"eta_55": 0.620e-3,
+"eta_56": 0.0,
+"eta_61": 0.0,
+"eta_62": 0.0,
+"eta_63": 0.0,
+"eta_64": 0.0,
+"eta_65": 0.0,
+"eta_66": 0.620e-3
+}

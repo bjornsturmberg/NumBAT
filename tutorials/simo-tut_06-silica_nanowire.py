@@ -23,6 +23,8 @@ import plotting
 from fortran import NumBAT
 
 
+start = time.time()
+
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 5*wl_nm
@@ -39,7 +41,7 @@ EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
+                        material_bkg=materials.Vacuum,
                         material_a=materials.SiO2,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
@@ -52,8 +54,9 @@ sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 # plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-#                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', add_name='NW')
-# plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM_E', add_name='NW')
+#                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', 
+#                           prefix_str='tut_06-', suffix_str='NW')
+# plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM_E', prefix_str='tut_06-', suffix_str='NW')
 
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
@@ -76,7 +79,7 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 # np.savez('wguide_data_AC', sim_AC=sim_AC)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC = npzfile['sim_AC'].tolist()
-# plotting.plt_mode_fields(sim_AC, EM_AC='AC', add_name='NW')
+# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str='tut_06-', suffix_str='NW')
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
@@ -98,5 +101,10 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = 0  # GHz
 freq_max = 12  # GHz
+
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_SiO2_NW')
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
+    prefix_str='tut_06-', suffix_str='_SiO2_NW')
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))

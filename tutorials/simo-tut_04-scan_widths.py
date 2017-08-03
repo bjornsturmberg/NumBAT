@@ -25,6 +25,8 @@ import plotting
 from fortran import NumBAT
 
 
+start = time.time()
+
 # Select the number of CPUs to use in simulation.
 num_cores = 6
 
@@ -74,8 +76,8 @@ for width in waveguide_widths:
 
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
-                            material_bkg=materials.Air,
-                            material_a=materials.Si,
+                            material_bkg=materials.Vacuum,
+                            material_a=materials.Si_2016_Smith,
                             lc_bkg=3, lc2=2000.0, lc3=1000.0)
     geo_objects_list.append(wguide)
 
@@ -110,7 +112,8 @@ for i_w, width_obj in enumerate(width_objs):
     freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 5  # GHz
     freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 5  # GHz
     plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_scan%i' % i_w)
+        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
+        prefix_str='tut_04-', suffix_str='_scan%i' % i_w)
 
     # Repeat calc to collect data for waterfall plot.
     tune_steps = 5e4
@@ -146,3 +149,7 @@ ax.set_zlim3d(0,1500)
 plt.tick_params(axis='both', which='major', labelsize=12, pad=-2)
 plt.savefig('gain_spectra_waterfall.pdf')
 plt.close()
+
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))

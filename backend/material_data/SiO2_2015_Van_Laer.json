@@ -1,0 +1,19 @@
+ {
+  "file_name": "SiO2_2015_Van_Laer",  // Name of this file, will be used as identifier
+  "chemical": "SiO2",  // Chemical composition
+  "author": "Van Laer",  // Author of data
+  "date": "2015",  // Year of data publication/creation
+  "institution": "Ghent",  // Source institution
+  "doi": "dx.doi.org/10.1038/nphoton.2015.11",  // doi or, failing that, the http address
+  "n": 1.44,  // Refractive index []
+  "s": 2203,  // Density [kg/m3]
+  "c_11": 78e9,  // Stiffness tensor component [Pa]
+  "c_12": 16e9,  // Stiffness tensor component [Pa]
+  "c_44": 31e9,  // Stiffness tensor component [Pa]
+  "p_11": 0.12,  // Photoelastic tensor component []
+  "p_12": 0.270,  // Photoelastic tensor component []
+  "p_44": -0.073,  // Photoelastic tensor component []
+  "eta_11": 1.6e-3,  // Acoustic loss tensor component [Pa s]
+  "eta_12": 1.29e-3,  // Acoustic loss tensor component [Pa s]
+  "eta_44": 0.16e-3  // Acoustic loss tensor component [Pa s] 
+}

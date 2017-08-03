@@ -1,0 +1,19 @@
+ {
+  "file_name": "As2S3_2017_Morrison",  // Name of this file, will be used as identifier
+  "chemical": "As2S3",  // Chemical composition
+  "author": "Morrison",  // Author of data
+  "date": "2017",  // Year of data publication/creation
+  "institution": "Uni. of Sydney",  // Source institution
+  "doi": "arxiv.org/abs/1702.05233",  // doi or, failing that, the http address
+  "n": 2.44,  // Refractive index []
+  "s": 3200,  // Density [kg/m3]
+  "c_11": 19.5e9,  // Stiffness tensor component [Pa]
+  "c_12": 8.363e9,  // Stiffness tensor component [Pa]
+  "c_44": 6.337e9,  // Stiffness tensor component [Pa]
+  "p_11": 0.25,  // Photoelastic tensor component []
+  "p_12": 0.24,  // Photoelastic tensor component []
+  "p_44": 0.005,  // Photoelastic tensor component []
+  "eta_11": 1.8e-3,  // Acoustic loss tensor component [Pa s]
+  "eta_12": 1.45e-3,  // Acoustic loss tensor component [Pa s]
+  "eta_44": 0.18e-3  // Acoustic loss tensor component [Pa s] 
+} 

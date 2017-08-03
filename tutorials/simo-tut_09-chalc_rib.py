@@ -56,7 +56,7 @@ AC_ival = 'All'
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 						coat_x=coat_x, coat_y=coat_y, slab_a_y=slab_a_y, slab_b_y=slab_b_y,
-                        material_bkg=materials.Air,
+                        material_bkg=materials.Vacuum,
                         material_a=materials.As2S3_exp,
                         material_c=materials.SiO2,
                         material_d=materials.SiO2,
@@ -107,7 +107,7 @@ print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,
 print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:])
 print("SBS_gain total \n", SBS_gain[EM_ival_Stokes,EM_ival_pump,:])
 # Mask negligible gain values to improve clarity of print out.
-threshold = 1e-3
+threshold = -1e-3
 masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)

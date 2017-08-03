@@ -49,15 +49,15 @@ AC_ival = 'All'
 # Use specified parameters to create a waveguide object.
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Air,
+                        material_bkg=materials.Vacuum,
                         material_a=materials.Si_2016_Smith,
                         lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=False)
 
-# # Explicitly remind ourselves what data we're using.
-# print('\n Using %s material data from' % wguide.material_b.chemical)
-# print('Author:', wguide.material_b.author)
-# print('Year:', wguide.material_b.date)
-# print('Ref:', wguide.material_b.doi)
+# Explicitly remind ourselves what data we're using.
+print('\nUsing %s material data from' % wguide.material_a.chemical)
+print('Author:', wguide.material_a.author)
+print('Year:', wguide.material_a.date)
+print('Ref:', wguide.material_a.doi)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -96,10 +96,11 @@ print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,
 print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:])
 print("SBS_gain total \n", SBS_gain[EM_ival_Stokes,EM_ival_pump,:])
 # Mask negligible gain values to improve clarity of print out.
-threshold = 1e-3
+threshold = -1e-3
 masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
+
 print("\n SBS_gain PE contribution \n", masked_PE)
 print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)

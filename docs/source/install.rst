@@ -20,7 +20,7 @@ Or, if you prefer to do things manually, this is equivalent to ::
     $ cd ../../tests/
     $ nosetests3
 
-where the <dependencies> packages are listed dependencies.txt.
+where the <dependencies> packages are listed dependencies.txt. Note that it is safer to pip install matplotlib than apt-get'ing as will install matplotlib 2.0 without conflicting older versions.
 
 **This is all there is, there isn't any more.**
 

@@ -1,0 +1,19 @@
+ {
+  "file_name": "Si_2016_Smith",  // Name of this file, will be used as identifier
+  "chemical": "Si",  // Chemical composition
+  "author": "Smith",  // Author of data
+  "date": "2016",  // Year of data publication/creation
+  "institution": "Uni. of Sydney",  // Source institution
+  "doi": "dx.doi.org/10.1364/OL.41.002338",  // doi or, failing that, the http address
+  "n": 3.48,  // Refractive index []
+  "s": 2329,  // Density [kg/m3]
+  "c_11": 165.6e9,  // Stiffness tensor component [Pa]
+  "c_12": 63.9e9,  // Stiffness tensor component [Pa]
+  "c_44": 79.5e9,  // Stiffness tensor component [Pa]
+  "p_11": -0.094,  // Photoelastic tensor component []
+  "p_12": 0.017,  // Photoelastic tensor component []
+  "p_44": -0.051,  // Photoelastic tensor component []
+  "eta_11": 5.9e-3,  // Acoustic loss tensor component [Pa s]
+  "eta_12": 5.16e-3,  // Acoustic loss tensor component [Pa s]
+  "eta_44": 0.62e-3  // Acoustic loss tensor component [Pa s] 
+}

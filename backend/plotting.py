@@ -16,10 +16,13 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib import ticker
 
 from fortran import NumBAT
 
-try: plt.style.use('bjornstyle')
+try: 
+    plt.style.use('bjornstyle')
+    colors = [color['color'] for color in list(plt.rcParams['axes.prop_cycle'])]
 except (ValueError, IOError, AttributeError): "Preferred matplotlib style file not found."
 
 
@@ -56,7 +59,7 @@ def zeros_int_str(zero_int):
 
 def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
                 EM_ival1, EM_ival2, AC_ival, freq_min, freq_max, num_interp_pts=3000,
-                pdf_png='png', save_txt=False, add_name=''):
+                pdf_png='png', save_txt=False, prefix_str='', suffix_str=''):
     r""" Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
         Note the we use the spectral linewidth of the resonances
 
@@ -113,32 +116,32 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
             gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
-            plt.plot(freq_list_GHz, gain_list)
+            plt.plot(freq_list_GHz, np.abs(gain_list))
             if save_txt:
                 save_array = (freq_list_GHz, gain_list)
                 np.savetxt('gain_spectra-mode_comps%(add)s-%(mode)i.csv' 
-                            % {'add' : add_name, 'mode' : AC_i}, 
+                            % {'add' : suffix_str, 'mode' : AC_i}, 
                             save_array, delimiter=',')
             # set up an interpolation for summing all the gain peaks
             interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
             interp_values += interp_spectrum
-    plt.plot(interp_grid, interp_values, 'k', linewidth=3, label="Total")
+    plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
     if save_txt:
         save_array = (interp_grid, interp_values)
         np.savetxt('gain_spectra-mode_comps%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
+                    % {'add' : suffix_str}, 
                     save_array, delimiter=',')
     plt.legend(loc=0)
     if freq_min and freq_max:
         plt.xlim(freq_min,freq_max)
     plt.xlabel('Frequency (GHz)')
-    plt.ylabel('Gain (1/Wm)')
+    plt.ylabel('|Gain| (1/Wm)')
 
 
     if pdf_png=='png':
-        plt.savefig('gain_spectra-mode_comps%(add)s.png' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-mode_comps%(add)s.pdf' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
     plt.figure()
@@ -148,32 +151,32 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
             gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
-            plt.plot(freq_list_GHz, 10*np.log10(np.exp(abs(gain_list)*6.5e-3))) 
+            plt.plot(freq_list_GHz, np.abs(10*np.log10(np.exp(abs(gain_list)*6.5e-3))))
             # 6.5e-3 is the estimated value of L_eff*P_pump/A_eff in https://arxiv.org/abs/1702.05233
             if save_txt:
                 save_array = (freq_list_GHz, 20*np.log10(abs(gain_list)))
-                np.savetxt('gain_spectra-mode_comps-dB%(add)s-%(mode)i.csv' 
-                            % {'add' : add_name, 'mode' : AC_i}, 
+                np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-%(mode)i.csv' 
+                            % {'pre' : prefix_str, 'add' : suffix_str, 'mode' : AC_i}, 
                             save_array, delimiter=',')
             # set up an interpolation for summing all the gain peaks
             interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
             interp_values += interp_spectrum
-    plt.plot(interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)), 'k', linewidth=3, label="Total")
+    plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'k', linewidth=3, label="Total")
     if save_txt:
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)))
-        np.savetxt('gain_spectra-mode_comps-dB%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-Total.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
     plt.legend(loc=0)
     if freq_min and freq_max:
         plt.xlim(freq_min,freq_max)
     plt.xlabel('Frequency (GHz)')
-    plt.ylabel('Gain (dB)')
+    plt.ylabel('|Gain| (dB)')
 
     if pdf_png=='png':
-        plt.savefig('gain_spectra-mode_comps-dB%(add)s.png' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-mode_comps-dB%(add)s.pdf' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
 
@@ -199,81 +202,85 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
             interp_values_MB += interp_spectrum_MB
-    plt.plot(interp_grid, interp_values, 'k', linewidth=3, label="Total")
-    plt.plot(interp_grid, interp_values_PE, 'r', linewidth=3, label="PE")
-    plt.plot(interp_grid, interp_values_MB, 'g', linewidth=3, label="MB")
+    plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
+    plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
+    plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
     plt.legend(loc=0)
     if freq_min and freq_max:
         plt.xlim(freq_min,freq_max)
     plt.xlabel('Frequency (GHz)')
-    plt.ylabel('Gain (1/Wm)')
+    plt.ylabel('|Gain| (1/Wm)')
 
     if pdf_png=='png':
-        plt.savefig('gain_spectra-MB_PE_comps%(add)s.png' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-MB_PE_comps%(add)s.pdf' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
     if save_txt:
         save_array = (interp_grid, interp_values)
-        np.savetxt('gain_spectra-MB_PE_comps%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps%(add)s-Total.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
         save_array = (interp_grid, interp_values_PE)
-        np.savetxt('gain_spectra-MB_PE_comps%(add)s-PE.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps%(add)s-PE.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
         save_array = (interp_grid, interp_values_MB)
-        np.savetxt('gain_spectra-MB_PE_comps%(add)s-MB.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps%(add)s-MB.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
 
     plt.figure()
     plt.clf()
-    plt.plot(interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)), 'k', linewidth=3, label="Total")
-    plt.plot(interp_grid, 10*np.log10(np.exp(abs(interp_values_PE)*6.5e-3)), 'r', linewidth=3, label="PE")
-    plt.plot(interp_grid, 10*np.log10(np.exp(abs(interp_values_MB)*6.5e-3)), 'g', linewidth=3, label="MB")
+    plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'k', linewidth=3, label="Total")
+    plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values_PE)*6.5e-3))), 'r', linewidth=3, label="PE")
+    plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values_MB)*6.5e-3))), 'g', linewidth=3, label="MB")
     plt.legend(loc=0)
     if freq_min and freq_max:
         plt.xlim(freq_min,freq_max)
     plt.xlabel('Frequency (GHz)')
-    plt.ylabel('Gain (dB)')
+    plt.ylabel('|Gain| (dB)')
 
     if pdf_png=='png':
-        plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.png' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('gain_spectra-MB_PE_comps-dB%(add)s.pdf' % {'add' : add_name})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
     if save_txt:
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-Total.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s-Total.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values_PE)*6.5e-3)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-PE.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s-PE.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values_MB)*6.5e-3)))
-        np.savetxt('gain_spectra-MB_PE_comps-dB%(add)s-MB.csv' 
-                    % {'add' : add_name}, 
+        np.savetxt('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s-MB.csv' 
+                    % {'pre' : prefix_str, 'add' : suffix_str}, 
                     save_array, delimiter=',')
 
     return interp_values
 
 
 #### Standard plotting of spectra #############################################
-def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50, 
+def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50, 
                   xlim_min=None, xlim_max=None, ylim_min=None, ylim_max=None,
-                  EM_AC='EM_E', stress_fields=False, pdf_png='png', add_name=''):
+                  EM_AC='EM_E', contours=False, contour_lst=None,
+                  stress_fields=False, pdf_png='png', 
+                  prefix_str='', suffix_str=''):
     """ Plot E or H fields of EM mode, or the AC modes displacement fields.
 
         Args:
             sim_wguide : A ``Struct`` instance that has had calc_modes calculated
 
         Keyword Args:
+            ivals  (list): mode numbers of modes you wish to plot
+
             n_points  (int): The number of points across unitcell to
-                interpolate the field onto.
+                interpolate the field onto
 
             xlim_min  (float): Limit plotted xrange to xlim_min:(1-xlim_max) of unitcell
 
@@ -285,11 +292,17 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
 
             EM_AC  (str): Either 'EM' or 'AC' modes
 
+            contours  (bool): Controls contours being overlaid on fields
+
+            contour_lst  (list): Specify contour values
+
             stress_fields  (bool): Calculate acoustic stress fields
 
             pdf_png  (str): File type to save, either 'png' or 'pdf' 
 
-            add_name  (str): Add a string to the file name.
+            prefix_str  (str): Add a string to start of file name
+            
+            suffix_str  (str): Add a string to end of file name.
     """
 
     if EM_AC is not 'EM_E' and EM_AC is not 'EM_H' and EM_AC is not 'AC':
@@ -316,8 +329,10 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
     area = abs((x_max-x_min)*(y_max-y_min))
     n_pts_x = int(n_points*abs(x_max-x_min)/np.sqrt(area))
     n_pts_y = int(n_points*abs(y_max-y_min)/np.sqrt(area))
-    v_x=np.zeros(n_pts_x*n_pts_y)
-    v_y=np.zeros(n_pts_x*n_pts_y)
+    v_x = np.zeros(n_pts_x*n_pts_y)
+    v_y = np.zeros(n_pts_x*n_pts_y)
+    if contours:
+        v_XX, v_YY = np.meshgrid(range(n_pts_x), range(n_pts_y))
     i=0
     for x in np.linspace(x_min,x_max,n_pts_x):
         for y in np.linspace(y_min,y_max,n_pts_y):
@@ -331,7 +346,12 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
     table_nod = sim_wguide.table_nod.T
     x_arr = sim_wguide.x_arr.T
 
-    for ival in range(len(sim_wguide.Eig_values)):
+    if ivals:
+        ival_range = ivals
+    else:
+        ival_range = range(len(sim_wguide.Eig_values))
+
+    for ival in ival_range:
         # dense triangulation with multiple points
         v_x6p = np.zeros(6*sim_wguide.n_msh_el)
         v_y6p = np.zeros(6*sim_wguide.n_msh_el)
@@ -357,7 +377,7 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
                 v_x6p[i] = x_arr[i_ex, 0]
                 v_y6p[i] = x_arr[i_ex, 1]
 
-                if EM_AC == 'EM_E':
+                if EM_AC == 'EM_E' or EM_AC == 'AC' :
                     v_Ex6p[i] = sim_wguide.sol1[0,i_node,ival,i_el]
                     v_Ey6p[i] = sim_wguide.sol1[1,i_node,ival,i_el]
                     v_Ez6p[i] = sim_wguide.sol1[2,i_node,ival,i_el]
@@ -445,6 +465,25 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.1)
             cbar = plt.colorbar(im, cax=cax)
+            if ylim_min != None:
+                if xlim_min/ylim_min > 3:
+                    cbarticks = np.linspace(np.min(plot), np.max(plot), num=3)
+                if xlim_min/ylim_min > 1.5:
+                    cbarticks = np.linspace(np.min(plot), np.max(plot), num=5)
+                else:
+                    cbarticks = np.linspace(np.min(plot), np.max(plot), num=7)
+            else:
+                cbarticks = np.linspace(np.min(plot), np.max(plot), num=7)
+            cbar.set_ticks(cbarticks)
+            cbarlabels = ['%.2f' %t for t in cbarticks]
+            cbar.set_ticklabels(cbarlabels)
+            if contours:
+                if contour_lst:
+                    cbarticks = contour_lst
+                    print(contour_lst)
+                if np.max(np.abs(plot[~np.isnan(plot)])) > plot_threshold:
+                    CS2 = ax.contour(v_XX, v_YY, plot.T, levels=cbarticks, colors=colors[::-1], linewidths=(1.5,))
+                cbar.add_lines(CS2)
             cbar.ax.tick_params(labelsize=title_font-10)
 
 
@@ -505,15 +544,15 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
         # plt.tight_layout(pad=2.5, w_pad=0.5, h_pad=1.0)
         fig.set_tight_layout(True)
 
-        if not os.path.exists("fields"):
-            os.mkdir("fields")
+        if not os.path.exists("%sfields" % prefix_str):
+            os.mkdir("%sfields" % prefix_str)
         if pdf_png=='png':
-            plt.savefig('fields/%(s)s_field_%(i)i%(add)s.png' %
-                {'s' : EM_AC, 'i' : ival, 'add' : add_name})
+            plt.savefig('%(pre)sfields/%(s)s_field_%(i)i%(add)s.png' %
+                {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str})
                 #, bbox_inches='tight') - this caused error in Q calc... ?
         elif pdf_png=='pdf':
-            plt.savefig('fields/%(s)s_field_%(i)i%(add)s.pdf' %
-                {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
+            plt.savefig('%(pre)sfields/%(s)s_field_%(i)i%(add)s.pdf' %
+                {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str}, bbox_inches='tight')
         else:
             raise ValueError("pdf_png must be either 'png' or 'pdf'.")
         plt.close()
@@ -581,8 +620,26 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
                 divider = make_axes_locatable(ax)
                 cax = divider.append_axes("right", size="5%", pad=0.1)
                 cbar = plt.colorbar(im, cax=cax, format='%.2e')
+                if ylim_min != None:
+                    if xlim_min/ylim_min > 3:
+                        cbarlabels = np.linspace(np.min(plot), np.max(plot), num=3)
+                    if xlim_min/ylim_min > 1.5:
+                        cbarlabels = np.linspace(np.min(plot), np.max(plot), num=5)
+                    else:
+                        cbarlabels = np.linspace(np.min(plot), np.max(plot), num=7)
+                else:
+                    cbarlabels = np.linspace(np.min(plot), np.max(plot), num=7)
+                cbar.set_ticks(cbarlabels)
+                cbarlabels = ['%.2f' %t for t in cbarlabels]
+                cbar.set_ticklabels(cbarlabels)
+                if contours:
+                    if contour_lst:
+                        cbarticks = contour_lst
+                        print(contour_lst)
+                    if np.max(np.abs(plot[~np.isnan(plot)])) > plot_threshold:
+                        CS2 = ax.contour(v_XX, v_YY, plot.T, levels=cbarticks, colors=colors[::-1], linewidths=(1.5,))
+                    cbar.add_lines(CS2)
                 cbar.ax.tick_params(labelsize=title_font-10)
-            # plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
             fig.set_tight_layout(True)
             n_str = ''
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
@@ -596,17 +653,17 @@ def plt_mode_fields(sim_wguide, n_points=500, quiver_steps=50,
             plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
 
             if pdf_png=='png':
-                plt.savefig('fields/%(s)s_S_field_%(i)i%(add)s.png' %
-                    {'s' : EM_AC, 'i' : ival, 'add' : add_name})
+                plt.savefig('%(pre)sfields/%(s)s_S_field_%(i)i%(add)s.png' %
+                    {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str})
             elif pdf_png=='pdf':
-                plt.savefig('fields/%(s)s_S_field_%(i)i%(add)s.pdf' %
-                    {'s' : EM_AC, 'i' : ival, 'add' : add_name}, bbox_inches='tight')
+                plt.savefig('%(pre)sfields/%(s)s_S_field_%(i)i%(add)s.pdf' %
+                    {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str}, bbox_inches='tight')
             plt.close()
 
 
 
 #### Plot mesh #############################################
-def plot_msh(x_arr, add_name=''):
+def plot_msh(x_arr, suffix_str=''):
     """ Plot EM mode fields.
 
         Args:
@@ -623,8 +680,8 @@ def plot_msh(x_arr, add_name=''):
     for node in range(np.shape(x_arr)[1]):
         plt.plot(x_arr[0,node], x_arr[1,node], 'o')
     ax.set_aspect('equal')
-    plt.savefig('msh_%(add)s.pdf' %
-        {'add' : add_name}, bbox_inches='tight')
+    plt.savefig('%(pre)smsh_%(add)s.pdf' %
+        {'pre' : prefix_str, 'add' : suffix_str}, bbox_inches='tight')
     plt.close()
 
 

@@ -21,6 +21,7 @@ import integration
 import plotting
 from fortran import NumBAT
 
+start = time.time()
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550
@@ -45,11 +46,11 @@ coat_y_list = np.linspace(50,200,4)
 for coat_y in coat_y_list:
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             inc_b_x =inc_b_x, slab_a_y=slab_a_y, coat_y=coat_y,
-                            material_bkg=materials.Air,
-                            material_a=materials.As2S3_exp,
-                            material_b=materials.SiO2,
-                            material_c=materials.Si,
-                            material_d=materials.SiO2,
+                            material_bkg=materials.Vacuum,
+                            material_a=materials.As2S3_2017_Morrison,
+                            material_b=materials.SiO2_2013_Laude,
+                            material_c=materials.Si_2016_Smith,
+                            material_d=materials.SiO2_2013_Laude,
                             lc_bkg=3, lc2=3000.0, lc3=2000.0)
 
     # Expected effective index of fundamental guided mode.
@@ -67,7 +68,8 @@ for coat_y in coat_y_list:
     sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
     # plotting.plt_mode_fields(sim_AC, xlim_min=0.4, xlim_max=0.4, 
-    #                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', add_name='_%i' %int(coat_y))
+    #                           ylim_min=0.7, ylim_max=0.0, EM_AC='AC', 
+    #                           prefix_str='tut_08-', suffix_str='_%i' %int(coat_y))
 
     set_q_factor = 1000.
 
@@ -78,5 +80,11 @@ for coat_y in coat_y_list:
     # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
     freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz
     freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 2  # GHz
+    
     plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
-        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, add_name='_%i' %int(coat_y))
+        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
+        prefix_str='tut_08-', suffix_str='_%i' %int(coat_y))
+    
+
+end = time.time()
+print("\n Simulation time (sec.)", (end - start))
