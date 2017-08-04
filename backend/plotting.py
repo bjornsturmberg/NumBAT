@@ -268,7 +268,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 #### Standard plotting of spectra #############################################
 def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50, 
                   xlim_min=None, xlim_max=None, ylim_min=None, ylim_max=None,
-                  EM_AC='EM_E', contours=False, contour_lst=None,
+                  EM_AC='EM_E', num_ticks=None, contours=False, contour_lst=None,
                   stress_fields=False, pdf_png='png', 
                   prefix_str='', suffix_str=''):
     """ Plot E or H fields of EM mode, or the AC modes displacement fields.
@@ -291,6 +291,8 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             ylim_max  (float): Limit plotted yrange to ylim_min:(1-ylim_max) of unitcell
 
             EM_AC  (str): Either 'EM' or 'AC' modes
+
+            num_ticks  (int): Number of tick marks
 
             contours  (bool): Controls contours being overlaid on fields
 
@@ -465,7 +467,9 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             divider = make_axes_locatable(ax)
             cax = divider.append_axes("right", size="5%", pad=0.1)
             cbar = plt.colorbar(im, cax=cax)
-            if ylim_min != None:
+            if num_ticks:
+                cbarticks = np.linspace(np.min(plot), np.max(plot), num=num_ticks)                
+            elif ylim_min != None:
                 if xlim_min/ylim_min > 3:
                     cbarticks = np.linspace(np.min(plot), np.max(plot), num=3)
                 if xlim_min/ylim_min > 1.5:
@@ -620,7 +624,9 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
                 divider = make_axes_locatable(ax)
                 cax = divider.append_axes("right", size="5%", pad=0.1)
                 cbar = plt.colorbar(im, cax=cax, format='%.2e')
-                if ylim_min != None:
+                if num_ticks:
+                    cbarticks = np.linspace(np.min(plot), np.max(plot), num=num_ticks)                
+                elif ylim_min != None:
                     if xlim_min/ylim_min > 3:
                         cbarlabels = np.linspace(np.min(plot), np.max(plot), num=3)
                     if xlim_min/ylim_min > 1.5:

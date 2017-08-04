@@ -38,8 +38,8 @@ class Struct(object):
             inc_a_y  (float): The vertical diameter of the inclusion in nm.
 
             inc_shape  (str): Shape of inclusions that have template mesh,
-                currently: 'circular', 'rectangular', 'slot', 'rib_coated',
-                'onion'. Rectangular is default.
+                currently: 'circular', 'rectangular', 'slot', 'rib'
+                'rib_coated', 'onion'. Rectangular is default.
 
             slab_a_x  (float): The horizontal diameter in nm of the slab
                 directly below the inclusion.
@@ -583,7 +583,7 @@ class Struct(object):
         self.p_tensor = p_tensor
         self.eta_tensor = eta_tensor
 
-        self.linear_element_shapes = ['rectangular', 'slot', 'rib_coated']
+        self.linear_element_shapes = ['rectangular', 'slot', 'rib', 'rib_coated']
         self.curvilinear_element_shapes = ['circular', 'onion']
 
 
@@ -798,31 +798,55 @@ class Struct(object):
                 geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
 
+        elif self.inc_shape in ['rib']:
+                msh_template = 'rib'
+                self.nb_typ_el = 3
+                msh_name = 'rib_%(d)s_%(dy)s_%(a)s_%(b)s_%(cc)s_%(ccc)s' % {
+                'd': dec_float_str(self.unitcell_x),
+                'dy': dec_float_str(self.unitcell_y),
+                'a': dec_float_str(self.inc_a_x),
+                'b': dec_float_str(self.inc_a_y),
+                'cc': dec_float_str(self.slab_a_x),
+                'ccc': dec_float_str(self.slab_a_y)}
+                if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                    geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                    geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                    geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
+                    geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
+                    geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
+                    geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+
+
         elif self.inc_shape in ['rib_coated']:
                 msh_template = 'rib_coated'
                 self.nb_typ_el = 4
-                msh_name = 'rib_coated%(d)s_%(dy)s_%(a)s_%(b)s_%(cz)s_%(c)s_%(cc)s_%(ccc)s' % {
+                msh_name = 'rib_coated_%(d)s_%(dy)s_%(a)s_%(b)s_%(cz)s_%(c)s_%(cc)s_%(ccc)s' % {
                 'd': dec_float_str(self.unitcell_x),
                 'dy': dec_float_str(self.unitcell_y),
                 'a': dec_float_str(self.inc_a_x),
                 'b': dec_float_str(self.inc_a_y),
                 'cz': dec_float_str(self.coat_x),
                 'c': dec_float_str(self.coat_y),
-                'cc': dec_float_str(self.slab_a_y),
-                'ccc': dec_float_str(self.slab_b_y)}
+                'cc': dec_float_str(self.slab_a_x),
+                'ccc': dec_float_str(self.slab_a_y)}
                 if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                     geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
-                    geo = geo_tmp.replace('d_in_nm = 1000;', "d_in_nm = %f;" % self.unitcell_x)
-                    geo = geo.replace('dy_in_nm = 600;', "dy_in_nm = %f;" % self.unitcell_y)
-                    geo = geo.replace('ribx = 200;', "ribx = %f;" % self.inc_a_x)
-                    geo = geo.replace('riby = 30;', "riby = %f;" % self.inc_a_y)
+                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                    geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                    geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
+                    geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
+                    geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
                     geo = geo.replace('coatx = 20;', "coatx = %f;" % self.coat_x)
                     geo = geo.replace('coaty = 20;', "coaty = %f;" % self.coat_y)
-                    geo = geo.replace('slab1 = 100;', "slab1 = %f;" % self.slab_a_y)
-                    geo = geo.replace('slab2 = 50;', "slab2 = %f;" % self.slab_b_y)
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+
 
         else:
             raise NotImplementedError("\n Selected inc_shape = '%s' \n " \
