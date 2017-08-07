@@ -40,9 +40,9 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
             (\varepsilon_a^{-1} - \varepsilon_b^{-1})  \varepsilon_0^{-1} ({\rm \hat n \cdot \mathbf{d}}) 
             \cdot ({\rm \hat n \cdot \mathbf{d}}) \big],\\
 
-            \alpha = \frac{\Omega^2}{P_b} \int {\rm d}^2r \sum_{ijkl} \partial_i u_j^{*} \eta_{ijkl} \partial_k u_l,\\
+            \alpha = \frac{\Omega^2}{P_{ac}} \int {\rm d}^2r \sum_{ijkl} \partial_i u_j^{*} \eta_{ijkl} \partial_k u_l,\\
 
-            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_e P_e P_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \kappa^2}.
+            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_p P_s P_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \kappa^2}.
   
 
         Args:
@@ -162,7 +162,8 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
                     sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
                     sim_AC.structure.nb_typ_el_AC, sim_AC.structure.eta_tensor,
                     k_AC, sim_AC.Omega_AC, sim_AC.sol1,
-                    sim_AC.AC_mode_power)
+                    # sim_AC.AC_mode_power) # appropriate for alpha in [1/m]
+                    sim_AC.AC_mode_energy_elastic) # appropriate for alpha in [1/s]
             else:
                 if sim_EM_pump.structure.inc_shape not in sim_EM_pump.structure.curvilinear_element_shapes:
                     print("Warning: ac_alpha_int - not sure if mesh contains curvi-linear elements", 
@@ -172,17 +173,22 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
                     sim_AC.table_nod, sim_AC.type_el, sim_AC.x_arr,
                     sim_AC.structure.nb_typ_el_AC, sim_AC.structure.eta_tensor,
                     k_AC, sim_AC.Omega_AC, sim_AC.sol1,
-                    sim_AC.AC_mode_power, Fortran_debug)
+                    # sim_AC.AC_mode_power, Fortran_debug) # appropriate for alpha in [1/m]
+                    sim_AC.AC_mode_energy_elastic, Fortran_debug) # appropriate for alpha in [1/s]
         except KeyboardInterrupt:
             print("\n\n Routine ac_alpha_int interrupted by keyboard.\n\n")
         alpha = np.real(alpha)
-        Q_factors = 0.5*(k_AC/alpha)*np.ones(num_modes_AC)
+        # Q_factors = 0.5*(k_AC/alpha)*np.ones(num_modes_AC) # appropriate for alpha in [1/m]
+        Q_factors = 0.5*(sim_AC.Omega_AC/alpha)*np.ones(num_modes_AC) # appropriate for alpha in [1/s]
         end = time.time()
         print("     time (sec.)", (end - start))
     else:
-        # alpha = Omega_AC/(vg*fixed_Q) = k_AC/fixed_Q
-        # factor of a half because alpha is for power!
-        alpha = 0.5*(k_AC/fixed_Q)*np.ones(num_modes_AC)
+        # factor of a 1/2 because alpha is for power!
+        # alpha [1/m] = Omega_AC/(2*vg*fixed_Q) = k_AC/fixed_Q
+        # alpha [1/s] = vg * alpha [1/m]
+        # alpha [1/s] = Omega_AC/(2*fixed_Q)
+        # alpha = 0.5*(k_AC/fixed_Q)*np.ones(num_modes_AC) # appropriate for alpha in [1/m]
+        alpha = 0.5*(sim_AC.Omega_AC/fixed_Q)*np.ones(num_modes_AC) # appropriate for alpha in [1/s]
         Q_factors = fixed_Q*np.ones(num_modes_AC)
 
 
@@ -251,7 +257,8 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         for j in range(num_modes_EM_pump):
             P2 = sim_EM_pump.EM_mode_power[j]
             for k in range(num_modes_AC):
-                P3 = sim_AC.AC_mode_power[k]
+                # P3 = sim_AC.AC_mode_power[k]
+                P3 = sim_AC.AC_mode_energy_elastic[k]
                 normal_fact[i, j, k] = P1*P2*P3*alpha[k]
     SBS_gain = np.real(gain/normal_fact)
     SBS_gain_PE = np.real(gain_PE/normal_fact)

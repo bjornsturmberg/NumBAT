@@ -61,18 +61,13 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
                 EM_ival1, EM_ival2, AC_ival, freq_min, freq_max, num_interp_pts=3000,
                 pdf_png='png', save_txt=False, prefix_str='', suffix_str=''):
     r""" Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-        Note the we use the spectral linewidth of the resonances
+        Note that we use the AC elastic energy density and alpha in [1/s] 
+        (rather than AC power and alpha in [1/m] used in PRA Eq. 91).
+        We are therefore in frequency space and have
 
         .. math:: 
 
-            \gamma = v_g \alpha
-        where $v_g$ the group velocity of the mode and $\theta$ is the detuning frequency. 
-        We transform from k-space of Eq. 91 to frequency space
-
-        .. math:: 
-
-            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_e P_e P_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \kappa^2},\\
-            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_e P_e P_{ac}} \frac{1}{\alpha} \frac{\gamma^2}{\gamma^2 + \theta^2},
+            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_s P_p \Eta_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \theta^2}.
             
 
         Args:
@@ -84,7 +79,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 
             SBS_gain_MB  (array): Photoelastic gain of modes.
 
-            alpha  (array): Acoustic loss of each mode.
+            alpha  (array): Acoustic loss of each mode [1/s].
 
             k_AC  (float): Acoustic wavevector.
 
@@ -100,11 +95,15 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     # the central resonance frequency.
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
-    # Line width of resonances should be v_g * alpha,
-    # but we don't have convenient access to v_g, therefore
-    # phase velocity as approximation to group velocity
-    phase_v = 2*np.pi*sim_AC.Eig_values/k_AC
-    linewidth = phase_v*alpha/(2*np.pi)
+    # with alpha is in units of [1/s]
+    linewidth = alpha 
+
+    ## with alpha is in units of [1/m]
+    ## Line width of resonances should be v_g * alpha
+    ## but we don't have convenient access to v_g, therefore
+    ## phase velocity as approximation to group velocity
+    # phase_v = 2*np.pi*sim_AC.Eig_values/k_AC
+    # linewidth = phase_v*alpha/(2*np.pi)
 
     interp_grid = np.linspace(freq_min, freq_max, num_interp_pts)
     interp_values = np.zeros(num_interp_pts)
@@ -125,6 +124,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
             # set up an interpolation for summing all the gain peaks
             interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
             interp_values += interp_spectrum
+    else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
     plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
     if save_txt:
         save_array = (interp_grid, interp_values)
@@ -161,6 +161,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
             # set up an interpolation for summing all the gain peaks
             interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
             interp_values += interp_spectrum
+    else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
     plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'k', linewidth=3, label="Total")
     if save_txt:
         save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)))
@@ -202,6 +203,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
             interp_values_MB += interp_spectrum_MB
+    else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
     plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
     plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
     plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
