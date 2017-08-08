@@ -191,6 +191,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         alpha = 0.5*(sim_AC.Omega_AC/fixed_Q)*np.ones(num_modes_AC) # appropriate for alpha in [1/s]
         Q_factors = fixed_Q*np.ones(num_modes_AC)
 
+    linewidth_Hz = alpha/np.pi # SBS linewidth of each resonance in [Hz]
 
     # Calc Q_photoelastic Eq. 33
     print("Photoelastic calc")
@@ -264,7 +265,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     SBS_gain_PE = np.real(gain_PE/normal_fact)
     SBS_gain_MB = np.real(gain_MB/normal_fact)
 
-    return SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors
+    return SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha
 
 
 #### Categorise modes by their symmetries #############################################

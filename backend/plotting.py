@@ -57,17 +57,10 @@ def zeros_int_str(zero_int):
 ###############################################################################
 
 
-def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
+def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
                 EM_ival1, EM_ival2, AC_ival, freq_min, freq_max, num_interp_pts=3000,
                 pdf_png='png', save_txt=False, prefix_str='', suffix_str=''):
     r""" Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-        Note that we use the AC elastic energy density and alpha in [1/s] 
-        (rather than AC power and alpha in [1/m] used in PRA Eq. 91).
-        We are therefore in frequency space and have
-
-        .. math:: 
-
-            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_s P_p \Eta_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \theta^2}.
             
 
         Args:
@@ -79,7 +72,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
 
             SBS_gain_MB  (array): Photoelastic gain of modes.
 
-            alpha  (array): Acoustic loss of each mode [1/s].
+            linewidth_Hz  (array): Linewidth of each mode [Hz].
 
             k_AC  (float): Acoustic wavevector.
 
@@ -95,9 +88,9 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     # the central resonance frequency.
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
-    # with alpha is in units of [1/s]
-    linewidth = alpha 
 
+    # # with alpha is in units of [1/s]
+    # linewidth = alpha/(2*np.pi)
     ## with alpha is in units of [1/m]
     ## Line width of resonances should be v_g * alpha
     ## but we don't have convenient access to v_g, therefore
@@ -105,13 +98,15 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     # phase_v = 2*np.pi*sim_AC.Eig_values/k_AC
     # linewidth = phase_v*alpha/(2*np.pi)
 
+    linewidth = linewidth_Hz/2
+
     interp_grid = np.linspace(freq_min, freq_max, num_interp_pts)
     interp_values = np.zeros(num_interp_pts)
 
     plt.figure()
     plt.clf()
     if AC_ival == 'All':
-        for AC_i in range(len(alpha)):
+        for AC_i in range(len(linewidth)):
             gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
@@ -147,7 +142,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.figure()
     plt.clf()
     if AC_ival == 'All':
-        for AC_i in range(len(alpha)):
+        for AC_i in range(len(linewidth)):
             gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
@@ -187,7 +182,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC,
     plt.figure()
     plt.clf()
     if AC_ival == 'All':
-        for AC_i in range(len(alpha)):
+        for AC_i in range(len(linewidth)):
             gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
