@@ -202,8 +202,7 @@ class Struct(object):
                 self.nb_typ_el = 6
             elif coat_y != None and inc_b_x != None:
                 self.nb_typ_el = 8
-                raise NotImplementedError("Have not implemented 2 coated " \
-                    "inclusions.")
+                raise NotImplementedError("Have not implemented 2 coated inclusions.")
             else:
                 self.nb_typ_el = 7
         elif slab_a_x is not None:
@@ -211,8 +210,7 @@ class Struct(object):
                 self.nb_typ_el = 4
             elif coat_y != None and inc_b_x != None:
                 self.nb_typ_el = 7
-                raise NotImplementedError("Have not implemented 2 coated " \
-                    "inclusions.")
+                raise NotImplementedError("Have not implemented 2 coated inclusions.")
             else:
                 self.nb_typ_el = 5
         else:
