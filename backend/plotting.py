@@ -59,7 +59,8 @@ def zeros_int_str(zero_int):
 
 def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
                 EM_ival1, EM_ival2, AC_ival, freq_min, freq_max, num_interp_pts=3000,
-                dB=False, pdf_png='png', save_txt=False, prefix_str='', suffix_str=''):
+                dB=False, mode_comps=False,
+                pdf_png='png', save_txt=False, prefix_str='', suffix_str=''):
     r""" Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
             
 
@@ -121,6 +122,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             interp_values += interp_spectrum
     else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
     plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
+    return_interp_values = interp_values
     if save_txt:
         save_array = (interp_grid, interp_values)
         np.savetxt('gain_spectra-mode_comps%(add)s-Total.csv' 
@@ -139,7 +141,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
         plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
 
-    if dB:
+    if dB and mode_comps:
         plt.figure()
         plt.clf()
         if AC_ival == 'All':
@@ -176,44 +178,44 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
         plt.close()
 
+    if mode_comps:
+        interp_values = np.zeros(num_interp_pts)
+        interp_values_PE = np.zeros(num_interp_pts)
+        interp_values_MB = np.zeros(num_interp_pts)
+        plt.figure()
+        plt.clf()
+        if AC_ival == 'All':
+            for AC_i in range(len(linewidth)):
+                gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
+                             *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
+                freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
+                interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
+                interp_values += interp_spectrum
 
-    interp_values = np.zeros(num_interp_pts)
-    interp_values_PE = np.zeros(num_interp_pts)
-    interp_values_MB = np.zeros(num_interp_pts)
-    plt.figure()
-    plt.clf()
-    if AC_ival == 'All':
-        for AC_i in range(len(linewidth)):
-            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
-                         *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-            freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
-            interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
-            interp_values += interp_spectrum
+                gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]
+                             *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
+                interp_spectrum_PE = np.interp(interp_grid, freq_list_GHz, gain_list_PE)
+                interp_values_PE += interp_spectrum_PE
 
-            gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]
-                         *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-            interp_spectrum_PE = np.interp(interp_grid, freq_list_GHz, gain_list_PE)
-            interp_values_PE += interp_spectrum_PE
+                gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]
+                             *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
+                interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
+                interp_values_MB += interp_spectrum_MB
+        else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
+        plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
+        plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
+        plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
+        plt.legend(loc=0)
+        if freq_min and freq_max:
+            plt.xlim(freq_min,freq_max)
+        plt.xlabel('Frequency (GHz)')
+        plt.ylabel('|Gain| (1/Wm)')
 
-            gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]
-                         *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-            interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
-            interp_values_MB += interp_spectrum_MB
-    else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
-    plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
-    plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
-    plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
-    plt.legend(loc=0)
-    if freq_min and freq_max:
-        plt.xlim(freq_min,freq_max)
-    plt.xlabel('Frequency (GHz)')
-    plt.ylabel('|Gain| (1/Wm)')
-
-    if pdf_png=='png':
-        plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
-    elif pdf_png=='pdf':
-        plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
-    plt.close()
+        if pdf_png=='png':
+            plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
+        elif pdf_png=='pdf':
+            plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
+        plt.close()
 
     if save_txt:
         save_array = (interp_grid, interp_values)
@@ -261,7 +263,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
                         % {'pre' : prefix_str, 'add' : suffix_str}, 
                         save_array, delimiter=',')
 
-    return interp_values
+    return return_interp_values
 
 
 #### Standard plotting of spectra #############################################

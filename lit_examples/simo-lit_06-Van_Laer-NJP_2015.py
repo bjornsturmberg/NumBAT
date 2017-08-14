@@ -29,7 +29,7 @@ wl_nm = 1550
 unitcell_x = 5*wl_nm
 unitcell_y = unitcell_x
 inc_a_x = 450
-inc_a_y = 220
+inc_a_y = 230
 inc_shape = 'rectangular'
 
 num_modes_EM_pump = 20
@@ -39,20 +39,26 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
-# Rotate crystal axis of Si from <100> to <110>.
-Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
-Si_110.rotate_axis(np.pi/4)
+#### Uncomment one of the two following sections that describe <100> and <110> Si ####
 
+# Use <100> Silicon from Si_2016_Smith.json
+Si_100 = copy.deepcopy(materials.Si_2016_Smith)
+prefix_str = 'lit_06-Smith-100-'
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
-                        # material_a=materials.Si_2015_Van_Laer,
-                        # material_a=materials.Si_2015_Van_Laer_anisot, symmetry_flag=False,
-                        # material_a=materials.Si_2015_Van_Laer_anisot2, symmetry_flag=False,
-                        material_a=Si_110, symmetry_flag=False,
-                        lc_bkg=3, lc2=2000.0, lc3=1000.0)
+                        material_a=Si_100, symmetry_flag=True,
+                        lc_bkg=3, lc2=3000.0, lc3=2000.0)
 
-prefix_str = 'lit_06-Eric'
+# # Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
+# Si_110 = copy.deepcopy(materials.Si_2016_Smith)
+# prefix_str = 'lit_06-Smith-110-'
+# Si_110.rotate_axis(np.pi/4)
+# # Use all specified parameters to create a waveguide object.
+# wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
+#                         material_bkg=materials.Vacuum,
+#                         material_a=Si_110, symmetry_flag=False,
+#                         lc_bkg=3, lc2=3000.0, lc3=2000.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -79,14 +85,10 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff = ", np.round(n_eff_sim, 4))
 
-k_AC = 100 # k much less than this (eg 1) get pesky complex frequencies.
-# k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
-
-shift_Hz = 6.5e9
+k_AC = 5 # close but not quite zero
 
 # Calculate Acoustic Modes
-sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
-
+sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # np.savez('wguide_data_AC', sim_AC=sim_AC)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC = npzfile['sim_AC'].tolist()
@@ -95,12 +97,9 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 print('Freq of AC modes (GHz) \n', np.round((sim_AC.Eig_values)*1e-9, 4))
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-# print(sim_AC.AC_mode_power)
-# print(sim_AC.AC_mode_energy_elastic)
-
 # plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str)#, ivals=[0,1,2,3,4,5,6,7,8,9])
 
-set_q_factor = 464.
+set_q_factor = 750
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
@@ -118,15 +117,8 @@ print("\n SBS_gain PE contribution \n", masked_PE)
 print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)
 
-# # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-# freq_min = 6  # GHz
-# freq_max = 35  # GHz
-# plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
-#     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-#     prefix_str=prefix_str)
-
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = 9 # 8.45  # GHz
+freq_min = 8 # 8.45  # GHz
 freq_max = 10 # 8.55  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,

@@ -252,18 +252,19 @@ class Material(object):
             # self.c_44 = G_yz
             # self.c_55 = G_zx
             # self.c_66 = G_xy
-            print(self.c_11)
-            print(self.c_12)
-            print(self.c_13)
-            print(self.c_21)
-            print(self.c_22)
-            print(self.c_23)
-            print(self.c_31)
-            print(self.c_32)
-            print(self.c_33)
-            print(self.c_44)
-            print(self.c_55)
-            print(self.c_66)
+
+            # print(self.c_11)
+            # print(self.c_12)
+            # print(self.c_13)
+            # print(self.c_21)
+            # print(self.c_22)
+            # print(self.c_23)
+            # print(self.c_31)
+            # print(self.c_32)
+            # print(self.c_33)
+            # print(self.c_44)
+            # print(self.c_55)
+            # print(self.c_66)
 
            
             # PHOTOELASTIC
@@ -300,6 +301,19 @@ class Material(object):
             self.p_16 = self.p_61 = 0.25*np.sin(4*theta)*(2*old_p_44 + old_p_12 - old_p_11)
             self.p_26 = self.p_62 = 0.25*np.sin(4*theta)*(old_p_11 - old_p_12 - 2*old_p_44)
 
+            # print(self.p_11)
+            # print(self.p_12)
+            # print(self.p_13)
+            # print(self.p_21)
+            # print(self.p_22)
+            # print(self.p_23)
+            # print(self.p_31)
+            # print(self.p_32)
+            # print(self.p_33)
+            # print(self.p_44)
+            # print(self.p_55)
+            # print(self.p_66)
+
             # ETA
             # unrotated values
             old_eta_11 = self.eta_11
@@ -334,10 +348,46 @@ class Material(object):
             self.eta_16 = self.eta_61 = 0.25*np.sin(4*theta)*(2*old_eta_44 + old_eta_12 - old_eta_11)
             self.eta_26 = self.eta_62 = 0.25*np.sin(4*theta)*(old_eta_11 - old_eta_12 - 2*old_eta_44)
 
-            # self.anisotropic = True           
+            # self.anisotropic = True        
+
+            # theta = np.pi/4
+            # tensor = [[self.c_11, self.c_12, self.c_13, self.c_14, self.c_15, self.c_16],
+            #           [self.c_21, self.c_22, self.c_23, self.c_24, self.c_25, self.c_26],
+            #           [self.c_31, self.c_32, self.c_33, self.c_34, self.c_35, self.c_36],
+            #           [self.c_41, self.c_42, self.c_43, self.c_44, self.c_45, self.c_46],
+            #           [self.c_51, self.c_52, self.c_53, self.c_54, self.c_55, self.c_56],
+            #           [self.c_61, self.c_62, self.c_63, self.c_64, self.c_65, self.c_66]]
+            # tensor = np.array(tensor)
+            # tensor_p = rotate_tensor(tensor, theta)
+            # # print(tensor_p)
 
         else:
             raise NotImplementedError("Have not implemented rotation of anisotropic tensors.")
+
+# def rotation_matrix_sum(i, j, k, l, tensor, mat_R):
+#     z_tmp1 = 0
+#     for q in range(3):
+#         for r in range(3):
+#             for s in range(3):
+#                 for t in range(3):
+#                     z_tmp1 += mat_R[i,q] * mat_R[j,r] * mat_R[k,s] * mat_R[l,t] * tensor[i,j,k,l]
+
+#     return tensor_prime_comp
+
+
+# def rotate_tensor(tensor, theta):
+
+#     mat_R = np.array([[np.cos(theta),np.sin(theta),0], [-np.sin(theta),np.cos(theta),0], [0,0,1]])
+
+#     tensor_prime = np.zeros((3,3,3,3))
+#     print(np.shape(tensor_prime))
+#     for i in range(3):
+#         for j in range(3):
+#             for k in range(3):
+#                 for l in range(3):
+#                     tensor_prime[i,j,k,l] = rotation_matrix_sum(i,j,k,l,tensor,mat_R)
+
+#     return tensor_prime
 
 
 def isotropic_stiffness(E, v):

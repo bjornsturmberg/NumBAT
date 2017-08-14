@@ -61,19 +61,11 @@ prefix_str = 'lit_07-Smith-'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         material_bkg=materials.Vacuum,
-                        # material_a=materials.Si_2015_Van_Laer,
-                        # material_b=materials.Si_2015_Van_Laer,
                         material_a=Si_110,
                         material_b=Si_110, symmetry_flag=False,
-                        # material_a=materials.Si_2016_Smith,
-                        # material_b=materials.Si_2016_Smith
-                        # material_a=materials.Si_2013_Laude,
-                        # material_b=materials.Si_2013_Laude
                         # material_a=materials.Si_2015_Van_Laer_anisot,
                         # material_b=materials.Si_2015_Van_Laer_anisot, symmetry_flag=False,
-                        lc_bkg=5, lc2=4000.0, lc3=2000.0) # conv 0
-                        # # lc_bkg=3, lc2=4000.0, lc3=2000.0) # conv 1
-                        # lc_bkg=3, lc2=6000.0, lc3=3000.0) # conv 2
+                        lc_bkg=5, lc2=4000.0, lc3=2000.0)
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
@@ -96,7 +88,7 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff = ", np.round(n_eff_sim, 4))
 
-k_AC = 100
+k_AC = 5
 # k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
 shift_Hz = 2e9
@@ -137,13 +129,6 @@ freq_max = 4.5  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
     prefix_str=prefix_str, suffix_str='')
-
-# # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-# freq_min = 8.45  # GHz
-# freq_max = 8.55  # GHz
-# plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
-#     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-#     prefix_str=prefix_str, suffix_str='-zoom')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))

@@ -10,7 +10,7 @@
   "c_11": 166e9,  // Stiffness tensor component [Pa]
   "c_12": 64e9,  // Stiffness tensor component [Pa]
   "c_44": 79e9,  // Stiffness tensor component [Pa]
-  "p_11": -0.09,  // Photoelastic tensor component []
+  "p_11": -0.094,  // Photoelastic tensor component []
   "p_12": 0.017,  // Photoelastic tensor component []
   "p_44": -0.051,  // Photoelastic tensor component []
   "eta_11": 5.9e-3,  // Acoustic loss tensor component [Pa s]
