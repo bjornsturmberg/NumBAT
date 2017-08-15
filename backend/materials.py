@@ -265,6 +265,8 @@ class Material(object):
             # print(self.c_44)
             # print(self.c_55)
             # print(self.c_66)
+            # print(self.c_16)
+            # print(self.c_26)
 
            
             # PHOTOELASTIC
@@ -313,6 +315,8 @@ class Material(object):
             # print(self.p_44)
             # print(self.p_55)
             # print(self.p_66)
+            # print(self.p_16)
+            # print(self.p_26)
 
             # ETA
             # unrotated values
@@ -414,8 +418,6 @@ Si_2016_Smith = Material("Si_2016_Smith")
 Si_2015_Van_Laer = Material("Si_2015_Van_Laer")
 Si_2013_Laude = Material("Si_2013_Laude")
 Si_test_anisotropic = Material("Si_test_anisotropic")
-Si_2015_Van_Laer_anisot = Material("Si_2015_Van_Laer_anisot")
-Si_2015_Van_Laer_anisot2 = Material("Si_2015_Van_Laer_anisot2")
 
 SiO2_2016_Smith = Material("SiO2_2016_Smith")
 SiO2_2015_Van_Laer = Material("SiO2_2015_Van_Laer")
