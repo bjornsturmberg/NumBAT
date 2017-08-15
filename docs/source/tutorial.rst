@@ -179,7 +179,13 @@ Elements to note:
 Investigating Dispersion
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_03-dispersion.py
+.. literalinclude:: ../../tutorials/simo-tut_03_1-dispersion-npload.py
+    :lines: 0-
+
+Investigating Dispersion
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../tutorials/simo-tut_03_2-dispersion-multicore.py
     :lines: 0-
 
 
@@ -270,12 +276,30 @@ Tapered Fibre - Scanning Widths
     :lines: 0-
 
 
-Waveguide on a Pedestal
+Waveguide on a Pedestal - Fields
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../lit_examples/simo-lit_05-Van_Laer-NatPhot_2015.py
     :lines: 0-
 
 
+FSBS - Waveguide on a Pedestal NJP
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
+.. literalinclude:: ../../lit_examples/simo-lit_06-Van_Laer-NJP_2015.py
+    :lines: 0-
+
+
+FSBS - Rib Waveguide
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_07-Rakich_rib.py
+    :lines: 0-
+
+
+FSBS - Coated Rib Waveguide
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_08-Rakich_rib-coated.py
+    :lines: 0-
 
