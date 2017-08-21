@@ -98,9 +98,9 @@ threshold_indices = abs(SBS_gain_MB) < threshold
 SBS_gain_MB[threshold_indices] = 0
 threshold_indices = abs(SBS_gain) < threshold
 SBS_gain[threshold_indices] = 0
-masked_PE = SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]
-masked_MB = SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:]
-masked = SBS_gain[EM_ival_Stokes,EM_ival_pump,:]
+masked_PE = SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:]
+masked_MB = SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:]
+masked = SBS_gain[EM_ival_pump,EM_ival_Stokes,:]
 
 test_list1 = list(zip(sim_EM_pump.Eig_values, sim_AC_wguide.Eig_values))
 test_list2 = list(zip(masked_PE, masked_MB, masked))

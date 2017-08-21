@@ -74,7 +74,7 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff = ", np.round(n_eff_sim, 4))
 
-k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
+k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
 
 # Specify the expected acoustic frequency (slightly low balled).
 shift_Hz = 4e9

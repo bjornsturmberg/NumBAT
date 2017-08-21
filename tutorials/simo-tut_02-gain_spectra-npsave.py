@@ -82,7 +82,7 @@ plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4,
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff", np.round(n_eff_sim, 4))
 # Acoustic wavevector
-k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
+k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
 
 # Calculate Acoustic modes.
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)

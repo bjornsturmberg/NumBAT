@@ -63,8 +63,6 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=Si_110,
                         material_b=Si_110, symmetry_flag=False,
-                        # material_a=materials.Si_2015_Van_Laer_anisot,
-                        # material_b=materials.Si_2015_Van_Laer_anisot, symmetry_flag=False,
                         lc_bkg=5, lc2=4000.0, lc3=2000.0)
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -89,7 +87,6 @@ n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff = ", np.round(n_eff_sim, 4))
 
 k_AC = 5
-# k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
 
 shift_Hz = 2e9
 
@@ -115,9 +112,9 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration
 
 # Mask negligible gain values to improve clarity of print out.
 threshold = 1e-3
-masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
-masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
-masked = np.ma.masked_inside(SBS_gain[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
+masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
+masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
+masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 
 print("\n SBS_gain PE contribution \n", masked_PE)
 print("SBS_gain MB contribution \n", masked_MB)
