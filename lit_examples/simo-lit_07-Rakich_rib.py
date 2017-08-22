@@ -52,9 +52,9 @@ AC_ival = 'All'
 
 # Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-Si_110.rotate_axis(np.pi/4)
+Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 
-prefix_str = 'lit_07-Smith-'
+prefix_str = 'lit_07-'
 
 # Use specified parameters to create a waveguide object.
 # Note use of rough mesh for demonstration purposes.

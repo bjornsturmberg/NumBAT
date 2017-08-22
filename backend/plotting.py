@@ -80,8 +80,6 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             freq_min  (float): Minimum of frequency range.
 
             freq_max  (float): Maximum of frequency range.
-            
-        Keyword Args:
     """
     tune_steps = 5e4
     tune_range = 10 # GHz

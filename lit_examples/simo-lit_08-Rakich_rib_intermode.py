@@ -52,18 +52,17 @@ AC_ival = 'All'
 
 # Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-Si_110.rotate_axis(np.pi/4,'z-axis')
+Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 
 prefix_str = 'lit_08-'
 
 # Use specified parameters to create a waveguide object.
-# Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         material_bkg=materials.Vacuum,
                         material_a=Si_110,
                         material_b=Si_110, symmetry_flag=False,
-                        lc_bkg=5, lc2=2000.0, lc3=1000.0)
+                        lc_bkg=5, lc2=4000.0, lc3=2000.0)
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
@@ -78,9 +77,9 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 # npzfile = np.load('wguide_data2.npz')
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-# plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
-#                          ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
-#                          prefix_str=prefix_str, pdf_png='png')
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
+                         ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
+                         prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -103,8 +102,8 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, #ivals=[0,1,2,3,4,5,6,7,8,9],
-#      num_ticks=3, xlim_min=0.1, xlim_max=0.1)
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, #ivals=[0,1,2,3,4,5,6,7,8,9],
+     num_ticks=3, xlim_min=0.1, xlim_max=0.1)
 
 set_q_factor = 460.
 
