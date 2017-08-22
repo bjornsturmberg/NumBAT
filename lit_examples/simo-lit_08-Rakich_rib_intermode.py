@@ -52,7 +52,7 @@ AC_ival = 'All'
 
 # Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-Si_110.rotate_axis(np.pi/4)
+Si_110.rotate_axis(np.pi/4,'y-axis')
 
 prefix_str = 'lit_08-'
 
@@ -63,20 +63,20 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=Si_110,
                         material_b=Si_110, symmetry_flag=False,
-                        lc_bkg=5, lc2=4000.0, lc3=2000.0)
+                        lc_bkg=5, lc2=3000.0, lc3=1000.0)
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
 # Calculate Electromagnetic Modes
-# sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
-# np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
-npzfile = np.load('wguide_data.npz')
-sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
+np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
+# npzfile = np.load('wguide_data.npz')
+# sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
-# sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
-# np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
-npzfile = np.load('wguide_data2.npz')
-sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
+sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
+np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
+# npzfile = np.load('wguide_data2.npz')
+# sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
 #                          ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
@@ -95,10 +95,10 @@ print('Intermode q_AC (Hz) \n', k_AC)
 shift_Hz = 2e9
 
 # Calculate Acoustic Modes
-# sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
-# np.savez('wguide_data_AC', sim_AC=sim_AC)
-npzfile = np.load('wguide_data_AC.npz')
-sim_AC = npzfile['sim_AC'].tolist()
+sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
+np.savez('wguide_data_AC', sim_AC=sim_AC)
+# npzfile = np.load('wguide_data_AC.npz')
+# sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
