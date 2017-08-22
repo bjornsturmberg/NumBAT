@@ -199,14 +199,12 @@ class Material(object):
             old_c_11 = self.c_11
             old_c_12 = self.c_12
             old_c_44 = self.c_44
-
             self.c_14 = self.c_15 = 0
             self.c_24 = self.c_25 = 0 
             self.c_34 = self.c_35 = self.c_36 = 0
             self.c_41 = self.c_42 = self.c_43 = self.c_45 = self.c_46 = 0
             self.c_51 = self.c_52 = self.c_53 = self.c_54 = self.c_56 = 0
             self.c_63 = self.c_64 = self.c_65 = 0
-
             # check isotropic values
             self.c_22 = self.c_11
             self.c_33 = self.c_11
@@ -227,8 +225,8 @@ class Material(object):
                       [self.c_61, self.c_62, self.c_63, self.c_64, self.c_65, self.c_66]]
             tensor = np.array(tensor)
             tensor_rotated = rotate_tensor(tensor, theta, rotate_axis)
-            # print("original \n", tensor)
-            # print("matrix rotated \n", tensor_rotated)
+            print("original \n", tensor)
+            print("matrix rotated \n", tensor_rotated)
             [[self.c_11, self.c_12, self.c_13, self.c_14, self.c_15, self.c_16],
             [self.c_21, self.c_22, self.c_23, self.c_24, self.c_25, self.c_26],
             [self.c_31, self.c_32, self.c_33, self.c_34, self.c_35, self.c_36],
@@ -236,15 +234,15 @@ class Material(object):
             [self.c_51, self.c_52, self.c_53, self.c_54, self.c_55, self.c_56],
             [self.c_61, self.c_62, self.c_63, self.c_64, self.c_65, self.c_66]] = tensor_rotated
 
-            # # rotated values
-            # self.c_11 = self.c_22 = 0.25*(old_c_11*(3+np.cos(4*theta)) + (old_c_12 + 2*old_c_44)*(1-np.cos(4*theta)))
-            # self.c_33 = old_c_11
-            # self.c_12 = self.c_21 = 0.25*(old_c_12*(3+np.cos(4*theta)) + (old_c_11 - 2*old_c_44)*(1-np.cos(4*theta)))
-            # self.c_13 = self.c_23 = self.c_31 = self.c_32 = old_c_12
-            # self.c_44 = self.c_55 = old_c_44
-            # self.c_66 = 0.25*(2*old_c_44*(1+np.cos(4*theta)) + (old_c_11 - old_c_12)*(1-np.cos(4*theta)))
-            # self.c_16 = self.c_61 = 0.25*np.sin(4*theta)*(2*old_c_44 + old_c_12 - old_c_11)
-            # self.c_26 = self.c_62 = 0.25*np.sin(4*theta)*(old_c_11 - old_c_12 - 2*old_c_44)
+            # rotated values
+            self.c_11 = self.c_22 = 0.25*(old_c_11*(3+np.cos(4*theta)) + (old_c_12 + 2*old_c_44)*(1-np.cos(4*theta)))
+            self.c_33 = old_c_11
+            self.c_12 = self.c_21 = 0.25*(old_c_12*(3+np.cos(4*theta)) + (old_c_11 - 2*old_c_44)*(1-np.cos(4*theta)))
+            self.c_13 = self.c_23 = self.c_31 = self.c_32 = old_c_12
+            self.c_44 = self.c_55 = old_c_44
+            self.c_66 = 0.25*(2*old_c_44*(1+np.cos(4*theta)) + (old_c_11 - old_c_12)*(1-np.cos(4*theta)))
+            self.c_16 = self.c_61 = 0.25*np.sin(4*theta)*(2*old_c_44 + old_c_12 - old_c_11)
+            self.c_26 = self.c_62 = 0.25*np.sin(4*theta)*(old_c_11 - old_c_12 - 2*old_c_44)
 
             # print("Kipplaus")
             # v_xy = v_yx = .361
@@ -284,28 +282,26 @@ class Material(object):
             # print(self.c_66)
             # print(self.c_16)
             # print(self.c_26)
-            # tensor = [[self.c_11, self.c_12, self.c_13, self.c_14, self.c_15, self.c_16],
-            #           [self.c_21, self.c_22, self.c_23, self.c_24, self.c_25, self.c_26],
-            #           [self.c_31, self.c_32, self.c_33, self.c_34, self.c_35, self.c_36],
-            #           [self.c_41, self.c_42, self.c_43, self.c_44, self.c_45, self.c_46],
-            #           [self.c_51, self.c_52, self.c_53, self.c_54, self.c_55, self.c_56],
-            #           [self.c_61, self.c_62, self.c_63, self.c_64, self.c_65, self.c_66]]
-            # tensor = np.array(tensor)
-            # print("manual rotated \n", tensor)
+            tensor = [[self.c_11, self.c_12, self.c_13, self.c_14, self.c_15, self.c_16],
+                      [self.c_21, self.c_22, self.c_23, self.c_24, self.c_25, self.c_26],
+                      [self.c_31, self.c_32, self.c_33, self.c_34, self.c_35, self.c_36],
+                      [self.c_41, self.c_42, self.c_43, self.c_44, self.c_45, self.c_46],
+                      [self.c_51, self.c_52, self.c_53, self.c_54, self.c_55, self.c_56],
+                      [self.c_61, self.c_62, self.c_63, self.c_64, self.c_65, self.c_66]]
+            tensor = np.array(tensor)
+            print("manual rotated \n", tensor)
            
             # PHOTOELASTIC
-            # unrotated values
-            old_p_11 = self.p_11
-            old_p_12 = self.p_12
-            old_p_44 = self.p_44
-
+            # # unrotated values
+            # old_p_11 = self.p_11
+            # old_p_12 = self.p_12
+            # old_p_44 = self.p_44
             self.p_14 = self.p_15 = 0
             self.p_24 = self.p_25 = 0 
             self.p_34 = self.p_35 = self.p_36 = 0
             self.p_41 = self.p_42 = self.p_43 = self.p_45 = self.p_46 = 0
             self.p_51 = self.p_52 = self.p_53 = self.p_54 = self.p_56 = 0
             self.p_63 = self.p_64 = self.p_65 = 0
-            
             # check isotropic values
             self.p_22 = self.p_11
             self.p_33 = self.p_11
@@ -318,7 +314,6 @@ class Material(object):
             self.p_16 = self.p_61 = 0
             self.p_26 = self.p_62 = 0
 
-
             tensor = [[self.p_11, self.p_12, self.p_13, self.p_14, self.p_15, self.p_16],
                       [self.p_21, self.p_22, self.p_23, self.p_24, self.p_25, self.p_26],
                       [self.p_31, self.p_32, self.p_33, self.p_34, self.p_35, self.p_36],
@@ -327,15 +322,12 @@ class Material(object):
                       [self.p_61, self.p_62, self.p_63, self.p_64, self.p_65, self.p_66]]
             tensor = np.array(tensor)
             tensor_rotated = rotate_tensor(tensor, theta, rotate_axis)
-            # print("original \n", tensor)
-            # print("matrix rotated \n", tensor_rotated)
             [[self.p_11, self.p_12, self.p_13, self.p_14, self.p_15, self.p_16],
             [self.p_21, self.p_22, self.p_23, self.p_24, self.p_25, self.p_26],
             [self.p_31, self.p_32, self.p_33, self.p_34, self.p_35, self.p_36],
             [self.p_41, self.p_42, self.p_43, self.p_44, self.p_45, self.p_46],
             [self.p_51, self.p_52, self.p_53, self.p_54, self.p_55, self.p_56],
             [self.p_61, self.p_62, self.p_63, self.p_64, self.p_65, self.p_66]] = tensor_rotated
-
 
             # # rotated values
             # self.p_11 = self.p_22 = 0.25*(old_p_11*(3+np.cos(4*theta)) + (old_p_12 + 2*old_p_44)*(1-np.cos(4*theta)))
@@ -347,34 +339,13 @@ class Material(object):
             # self.p_16 = self.p_61 = 0.25*np.sin(4*theta)*(2*old_p_44 + old_p_12 - old_p_11)
             # self.p_26 = self.p_62 = 0.25*np.sin(4*theta)*(old_p_11 - old_p_12 - 2*old_p_44)
 
-            # print(self.p_11)
-            # print(self.p_12)
-            # print(self.p_13)
-            # print(self.p_21)
-            # print(self.p_22)
-            # print(self.p_23)
-            # print(self.p_31)
-            # print(self.p_32)
-            # print(self.p_33)
-            # print(self.p_44)
-            # print(self.p_55)
-            # print(self.p_66)
-            # print(self.p_16)
-            # print(self.p_26)
-
             # ETA
-            # unrotated values
-            old_eta_11 = self.eta_11
-            old_eta_12 = self.eta_12
-            old_eta_44 = self.eta_44
-
             self.eta_14 = self.eta_15 = 0
             self.eta_24 = self.eta_25 = 0 
             self.eta_34 = self.eta_35 = self.eta_36 = 0
             self.eta_41 = self.eta_42 = self.eta_43 = self.eta_45 = self.eta_46 = 0
             self.eta_51 = self.eta_52 = self.eta_53 = self.eta_54 = self.eta_56 = 0
             self.eta_63 = self.eta_64 = self.eta_65 = 0
-
             # check isotropic values
             self.eta_22 = self.eta_11
             self.eta_33 = self.eta_11
@@ -395,25 +366,12 @@ class Material(object):
                       [self.eta_61, self.eta_62, self.eta_63, self.eta_64, self.eta_65, self.eta_66]]
             tensor = np.array(tensor)
             tensor_rotated = rotate_tensor(tensor, theta, rotate_axis)
-            # print("original \n", tensor)
-            # print("matrix rotated \n", tensor_rotated)
             [[self.eta_11, self.eta_12, self.eta_13, self.eta_14, self.eta_15, self.eta_16],
             [self.eta_21, self.eta_22, self.eta_23, self.eta_24, self.eta_25, self.eta_26],
             [self.eta_31, self.eta_32, self.eta_33, self.eta_34, self.eta_35, self.eta_36],
             [self.eta_41, self.eta_42, self.eta_43, self.eta_44, self.eta_45, self.eta_46],
             [self.eta_51, self.eta_52, self.eta_53, self.eta_54, self.eta_55, self.eta_56],
             [self.eta_61, self.eta_62, self.eta_63, self.eta_64, self.eta_65, self.eta_66]] = tensor_rotated
-
-
-            # # rotated values
-            # self.eta_11 = self.eta_22 = 0.25*(old_eta_11*(3+np.cos(4*theta)) + (old_eta_12 + 2*old_eta_44)*(1-np.cos(4*theta)))
-            # self.eta_33 = old_eta_11
-            # self.eta_12 = self.eta_21 = 0.25*(old_eta_12*(3+np.cos(4*theta)) + (old_eta_11 - 2*old_eta_44)*(1-np.cos(4*theta)))
-            # self.eta_13 = self.eta_23 = self.eta_31 = self.eta_32 = old_eta_12
-            # self.eta_44 = self.eta_55 = old_eta_44
-            # self.eta_66 = 0.25*(2*old_eta_44*(1+np.cos(4*theta)) + (old_eta_11 - old_eta_12)*(1-np.cos(4*theta)))
-            # self.eta_16 = self.eta_61 = 0.25*np.sin(4*theta)*(2*old_eta_44 + old_eta_12 - old_eta_11)
-            # self.eta_26 = self.eta_62 = 0.25*np.sin(4*theta)*(old_eta_11 - old_eta_12 - 2*old_eta_44)
 
             # self.anisotropic = True        
 
