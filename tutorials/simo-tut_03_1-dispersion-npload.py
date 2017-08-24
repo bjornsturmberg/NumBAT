@@ -37,6 +37,8 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
+prefix_str = 'tut_03-2-'
+
 # Note that this mesh is quite fine, may not be required if purely using dispersive sims
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
@@ -106,7 +108,7 @@ ax.set_ylim(0,35)
 ax.set_xlim(0,1.2)
 plt.xlabel(r'Axial wavevector (normalised)')
 plt.ylabel(r'Frequency (GHz)')
-plt.savefig(test_name, bbox_inches='tight')
+plt.savefig(prefix_str+test_name, bbox_inches='tight')
 plt.close()
 
 # output the normalisation k value for reference

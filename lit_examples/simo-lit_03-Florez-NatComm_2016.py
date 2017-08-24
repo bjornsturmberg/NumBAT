@@ -1,4 +1,4 @@
-s""" Replicating the results of
+""" Replicating the results of
     Brillouin scattering self-cancellation
     Florez et al.
     http://dx.doi.org/10.1038/ncomms11759
@@ -38,6 +38,8 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
+prefix_str = 'lit_03-'
+
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
@@ -53,7 +55,7 @@ sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
                          ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', 
-                         prefix_str='lit_03-', pdf_png='pdf')
+                         prefix_str=prefix_str, pdf_png='pdf')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -69,7 +71,7 @@ shift_Hz = 4e9
 # Calculate Acoustic Modes
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str='lit_03-', suffix_str='NW')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, suffix_str='NW')
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
@@ -87,7 +89,7 @@ freq_min = 0  # GHz
 freq_max = 12  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-    prefix_str='lit_03-')
+    prefix_str=prefix_str)
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))

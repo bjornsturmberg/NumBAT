@@ -1,5 +1,7 @@
-""" Calculate the backward SBS gain for modes in a
-    silicon waveguide surrounded in air.
+""" Replicating the results of
+    Large Brillouin amplification in silicon
+    Kittlaus et al.
+    http://dx.doi.org/10.1038/nphoton.2016.112
 """
 
 import time
@@ -29,24 +31,24 @@ wl_nm = 1550 # Wavelength of EM wave in vacuum.
 unitcell_x = 5*wl_nm
 unitcell_y = 0.2*unitcell_x
 # Waveguide widths.
-inc_a_x = 1500
+inc_a_x = 1000
 inc_a_y = 80
 # Shape of the waveguide.
 inc_shape = 'rib'
 
-slab_a_x = 2850
-slab_a_y = 135
+slab_a_x = 3000
+slab_a_y = 130
 
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
-num_modes_AC = 35
+num_modes_AC = 40
 # The first EM mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival_pump = 0
 # The second EM mode(s) for which to calculate interaction with AC modes.
-EM_ival_Stokes = 1 # INTERMODE SBS TE0 to TE1
+EM_ival_Stokes = EM_ival_pump
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
@@ -54,9 +56,10 @@ AC_ival = 'All'
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
 Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 
-prefix_str = 'lit_08-'
+prefix_str = 'lit_07-'
 
 # Use specified parameters to create a waveguide object.
+# Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         material_bkg=materials.Vacuum,
@@ -73,13 +76,10 @@ sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 # sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
 sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
-# np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
-# npzfile = np.load('wguide_data2.npz')
-# sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
-                         ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
-                         prefix_str=prefix_str, pdf_png='png')
+# plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ivals=[0], 
+#                          ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
+#                          prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -88,8 +88,7 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff = ", np.round(n_eff_sim, 4))
 
-k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
-print('Intermode q_AC (Hz) \n', k_AC)
+k_AC = 5
 
 shift_Hz = 2e9
 
@@ -102,10 +101,10 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, #ivals=[0,1,2,3,4,5,6,7,8,9],
-     num_ticks=3, xlim_min=0.1, xlim_max=0.1)
+# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, #ivals=[0,1,2,3,4,5,6,7,8,9],
+#      num_ticks=3, xlim_min=0.1, xlim_max=0.1)
 
-set_q_factor = 460.
+set_q_factor = 680.
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
@@ -124,8 +123,8 @@ print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = 0.5  # GHz
-freq_max = 9.5  # GHz
+freq_min = 4.4  # GHz
+freq_max = 4.5  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
     prefix_str=prefix_str, suffix_str='')

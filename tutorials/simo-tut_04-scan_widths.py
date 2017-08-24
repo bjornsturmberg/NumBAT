@@ -41,6 +41,8 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
+prefix_str = 'tut_04-'
+
 # Width previous simo's done for, with known meshing params
 known_geo = 315.
 
@@ -113,7 +115,7 @@ for i_w, width_obj in enumerate(width_objs):
     freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 5  # GHz
     plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
         EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
-        prefix_str='tut_04-', suffix_str='_scan%i' % i_w)
+        prefix_str=prefix_str, suffix_str='_scan%i' % i_w)
 
     # Repeat calc to collect data for waterfall plot.
     tune_steps = 5e4
@@ -147,7 +149,7 @@ ax.set_zlabel('Gain (1/Wm)', fontsize=14)
 ax.set_zlim3d(0,1500)
 # We change the fontsize of minor ticks label 
 plt.tick_params(axis='both', which='major', labelsize=12, pad=-2)
-plt.savefig('gain_spectra_waterfall.pdf')
+plt.savefig(prefix_str+'gain_spectra_waterfall.pdf')
 plt.close()
 
 

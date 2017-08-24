@@ -40,6 +40,8 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
+prefix_str = 'tut_02-'
+
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
@@ -73,10 +75,10 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 # Plot the E fields of the EM modes fields - specified with EM_AC='EM_E'.
 # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', prefix_str='tut_02-')
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', prefix_str=prefix_str)
 # Plot the H fields of the EM modes - specified with EM_AC='EM_H'.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_H', prefix_str='tut_02-')
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_H', prefix_str=prefix_str)
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
@@ -100,7 +102,7 @@ print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 # which excludes vacuum regions, so no need to restrict area plotted.
 # We want to get pdf files so set pdf_png='pdf' 
 # (default is png as these are easier to flick through).
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='pdf', prefix_str='tut_02-')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='pdf', prefix_str=prefix_str)
 
 # Do not calculate the acoustic loss from our fields, instead set a Q factor.
 set_q_factor = 1000.
@@ -130,13 +132,13 @@ freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz
 freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 2  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
-    prefix_str='tut_02-')
+    prefix_str=prefix_str)
 # Zoomed in version
 freq_min = 11  # GHz
 freq_max = 15  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max, 
-    prefix_str='tut_02-', suffix_str='_zoom')
+    prefix_str=prefix_str, suffix_str='_zoom')
 
 
 end = time.time()

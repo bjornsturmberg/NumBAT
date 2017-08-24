@@ -102,9 +102,7 @@ plt.xlabel(r'Width ($\mu m$)')
 plt.ylabel('Frequency (GHz)')
 plt.savefig('gain-width_scan.pdf')
 plt.close()
-<<<<<<< HEAD
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
-=======
->>>>>>> 2279d8a890b40d95d8a3a0f31e6084041d738fdd
+

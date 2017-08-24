@@ -34,6 +34,7 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
+prefix_str = 'tut_05-'
 
 nu_lcs = 4
 lc_bkg_list = 4*np.ones(nu_lcs)
@@ -114,7 +115,7 @@ ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"EM k$_z$ ($\times 10^6$ 1/m)")
 ax2.set_ylabel(r"Relative Error EM k$_z$")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-freq_EM.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-freq_EM.pdf', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -139,7 +140,7 @@ ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"AC Freq (GHz)")
 ax2.set_ylabel(r"Relative Error AC Freq")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-freq_AC.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-freq_AC.pdf', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -164,7 +165,7 @@ ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-Gain.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain.pdf', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -189,7 +190,7 @@ ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-Gain_PE.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain_PE.pdf', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -214,7 +215,7 @@ ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-Gain_MB.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain_MB.pdf', bbox_inches='tight')
 plt.close()
 
 print("Calculation time", time_list)

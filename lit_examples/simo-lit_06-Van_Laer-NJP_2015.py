@@ -1,7 +1,7 @@
 """ Replicating the results of
-    Brillouin scattering self-cancellation
-    Florez et al.
-    http://dx.doi.org/10.1038/ncomms11759
+    Net on-chip Brillouin gain based on suspended silicon nanowires
+    Van Laer et al.
+    http://dx.doi.org/10.1088/1367-2630/17/11/115005
 """
 
 import time
@@ -39,9 +39,10 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
+prefix_str = 'lit_06-'
+
 # Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-prefix_str = 'lit_06-'
 Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,

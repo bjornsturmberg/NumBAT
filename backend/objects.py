@@ -208,9 +208,6 @@ class Struct(object):
         elif slab_a_x is not None:
             if coat_y is None and inc_b_x is None:
                 self.nb_typ_el = 4
-            elif coat_y != None and inc_b_x != None:
-                self.nb_typ_el = 7
-                raise NotImplementedError("Have not implemented 2 coated inclusions.")
             else:
                 self.nb_typ_el = 5
         else:
@@ -581,7 +578,7 @@ class Struct(object):
         self.p_tensor = p_tensor
         self.eta_tensor = eta_tensor
 
-        self.linear_element_shapes = ['rectangular', 'slot', 'rib', 'rib_coated']
+        self.linear_element_shapes = ['rectangular', 'slot', 'slot_coated', 'rib', 'rib_coated']
         self.curvilinear_element_shapes = ['circular', 'onion']
 
 
@@ -704,10 +701,34 @@ class Struct(object):
                     geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
                     geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
 
-        elif self.inc_shape in ['slot']:
+        elif self.inc_shape in ['slot', 'slot_coated']:
             if self.coat_y is not None:
                 msh_template = 'slot_coated'
                 self.nb_typ_el = 5
+                msh_name = 'slot_c_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(cc)s_%(ccc)s_%(cccc)s' % {
+                'd': dec_float_str(self.unitcell_x),
+                'dy': dec_float_str(self.unitcell_y),
+                'a': dec_float_str(self.inc_a_x),
+                'b': dec_float_str(self.inc_a_y),
+                'c': dec_float_str(self.inc_b_x),
+                'cc': dec_float_str(self.slab_a_x),
+                'ccc': dec_float_str(self.slab_a_y),
+                'cccc': dec_float_str(self.coat_y)}
+                if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                    geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                    geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                    geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
+                    geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
+                    geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
+                    geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
+                    geo = geo.replace('c1y = 10;', "c1y = %f;" % self.coat_y)
+                    geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+
+
                 msh_name = 'slot_c_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(cc)s_%(ccc)s' % {
                 'd': dec_float_str(self.unitcell_x),
                 'dy': dec_float_str(self.unitcell_y),
@@ -716,28 +737,17 @@ class Struct(object):
                 'c': dec_float_str(self.inc_b_x),
                 'cc': dec_float_str(self.slab_a_y),
                 'ccc': dec_float_str(self.coat_y)}
-                if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
-                    geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
-                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
-                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
-                    geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
-                    geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
-                    geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
-                    geo = geo.replace('s1y = 10;', "s1y = %f;" % self.slab_a_y)
-                    geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-                    geo = geo.replace('c1y = 10;', "c1y = %f;" % self.coat_y)
             else:
                 msh_template = 'slot'
                 self.nb_typ_el = 4
-                msh_name = 'slot_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(cc)s' % {
+                msh_name = 'slot_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(cc)s_%(ccc)s' % {
                 'd': dec_float_str(self.unitcell_x),
                 'dy': dec_float_str(self.unitcell_y),
                 'a': dec_float_str(self.inc_a_x),
                 'b': dec_float_str(self.inc_a_y),
                 'c': dec_float_str(self.inc_b_x),
-                'cc': dec_float_str(self.slab_a_y)}
+                'cc': dec_float_str(self.slab_a_x),
+                'ccc': dec_float_str(self.slab_a_y)}
                 if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                     geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
                     geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
@@ -745,7 +755,8 @@ class Struct(object):
                     geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
                     geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
                     geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
-                    geo = geo.replace('s1y = 10;', "s1y = %f;" % self.slab_a_y)
+                    geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
+                    geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
