@@ -194,9 +194,9 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
             interp_values_MB += interp_spectrum_MB
     else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
-    plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
-    plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=2, label="PE")
-    plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=2, label="MB")
+    plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
+    plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
+    plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=2, label="Total")
     plt.legend(loc=0)
     if freq_min and freq_max:
         plt.xlim(freq_min,freq_max)
