@@ -384,12 +384,6 @@ We note the particular importance of examples 5-8 for they include experimental 
    :scale: 50 %
    
    Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
-
-
-.. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps-dB.png
-   :scale: 50 %
-   
-   Gain spectra in dB.
    
 
 .. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps_zoom.png
@@ -415,12 +409,6 @@ We note the particular importance of examples 5-8 for they include experimental 
    :scale: 50 %
    
    Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
-
-
-.. figure:: ../../lit_examples/lit_02-gain_spectra-MB_PE_comps-dB.png
-   :scale: 50 %
-   
-   Gain spectra in dB.
 
 
 2014 - Beugnot - Nat Comm - BSBS - Tapered Fibre - Scanning Widths
@@ -479,7 +467,7 @@ We note the particular importance of examples 5-8 for they include experimental 
 .. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 550 nm, as in Fig. 3 of paper.
+   Gain spectra of NW diameter 550 nm, matching blue curve of Fig. 3b in paper.
 
 
 
@@ -493,13 +481,13 @@ We note the particular importance of examples 5-8 for they include experimental 
 .. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper.
+   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
 
 
 .. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps_zoom.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, showing near perfect cancellation at 5.4 GHz.
+   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
 
 
 
@@ -566,3 +554,9 @@ We note the particular importance of examples 5-8 for they include experimental 
 
 .. literalinclude:: ../../lit_examples/simo-lit_09-Morrison-Optica_2017.py
     :lines: 0-
+
+
+.. figure:: ../../lit_examples/lit_09-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.

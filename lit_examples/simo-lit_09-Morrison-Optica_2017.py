@@ -31,8 +31,8 @@ wl_nm = 1550 # Wavelength of EM wave in vacuum.
 unitcell_x = 5*wl_nm
 unitcell_y = 0.5*unitcell_x
 # Waveguide widths.
-inc_a_x = 1000
-inc_a_y = 400
+inc_a_x = 1900
+inc_a_y = 680
 # Shape of the waveguide.
 inc_shape = 'rib_coated'
 
@@ -47,7 +47,7 @@ coat_y = 200
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
-num_modes_AC = 20
+num_modes_AC = 30
 # The first EM mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival_pump = 0
@@ -56,13 +56,15 @@ EM_ival_Stokes = EM_ival_pump
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
+prefix_str = 'lit_09-'
+
 # Use specified parameters to create a waveguide object.
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y, coat_x=coat_x, coat_y=coat_y,
                         material_bkg=materials.Vacuum,
                         material_a=materials.As2S3_2017_Morrison, # waveguide
-                        material_b=materials.Si_2016_Smith,       # slab
+                        material_b=materials.Si_2016_Smith,     # slab
                         material_c=materials.SiO2_2013_Laude,     # coating
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
@@ -121,8 +123,8 @@ print("SBS_gain total \n", masked)
 
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = 7.2  # GHz
-freq_max = 8.1  # GHz
+freq_min = 7  # GHz
+freq_max = 10  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
     prefix_str=prefix_str)
