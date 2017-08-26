@@ -84,3 +84,4 @@ plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, suffix_str='
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
+

@@ -129,7 +129,7 @@ for i_w, width_obj in enumerate(width_objs):
         freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
         interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
         interp_values += interp_spectrum
-    freqs_gains.append(list(zip(interp_grid, interp_values)))
+    freqs_gains.append(list(zip(interp_grid, abs(interp_values))))
 
 print('Widths', waveguide_widths)
 print('n_effs', n_effs)
@@ -144,14 +144,14 @@ ax.set_xlabel('Frequency (GHz)', fontsize=14)
 ax.set_xlim3d(10,25)
 ax.set_ylabel('Width (nm)', fontsize=14)
 ax.set_ylim3d(waveguide_widths[0], waveguide_widths[-1])
-ax.set_zlabel('Gain (1/Wm)', fontsize=14)
+ax.set_zlabel('|Gain| (1/Wm)', fontsize=14)
 ax.set_zlim3d(0,1500)
 # We change the fontsize of minor ticks label 
 plt.tick_params(axis='both', which='major', labelsize=12, pad=-2)
 plt.savefig(prefix_str+'gain_spectra_waterfall.pdf')
+plt.savefig(prefix_str+'gain_spectra_waterfall.png')
 plt.close()
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
-
 
