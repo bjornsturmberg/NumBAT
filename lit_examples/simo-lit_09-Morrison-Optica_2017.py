@@ -1,6 +1,8 @@
-""" Calculate the backward SBS gain for modes in a
-    chalcogenide rib waveguide on a Si slab, 
-    coated in SiO2, surrounded in air.
+""" Replicating the results of
+    Compact Brillouin devices through hybrid 
+    integration on Silicon
+    Morrison et al.
+    http://arxiv.org/abs/1702.05233  
 """
 
 import time
@@ -116,6 +118,14 @@ masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:], 0, thresho
 print("\n SBS_gain PE contribution \n", masked_PE)
 print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)
+
+
+# Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
+freq_min = 7.2  # GHz
+freq_max = 8.1  # GHz
+plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
+    prefix_str=prefix_str)
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))

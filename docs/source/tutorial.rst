@@ -368,13 +368,13 @@ We note the particular importance of examples 5-8 for they include experimental 
    Fundamental optical mode fields.
 
 
-.. figure:: ../../lit_examples/lit_01-fields/AC_field_4.png.png
+.. figure:: ../../lit_examples/lit_01-fields/AC_field_4.png
    :scale: 50 %
    
    High gain acoustic mode, marked as C in paper.
 
 
-.. figure:: ../../lit_examples/lit_01-fields/AC_field_55.png.png
+.. figure:: ../../lit_examples/lit_01-fields/AC_field_55.png
    :scale: 50 %
    
    High gain acoustic mode, marked as D in paper.
@@ -385,6 +385,12 @@ We note the particular importance of examples 5-8 for they include experimental 
    
    Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
 
+
+.. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps-dB.png
+   :scale: 50 %
+   
+   Gain spectra in dB.
+   
 
 .. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps_zoom.png
    :scale: 50 %
@@ -397,6 +403,24 @@ We note the particular importance of examples 5-8 for they include experimental 
 
 .. literalinclude:: ../../lit_examples/simo-lit_02-Laude-AIPAdv_2013-silicon.py
     :lines: 0-
+
+
+.. figure:: ../../lit_examples/lit_02-fields/AC_field_4.png
+   :scale: 50 %
+   
+   High gain acoustic mode, marked as G in paper.
+
+
+.. figure:: ../../lit_examples/lit_02-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+
+
+.. figure:: ../../lit_examples/lit_02-gain_spectra-MB_PE_comps-dB.png
+   :scale: 50 %
+   
+   Gain spectra in dB.
 
 
 2014 - Beugnot - Nat Comm - BSBS - Tapered Fibre - Scanning Widths
@@ -413,8 +437,8 @@ We note the particular importance of examples 5-8 for they include experimental 
     :lines: 0-
 
 
-2015 - Van Laer - New J Phys - FSBF - Waveguide on a Pedestal
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2015 - Van Laer - New J Phys - FSBF - Waveguide without Pedestal
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../lit_examples/simo-lit_05-Van_Laer-NJP_2015.py
     :lines: 0-
@@ -426,7 +450,7 @@ We note the particular importance of examples 5-8 for they include experimental 
    Fundamental optical mode fields.
 
 
-.. figure:: ../../lit_examples/lit_05-fields/AC_field_6.png.png
+.. figure:: ../../lit_examples/lit_05-fields/AC_field_6.png
    :scale: 50 %
    
    Dominant high gain acoustic mode.
@@ -469,7 +493,13 @@ We note the particular importance of examples 5-8 for they include experimental 
 .. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, showing cancellation as in Fig. 4 of paper.
+   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper.
+
+
+.. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps_zoom.png
+   :scale: 50 %
+   
+   Gain spectra of NW diameter 1160 nm, showing near perfect cancellation at 5.4 GHz.
 
 
 

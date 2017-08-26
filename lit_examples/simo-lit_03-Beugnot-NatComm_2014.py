@@ -30,7 +30,7 @@ num_cores = 5
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550
-unitcell_x = 5*wl_nm
+unitcell_x = 4*wl_nm
 unitcell_y = unitcell_x
 inc_shape = 'circular'
 
@@ -60,7 +60,7 @@ def modes_n_gain(inc_a_x):
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             material_bkg=materials.Vacuum,
                             material_a=materials.Si_2016_Smith,
-                            lc_bkg=3, lc2=2000.0, lc3=1000.0)
+                            lc_bkg=4, lc2=2000.0, lc3=1000.0)
 
     sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
@@ -89,7 +89,7 @@ for w, width_interp in enumerate(width_objs):
 
 fig = plt.figure()
 ax1 = fig.add_subplot(1,1,1)
-blah = ax1.matshow(gain_array, aspect='auto', interpolation = 'none')
+blah = ax1.matshow(gain_array, aspect='auto', interpolation='none')
 
 num_xticks = 5
 num_yticks = 5
@@ -101,7 +101,7 @@ ax1.set_yticklabels(["%4.0f" % i for i in np.linspace(freq_min,freq_max,num_ytic
 
 plt.xlabel(r'Width ($\mu m$)')
 plt.ylabel('Frequency (GHz)')
-plt.savefig('gain-width_scan.pdf')
+plt.savefig('lit_03-gain-width_scan.pdf')
 plt.close()
 
 end = time.time()

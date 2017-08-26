@@ -116,7 +116,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
     return_interp_values = interp_values
     if mode_comps:
-        plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
+        plt.plot(interp_grid, np.abs(interp_values), 'b', linewidth=3, label="Total")
         plt.legend(loc=0)
         if freq_min and freq_max:
             plt.xlim(freq_min,freq_max)
@@ -153,7 +153,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
                     interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
                     interp_values += interp_spectrum
             else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
-            plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'k', linewidth=3, label="Total")
+            plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'b', linewidth=3, label="Total")
             if save_txt:
                 save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)))
                 np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-Total.csv' 
@@ -196,7 +196,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
     plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
     plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
-    plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=2, label="Total")
+    plt.plot(interp_grid, np.abs(interp_values), 'b', linewidth=2, label="Total")
     plt.legend(loc=0)
     if freq_min and freq_max:
         plt.xlim(freq_min,freq_max)
@@ -226,7 +226,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     if dB:
         plt.figure()
         plt.clf()
-        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'k', linewidth=3, label="Total")
+        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'b', linewidth=3, label="Total")
         plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values_PE)*6.5e-3))), 'r', linewidth=3, label="PE")
         plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values_MB)*6.5e-3))), 'g', linewidth=3, label="MB")
         plt.legend(loc=0)
