@@ -47,7 +47,7 @@ prefix_str = 'tut_04-'
 known_geo = 315.
 
 def modes_n_gain(wguide):
-    print ('Commencing mode calculation for width a_x= %f'% wguide.inc_a_x)
+    print ('Commencing mode calculation for width a_x = %f' % wguide.inc_a_x)
     # Expected effective index of fundamental guided mode.
     n_eff = (wguide.material_a.n-0.1) * wguide.inc_a_x/known_geo
     # Calculate Electromagnetic modes.
@@ -61,11 +61,11 @@ def modes_n_gain(wguide):
         sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
-    print ('  Completed mode calculation for width a_x= %f'% wguide.inc_a_x)
-    return [sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, k_AC]
+    print ('Completed mode calculation for width a_x = %f' % wguide.inc_a_x)
+    return [sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC]
 
 
-nu_widths = 6
+nu_widths = 2
 waveguide_widths = np.linspace(300,400,nu_widths)
 geo_objects_list = []
 # Scale meshing to new structures.
@@ -97,14 +97,13 @@ freqs_gains = []
 interp_grid_points = 10000
 interp_grid = np.linspace(10, 25, interp_grid_points)
 for i_w, width_obj in enumerate(width_objs):
-    print('Calculating gain spectra for width a_x=%f'%width_obj.inc_a_x)
     interp_values = np.zeros(interp_grid_points)
     sim_EM = width_obj[0]
     sim_AC = width_obj[1]
     SBS_gain = width_obj[2]
     SBS_gain_PE = width_obj[3]
     SBS_gain_MB = width_obj[4]
-    alpha = width_obj[5]
+    linewidth_Hz = width_obj[5]
     k_AC = width_obj[6]
     # Calculate the EM effective index of the waveguide (k_AC = 2*k_EM).
     n_eff_sim = np.round(np.real((k_AC/2.)*((wl_nm*1e-9)/(2.*np.pi))), 4)
@@ -122,11 +121,11 @@ for i_w, width_obj in enumerate(width_objs):
     tune_range = 10 # GHz
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
-    phase_v = 2*np.pi*sim_AC.Eig_values/k_AC
-    line_width = phase_v*alpha/(2*np.pi)
-    for AC_i in range(len(alpha)):
+    # Linewidth of Lorentzian is half the FWHM style linewidth.
+    linewidth = linewidth_Hz/2
+    for AC_i in range(len(linewidth_Hz)):
         gain_list = np.real(SBS_gain[EM_ival_Stokes,EM_ival_pump,AC_i]
-                     *line_width[AC_i]**2/(line_width[AC_i]**2 + detuning_range**2))
+                     *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
         freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
         interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
         interp_values += interp_spectrum
@@ -152,6 +151,7 @@ plt.tick_params(axis='both', which='major', labelsize=12, pad=-2)
 plt.savefig(prefix_str+'gain_spectra_waterfall.pdf')
 plt.close()
 
-
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
+
+

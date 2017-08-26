@@ -198,7 +198,7 @@ Investigating Dispersion and npsave npload
 .. figure:: ../../tutorials/tut_03_1-dispersion_npload_symmetrised.png
    :scale: 70 %
    
-   Dispersion diagram.
+   Acoustic dispersion diagram with modes categorised by symmetry.
 
 
 
@@ -212,8 +212,8 @@ Investigating Dispersion and multiprocessing
 .. figure:: ../../tutorials/tut_03_2-dispersion_multicore.png
    :scale: 70 %
    
-   Dispersion diagram.
-   
+   Acoustic dispersion diagram ploted as lines.
+
 
 Parameter Scan of Widths
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
