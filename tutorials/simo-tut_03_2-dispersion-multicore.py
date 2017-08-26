@@ -1,5 +1,5 @@
 """ Calculate a dispersion diagram of the acoustic modes
-    from k_AC = 0 (forward SBS) to k_AC = 2*k_EM (backward SBS).
+    from k_AC ~ 0 (forward SBS) to k_AC = 2*k_EM (backward SBS).
 """
 
 import time
@@ -72,10 +72,10 @@ def ac_mode_freqs(k_ac):
 
 # Now we utilise multi-core calculations to perform parallel simulations and speed up the simulation
 test_name = 'dispersion_multicore.pdf'
-nu_ks = 10  # start with a low number of k_ac values to get an idea
+nu_ks = 5  # start with a low number of k_ac values to get an idea
 acoustic_ks = np.linspace(5., k_AC*1.1, nu_ks)
 
-num_cores = 10  # should be appropriate for individual machine/vm, and memory!
+num_cores = 5  # should be appropriate for individual machine/vm, and memory!
 pool = Pool(num_cores)
 pooled_mode_freqs = pool.map(ac_mode_freqs, acoustic_ks)
 
