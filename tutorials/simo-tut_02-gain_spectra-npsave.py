@@ -125,7 +125,7 @@ np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE,
 # SBS_gain = npzfile['SBS_gain']
 # SBS_gain_PE = npzfile['SBS_gain_PE']
 # SBS_gain_MB = npzfile['SBS_gain_MB']
-# alpha = npzfile['alpha']
+# linewidth_Hz = npzfile['linewidth_Hz']
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz

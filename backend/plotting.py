@@ -80,28 +80,100 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             freq_min  (float): Minimum of frequency range.
 
             freq_max  (float): Maximum of frequency range.
+
+            mode_comps  (bool): Plot decomposition of spectra into individual modes.
     """
     tune_steps = 5e4
     tune_range = 10 # GHz
-    # Construct an odd range of frequencies that is guaranteed to include 
-    # the central resonance frequency.
+    # Construct an odd range of freqs guaranteed to include central resonance frequency.
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
+    interp_grid = np.linspace(freq_min, freq_max, num_interp_pts)
 
-    # # with alpha is in units of [1/s]
-    # linewidth = alpha/(2*np.pi)
-    ## with alpha is in units of [1/m]
-    ## Line width of resonances should be v_g * alpha
-    ## but we don't have convenient access to v_g, therefore
-    ## phase velocity as approximation to group velocity
-    # phase_v = 2*np.pi*sim_AC.Eig_values/k_AC
-    # linewidth = phase_v*alpha/(2*np.pi)
-
+    # Linewidth of Lorentzian is half the FWHM style linewidth.
     linewidth = linewidth_Hz/2
 
-    interp_grid = np.linspace(freq_min, freq_max, num_interp_pts)
+    # Plot decomposition of spectra into individual modes.
     interp_values = np.zeros(num_interp_pts)
+    if mode_comps:
+        plt.figure()
+        plt.clf()
+    if AC_ival == 'All':
+        for AC_i in range(len(linewidth)):
+            gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
+                         *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
+            freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
+            if mode_comps:
+                plt.plot(freq_list_GHz, np.abs(gain_list), linewidth=2)
+                if save_txt:
+                    save_array = (freq_list_GHz, gain_list)
+                    np.savetxt('gain_spectra-mode_comps%(add)s-%(mode)i.csv' 
+                                % {'add' : suffix_str, 'mode' : AC_i}, 
+                                save_array, delimiter=',')
+            # set up an interpolation for summing all the gain peaks
+            interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
+            interp_values += interp_spectrum
+    else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
+    return_interp_values = interp_values
+    if mode_comps:
+        plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
+        plt.legend(loc=0)
+        if freq_min and freq_max:
+            plt.xlim(freq_min,freq_max)
+        plt.xlabel('Frequency (GHz)')
+        plt.ylabel('|Gain| (1/Wm)')
+        if save_txt:
+            save_array = (interp_grid, interp_values)
+            np.savetxt('gain_spectra-mode_comps%(add)s-Total.csv' 
+                        % {'add' : suffix_str}, save_array, delimiter=',')
 
+    if mode_comps:
+        if pdf_png=='png':
+            plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
+        elif pdf_png=='pdf':
+            plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
+        plt.close()
+
+        if dB:
+            plt.figure()
+            plt.clf()
+            if AC_ival == 'All':
+                for AC_i in range(len(linewidth)):
+                    gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
+                                 *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
+                    freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
+                    plt.plot(freq_list_GHz, np.abs(10*np.log10(np.exp(abs(gain_list)*6.5e-3))))
+                    # 6.5e-3 is the estimated value of L_eff*P_pump/A_eff in https://arxiv.org/abs/1702.05233
+                    if save_txt:
+                        save_array = (freq_list_GHz, 20*np.log10(abs(gain_list)))
+                        np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-%(mode)i.csv' 
+                                    % {'pre' : prefix_str, 'add' : suffix_str, 'mode' : AC_i}, 
+                                    save_array, delimiter=',')
+                    # set up an interpolation for summing all the gain peaks
+                    interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
+                    interp_values += interp_spectrum
+            else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
+            plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'k', linewidth=3, label="Total")
+            if save_txt:
+                save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)))
+                np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-Total.csv' 
+                            % {'pre' : prefix_str, 'add' : suffix_str}, 
+                            save_array, delimiter=',')
+            plt.legend(loc=0)
+            if freq_min and freq_max:
+                plt.xlim(freq_min,freq_max)
+            plt.xlabel('Frequency (GHz)')
+            plt.ylabel('|Gain| (dB)')
+
+            if pdf_png=='png':
+                plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
+            elif pdf_png=='pdf':
+                plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
+            plt.close()
+
+    interp_values = np.zeros(num_interp_pts)
+    interp_values_PE = np.zeros(num_interp_pts)
+    interp_values_MB = np.zeros(num_interp_pts)
     plt.figure()
     plt.clf()
     if AC_ival == 'All':
@@ -109,111 +181,33 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
                          *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
             freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
-            plt.plot(freq_list_GHz, np.abs(gain_list))
-            if save_txt:
-                save_array = (freq_list_GHz, gain_list)
-                np.savetxt('gain_spectra-mode_comps%(add)s-%(mode)i.csv' 
-                            % {'add' : suffix_str, 'mode' : AC_i}, 
-                            save_array, delimiter=',')
-            # set up an interpolation for summing all the gain peaks
             interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
             interp_values += interp_spectrum
+
+            gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]
+                         *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
+            interp_spectrum_PE = np.interp(interp_grid, freq_list_GHz, gain_list_PE)
+            interp_values_PE += interp_spectrum_PE
+
+            gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]
+                         *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
+            interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
+            interp_values_MB += interp_spectrum_MB
     else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
     plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
-    return_interp_values = interp_values
-    if save_txt:
-        save_array = (interp_grid, interp_values)
-        np.savetxt('gain_spectra-mode_comps%(add)s-Total.csv' 
-                    % {'add' : suffix_str}, 
-                    save_array, delimiter=',')
+    plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=2, label="PE")
+    plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=2, label="MB")
     plt.legend(loc=0)
     if freq_min and freq_max:
         plt.xlim(freq_min,freq_max)
     plt.xlabel('Frequency (GHz)')
     plt.ylabel('|Gain| (1/Wm)')
 
-
     if pdf_png=='png':
-        plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
     elif pdf_png=='pdf':
-        plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
+        plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
     plt.close()
-
-    if dB and mode_comps:
-        plt.figure()
-        plt.clf()
-        if AC_ival == 'All':
-            for AC_i in range(len(linewidth)):
-                gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
-                             *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-                freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
-                plt.plot(freq_list_GHz, np.abs(10*np.log10(np.exp(abs(gain_list)*6.5e-3))))
-                # 6.5e-3 is the estimated value of L_eff*P_pump/A_eff in https://arxiv.org/abs/1702.05233
-                if save_txt:
-                    save_array = (freq_list_GHz, 20*np.log10(abs(gain_list)))
-                    np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-%(mode)i.csv' 
-                                % {'pre' : prefix_str, 'add' : suffix_str, 'mode' : AC_i}, 
-                                save_array, delimiter=',')
-                # set up an interpolation for summing all the gain peaks
-                interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
-                interp_values += interp_spectrum
-        else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
-        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'k', linewidth=3, label="Total")
-        if save_txt:
-            save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*6.5e-3)))
-            np.savetxt('%(pre)sgain_spectra-mode_comps-dB%(add)s-Total.csv' 
-                        % {'pre' : prefix_str, 'add' : suffix_str}, 
-                        save_array, delimiter=',')
-        plt.legend(loc=0)
-        if freq_min and freq_max:
-            plt.xlim(freq_min,freq_max)
-        plt.xlabel('Frequency (GHz)')
-        plt.ylabel('|Gain| (dB)')
-
-        if pdf_png=='png':
-            plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
-        elif pdf_png=='pdf':
-            plt.savefig('%(pre)sgain_spectra-mode_comps-dB%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
-        plt.close()
-
-    if mode_comps:
-        interp_values = np.zeros(num_interp_pts)
-        interp_values_PE = np.zeros(num_interp_pts)
-        interp_values_MB = np.zeros(num_interp_pts)
-        plt.figure()
-        plt.clf()
-        if AC_ival == 'All':
-            for AC_i in range(len(linewidth)):
-                gain_list = np.real(SBS_gain[EM_ival1,EM_ival2,AC_i]
-                             *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-                freq_list_GHz = np.real(sim_AC.Eig_values[AC_i] + detuning_range)*1e-9
-                interp_spectrum = np.interp(interp_grid, freq_list_GHz, gain_list)
-                interp_values += interp_spectrum
-
-                gain_list_PE = np.real(SBS_gain_PE[EM_ival1,EM_ival2,AC_i]
-                             *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-                interp_spectrum_PE = np.interp(interp_grid, freq_list_GHz, gain_list_PE)
-                interp_values_PE += interp_spectrum_PE
-
-                gain_list_MB = np.real(SBS_gain_MB[EM_ival1,EM_ival2,AC_i]
-                             *linewidth[AC_i]**2/(linewidth[AC_i]**2 + detuning_range**2))
-                interp_spectrum_MB = np.interp(interp_grid, freq_list_GHz, gain_list_MB)
-                interp_values_MB += interp_spectrum_MB
-        else: raise NotImplementedError("Spectrum plotting for limited AC modes not implemented.")
-        plt.plot(interp_grid, np.abs(interp_values), 'k', linewidth=3, label="Total")
-        plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
-        plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
-        plt.legend(loc=0)
-        if freq_min and freq_max:
-            plt.xlim(freq_min,freq_max)
-        plt.xlabel('Frequency (GHz)')
-        plt.ylabel('|Gain| (1/Wm)')
-
-        if pdf_png=='png':
-            plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
-        elif pdf_png=='pdf':
-            plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
-        plt.close()
 
     if save_txt:
         save_array = (interp_grid, interp_values)

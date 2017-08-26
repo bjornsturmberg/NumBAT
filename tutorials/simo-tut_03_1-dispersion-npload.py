@@ -1,5 +1,5 @@
 """ Calculate a dispersion diagram of the acoustic modes
-    from k_AC = 0 (forward SBS) to k_AC = 2*k_EM (backward SBS).
+    from k_AC ~ 0 (forward SBS) to k_AC = 2*k_EM (backward SBS).
 """
 
 import time
