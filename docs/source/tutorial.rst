@@ -187,18 +187,28 @@ Elements to note:
    Zoomed in gain spectra.
 
 
-Investigating Dispersion
+Investigating Dispersion and npsave npload
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../tutorials/simo-tut_03_1-dispersion-npload.py
     :lines: 0-
 
-Investigating Dispersion
+
+.. figure:: ../../tutorials/tut_03_1-dispersion_npload_symmetrised.png
+   :scale: 70 %
+   
+   Dispersion diagram.
+
+Investigating Dispersion and multiprocessing
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../tutorials/simo-tut_03_2-dispersion-multicore.py
     :lines: 0-
 
+.. figure:: ../../tutorials/tut_03_2-dispersion_multicore.png
+   :scale: 70 %
+   
+   Dispersion diagram.
 
 Parameter Scan of Widths
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

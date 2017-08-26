@@ -1,5 +1,6 @@
 """ Calculate a dispersion diagram of the acoustic modes
     from k_AC ~ 0 (forward SBS) to k_AC = 2*k_EM (backward SBS).
+    Use python's (embarrassing parallel) multiprocessing package.
 """
 
 import time
@@ -37,7 +38,7 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
-prefix_str = 'tut_03-2-'
+prefix_str = 'tut_03_2-'
 
 # Note that this mesh is quite fine, may not be required if purely using dispersive sims
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
@@ -71,7 +72,7 @@ def ac_mode_freqs(k_ac):
 
 
 # Now we utilise multi-core calculations to perform parallel simulations and speed up the simulation
-test_name = 'dispersion_multicore.pdf'
+test_name = 'dispersion_multicore'
 nu_ks = 5  # start with a low number of k_ac values to get an idea
 acoustic_ks = np.linspace(5., k_AC*1.1, nu_ks)
 
@@ -105,11 +106,12 @@ ax.set_ylim(0,35)
 ax.set_xlim(0,1.1)
 plt.xlabel(r'Axial wavevector (normalised)')
 plt.ylabel(r'Frequency (GHz)')
-plt.savefig(prefix_str+test_name, bbox_inches='tight')
+plt.savefig(prefix_str+test_name+'.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+test_name+'.png', bbox_inches='tight')
 plt.close()
 
 # Output the normalisation k value for reference
-print("the 2kp is: %f" %k_AC)
+print("The 2kp is: %f" %k_AC)
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
