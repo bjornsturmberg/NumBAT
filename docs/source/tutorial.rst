@@ -176,6 +176,24 @@ Elements to note:
     :lines: 0-
 
 
+.. figure:: ../../tutorials/tut_02-fields/EM_E_field_0.png
+   :scale: 70 %
+   
+   Fundamental optical mode fields.
+
+
+.. figure:: ../../tutorials/tut_02-fields/AC_field_2.png
+   :scale: 70 %
+   
+   Acoustic mode with high gain due to moving boundary effect.
+
+
+.. figure:: ../../tutorials/tut_02-fields/AC_field_4.png
+   :scale: 70 %
+   
+   Acoustic mode with high gain due to moving boundary effect.
+
+
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps.png
    :scale: 70 %
    
