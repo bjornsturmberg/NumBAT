@@ -367,10 +367,10 @@ We note the particular importance of examples 5-8 for they include experimental 
    High gain acoustic mode, marked as D in paper.
 
 
-.. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps.png
+.. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps-logy.png
    :scale: 50 %
    
-   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+   Gain spectra on semilogy axis.
    
 
 .. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps_zoom.png
@@ -392,10 +392,10 @@ We note the particular importance of examples 5-8 for they include experimental 
    High gain acoustic mode, marked as G in paper.
 
 
-.. figure:: ../../lit_examples/lit_02-gain_spectra-MB_PE_comps.png
+.. figure:: ../../lit_examples/lit_02-gain_spectra-MB_PE_comps-logy.png
    :scale: 50 %
    
-   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+   Gain spectra on semilogy axis.
 
 
 2014 - Beugnot - Nat Comm - BSBS - Tapered Fibre - Scanning Widths

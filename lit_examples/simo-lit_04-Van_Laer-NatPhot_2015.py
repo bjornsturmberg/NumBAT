@@ -30,7 +30,7 @@ unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
 inc_a_x = 450
 inc_a_y = 230
-inc_shape = 'rectangular'
+inc_shape = 'pedestal'
 slab_a_x = 15
 slab_a_y = 300
 slab_b_x = unitcell_x-400
@@ -49,12 +49,10 @@ prefix_str = 'lit_04-'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         slab_b_x=slab_b_x, slab_b_y=slab_b_y,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_2015_Van_Laer,
-                        material_b=materials.SiO2_2015_Van_Laer,
-                        material_c=materials.Vacuum,
-                        material_d=materials.SiO2_2015_Van_Laer,
-                        material_e=materials.Vacuum,
+                        material_bkg=materials.Vacuum,            # background
+                        material_a=materials.Si_2015_Van_Laer,    # rib
+                        material_b=materials.SiO2_2015_Van_Laer,  # slab
+                        material_c=materials.SiO2_2015_Van_Laer,  # pillar
                         lc_bkg=2, lc2=4000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.

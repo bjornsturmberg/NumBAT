@@ -59,7 +59,7 @@ def zeros_int_str(zero_int):
 
 def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
                 EM_ival1, EM_ival2, AC_ival, freq_min, freq_max, num_interp_pts=3000,
-                dB=False, mode_comps=False,
+                dB=False, mode_comps=False, semilogy=False,
                 pdf_png='png', save_txt=False, prefix_str='', suffix_str=''):
     r""" Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
             
@@ -226,9 +226,9 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     if dB:
         plt.figure()
         plt.clf()
-        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'b', linewidth=3, label="Total")
         plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values_PE)*6.5e-3))), 'r', linewidth=3, label="PE")
         plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values_MB)*6.5e-3))), 'g', linewidth=3, label="MB")
+        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*6.5e-3))), 'b', linewidth=2, label="Total")
         plt.legend(loc=0)
         if freq_min and freq_max:
             plt.xlim(freq_min,freq_max)
@@ -254,6 +254,24 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             np.savetxt('%(pre)sgain_spectra-MB_PE_comps-dB%(add)s-MB.csv' 
                         % {'pre' : prefix_str, 'add' : suffix_str}, 
                         save_array, delimiter=',')
+
+    if semilogy:
+        plt.figure()
+        plt.clf()
+        plt.semilogy(interp_grid, abs(interp_values_PE), 'r', linewidth=3, label="PE")
+        plt.semilogy(interp_grid, abs(interp_values_MB), 'g', linewidth=3, label="MB")
+        plt.semilogy(interp_grid, abs(interp_values), 'b', linewidth=2, label="Total")
+        plt.legend(loc=0)
+        if freq_min and freq_max:
+            plt.xlim(freq_min,freq_max)
+        plt.xlabel('Frequency (GHz)')
+        plt.ylabel('|Gain| (1/Wm)')
+
+        if pdf_png=='png':
+            plt.savefig('%(pre)sgain_spectra-MB_PE_comps-logy%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
+        elif pdf_png=='pdf':
+            plt.savefig('%(pre)sgain_spectra-MB_PE_comps-logy%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
+        plt.close()
 
     return return_interp_values
 
