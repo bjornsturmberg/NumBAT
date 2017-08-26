@@ -179,6 +179,7 @@ Elements to note:
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps.png
    :scale: 70 %
    Gain spectra showing gain due to electrostriction, gain due to radiation pressure, and total gain.
+   
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps_zoom.png
    :scale: 70 %
    Zoomed in gain spectra.
