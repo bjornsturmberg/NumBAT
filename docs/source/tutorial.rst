@@ -390,11 +390,27 @@ We note the particular importance of examples 5-8 for they include experimental 
     :lines: 0-
 
 
+.. figure:: ../../lit_examples/lit_05-fields/EM_E_field_0.png
+   :scale: 50 %
+   
+   Fundamental optical mode fields.
+
+
+.. figure:: ../../lit_examples/lit_05-fields/AC_field_6.png.png
+   :scale: 50 %
+   
+   Dominant high gain acoustic mode.
+
+
+
 2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../lit_examples/simo-lit_06-Florez-NatComm_2016.py
     :lines: 0-
+
+
+
 
 
 2016 - Kittlaus - Nat Phot - FSBF - Rib Waveguide

@@ -38,7 +38,7 @@ EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
 
-prefix_str = 'lit_03-'
+prefix_str = 'lit_06-'
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
