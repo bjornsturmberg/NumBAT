@@ -74,11 +74,13 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 
 # Plot the E fields of the EM modes fields - specified with EM_AC='EM_E'.
 # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', prefix_str=prefix_str)
+# Only plot fields of fundamental (ival = 0) mode.
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
+                         ylim_max=0.4, ivals=[0], contours=True, EM_AC='EM_E', 
+                         prefix_str=prefix_str)
 # Plot the H fields of the EM modes - specified with EM_AC='EM_H'.
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_H', prefix_str=prefix_str)
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
+                         ylim_max=0.4, ivals=[0], EM_AC='EM_H', prefix_str=prefix_str)
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
@@ -102,7 +104,8 @@ print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 # which excludes vacuum regions, so no need to restrict area plotted.
 # We want to get pdf files so set pdf_png='pdf' 
 # (default is png as these are easier to flick through).
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='pdf', prefix_str=prefix_str)
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='pdf', contours=True, 
+                         prefix_str=prefix_str)
 
 # Do not calculate the acoustic loss from our fields, instead set a Q factor.
 set_q_factor = 1000.

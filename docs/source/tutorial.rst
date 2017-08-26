@@ -177,31 +177,31 @@ Elements to note:
 
 
 .. figure:: ../../tutorials/tut_02-fields/EM_E_field_0.png
-   :scale: 70 %
+   :scale: 50 %
    
    Fundamental optical mode fields.
 
 
 .. figure:: ../../tutorials/tut_02-fields/AC_field_2.png
-   :scale: 70 %
+   :scale: 50 %
    
    Acoustic mode with high gain due to moving boundary effect.
 
 
 .. figure:: ../../tutorials/tut_02-fields/AC_field_4.png
-   :scale: 70 %
+   :scale: 50 %
    
    Acoustic mode with high gain due to moving boundary effect.
 
 
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps.png
-   :scale: 70 %
+   :scale: 50 %
    
    Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
 
 
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps_zoom.png
-   :scale: 70 %
+   :scale: 50 %
    
    Zoomed in gain spectra.
 
@@ -254,31 +254,31 @@ Convergence Study
 
 
 .. figure:: ../../tutorials/tut_05-convergence-freq_EM.png
-   :scale: 70 %
+   :scale: 50 %
    
    Convergence of optical mode frequencies.
 
 
 .. figure:: ../../tutorials/tut_05-convergence-freq_AC.png
-   :scale: 70 %
+   :scale: 50 %
    
    Convergence of acoustic mode frequencies.
 
 
 .. figure:: ../../tutorials/tut_05-convergence-Gain_PE.png
-   :scale: 70 %
+   :scale: 50 %
    
    Convergence of photoelastic gain.
 
 
 .. figure:: ../../tutorials/tut_05-convergence-Gain_MB.png
-   :scale: 70 %
+   :scale: 50 %
    
    Convergence of moving boundary gain.
 
 
 .. figure:: ../../tutorials/tut_05-convergence-Gain.png
-   :scale: 70 %
+   :scale: 50 %
    
    Convergence of total gain.
 
@@ -291,7 +291,7 @@ Silica Nanowire
 
 
 .. figure:: ../../tutorials/tut_06-gain_spectra-MB_PE_comps_SiO2_NW.png
-   :scale: 70 %
+   :scale: 50 %
    
    Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
 
@@ -304,7 +304,7 @@ Slot Waveguide
 
 
 .. figure:: ../../tutorials/tut_07-gain_spectra-MB_PE_comps_slot.png
-   :scale: 70 %
+   :scale: 50 %
    
    Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
 
@@ -317,19 +317,19 @@ Slot Waveguide Scan Covering
 
 
 .. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_50.png
-   :scale: 70 %
+   :scale: 50 %
    
    Spectra with thinnest covering layer.
 
 
 .. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_125.png
-   :scale: 70 %
+   :scale: 50 %
    
    Spectra with medium covering layer.
 
 
 .. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_200.png
-   :scale: 70 %
+   :scale: 50 %
    
    Spectra with thick covering layer.
 

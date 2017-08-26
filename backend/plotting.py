@@ -477,10 +477,9 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             if contours:
                 if contour_lst:
                     cbarticks = contour_lst
-                    print(contour_lst)
                 if np.max(np.abs(plot[~np.isnan(plot)])) > plot_threshold:
                     CS2 = ax.contour(v_XX, v_YY, plot.T, levels=cbarticks, colors=colors[::-1], linewidths=(1.5,))
-                cbar.add_lines(CS2)
+                    cbar.add_lines(CS2)
             cbar.ax.tick_params(labelsize=title_font-10)
 
 
