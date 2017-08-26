@@ -179,7 +179,7 @@ Elements to note:
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps.png
    :scale: 70 %
    
-   Gain spectra showing gain due to electrostriction, gain due to radiation pressure, and total gain.
+   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
 
 
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps_zoom.png
@@ -275,7 +275,7 @@ Silica Nanowire
 .. figure:: ../../tutorials/tut_06-gain_spectra-MB_PE_comps_SiO2_NW.png
    :scale: 70 %
    
-   Gain spectra showing gain due to electrostriction, gain due to radiation pressure, and total gain.
+   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
 
 
 Slot Waveguide
@@ -285,23 +285,42 @@ Slot Waveguide
     :lines: 0-
 
 
-Covered Slot Waveguide
+.. figure:: ../../tutorials/tut_07-gain_spectra-MB_PE_comps_slot.png
+   :scale: 70 %
+   
+   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+
+
+Slot Waveguide Scan Covering
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../tutorials/simo-tut_08-slot_coated-scan.py
     :lines: 0-
 
 
-Chalcogenide Rib Waveguide
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+.. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_50.png
+   :scale: 70 %
+   
+   Spectra with thinnest covering layer.
 
-.. literalinclude:: ../../tutorials/simo-tut_09-chalc_rib.py
-    :lines: 0-
+
+.. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_125.png
+   :scale: 70 %
+   
+   Spectra with medium covering layer.
+
+
+.. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_200.png
+   :scale: 70 %
+   
+   Spectra with thick covering layer.
+
+
 
 Anisotropic Elastic Materials 
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../tutorials/simo-tut_10-anisotropy.py
+.. literalinclude:: ../../tutorials/simo-tut_09-anisotropy.py
 
 
 .. raw:: latex
@@ -373,3 +392,9 @@ We note the particular importance of examples 5-8 for they include experimental 
 .. literalinclude:: ../../lit_examples/simo-lit_08-Kittlaus-NatComm_2017.py
     :lines: 0-
 
+
+2017 - Morrison - Optica - BSBS - Chalcogenide Rib Waveguide
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_09-Morrison-Optica_2017.py
+    :lines: 0-
