@@ -222,6 +222,12 @@ Parameter Scan of Widths
     :lines: 0-
 
 
+.. figure:: ../../tutorials/tut_04-gain_spectra-waterfall.png
+   :scale: 70 %
+   
+   Gain spectra as function of waveguide width.
+
+
 Convergence Study
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
@@ -229,11 +235,47 @@ Convergence Study
     :lines: 0-
 
 
+.. figure:: ../../tutorials/tut_05-convergence-freq_EM.png
+   :scale: 70 %
+   
+   Convergence of optical mode frequencies.
+
+
+.. figure:: ../../tutorials/tut_05-convergence-freq_AC.png
+   :scale: 70 %
+   
+   Convergence of acoustic mode frequencies.
+
+
+.. figure:: ../../tutorials/tut_05-convergence-Gain_PE.png
+   :scale: 70 %
+   
+   Convergence of photoelastic gain.
+
+
+.. figure:: ../../tutorials/tut_05-convergence-Gain_MB.png
+   :scale: 70 %
+   
+   Convergence of moving boundary gain.
+
+
+.. figure:: ../../tutorials/tut_05-convergence-Gain.png
+   :scale: 70 %
+   
+   Convergence of total gain.
+
+
 Silica Nanowire 
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../tutorials/simo-tut_06-silica_nanowire.py
     :lines: 0-
+
+
+.. figure:: ../../tutorials/tut_06-gain_spectra-MB_PE_comps_SiO2_NW.png
+   :scale: 70 %
+   
+   Gain spectra showing gain due to electrostriction, gain due to radiation pressure, and total gain.
 
 
 Slot Waveguide
@@ -276,14 +318,14 @@ The examples are presented in chronological order.
 We note the particular importance of examples 5-8 for they include experimental and numerical results that are in good agreement.
 
 
-2013 - Laude - AIP Adv. - BSBS - Rectangular Waveguide - Silica
+2013 - Laude - AIP Adv - BSBS - Rectangular Waveguide - Silica
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../lit_examples/simo-lit_01-Laude-AIPAdv_2013-silica.py
     :lines: 0-
 
 
-2013 - Laude - AIP Adv. - BSBS - Rectangular Waveguide - Silicon
+2013 - Laude - AIP Adv - BSBS - Rectangular Waveguide - Silicon
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../lit_examples/simo-lit_02-Laude-AIPAdv_2013-silicon.py

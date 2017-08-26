@@ -66,7 +66,7 @@ def modes_n_gain(wguide):
 
 
 nu_widths = 6
-waveguide_widths = np.linspace(300,400,nu_widths)
+waveguide_widths = np.linspace(300,350,nu_widths)
 geo_objects_list = []
 # Scale meshing to new structures.
 for width in waveguide_widths:
@@ -150,8 +150,8 @@ ax.set_zlabel('|Gain| (1/Wm)', fontsize=14)
 ax.set_zlim3d(0,1500)
 # We change the fontsize of minor ticks label 
 plt.tick_params(axis='both', which='major', labelsize=12, pad=-2)
-plt.savefig(prefix_str+'gain_spectra_waterfall.pdf')
-plt.savefig(prefix_str+'gain_spectra_waterfall.png')
+plt.savefig(prefix_str+'gain_spectra-waterfall.pdf')
+plt.savefig(prefix_str+'gain_spectra-waterfall.png')
 plt.close()
 
 end = time.time()

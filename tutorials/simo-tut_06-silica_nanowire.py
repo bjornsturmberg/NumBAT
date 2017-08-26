@@ -44,7 +44,7 @@ prefix_str = 'tut_06-'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
-                        material_a=materials.SiO2,
+                        material_a=materials.SiO2_2016_Smith,
                         lc_bkg=3, lc2=2000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
@@ -101,7 +101,7 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration
 # alpha = npzfile['alpha']
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = 0  # GHz
+freq_min = 5  # GHz
 freq_max = 12  # GHz
 
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,

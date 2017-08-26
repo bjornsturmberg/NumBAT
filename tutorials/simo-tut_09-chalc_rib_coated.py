@@ -57,7 +57,7 @@ AC_ival = 'All'
 # Use specified parameters to create a waveguide object.
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-						slab_a_x=slab_a_x, slab_a_y=slab_a_y, coat_x=coat_x, coat_y=coat_y,
+                        slab_a_x=slab_a_x, slab_a_y=slab_a_y, coat_x=coat_x, coat_y=coat_y,
                         material_bkg=materials.Vacuum,
                         material_a=materials.As2S3_2017_Morrison, # waveguide
                         material_b=materials.Si_2016_Smith,       # slab
