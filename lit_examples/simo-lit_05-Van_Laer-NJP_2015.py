@@ -49,7 +49,7 @@ Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=Si_110, symmetry_flag=False,
-                        lc_bkg=3, lc2=3000.0, lc3=2000.0)
+                        lc_bkg=4, lc2=3000.0, lc3=2000.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -109,11 +109,11 @@ print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = 8 # 8.45  # GHz
-freq_max = 10 # 8.55  # GHz
+freq_min = 9.2 # GHz
+freq_max = 9.4 # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-    prefix_str=prefix_str, suffix_str='-zoom')
+    prefix_str=prefix_str, suffix_str='')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))

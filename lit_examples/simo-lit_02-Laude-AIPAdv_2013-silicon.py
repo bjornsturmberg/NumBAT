@@ -3,6 +3,9 @@
     small-core optical waveguides
     Laude et al.
     http://dx.doi.org/10.1063/1.4801936
+
+    Replicating silicon example. 
+    Note requirement for lots of modes and therefore lots of memory.
 """
 
 import time
@@ -36,15 +39,17 @@ inc_shape = 'rectangular'
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 num_modes_AC = 800
-EM_ival_pump=0
-EM_ival_Stokes=EM_ival_pump
-AC_ival='All'
+EM_ival_pump = 0
+EM_ival_Stokes = EM_ival_pump
+AC_ival = 'All'
+
+prefix_str = 'lit_02-'
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=materials.Si_2013_Laude,
-                        lc_bkg=3, lc2=2000.0, lc3=1000.0)
+                        lc_bkg=5, lc2=1000.0, lc3=50.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = 3.4
@@ -52,6 +57,10 @@ n_eff = 3.4
 # Calculate Electromagnetic modes.
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ivals=[0],
+                         ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', 
+                         prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -66,6 +75,8 @@ shift_Hz = 31e9
 
 # Calculate Acoustic modes.
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
+
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, pdf_png='png')
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))

@@ -430,7 +430,7 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             v_labels = ["Re(u_x)","Re(u_y)","Re(u_z)","Im(u_x)","Im(u_y)","Im(u_z)","Abs(u)"]
 
         # field plots
-        plot_threshold = 1e-6 # set negligible components to explicitly zero
+        plot_threshold = 1e-4 # set negligible components to explicitly zero
         plt.clf()
         fig = plt.figure(figsize=(15,15))
         for i_p,plot in enumerate(v_plots):

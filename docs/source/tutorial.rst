@@ -362,6 +362,36 @@ We note the particular importance of examples 5-8 for they include experimental 
     :lines: 0-
 
 
+.. figure:: ../../lit_examples/lit_01-fields/EM_E_field_0.png
+   :scale: 50 %
+   
+   Fundamental optical mode fields.
+
+
+.. figure:: ../../lit_examples/lit_01-fields/AC_field_4.png.png
+   :scale: 50 %
+   
+   High gain acoustic mode, marked as C in paper.
+
+
+.. figure:: ../../lit_examples/lit_01-fields/AC_field_55.png.png
+   :scale: 50 %
+   
+   High gain acoustic mode, marked as D in paper.
+
+
+.. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+
+
+.. figure:: ../../lit_examples/lit_01-gain_spectra-MB_PE_comps_zoom.png
+   :scale: 50 %
+   
+   Gain spectra zoomed in on mode D.
+
+
 2013 - Laude - AIP Adv - BSBS - Rectangular Waveguide - Silicon
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
@@ -403,13 +433,43 @@ We note the particular importance of examples 5-8 for they include experimental 
 
 
 
-2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel - d = 550 nm
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_06-Florez-NatComm_2016.py
+.. literalinclude:: ../../lit_examples/simo-lit_06_1-Florez-NatComm_2016-d550nm.py
     :lines: 0-
 
 
+.. figure:: ../../lit_examples/lit_06_1-fields/AC_field_4.png
+   :scale: 50 %
+   
+   TR21 acoustic mode fields of NW diameter 550 nm.
+
+
+.. figure:: ../../lit_examples/lit_06_1-fields/AC_field_5.png
+   :scale: 50 %
+   
+   R01 acoustic mode fields of NW diameter 550 nm.
+
+
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectra of NW diameter 550 nm, as in Fig. 3 of paper.
+
+
+
+2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel - d = 1160 nm
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../lit_examples/simo-lit_06_2-Florez-NatComm_2016-1160nm.py
+    :lines: 0-
+
+
+.. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectra of NW diameter 1160 nm, showing cancellation as in Fig. 4 of paper.
 
 
 

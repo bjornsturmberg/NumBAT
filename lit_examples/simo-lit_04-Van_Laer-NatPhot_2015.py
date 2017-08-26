@@ -39,9 +39,9 @@ slab_b_y = 800
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 num_modes_AC = 80
-EM_ival_pump=0
-EM_ival_Stokes=EM_ival_pump
-AC_ival='All'
+EM_ival_pump = 0
+EM_ival_Stokes = EM_ival_pump
+AC_ival = 'All'
 
 prefix_str = 'lit_04-'
 
