@@ -404,11 +404,55 @@ We note the particular importance of examples 5-8 for they include experimental 
     :lines: 0-
 
 
+.. figure:: ../../lit_examples/lit_07-fields/EM_E_field_0.png
+   :scale: 50 %
+   
+   Fundamental optical mode fields.
+
+
+.. figure:: ../../lit_examples/lit_07-fields/AC_field_19.png
+   :scale: 50 %
+   
+   Dominant high gain acoustic mode.
+
+
+.. figure:: ../../lit_examples/lit_07-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+
+
+
 2017 - Kittlaus - Nat Comm - FSBF - Intermode
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../lit_examples/simo-lit_08-Kittlaus-NatComm_2017.py
     :lines: 0-
+
+
+.. figure:: ../../lit_examples/lit_08-fields/EM_E_field_0.png
+   :scale: 50 %
+   
+   Fundamental (symmetric TE-like) optical mode fields.
+
+
+.. figure:: ../../lit_examples/lit_08-fields/EM_E_field_1.png
+   :scale: 50 %
+   
+   2nd lowest order (anti-symmetric TE-like) optical mode fields.
+
+
+.. figure:: ../../lit_examples/lit_08-fields/AC_field_23.png
+   :scale: 50 %
+   
+   Dominant high gain acoustic mode.
+
+
+.. figure:: ../../lit_examples/lit_08-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+
 
 
 2017 - Morrison - Optica - BSBS - Chalcogenide Rib Waveguide
