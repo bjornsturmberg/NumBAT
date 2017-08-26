@@ -49,7 +49,7 @@ freq_max = 12
 
 width_min = 600
 width_max = 2000
-num_widths = 300
+num_widths = 100
 inc_a_x_range = np.linspace(width_min, width_max, num_widths)
 num_interp_pts = 2000
 
@@ -60,17 +60,17 @@ def modes_n_gain(inc_a_x):
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             material_bkg=materials.Vacuum,
                             material_a=materials.Si_2016_Smith,
-                            lc_bkg=4, lc2=2000.0, lc3=1000.0)
+                            lc_bkg=4, lc2=1000.0, lc3=100.0)
 
     sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
-    kk_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
+    k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
     shift_Hz = 4e9
     sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
     set_q_factor = 600.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
-        sim_EM_pump, sim_AC, k_AC,
+        sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
 
     interp_values = plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,

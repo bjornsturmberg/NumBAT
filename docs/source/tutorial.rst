@@ -316,23 +316,10 @@ Slot Waveguide Scan Covering
     :lines: 0-
 
 
-.. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_50.png
+.. figure:: ../../tutorials/tut_08-freq_changes.png
    :scale: 50 %
    
-   Spectra with thinnest covering layer.
-
-
-.. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_125.png
-   :scale: 50 %
-   
-   Spectra with medium covering layer.
-
-
-.. figure:: ../../tutorials/tut_08-gain_spectra-MB_PE_comps_200.png
-   :scale: 50 %
-   
-   Spectra with thick covering layer.
-
+   Acoustic frequencies as function of covering layer thickness.
 
 
 Anisotropic Elastic Materials 

@@ -58,14 +58,14 @@ k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[E
 
 # Rather than calculating with a loop we can use pool to do a multi core sim
 def ac_mode_freqs(k_ac):
-    print('Commencing mode calculation for k_ac= %f'% k_ac)
+    print('Commencing mode calculation for k_ac = %f'% k_ac)
 
     # Calculate the modes, grab the output frequencies only and convert to GHz
     sim_AC = wguide.calc_AC_modes(num_modes_AC, k_ac, EM_sim=sim_EM_pump)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC.Eig_values if abs(np.real(x)) > abs(np.imag(x))])
     mode_freqs = prop_AC_modes*1.e-9
 
-    print('Completed mode calculation for width a_x= %f'% k_ac)
+    print('Completed mode calculation for width a_x = %f'% k_ac)
 
     # Return the frequencies and simulated k_ac value in a list
     return mode_freqs
@@ -111,7 +111,7 @@ plt.savefig(prefix_str+test_name+'.png', bbox_inches='tight')
 plt.close()
 
 # Output the normalisation k value for reference
-print("The 2kp is: %f" %k_AC)
+print("The 2kp is: %f" % k_AC)
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
