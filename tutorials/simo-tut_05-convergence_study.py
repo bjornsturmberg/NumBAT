@@ -1,5 +1,6 @@
 """ Calculate the convergence as a function of FEM mesh for 
-    backward SBS gain spectra of a silicon waveguide surrounded in air.
+    backward SBS gain spectra of a silicon waveguide 
+    surrounded in air.
 """
 
 import time
@@ -116,6 +117,7 @@ ax1.set_ylabel(r"EM k$_z$ ($\times 10^6$ 1/m)")
 ax2.set_ylabel(r"Relative Error EM k$_z$")
 ax2.set_yscale('log', nonposx='clip')
 plt.savefig(prefix_str+'convergence-freq_EM.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-freq_EM.png', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -141,6 +143,7 @@ ax1.set_ylabel(r"AC Freq (GHz)")
 ax2.set_ylabel(r"Relative Error AC Freq")
 ax2.set_yscale('log', nonposx='clip')
 plt.savefig(prefix_str+'convergence-freq_AC.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-freq_AC.png', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -166,6 +169,7 @@ ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain.png', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -191,6 +195,7 @@ ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain_PE.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain_PE.png', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -216,6 +221,7 @@ ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain_MB.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain_MB.png', bbox_inches='tight')
 plt.close()
 
 print("Calculation time", time_list)

@@ -1,5 +1,5 @@
-""" Sanity check implementation of fully anisotropic tensors 
-    by feeding in same parameters of simo_tut_01.
+""" Sanity check implementation of fully anisotropic 
+	tensors by feeding in same parameters of simo_tut_01.
 """
 
 import time

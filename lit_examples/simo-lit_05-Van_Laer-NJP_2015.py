@@ -1,5 +1,6 @@
 """ Replicating the results of
-    Net on-chip Brillouin gain based on suspended silicon nanowires
+    Net on-chip Brillouin gain based on suspended 
+    silicon nanowires
     Van Laer et al.
     http://dx.doi.org/10.1088/1367-2630/17/11/115005
 """

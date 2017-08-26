@@ -1,5 +1,6 @@
 """ Replicating the results of
-    Generation of phonons from electrostriction in small-core optical waveguides
+    Generation of phonons from electrostriction in 
+    small-core optical waveguides
     Laude et al.
     http://dx.doi.org/10.1063/1.4801936
 """

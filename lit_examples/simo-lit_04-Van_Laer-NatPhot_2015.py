@@ -1,5 +1,6 @@
 """ Replicating the results of
-    Interaction between light and highly confined hypersound in a silicon photonic nanowire
+    Interaction between light and highly confined 
+    hypersound in a silicon photonic nanowire
     Van Laer et al.
     http://dx.doi.org/10.1038/nphoton.2015.11
 """

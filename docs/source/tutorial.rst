@@ -272,60 +272,62 @@ Literature Examples
 ---------------------
 
 Having gotten familiar with NumBAT, we now set out to replicate a number of examples from the literature.
+The examples are presented in chronological order. 
+We note the particular importance of examples 5-8 for they include experimental and numerical results that are in good agreement.
 
 
-Rectangular Waveguide - Silica
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2013 - Laude - AIP Adv. - BSBS - Rectangular Waveguide - Silica
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../lit_examples/simo-lit_01-Laude-AIPAdv_2013-silica.py
     :lines: 0-
 
 
-Rectangular Waveguide - Silicon
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2013 - Laude - AIP Adv. - BSBS - Rectangular Waveguide - Silicon
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../lit_examples/simo-lit_02-Laude-AIPAdv_2013-silicon.py
     :lines: 0-
 
 
-Tapered Fibre
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2014 - Beugnot - Nat Comm - BSBS - Tapered Fibre - Scanning Widths
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_03-Florez-NatComm_2016.py
+.. literalinclude:: ../../lit_examples/simo-lit_03-Beugnot-NatComm_2014.py
     :lines: 0-
 
 
-Tapered Fibre - Scanning Widths
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2015 - Van Laer - Nat Phot - FSBF - Waveguide on a Pedestal
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_04-Beugnot-NatComm_2014.py
+.. literalinclude:: ../../lit_examples/simo-lit_04-Van_Laer-NatPhot_2015.py
     :lines: 0-
 
 
-Waveguide on a Pedestal - Fields
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2015 - Van Laer - New J Phys - FSBF - Waveguide on a Pedestal
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_05-Van_Laer-NatPhot_2015.py
+.. literalinclude:: ../../lit_examples/simo-lit_05-Van_Laer-NJP_2015.py
     :lines: 0-
 
 
-FSBS - Waveguide on a Pedestal NJP
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_06-Van_Laer-NJP_2015.py
+.. literalinclude:: ../../lit_examples/simo-lit_06-Florez-NatComm_2016.py
     :lines: 0-
 
 
-FSBS - Rib Waveguide
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2016 - Kittlaus - Nat Phot - FSBF - Rib Waveguide
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_07-Rakich_rib.py
+.. literalinclude:: ../../lit_examples/simo-lit_07-Kittlaus-NatPhot_2016.py
     :lines: 0-
 
 
-FSBS - Coated Rib Waveguide
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2017 - Kittlaus - Nat Comm - FSBF - Intermode
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-.. literalinclude:: ../../lit_examples/simo-lit_08-Rakich_rib-coated.py
+.. literalinclude:: ../../lit_examples/simo-lit_08-Kittlaus-NatComm_2017.py
     :lines: 0-
 

@@ -1,8 +1,8 @@
 """ We've covered most of the features of NumBAT,  
-	in the following tutorials we'll show how to 
-	study differnt geometries and materials.
+    in the following tutorials we'll show how to 
+    study differnt geometries and materials.
 
-	Calculate the backward SBS gain spectra of a
+    Calculate the backward SBS gain spectra of a
     silicon waveguide surrounded in air.
 """
 

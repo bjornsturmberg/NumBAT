@@ -1,5 +1,6 @@
 """ Replicating the results of
-    Brillouin light scattering from surface acoustic waves in a subwavelength-diameter optical fibre
+    Brillouin light scattering from surface acoustic 
+    waves in a subwavelength-diameter optical fibre
     Beugnot et al.
     http://dx.doi.org/10.1038/ncomms6242
 """

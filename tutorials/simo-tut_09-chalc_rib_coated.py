@@ -1,5 +1,6 @@
 """ Calculate the backward SBS gain for modes in a
-    chalcogenide rib waveguide on a Si slab, coated in SiO2, surrounded in air.
+    chalcogenide rib waveguide on a Si slab, 
+    coated in SiO2, surrounded in air.
 """
 
 import time

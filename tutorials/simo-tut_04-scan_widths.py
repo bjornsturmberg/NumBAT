@@ -65,7 +65,7 @@ def modes_n_gain(wguide):
     return [sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC]
 
 
-nu_widths = 2
+nu_widths = 6
 waveguide_widths = np.linspace(300,400,nu_widths)
 geo_objects_list = []
 # Scale meshing to new structures.
@@ -95,7 +95,9 @@ width_objs = pool.map(modes_n_gain, geo_objects_list)
 n_effs = []
 freqs_gains = []
 interp_grid_points = 10000
-interp_grid = np.linspace(10, 25, interp_grid_points)
+int_min = 10
+int_max = 26
+interp_grid = np.linspace(int_min, int_max, interp_grid_points)
 for i_w, width_obj in enumerate(width_objs):
     interp_values = np.zeros(interp_grid_points)
     sim_EM = width_obj[0]
@@ -141,7 +143,7 @@ poly = PolyCollection(freqs_gains)
 poly.set_alpha(0.7)
 ax.add_collection3d(poly, zs=waveguide_widths, zdir='y')
 ax.set_xlabel('Frequency (GHz)', fontsize=14)
-ax.set_xlim3d(10,25)
+ax.set_xlim3d(int_min,int_max)
 ax.set_ylabel('Width (nm)', fontsize=14)
 ax.set_ylim3d(waveguide_widths[0], waveguide_widths[-1])
 ax.set_zlabel('|Gain| (1/Wm)', fontsize=14)
