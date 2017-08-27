@@ -48,8 +48,8 @@ freq_min = 4
 freq_max = 12
 
 width_min = 600
-width_max = 2000
-num_widths = 100
+width_max = 800 #1500
+num_widths = 10
 inc_a_x_range = np.linspace(width_min, width_max, num_widths)
 num_interp_pts = 2000
 
@@ -71,10 +71,11 @@ def modes_n_gain(inc_a_x):
     set_q_factor = 600.
     SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
         sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
-        EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
+        EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)#, fixed_Q=set_q_factor)
 
     interp_values = plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
-        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min, freq_max, num_interp_pts=num_interp_pts)
+        EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min, freq_max, num_interp_pts=num_interp_pts, 
+        save_fig=False, suffix_str='%i' %int(inc_a_x))
 
     return interp_values
 
@@ -87,9 +88,15 @@ gain_array = np.zeros((num_interp_pts, num_widths))
 for w, width_interp in enumerate(width_objs):
     gain_array[:,w] = width_interp[::-1]
 
+# np.savez('gain_array_data', gain_array=gain_array)
+
+# npzfile = np.load('gain_array_data.npz')
+# gain_array = npzfile['gain_array'].tolist()
+
 fig = plt.figure()
 ax1 = fig.add_subplot(1,1,1)
-blah = ax1.matshow(gain_array, aspect='auto', interpolation='none')
+im = ax1.imshow(np.abs(gain_array), aspect='auto', interpolation='none',
+                vmin=0, vmax=np.max(np.abs(gain_array)))#, cmap='jet')
 
 num_xticks = 5
 num_yticks = 5
@@ -102,6 +109,7 @@ ax1.set_yticklabels(["%4.0f" % i for i in np.linspace(freq_min,freq_max,num_ytic
 plt.xlabel(r'Width ($\mu m$)')
 plt.ylabel('Frequency (GHz)')
 plt.savefig('lit_03-gain-width_scan.pdf')
+plt.savefig('lit_03-gain-width_scan.png')
 plt.close()
 
 end = time.time()

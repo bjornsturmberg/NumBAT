@@ -2,7 +2,7 @@
     Compact Brillouin devices through hybrid 
     integration on Silicon
     Morrison et al.
-    http://arxiv.org/abs/1702.05233  
+    https://doi.org/10.1364/OPTICA.4.000847
 """
 
 import time

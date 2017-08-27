@@ -4,7 +4,7 @@
   "author": "Morrison",  // Author of data
   "date": "2017",  // Year of data publication/creation
   "institution": "Uni. of Sydney",  // Source institution
-  "doi": "arxiv.org/abs/1702.05233",  // doi or, failing that, the http address
+  "doi": "dx.doi.org/10.1364/OPTICA.4.000847",  // doi or, failing that, the http address
   "n": 2.44,  // Refractive index []
   "s": 3470,  // Density [kg/m3]
   "c_11": 2.15e10,  // Stiffness tensor component [Pa]
