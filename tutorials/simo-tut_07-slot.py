@@ -24,7 +24,7 @@ start = time.time()
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 4*wl_nm
-unitcell_y = unitcell_x
+unitcell_y = 0.3*unitcell_x
 inc_shape = 'slot'
 inc_a_x = 150
 inc_a_y = 190

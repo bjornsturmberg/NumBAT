@@ -44,8 +44,8 @@ Point(8) = {-hx+d/2+radius1, -hy+slab_h+p_h, 0, lc2};
 Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h+p_h, 0, lc2};
 Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h+p_h, 0, lc2};
 
-Point(19) = {-hx+d/2-p_w, -hy+slab_h, 0, lc2};
-Point(20) = {-hx+d/2+p_w, -hy+slab_h, 0, lc2};
+Point(19) = {-hx+d/2-p_w, -hy+slab_h, 0, lc3};
+Point(20) = {-hx+d/2+p_w, -hy+slab_h, 0, lc3};
 Point(21) = {-hx+d/2-p_w, -hy+slab_h+p_h, 0, lc2};
 Point(22) = {-hx+d/2+p_w, -hy+slab_h+p_h, 0, lc2};
 Point(23) = {-hx+d/2-radius1, -hy+slab_h, 0, lc2};

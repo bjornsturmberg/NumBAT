@@ -28,7 +28,7 @@ start = time.time()
 # Geometric Parameters - all in nm.
 wl_nm = 1550
 unitcell_x = 5*wl_nm
-unitcell_y = unitcell_x
+unitcell_y = 0.5*unitcell_x
 inc_a_x = 450
 inc_a_y = 230
 inc_shape = 'rectangular'

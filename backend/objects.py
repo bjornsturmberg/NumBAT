@@ -39,7 +39,8 @@ class Struct(object):
 
             inc_shape  (str): Shape of inclusions that have template mesh,
                 currently: 'circular', 'rectangular', 'slot', 'rib'
-                'rib_coated', 'onion'. Rectangular is default.
+                'slot_coated', 'rib_coated', 'pedestal', 'onion'. 
+                Rectangular is default.
 
             slab_a_x  (float): The horizontal diameter in nm of the slab
                 directly below the inclusion.
@@ -117,6 +118,7 @@ class Struct(object):
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
                  coat_x=None, coat_y=None, inc_b_x=None, inc_b_y=None,
                  two_inc_sep=None, incs_y_offset=None,
+                 pillar_x=None, pillar_y=None,
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
                  inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
                  inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
@@ -158,6 +160,8 @@ class Struct(object):
         self.slab_a_y = slab_a_y
         self.slab_b_x = slab_b_x
         self.slab_b_y = slab_b_y
+        self.pillar_x = pillar_x
+        self.pillar_y = pillar_y
         self.inc_c_x = inc_c_x
         self.inc_d_x = inc_d_x
         self.inc_e_x = inc_e_x
@@ -578,7 +582,7 @@ class Struct(object):
         self.p_tensor = p_tensor
         self.eta_tensor = eta_tensor
 
-        self.linear_element_shapes = ['rectangular', 'slot', 'slot_coated', 'rib', 'rib_coated']
+        self.linear_element_shapes = ['rectangular', 'slot', 'slot_coated', 'rib', 'rib_coated', 'pedestal']
         self.curvilinear_element_shapes = ['circular', 'onion']
 
 
@@ -761,51 +765,6 @@ class Struct(object):
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
-        elif self.inc_shape in ['onion']:
-            msh_template = 'onion'
-            self.nb_typ_el = 15
-            msh_name = 'onion_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
-            'd': dec_float_str(self.unitcell_x),
-            'dy': dec_float_str(self.unitcell_y),
-            'a': dec_float_str(self.inc_a_x),
-            'b': dec_float_str(self.inc_b_x),
-            'c': dec_float_str(self.inc_c_x),
-            'd': dec_float_str(self.inc_d_x),
-            'e': dec_float_str(self.inc_e_x),
-            'f': dec_float_str(self.inc_f_x),
-            'g': dec_float_str(self.inc_g_x)}
-            msh_name = msh_name + '_%(h)s_%(i)s_%(j)s_%(k)s_%(l)s_%(m)s_%(n)s_%(o)s' % {
-            'h': dec_float_str(self.inc_h_x),
-            'i': dec_float_str(self.inc_i_x),
-            'j': dec_float_str(self.inc_j_x),
-            'k': dec_float_str(self.inc_k_x),
-            'l': dec_float_str(self.inc_l_x),
-            'm': dec_float_str(self.inc_m_x),
-            'n': dec_float_str(self.inc_n_x),
-            'o': dec_float_str(self.inc_o_x)}
-            if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
-                geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
-                geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
-                geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
-                geo = geo.replace('a1 = 2;', "a1 = %f;" % self.inc_a_x)
-                geo = geo.replace('a2 = 2;', "a2 = %f;" % self.inc_b_x)
-                geo = geo.replace('a3 = 2;', "a3 = %f;" % self.inc_c_x)
-                geo = geo.replace('a4 = 2;', "a4 = %f;" % self.inc_d_x)
-                geo = geo.replace('a5 = 2;', "a5 = %f;" % self.inc_e_x)
-                geo = geo.replace('a6 = 2;', "a6 = %f;" % self.inc_f_x)
-                geo = geo.replace('a7 = 2;', "a7 = %f;" % self.inc_g_x)
-                geo = geo.replace('a8 = 2;', "a8 = %f;" % self.inc_h_x)
-                geo = geo.replace('a9 = 2;', "a9 = %f;" % self.inc_i_x)
-                geo = geo.replace('a10 = 2;', "a10 = %f;" % self.inc_j_x)
-                geo = geo.replace('a11 = 2;', "a11 = %f;" % self.inc_k_x)
-                geo = geo.replace('a12 = 2;', "a12 = %f;" % self.inc_l_x)
-                geo = geo.replace('a13 = 2;', "a13 = %f;" % self.inc_m_x)
-                geo = geo.replace('a14 = 2;', "a14 = %f;" % self.inc_n_x)
-                geo = geo.replace('a15 = 2;', "a15 = %f;" % self.inc_o_x)
-                geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-
 
         elif self.inc_shape in ['rib']:
                 msh_template = 'rib'
@@ -856,6 +815,78 @@ class Struct(object):
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
+
+        elif self.inc_shape in ['pedestal']:
+                msh_template = 'pedestal'
+                self.nb_typ_el = 4
+                msh_name = 'pedestal_%(d)s_%(dy)s_%(a)s_%(b)s_%(cz)s_%(c)s_%(cc)s_%(ccc)s' % {
+                'd': dec_float_str(self.unitcell_x),
+                'dy': dec_float_str(self.unitcell_y),
+                'a': dec_float_str(self.inc_a_x),
+                'b': dec_float_str(self.inc_a_y),
+                'cz': dec_float_str(self.pillar_x),
+                'c': dec_float_str(self.pillar_y),
+                'cc': dec_float_str(self.slab_a_x),
+                'ccc': dec_float_str(self.slab_a_y)}
+                if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                    geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                    geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                    geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
+                    geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
+                    geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
+                    geo = geo.replace('px = 2;', "px = %f;" % self.pillar_x)
+                    geo = geo.replace('py = 5;', "py = %f;" % self.pillar_y)
+                    geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+
+
+        elif self.inc_shape in ['onion']:
+            msh_template = 'onion'
+            self.nb_typ_el = 15
+            msh_name = 'onion_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
+            'd': dec_float_str(self.unitcell_x),
+            'dy': dec_float_str(self.unitcell_y),
+            'a': dec_float_str(self.inc_a_x),
+            'b': dec_float_str(self.inc_b_x),
+            'c': dec_float_str(self.inc_c_x),
+            'd': dec_float_str(self.inc_d_x),
+            'e': dec_float_str(self.inc_e_x),
+            'f': dec_float_str(self.inc_f_x),
+            'g': dec_float_str(self.inc_g_x)}
+            msh_name = msh_name + '_%(h)s_%(i)s_%(j)s_%(k)s_%(l)s_%(m)s_%(n)s_%(o)s' % {
+            'h': dec_float_str(self.inc_h_x),
+            'i': dec_float_str(self.inc_i_x),
+            'j': dec_float_str(self.inc_j_x),
+            'k': dec_float_str(self.inc_k_x),
+            'l': dec_float_str(self.inc_l_x),
+            'm': dec_float_str(self.inc_m_x),
+            'n': dec_float_str(self.inc_n_x),
+            'o': dec_float_str(self.inc_o_x)}
+            if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                geo = geo.replace('a1 = 2;', "a1 = %f;" % self.inc_a_x)
+                geo = geo.replace('a2 = 2;', "a2 = %f;" % self.inc_b_x)
+                geo = geo.replace('a3 = 2;', "a3 = %f;" % self.inc_c_x)
+                geo = geo.replace('a4 = 2;', "a4 = %f;" % self.inc_d_x)
+                geo = geo.replace('a5 = 2;', "a5 = %f;" % self.inc_e_x)
+                geo = geo.replace('a6 = 2;', "a6 = %f;" % self.inc_f_x)
+                geo = geo.replace('a7 = 2;', "a7 = %f;" % self.inc_g_x)
+                geo = geo.replace('a8 = 2;', "a8 = %f;" % self.inc_h_x)
+                geo = geo.replace('a9 = 2;', "a9 = %f;" % self.inc_i_x)
+                geo = geo.replace('a10 = 2;', "a10 = %f;" % self.inc_j_x)
+                geo = geo.replace('a11 = 2;', "a11 = %f;" % self.inc_k_x)
+                geo = geo.replace('a12 = 2;', "a12 = %f;" % self.inc_l_x)
+                geo = geo.replace('a13 = 2;', "a13 = %f;" % self.inc_m_x)
+                geo = geo.replace('a14 = 2;', "a14 = %f;" % self.inc_n_x)
+                geo = geo.replace('a15 = 2;', "a15 = %f;" % self.inc_o_x)
+                geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
         else:
             raise NotImplementedError("\n Selected inc_shape = '%s' \n " \

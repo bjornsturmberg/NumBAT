@@ -468,13 +468,13 @@ We note the particular importance of examples 5-8 for they include experimental 
 .. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
+   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing perfect cancellation at 5.4 GHz.
 
 
-.. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps_zoom.png
+.. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps-logy.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
+   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing perfect cancellation at 5.4 GHz.
 
 
 
