@@ -36,7 +36,7 @@ inc_shape = 'circular'
 
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
-num_modes_AC = 70
+num_modes_AC = 80
 EM_ival_pump = 0
 EM_ival_Stokes = EM_ival_pump
 AC_ival = 'All'
@@ -48,8 +48,8 @@ freq_min = 4
 freq_max = 12
 
 width_min = 600
-width_max = 800 #1500
-num_widths = 10
+width_max = 1200
+num_widths = 301
 inc_a_x_range = np.linspace(width_min, width_max, num_widths)
 num_interp_pts = 2000
 
@@ -59,7 +59,7 @@ def modes_n_gain(inc_a_x):
     # Use all specified parameters to create a waveguide object.
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                             material_bkg=materials.Vacuum,
-                            material_a=materials.Si_2016_Smith,
+                            material_a=materials.SiO2_2016_Smith,
                             lc_bkg=4, lc2=1000.0, lc3=100.0)
 
     sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
@@ -106,7 +106,7 @@ ax1.set_yticks(np.linspace((num_interp_pts-1),0,num_yticks))
 ax1.set_xticklabels(["%4.0f" % i for i in np.linspace(width_min,width_max,num_xticks)])
 ax1.set_yticklabels(["%4.0f" % i for i in np.linspace(freq_min,freq_max,num_yticks)])
 
-plt.xlabel(r'Width ($\mu m$)')
+plt.xlabel(r'Width (nm)')
 plt.ylabel('Frequency (GHz)')
 plt.savefig('lit_03-gain-width_scan.pdf')
 plt.savefig('lit_03-gain-width_scan.png')

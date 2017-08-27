@@ -405,6 +405,12 @@ We note the particular importance of examples 5-8 for they include experimental 
     :lines: 0-
 
 
+.. figure:: ../../lit_examples/lit_03-gain-width_scan.png
+   :scale: 50 %
+   
+   Full acoustic wave spectrum for silica microwire, as per Fig. 4a in paper.
+
+
 2015 - Van Laer - Nat Phot - FSBF - Waveguide on a Pedestal
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 

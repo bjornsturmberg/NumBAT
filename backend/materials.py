@@ -309,7 +309,7 @@ class Material(object):
             np.savetxt('rotated_eta_tensor.csv', tensor_rotated, delimiter=',')
 
 
-# Arrag that converts between 4th rank tensors in terms of x,y,z and Voigt notation
+# Array that converts between 4th rank tensors in terms of x,y,z and Voigt notation
 #               [[xx,xy,xz], [yx,yy,yz], [zx,zy,zz]]
 to_Voigt = np.array([[0,5,4], [5,1,3], [4,3,2]]) 
 

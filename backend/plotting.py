@@ -59,7 +59,7 @@ def zeros_int_str(zero_int):
 
 def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
                 EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min, freq_max, num_interp_pts=3000,
-                save_fig=True, dB=False, mode_comps=False, semilogy=False,
+                save_fig=True, dB=False, dB_peak_amp=10, mode_comps=False, semilogy=False,
                 pdf_png='png', save_txt=False, prefix_str='', suffix_str=''):
     r""" Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
             
@@ -91,6 +91,8 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             num_interp_pts  (int): Number of frequency points to interpolate to.
 
             dB  (bool): Save a set of spectra in dB units.
+
+            dB_peak_amp  (float): Set the peak amplitude of highest gain mode in dB.
 
             mode_comps  (bool): Plot decomposition of spectra into individual modes.
 
