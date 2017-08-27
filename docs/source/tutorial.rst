@@ -408,8 +408,23 @@ We note the particular importance of examples 5-8 for they include experimental 
 2015 - Van Laer - Nat Phot - FSBF - Waveguide on a Pedestal
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
+Note the absence of an absorptive boundary causes issue of slab layer significantly distorting acoustic modes.
+
 .. literalinclude:: ../../lit_examples/simo-lit_04-Van_Laer-NatPhot_2015.py
     :lines: 0-
+
+
+.. figure:: ../../lit_examples/lit_04-fields/EM_E_field_0.png
+   :scale: 50 %
+   
+   Fundamental optical mode fields.
+
+
+.. figure:: ../../lit_examples/lit_04-fields/AC_field_38.png
+   :scale: 50 %
+   
+   Dominant high gain acoustic mode.
+   Note how the absence of an absorptive boundary on the SiO2 slab causes this layer to significantly distorted the acoustic modes.
 
 
 2015 - Van Laer - New J Phys - FSBF - Waveguide without Pedestal
@@ -468,13 +483,13 @@ We note the particular importance of examples 5-8 for they include experimental 
 .. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing perfect cancellation at 5.4 GHz.
+   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
 
 
 .. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps-logy.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing perfect cancellation at 5.4 GHz.
+   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
 
 
 
