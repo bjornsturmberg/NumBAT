@@ -495,7 +495,6 @@ def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
     return sym_list
 
 
-
 def grad_u(dx, dy, u_mat, k_AC):
     m_ux = u_mat[0]
     m_uy = u_mat[1]
@@ -523,64 +522,6 @@ def grad_u(dx, dy, u_mat, k_AC):
     del_u_mat_star = np.array([[del_x_ux_star, del_x_uy_star, del_x_uz_star], [del_y_ux_star, del_y_uy_star, del_y_uz_star], [del_z_ux_star, del_z_uy_star, del_z_uz_star]])
 
     return del_u_mat, del_u_mat_star
-
-
-# def comsol_fields(ac_mode_data_file, em_mode_data_file, n_points, k_AC, AC_ival=0):
-
-#     # Load Comsol optical fields
-#     with open(em_mode_data_file, 'rt', encoding='ascii') as csvfile:
-#         spamreader = csv.reader(csvfile, delimiter=' ')#, quotechar='|')
-#         for header_rows in range(9):
-#             next(spamreader)
-#         E_x = []; E_y = []; E_z = []
-#         for row in spamreader:
-#             row = [_f for _f in row if _f]
-#             row = [float(x) for x in row]
-#             E_x.append(row[2] + 1j*row[3])
-#             E_y.append(row[4] + 1j*row[5])
-#             E_z.append(row[6] + 1j*row[7])
-#     E_x = np.array(E_x).reshape(n_points,n_points)
-#     E_y = np.array(E_y).reshape(n_points,n_points)
-#     E_z = np.array(E_z).reshape(n_points,n_points)
-#     E_x = np.swapaxes(E_x,0,1)
-#     E_y = np.swapaxes(E_y,0,1)
-#     E_z = np.swapaxes(E_z,0,1)
-#     E_mat = np.array([E_x,E_y,E_z])
-
-#     # Load Comsol displacement fields
-#     with open(ac_mode_data_file, 'rt', encoding='ascii') as csvfile:
-#         spamreader = csv.reader(csvfile, delimiter=' ')#, quotechar='|')
-#         for header_rows in range(9):
-#             next(spamreader)
-#         x_coord = []; y_coord = []
-#         u_x = []; u_y = []; u_z = []
-#         for row in spamreader:
-#             row = [_f for _f in row if _f]
-#             row = [float(x) for x in row]
-#             x_coord.append(row[0])
-#             y_coord.append(row[1])
-#             u_x.append(row[(AC_ival*6)+2] + 1j*row[(AC_ival*6)+3])
-#             u_y.append(row[(AC_ival*6)+4] + 1j*row[(AC_ival*6)+5])
-#             u_z.append(row[(AC_ival*6)+6] + 1j*row[(AC_ival*6)+7])
-
-#     x_coord = np.array(x_coord).reshape(n_points,n_points)
-#     y_coord = np.array(y_coord).reshape(n_points,n_points)
-#     u_x = np.array(u_x).reshape(n_points,n_points)
-#     u_y = np.array(u_y).reshape(n_points,n_points)
-#     u_z = np.array(u_z).reshape(n_points,n_points)
-#     x_coord = np.swapaxes(x_coord,0,1)
-#     y_coord = np.swapaxes(y_coord,0,1)
-#     u_x = np.swapaxes(u_x,0,1)
-#     u_y = np.swapaxes(u_y,0,1)
-#     u_z = np.swapaxes(u_z,0,1)
-#     u_mat = np.array([u_x, u_y, u_z])
-
-#     dx = x_coord[-1,0] - x_coord[-2,0]
-#     dy = y_coord[0,-1] - y_coord[0,-2]
-#     del_u_mat, del_u_mat_star = grad_u(dx, dy, u_mat, k_AC)
-
-#     return dx, dy, E_mat, u_mat, del_u_mat, del_u_mat_star
-
 
 
 def comsol_fields(data_file, n_points, ival=0):
@@ -839,37 +780,25 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC):
                 relevant_eps_effs, sim_AC.structure, sim_AC.Omega_AC, n_pts_x, n_pts_y, dx, dy, 
                 E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star, AC_ival)
 
-
         # Load Comsol FEM fields onto grid - acoustic displacement fields
         x_coord, y_coord, u_mat_comsol = comsol_fields('ac_mode_1-5.dat', n_points_comsol_data, ival=AC_ival)
         dx_comsol = x_coord[-1,0] - x_coord[-2,0]
         dy_comsol = y_coord[0,-1] - y_coord[0,-2]
         del_u_mat_comsol, del_u_mat_star_comsol = grad_u(dx, dy, u_mat_comsol, k_AC)
 
-        # # Load Comsol FEM fields onto grid - optical E fields
-        # x_coord, y_coord, E_mat_comsol = comsol_fields('opt_mode_closeup.dat', n_points_comsol_data, ival=0)
-        # E_mat_p_comsol = E_mat_comsol
-        # E_mat_S_comsol = E_mat_comsol
-
-        # # Load Comsol FEM fields onto grid
-        # dx_comsol, dy_comsol, E_mat_comsol, u_mat_comsol, del_u_mat_comsol, del_u_mat_star_comsol = comsol_fields(
-        #     'ac_mode_1-5.dat', 'opt_mode_closeup.dat', n_points_comsol_data, k_AC, AC_ival=AC_ival)
-        # # E_mat_p_comsol = E_mat_comsol
-        # # E_mat_S_comsol = E_mat_comsol
-        E_mat_p_comsol = E_mat_p
-        E_mat_S_comsol = E_mat_S
-
         # Carry out integration
         n_pts_x_comsol = n_points_comsol_data
         n_pts_y_comsol = n_points_comsol_data
         energy_comsol[AC_ival], alpha_comsol[AC_ival], Q_PE_comsol[EM_ival_pump,EM_ival_Stokes,AC_ival] = grid_integral(
                 relevant_eps_effs, sim_AC.structure, sim_AC.Omega_AC, n_pts_x_comsol, n_pts_y_comsol, 
-                dx_comsol, dy_comsol, E_mat_p_comsol, E_mat_S_comsol, 
+                dx_comsol, dy_comsol, E_mat_p, E_mat_S, 
                 u_mat_comsol, del_u_mat_comsol, del_u_mat_star_comsol, AC_ival)
 
 
     gain_py = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_PE_py*np.conj(Q_PE_py))
     normal_fact_py = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
+    gain_comsol = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_PE_comsol*np.conj(Q_PE_comsol))
+    normal_fact_comsol = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
     for i in range(num_modes_EM):
         P1 = sim_EM_pump.EM_mode_power[i]
         for j in range(num_modes_EM):
@@ -877,22 +806,9 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC):
             for k in range(num_modes_AC):
                 P3_py = energy_py[k]
                 normal_fact_py[i, j, k] = P1*P2*P3_py*alpha_py[k]
-    SBS_gain_py = np.real(gain_py/normal_fact_py)
-
-
-    # Hard coded EM modal power for fund EM mode from Comsol
-    P1_comsol = 1.954501164316765E-14
-    P2_comsol = -P1_comsol # BSBS
-    P1_comsol = sim_EM_pump.EM_mode_power[0]
-    P2_comsol = sim_EM_Stokes.EM_mode_power[0]
-    gain_comsol = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_PE_comsol*np.conj(Q_PE_comsol))
-    normal_fact_comsol = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
-    for i in range(num_modes_EM):
-        for j in range(num_modes_EM):
-            for k in range(num_modes_AC):
                 P3_comsol = energy_comsol[k]
                 normal_fact_comsol[i, j, k] = P1_comsol*P2_comsol*P3_comsol*alpha_comsol[k]
+    SBS_gain_py = np.real(gain_py/normal_fact_py)
     SBS_gain_comsol = np.real(gain_comsol/normal_fact_comsol)
-
 
     return SBS_gain_py, alpha_py, SBS_gain_comsol, alpha_comsol
