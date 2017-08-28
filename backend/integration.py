@@ -151,7 +151,7 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         if el_typ+1 in sim_AC.typ_el_AC:
             relevant_eps_effs.append(sim_EM_pump.n_list[el_typ]**2)
 
-    print("\n -----------------------------------------------")
+    print("\n-----------------------------------------------")
     if fixed_Q is None:
         # Calc alpha (loss) Eq. 45
         print("Acoustic loss calc")
@@ -744,7 +744,7 @@ def grid_integral(relevant_eps_effs, sim_AC_structure, sim_AC_Omega_AC,
     return energy_py, alpha_py, Q_PE_py
 
 
-def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC):
+def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, comsol_data_file, comsol_ivals=1):
     """ Calculate interaction integrals and SBS gain in python.
     """
 
@@ -761,15 +761,14 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC):
         if el_typ+1 in sim_AC.typ_el_AC:
             relevant_eps_effs.append(sim_EM_pump.n_list[el_typ]**2)
 
-    energy_py = np.zeros(len(sim_AC.Eig_values), dtype=np.complex128)
-    alpha_py = np.zeros(len(sim_AC.Eig_values))
-    Q_PE_py = np.zeros((len(sim_EM_pump.Eig_values),len(sim_EM_Stokes.Eig_values),len(sim_AC.Eig_values)), dtype=np.complex128)
-    energy_comsol = np.zeros(len(sim_AC.Eig_values), dtype=np.complex128)
-    alpha_comsol = np.zeros(len(sim_AC.Eig_values))
-    Q_PE_comsol = np.zeros((len(sim_EM_pump.Eig_values),len(sim_EM_Stokes.Eig_values),len(sim_AC.Eig_values)), dtype=np.complex128)
+    energy_py = np.zeros(comsol_ivals, dtype=np.complex128)
+    alpha_py = np.zeros(comsol_ivals)
+    Q_PE_py = np.zeros((len(sim_EM_pump.Eig_values),len(sim_EM_Stokes.Eig_values),comsol_ivals), dtype=np.complex128)
+    energy_comsol = np.zeros(comsol_ivals, dtype=np.complex128)
+    alpha_comsol = np.zeros(comsol_ivals)
+    Q_PE_comsol = np.zeros((len(sim_EM_pump.Eig_values),len(sim_EM_Stokes.Eig_values),comsol_ivals), dtype=np.complex128)
 
-    # for AC_ival in range(len(sim_AC.Eig_values)): # For all AC modes
-    for AC_ival in range(5): # Comsol data only contains first 5 AC modes
+    for AC_ival in range(comsol_ivals): # Comsol data only contains some AC modes
         # Interpolate NumBAT FEM fields onto grid
         n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star = py_fields(
             sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
@@ -781,7 +780,7 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC):
                 E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star, AC_ival)
 
         # Load Comsol FEM fields onto grid - acoustic displacement fields
-        x_coord, y_coord, u_mat_comsol = comsol_fields('ac_mode_1-5.dat', n_points_comsol_data, ival=AC_ival)
+        x_coord, y_coord, u_mat_comsol = comsol_fields(comsol_data_file, n_points_comsol_data, ival=AC_ival)
         dx_comsol = x_coord[-1,0] - x_coord[-2,0]
         dy_comsol = y_coord[0,-1] - y_coord[0,-2]
         del_u_mat_comsol, del_u_mat_star_comsol = grad_u(dx, dy, u_mat_comsol, k_AC)
@@ -794,21 +793,21 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC):
                 dx_comsol, dy_comsol, E_mat_p, E_mat_S, 
                 u_mat_comsol, del_u_mat_comsol, del_u_mat_star_comsol, AC_ival)
 
-
-    gain_py = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_PE_py*np.conj(Q_PE_py))
-    normal_fact_py = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
-    gain_comsol = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC*np.real(Q_PE_comsol*np.conj(Q_PE_comsol))
-    normal_fact_comsol = np.zeros((num_modes_EM, num_modes_EM, num_modes_AC), dtype=complex)
+    # Note this is only the PE contribution to gain.
+    gain_PE_py = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC[:comsol_ivals]*np.real(Q_PE_py*np.conj(Q_PE_py))
+    normal_fact_py = np.zeros((num_modes_EM, num_modes_EM, comsol_ivals), dtype=complex)
+    gain_PE_comsol = 2*sim_EM_pump.omega_EM*sim_AC.Omega_AC[:comsol_ivals]*np.real(Q_PE_comsol*np.conj(Q_PE_comsol))
+    normal_fact_comsol = np.zeros((num_modes_EM, num_modes_EM, comsol_ivals), dtype=complex)
     for i in range(num_modes_EM):
         P1 = sim_EM_pump.EM_mode_power[i]
         for j in range(num_modes_EM):
             P2 = sim_EM_Stokes.EM_mode_power[j]
-            for k in range(num_modes_AC):
+            for k in range(comsol_ivals):
                 P3_py = energy_py[k]
                 normal_fact_py[i, j, k] = P1*P2*P3_py*alpha_py[k]
                 P3_comsol = energy_comsol[k]
-                normal_fact_comsol[i, j, k] = P1_comsol*P2_comsol*P3_comsol*alpha_comsol[k]
-    SBS_gain_py = np.real(gain_py/normal_fact_py)
-    SBS_gain_comsol = np.real(gain_comsol/normal_fact_comsol)
+                normal_fact_comsol[i, j, k] = P1*P2*P3_comsol*alpha_comsol[k]
+    SBS_gain_PE_py = np.real(gain_PE_py/normal_fact_py)
+    SBS_gain_PE_comsol = np.real(gain_PE_comsol/normal_fact_comsol)
 
-    return SBS_gain_py, alpha_py, SBS_gain_comsol, alpha_comsol
+    return SBS_gain_PE_py, alpha_py, SBS_gain_PE_comsol, alpha_comsol
