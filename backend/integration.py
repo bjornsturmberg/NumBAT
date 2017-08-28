@@ -388,7 +388,6 @@ def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
         Ey_sigma_x = 0
         Ex_C_2 = 0
         Ey_C_2 = 0
-        # max_E = max(np.max(np.abs(m_Ex)), np.max(np.abs(m_Ey)), np.max(np.abs(m_Ez)))
 
         for ix in range(n_pts_x):
             for iy in range(n_pts_y):
@@ -421,14 +420,6 @@ def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
             sigma_x_print = -1
         else:
             sigma_x_print = 1
-        # print '------'
-        # print ival
-        # print 'C_2', C_2_print
-        # print 'C_2', C_2
-        # print 'sigma_x', sigma_x_print
-        # print 'sigma_x', sigma_x
-        # print 'sigma_y', sigma_y_print
-        # print 'sigma_y', sigma_y
         sym_list.append([C_2_print, sigma_y_print, sigma_x_print])
 
         # v_plots = [np.real(m_Ex_ymirror),np.real(m_Ey_ymirror),np.real(m_Ez_ymirror),
@@ -496,6 +487,9 @@ def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
 
 
 def grad_u(dx, dy, u_mat, k_AC):
+""" Take the gradient of field as well as of conjugate of field.
+"""
+
     m_ux = u_mat[0]
     m_uy = u_mat[1]
     m_uz = u_mat[2]
@@ -525,8 +519,9 @@ def grad_u(dx, dy, u_mat, k_AC):
 
 
 def comsol_fields(data_file, n_points, ival=0):
+    """ Load Comsol field data on (assumed) grid mesh.
+    """
 
-    # Load Comsol field data
     with open(data_file, 'rt', encoding='ascii') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=' ')#, quotechar='|')
         for header_rows in range(9):
@@ -557,8 +552,11 @@ def comsol_fields(data_file, n_points, ival=0):
     return x_coord, y_coord, field_mat
 
 
-def py_fields(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, n_points,
-                EM_ival_pump=0, EM_ival_Stokes=0, AC_ival=0):
+def interp_py_fields(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, n_points,
+              EM_ival_pump=0, EM_ival_Stokes=0, AC_ival=0):
+    """ Interpolate fields from FEM mesh to square grid.
+    """
+
     # Trim EM fields to non-vacuum area where AC modes are defined
     num_modes_EM = sim_EM_pump.num_modes
     num_modes_AC = sim_AC.num_modes
@@ -685,9 +683,10 @@ def py_fields(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, n_points,
     return n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star 
 
 
-def grid_integral(relevant_eps_effs, sim_AC_structure, sim_AC_Omega_AC,
-                  n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star,
-                  AC_ival):
+def grid_integral(relevant_eps_effs, sim_AC_structure, sim_AC_Omega_AC, n_pts_x, n_pts_y, 
+                  dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star, AC_ival):
+    """ Quadrature integration of AC energy density, AC loss (alpha), and PE gain.
+    """
 
     # AC energy density integral
     F_AC_energy = 0
@@ -746,6 +745,7 @@ def grid_integral(relevant_eps_effs, sim_AC_structure, sim_AC_Omega_AC,
 
 def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, comsol_data_file, comsol_ivals=1):
     """ Calculate interaction integrals and SBS gain in python.
+        Load in acoustic mode displacement and calculate gain from this also.
     """
 
     num_modes_EM = sim_EM_pump.num_modes
@@ -770,7 +770,7 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, comsol_data_file, coms
 
     for AC_ival in range(comsol_ivals): # Comsol data only contains some AC modes
         # Interpolate NumBAT FEM fields onto grid
-        n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star = py_fields(
+        n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star = interp_py_fields(
             sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
             n_points, EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
