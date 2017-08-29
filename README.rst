@@ -9,8 +9,26 @@ Origin
 
 NumBAT was developed by Bjorn Sturmberg, Kokou Dossou, Chris Poulton and Michael Steel in a collaboration between Macquarie University and the University of Technology Sydney, as part of the Australian Research Council Discovery Project DP160101691.
 
+
 Documentation
 -------------
 
 Is hosted on `ReadTheDocs <http://numbat-au.readthedocs.io/en/latest/>`_.
 
+
+Compatability
+-------------
+
+NumBAT has been developed on Ubuntu 16.04 with the following package versions: Python 3.5.3, Numpy 1.11.0, Suitesparse 4.4.6, and Gmsh 2.10.1.
+
+It has also been successfully installed by users on Debian, RedHat and on Windows 10 (installing Ubuntu after enabling the Windows Subystem for Linux) and with different versions of packages, but these installations have not been as thoroughly documented so may require user testing.
+
+Installation is as simple as ::
+
+    $ git clone https://github.com/bjornsturmberg/NumBAT.git 
+
+Followed by ::
+
+    $ sudo ./setup.sh
+
+from the NumBAT/ directory.
