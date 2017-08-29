@@ -48,11 +48,11 @@ num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
 num_modes_AC = 30
-# The first EM mode(s) for which to calculate interaction with AC modes.
+# The EM pump mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival_pump = 0
-# The second EM mode(s) for which to calculate interaction with AC modes.
-EM_ival_Stokes = EM_ival_pump
+# The EM Stokes mode(s) for which to calculate interaction with AC modes.
+EM_ival_Stokes = 0
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
@@ -63,10 +63,10 @@ prefix_str = 'lit_09-'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y, coat_x=coat_x, coat_y=coat_y,
                         material_bkg=materials.Vacuum,
-                        material_a=materials.As2S3_2017_Morrison, # waveguide
+                        material_a=materials.As2S3_2016_Smith, # waveguide
                         material_b=materials.Si_2016_Smith,     # slab
                         material_c=materials.SiO2_2013_Laude,     # coating
-                        lc_bkg=3, lc2=2000.0, lc3=1000.0)
+                        lc_bkg=5, lc2=2000.0, lc3=1000.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1

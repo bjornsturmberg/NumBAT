@@ -487,8 +487,8 @@ def symmetries(sim_wguide, n_points=10, negligible_threshold=1e-5):
 
 
 def grad_u(dx, dy, u_mat, k_AC):
-""" Take the gradient of field as well as of conjugate of field.
-"""
+    """ Take the gradient of field as well as of conjugate of field.
+    """
 
     m_ux = u_mat[0]
     m_uy = u_mat[1]

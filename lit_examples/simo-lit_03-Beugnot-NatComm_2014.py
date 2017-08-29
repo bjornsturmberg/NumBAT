@@ -38,7 +38,7 @@ num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 num_modes_AC = 80
 EM_ival_pump = 0
-EM_ival_Stokes = EM_ival_pump
+EM_ival_Stokes = 0
 AC_ival = 'All'
 
 # Expected effective index of fundamental guided mode.

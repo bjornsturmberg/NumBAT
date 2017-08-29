@@ -44,10 +44,10 @@ num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
 num_modes_AC = 35
-# The first EM mode(s) for which to calculate interaction with AC modes.
+# The EM pump mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival_pump = 0
-# The second EM mode(s) for which to calculate interaction with AC modes.
+# The EM Stokes mode(s) for which to calculate interaction with AC modes.
 EM_ival_Stokes = 1 # INTERMODE SBS TE0 to TE1
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'

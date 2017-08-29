@@ -32,7 +32,7 @@ num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 num_modes_AC = 20
 EM_ival_pump = 0
-EM_ival_Stokes = EM_ival_pump
+EM_ival_Stokes = 0
 AC_ival = 'All'
 
 # Use of a more refined mesh to produce field plots.
