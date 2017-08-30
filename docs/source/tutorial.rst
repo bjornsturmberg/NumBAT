@@ -28,7 +28,11 @@ where we have accessed the docstring of the Struct class from objects.py
 Geometries
 ----------------------
 
-To review how material types and physical dimensions are represented in the mesh geometries go to NumBAT/docs/msh_type_lib and view the relevant .png file.
+To review how material types and physical dimensions are represented in the mesh geometries go to::
+
+    >>>  NumBAT/docs/msh_type_lib 
+
+and view the relevant .png file.
 
 The parameters lc_bkg, lc2, lc3 set the fineness of the FEM mesh. lc_bkg sets the reference background mesh size, larger lc_bkg = larger (more coarse) mesh. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be lc_bkg mesh elements along the horizontal outside edge; in other words the outside edge is divided into lc_bkg elements. At the interface between materials the mesh is refined to be lc_bkg/lc2, therefore larger lc2 = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh it typically also refined at the centers of important regions, eg in the center of a waveguide, which is done with lc3, which just like lc2 refines the mesh size at these points as lc_bkg/lc3.
 

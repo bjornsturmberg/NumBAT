@@ -42,10 +42,11 @@ class Mock(object):
             return Mock()
 
 # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
-MOCK_MODULES = ['os', 'subprocess', 'scipy', 'scipy.interpolate', 'numpy',
+MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
     'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
-    'csv', 'copy', 'json', 're', 'time']
+    'csv', 'copy', 'json', 'time', 'os', 'subprocess']
+
 
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
