@@ -45,11 +45,11 @@ class Mock(object):
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
     'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
-    'csv', 'copy', 'json', 'time', 'os', 'subprocess']
+    'csv', 'time', 'subprocess', 'sys'] # 'copy', 'json', 'os',
 
 
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
+# for mod_name in MOCK_MODULES:
+#     sys.modules[mod_name] = Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -71,7 +71,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-   'sphinx.ext.githubpages',
+    'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
 ]
 
