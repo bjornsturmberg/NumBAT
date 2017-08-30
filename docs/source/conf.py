@@ -44,12 +44,17 @@ class Mock(object):
 # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-    'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
-    'csv', 'time', 'subprocess', 'sys'] # 'copy', 'json', 'os',
+    'make_axes_locatable', 'fortran',
+    'csv', 'subprocess'] # 'copy', 'json',
 
 
-# for mod_name in MOCK_MODULES:
-#     sys.modules[mod_name] = Mock()
+# MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
+#     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
+#     'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
+#     'csv', 'time', 'subprocess',] # 'copy', 'json',
+
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
