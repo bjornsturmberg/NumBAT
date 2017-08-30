@@ -128,6 +128,9 @@ class Simmo(object):
         #     self.n_msh_pts = None
         #     self.n_msh_el = None
 
+        if self.structure.plt_mesh:
+            plotting.plot_msh(self.x_arr, prefix_str=self.structure.mesh_file, suffix_str='_EM')
+
 
 ### Calc unnormalised power in each EM mode Kokou equiv. of Eq. 8.
         try:
@@ -384,6 +387,10 @@ class Simmo(object):
         except KeyboardInterrupt:
             print("\n\n FEM routine calc_AC_modes",\
             "interrupted by keyboard.\n\n")
+
+
+        if self.structure.plt_mesh:
+            plotting.plot_msh(x_arr_out, prefix_str=self.structure.mesh_file, suffix_str='_AC')
 
         if AC_FEM_debug == 1:
             plotting.plot_msh(x_arr_AC, 'in')

@@ -90,6 +90,8 @@ class Struct(object):
                 including .mail if 2D_array (eg. 600_60.mail), or .txt if
                 1D_array. It must be located in backend/fortran/msh/
 
+            plt_mesh  (bool): Plot a png of the mesh.
+
             lc_bkg  (float): Length constant of meshing of background medium
                 (smaller = finer mesh)
 
@@ -134,7 +136,7 @@ class Struct(object):
                  material_q=materials.Vacuum, material_r=materials.Vacuum, 
                  loss=True, symmetry_flag=True,
                  make_mesh_now=True, force_mesh=True,
-                 mesh_file='NEED_FILE.mail', check_msh=False,
+                 mesh_file='NEED_FILE.mail', check_mesh=False, plt_mesh=False,
                  lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
                  plotting_fields=False, plot_real=1, plot_imag=0, plot_abs=0,
                  plot_field_conc=False):
@@ -219,7 +221,8 @@ class Struct(object):
                 self.nb_typ_el = 2
             else:
                 self.nb_typ_el = 3
-        self.check_msh = check_msh
+        self.check_mesh = check_mesh
+        self.plt_mesh = plt_mesh
         self.lc = lc_bkg
         self.lc2 = lc2
         self.lc3 = lc3
@@ -898,7 +901,7 @@ class Struct(object):
             open(msh_location + msh_name + '.geo', "w").write(geo)
             NumBAT.conv_gmsh(msh_location+msh_name)
 
-        if self.check_msh is True:
+        if self.check_mesh is True:
             # Automatically show created mesh in gmsh.
             gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
             os.system(gmsh_cmd)

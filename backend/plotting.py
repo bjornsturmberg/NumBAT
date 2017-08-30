@@ -662,7 +662,7 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
 
 
 #### Plot mesh #############################################
-def plot_msh(x_arr, suffix_str=''):
+def plot_msh(x_arr, prefix_str='', suffix_str=''):
     """ Plot EM mode fields.
 
         Args:
@@ -677,7 +677,7 @@ def plot_msh(x_arr, suffix_str=''):
     plt.figure(figsize=(13,13))
     ax = plt.subplot(1,1,1)
     for node in range(np.shape(x_arr)[1]):
-        plt.plot(x_arr[0,node], x_arr[1,node], 'o')
+        plt.plot(x_arr[0,node], x_arr[1,node], 'og')
     ax.set_aspect('equal')
     plt.savefig('%(pre)smsh_%(add)s.pdf' %
         {'pre' : prefix_str, 'add' : suffix_str}, bbox_inches='tight')
