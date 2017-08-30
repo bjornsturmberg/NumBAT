@@ -894,8 +894,9 @@ class Struct(object):
             "consider contributing this to NumBAT via gitlab." % self.inc_shape)
 
         self.mesh_file = msh_name + '.mail'
-        open(msh_location + msh_name + '.geo', "w").write(geo)
-        NumBAT.conv_gmsh(msh_location+msh_name)
+        if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+            open(msh_location + msh_name + '.geo', "w").write(geo)
+            NumBAT.conv_gmsh(msh_location+msh_name)
 
         if self.check_msh is True:
             # Automatically show created mesh in gmsh.
