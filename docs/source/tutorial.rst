@@ -1,3 +1,5 @@
+.. _chap-tutorial-label:
+
 Simulation Structure
 ------------------------------------------------
 
@@ -8,12 +10,12 @@ All results of the simulation are automatically created within this directory. T
 Traditionally the name of the python script file begins with simo\-. This is convenient for setting terminal alias' for running the script.
 Throughout the tutorial the script file will be called simo.py.
 
-To start a simulation open a terminal and change into the directory containing the simo.py file.
+To start a simulation open a terminal and change into the directory containing the ``simo.py`` file.
 To run this script::
 
     $ python3 simo.py
 
-To have direct access to the simulation objects upon the completion of the script use,::
+To have direct access to the simulation objects upon the completion of the script use::
 
     $ python3 -i simo.py
 
@@ -22,26 +24,83 @@ This will return you into an interactive python session in which all simulation 
     >>> from pydoc import help
     >>> help(objects.Struct)
 
-where we have accessed the docstring of the Struct class from objects.py
+where we have accessed the docstring of the Struct class from ``objects.py``.
 
 
 Geometries
 ----------------------
 
-To review how material types and physical dimensions are represented in the mesh geometries go to::
+The following figures give some examples of how material types and physical 
+dimensions are represented in the mesh geometries. These can also be found in the directory::
 
     >>>  NumBAT/docs/msh_type_lib 
 
-and view the relevant .png file.
+as a series of ``.png`` file.
 
-The parameters lc_bkg, lc2, lc3 set the fineness of the FEM mesh. lc_bkg sets the reference background mesh size, larger lc_bkg = larger (more coarse) mesh. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be lc_bkg mesh elements along the horizontal outside edge; in other words the outside edge is divided into lc_bkg elements. At the interface between materials the mesh is refined to be lc_bkg/lc2, therefore larger lc2 = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh it typically also refined at the centers of important regions, eg in the center of a waveguide, which is done with lc3, which just like lc2 refines the mesh size at these points as lc_bkg/lc3.
+.. figure:: ../msh_type_lib/1_circular.png
+   :scale: 15 %
 
-Choosing appropriate values of lc_bkg, lc2, lc3 is crucial NumBAT to give accurate results. The values depend strongly on the type of structure being studied, and so it is recommended to carry out a convergence test before delving into new structures (see Tutorial 5) starting from similar parameters as used in the tutoarial simulations. You can also visually check the resolution of your mesh by setting check_msh=True when you define your objects.Struct (see Tutorial 1), or by running the following command ::
+   Elliptical waveguide.
+
+.. figure:: ../msh_type_lib/1.png
+   :scale: 30 %
+
+   Rectangular waveguide.
+
+.. figure:: ../msh_type_lib/2.png
+   :scale: 30 %
+
+   Coupled rectangular waveguides.
+
+.. figure:: ../msh_type_lib/rib.png
+   :scale: 30 %
+
+   A conventional rib waveguide.
+
+.. figure:: ../msh_type_lib/1_on_slab.png
+   :scale: 30 %
+
+   A rib waveguide on a different substrate.
+
+.. figure:: ../msh_type_lib/rib_coated.png
+   :scale: 30 %
+
+   A coated rib waveguide.
+
+.. figure:: ../msh_type_lib/1_on_2slabs.png
+   :scale: 30 %
+
+   A rib waveguide on two substrates.
+
+.. figure:: ../msh_type_lib/slot.png
+   :scale: 30 %
+
+   A slot waveguide (``material_a`` is low index).
+
+.. figure:: ../msh_type_lib/slot_coated.png
+   :scale: 30 %
+
+   A coated slot waveguide (``material_a`` is low index).
+
+.. figure:: ../msh_type_lib/onion.png
+   :scale: 30 %
+
+   A concentric layered structure.
+
+.. raw:: latex
+
+    \clearpage
+
+
+
+The parameters ``lc_bkg``, ``lc2``, ``lc3``  to be encountered below set the fineness of the FEM mesh. ``lc_bkg`` sets the reference background mesh size, larger ``lc_bkg`` = larger (more coarse) mesh. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be ``lc_bkg`` mesh elements along the horizontal outside edge; in other words the outside edge is divided into ``lc_bkg`` elements. At the interface between materials the mesh is refined to be ``lc_bkg/lc2``, therefore larger ``lc2`` = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh it typically also refined at the centers of important regions, eg in the center of a waveguide, which is done with ``lc3``, which just like ``lc2`` refines the mesh size at these points as ``lc_bkg/lc3``.
+
+Choosing appropriate values of ``lc_bkg``, ``lc2``, ``lc3`` is crucial NumBAT to give accurate results. The values depend strongly on the type of structure being studied, and so it is recommended to carry out a convergence test before delving into new structures (see Tutorial 5) starting from similar parameters as used in the tutoarial simulations. You can also visually check the resolution of your mesh by setting ``check_msh=True`` when you define your ``objects.Struct`` (see Tutorial 1), or by running the following command ::
     
     NumBAT/backend/fortran/msh$ gmsh <msh_name>.msh
 
 
-In the remainder of this chapter we go through a number of example simo.py files. But before we do, another quick tip about running simulations within screen sessions, which allow you to disconnect from servers leaving them to continue your processes.
+In the remainder of this chapter we go through a number of example ``simo.py`` files. But before we do, another quick tip about running simulations within screen sessions, which allow you to disconnect from servers leaving them to continue your processes.
 
 .. raw:: latex
 
@@ -117,7 +176,7 @@ Or, taking the session ID from the previous example::
 
 
 
-Terminating NumBAT simos
+Terminating NumBAT simulations
 ,,,,,,,,,,,,,,,,,,,,,,,,
 
 If a simulation hangs, we can kill all python instances upon the machine::
@@ -146,14 +205,18 @@ The PID is found from one of two ways::
 Tutorial
 --------
 
-In this section we go through a number of simple simulations that demonstrate the basic use of NumBAT.
+In this section we walk through a number of simple simulations that demonstrate the basic use of NumBAT.
+:numref:`sec-literature-label` looks at a number of literature examples taken from many of
+the well-known groups in this field.
+The full Python interface is documented in :numref:`chap-pythonbackend-label`.
+
 
 
 Basic SBS Gain Calculation
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 This example, contained in ``tutorials/simo-tut_01-first_calc.py`` calculates the backward SBS gain for a rectangular silicon waveguide surrounded by air.
 
-The sequence of operations is
+The sequence of operations (annotated in the source code below as Step 1, Step 2, etc) is
 
   #. Import NumBAT modules
   #. Define the structure shape and dimensions
@@ -168,6 +231,10 @@ The sequence of operations is
 .. literalinclude:: ../../tutorials/simo-tut_01-first_calc.py
     :lines: 0-
 
+.. raw:: latex
+
+    \clearpage
+
 
 SBS Gain Spectra
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -176,13 +243,16 @@ but adds plotting of fields, gain spectra and techniques for saving and reusing 
 calculations. 
 
 Elements to note:
-  #. Both electric and magnetic fields can be selected using ``'EM_E'`` or ``'EM_H'`` as the value of ``EM_AC` in 
+  #. Both electric and magnetic fields can be selected using ``EM_E`` or ``EM_H`` as the value of ``EM_AC` in 
        ``plotting.mode_fields``.
   #. ``np.savez`` and ``np.load`` allow storage of arbitrary data between simulations.
 
 .. literalinclude:: ../../tutorials/simo-tut_02-gain_spectra-npsave.py
     :lines: 0-
 
+
+The following figures show a selection of electromagnetic and acoustic mode profiles produced
+in this example.
 
 .. figure:: ../../tutorials/tut_02-fields/EM_E_field_0.png
    :scale: 50 %
@@ -201,20 +271,25 @@ Elements to note:
    
    Acoustic mode with high gain due to moving boundary effect.
 
+This example also generates gain spectra.
 
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+   Gain spectra showing gain due to the photoelastic effect, gain due to moving boundary effect, and the total gain.
 
 
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps_zoom.png
    :scale: 50 %
    
-   Zoomed in gain spectra.
+   Zoomed-in gain spectra.
+
+.. raw:: latex
+
+    \clearpage
 
 
-Investigating Dispersion and npsave npload
+Investigating Dispersion and np.save np.load
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../tutorials/simo-tut_03_1-dispersion-npload.py
@@ -225,6 +300,10 @@ Investigating Dispersion and npsave npload
    :scale: 70 %
    
    Acoustic dispersion diagram with modes categorised by symmetry.
+
+.. raw:: latex
+
+    \clearpage
 
 
 
@@ -240,6 +319,10 @@ Investigating Dispersion and multiprocessing
    
    Acoustic dispersion diagram ploted as lines.
 
+.. raw:: latex
+
+    \clearpage
+
 
 Parameter Scan of Widths
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -252,6 +335,10 @@ Parameter Scan of Widths
    :scale: 70 %
    
    Gain spectra as function of waveguide width.
+
+.. raw:: latex
+
+    \clearpage
 
 
 Convergence Study
@@ -290,6 +377,10 @@ Convergence Study
    
    Convergence of total gain.
 
+.. raw:: latex
+
+    \clearpage
+
 
 Silica Nanowire 
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -302,6 +393,10 @@ Silica Nanowire
    :scale: 50 %
    
    Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+
+.. raw:: latex
+
+    \clearpage
 
 
 Slot Waveguide
@@ -316,6 +411,10 @@ Slot Waveguide
    
    Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
 
+.. raw:: latex
+
+    \clearpage
+
 
 Slot Waveguide Scan Covering
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -329,6 +428,10 @@ Slot Waveguide Scan Covering
    
    Acoustic frequencies as function of covering layer thickness.
 
+.. raw:: latex
+
+    \clearpage
+
 
 Anisotropic Elastic Materials 
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -340,14 +443,21 @@ Anisotropic Elastic Materials
 
     \clearpage
 
+.. raw:: latex
 
+    \clearpage
+
+
+
+.. _sec-literature-label:
 
 Literature Examples
 ---------------------
 
-Having gotten familiar with NumBAT, we now set out to replicate a number of examples from the literature.
+Having become somewhat familiar with NumBAT, we now set out to replicate a number of examples 
+from the recent literature.
 The examples are presented in chronological order. 
-We note the particular importance of examples 5-8 for they include experimental and numerical results that are in good agreement.
+We note the particular importance of examples 5-8 which include experimental and numerical results that are in good agreement.
 
 
 2013 - Laude - AIP Adv - BSBS - Rectangular Waveguide - Silica

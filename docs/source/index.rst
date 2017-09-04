@@ -31,9 +31,9 @@ Installation
 
     install
 
-==================
-Guide
-==================
+====================================
+Basic Usage and Tutorials
+====================================
 
 .. toctree::
     :maxdepth: 4

@@ -10,6 +10,11 @@ function makeBAT() {
   cd backend/fortran/
   make
 ## run tests
+  echo ''
+  echo '#####################################################################'
+  echo '        Executing NumBAT test suite'
+  echo '#####################################################################'
+
   cd ../../tests/
   nosetests3
 

@@ -1,3 +1,5 @@
+.. _chap-install-label:
+
 Installation
 ================
 
@@ -10,7 +12,7 @@ In general, you can simply run the setup script ::
 
     $ sudo ./setup.sh
 
-from the NumBAT/ directory.
+from the ``NumBAT/`` directory.
 
 Or, if you prefer to do things manually, this is equivalent to ::
 
@@ -28,7 +30,7 @@ where the <dependencies> packages are listed dependencies.txt. Note that it is s
 
 Well there's more if you want to change it up.
 
-The Fortran components (NumBAT source code and libraries) have been successfully compiled with intel's ifortran as well as open-source gfortran. In this documentation we use gfortran, but this can be easily adjusted in NumBAT/backend/fortran/Makefile
+The Fortran components (NumBAT source code and libraries) have been successfully compiled with intel's ifortran as well as open-source gfortran. In this documentation we use gfortran, but this can be easily adjusted in ``NumBAT/backend/fortran/Makefile``
 
 On non-ubuntu OS you may also need to compile a local version of Suitesparse, which is described in the next section.
 
@@ -39,7 +41,7 @@ The FEM routine used in NumBAT makes use of the highly optimised `UMFPACK <https
 
 This is the process I followed in my installations, however this was some years ago and may need to be modified.
 
-Unpack SuiteSparse into NumBAT/backend/fortran/, it should create a directory there; SuiteSparse/
+Unpack SuiteSparse into ``NumBAT/backend/fortran/``, it should create a directory there; ``SuiteSparse/``
 Make a directory where you want SuiteSparse installed, in my case SS_installed ::
 
     $ mkdir SS_installed/
@@ -68,22 +70,22 @@ Download `metis-4.0 <http://glaros.dtc.umn.edu/gkhome/fsroot/sw/metis/OLD>`_ and
 
     $ cd SuiteSparse/metis-4.0
 
-Optionally edit metis-4.0/Makefile.in as per SuiteSparse/README.txt plus with -fPIC::
+Optionally edit ``metis-4.0/Makefile.in`` as per ``SuiteSparse/README.txt`` plus with ``-fPIC``::
 
     CC = gcc
     or
     CC = icc
     OPTFLAGS = -O3 -fPIC
 
-Now make metis (still in SuiteSparse/metis-4.0/)::
+Now make ``metis`` (still in SuiteSparse/metis-4.0/)::
 
     $ make
 
-Now move back to NumBAT/backend/fortran/ ::
+Now move back to ``NumBAT/backend/fortran/`` ::
 
     $ cp SuiteSparse/metis-4.0/libmetis.a SS_installed/lib/
 
-and then move to SuiteSparse/ and execute the following::
+and then move to ``SuiteSparse/`` and execute the following::
 
     $ make library
     $ make install
@@ -91,7 +93,7 @@ and then move to SuiteSparse/ and execute the following::
     $ make fortran64
     $ cp SuiteSparse/UMFPACK/Demo/umf4_f77zwrapper64.o into SS_installed/lib/
 
-Copy the libraries into NumBAT/backend/fortran/Lib/ so that NumBAT/ is a complete package that can be moved across machine without alteration. This will override the pre-compiled libraries from the release (you may wish to save these somewhere).::
+Copy the libraries into ``NumBAT/backend/fortran/Lib/`` so that ``NumBAT/`` is a complete package that can be moved across machine without alteration. This will override the pre-compiled libraries from the release (you may wish to save these somewhere).::
 
     $ cp SS_installed/lib/*.a NumBAT/backend/fortran/Lib/
     $ cp SS_installed/lib/umf4_f77zwrapper64.o NumBAT/backend/fortran/Lib/
@@ -99,6 +101,6 @@ Copy the libraries into NumBAT/backend/fortran/Lib/ so that NumBAT/ is a complet
 
 NumBAT Makefile
 
-Edit NumBAT/backend/fortran/Makefile to reflect what compiler you are using and how you installed the libraries. The Makefile has further details.
+Edit ``NumBAT/backend/fortran/Makefile`` to reflect what compiler you are using and how you installed the libraries. The Makefile has further details.
 
 Then finally run the setup.sh script!
