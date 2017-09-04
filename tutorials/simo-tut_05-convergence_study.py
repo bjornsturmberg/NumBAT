@@ -1,5 +1,6 @@
 """ Calculate the convergence as a function of FEM mesh for 
-    backward SBS gain spectra of a silicon waveguide surrounded in air.
+    backward SBS gain spectra of a silicon waveguide 
+    surrounded in air.
 """
 
 import time
@@ -31,9 +32,10 @@ num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 num_modes_AC = 20
 EM_ival_pump = 0
-EM_ival_Stokes = EM_ival_pump
+EM_ival_Stokes = 0
 AC_ival = 'All'
 
+prefix_str = 'tut_05-'
 
 nu_lcs = 4
 lc_bkg_list = 4*np.ones(nu_lcs)
@@ -59,11 +61,11 @@ for i_lc, lc_ref in enumerate(lc_list):
     # Calculate Electromagnetic modes.
     sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
     sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
-    k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
+    k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
     # Calculate Acoustic modes.
     sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
     # Calculate interaction integrals and SBS gain.
-    SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
+    SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
         sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
@@ -114,7 +116,8 @@ ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"EM k$_z$ ($\times 10^6$ 1/m)")
 ax2.set_ylabel(r"Relative Error EM k$_z$")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-freq_EM.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-freq_EM.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-freq_EM.png', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -139,7 +142,8 @@ ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"AC Freq (GHz)")
 ax2.set_ylabel(r"Relative Error AC Freq")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-freq_AC.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-freq_AC.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-freq_AC.png', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -164,7 +168,8 @@ ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-Gain.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain.png', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -186,10 +191,11 @@ ax1.tick_params(axis='y', colors='red')
 handles, labels = ax2.get_legend_handles_labels()
 ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
-ax1.set_ylabel(r"Gain")
-ax2.set_ylabel(r"Relative Error Gain")
+ax1.set_ylabel(r"Gain (PE)")
+ax2.set_ylabel(r"Relative Error Gain (PE)")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-Gain_PE.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain_PE.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain_PE.png', bbox_inches='tight')
 plt.close()
 
 fig = plt.figure()
@@ -211,10 +217,12 @@ ax1.tick_params(axis='y', colors='red')
 handles, labels = ax2.get_legend_handles_labels()
 ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
-ax1.set_ylabel(r"Gain")
-ax2.set_ylabel(r"Relative Error Gain")
+ax1.set_ylabel(r"Gain (MB)")
+ax2.set_ylabel(r"Relative Error Gain (MB)")
 ax2.set_yscale('log', nonposx='clip')
-plt.savefig('convergence-Gain_MB.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain_MB.pdf', bbox_inches='tight')
+plt.savefig(prefix_str+'convergence-Gain_MB.png', bbox_inches='tight')
 plt.close()
 
 print("Calculation time", time_list)
+

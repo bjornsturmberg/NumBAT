@@ -128,6 +128,9 @@ class Simmo(object):
         #     self.n_msh_pts = None
         #     self.n_msh_el = None
 
+        if self.structure.plt_mesh:
+            plotting.plot_msh(self.x_arr, prefix_str=self.structure.mesh_file, suffix_str='_EM')
+
 
 ### Calc unnormalised power in each EM mode Kokou equiv. of Eq. 8.
         try:
@@ -385,6 +388,10 @@ class Simmo(object):
             print("\n\n FEM routine calc_AC_modes",\
             "interrupted by keyboard.\n\n")
 
+
+        if self.structure.plt_mesh:
+            plotting.plot_msh(x_arr_out, prefix_str=self.structure.mesh_file, suffix_str='_AC')
+
         if AC_FEM_debug == 1:
             plotting.plot_msh(x_arr_AC, 'in')
             plotting.plot_msh(x_arr_out, 'out')
@@ -404,8 +411,6 @@ class Simmo(object):
 ### Calc unnormalised power in each AC mode - PRA Eq. 18.
         try:
             nnodes = 6
-            # import time
-            # start = time.time()
             if self.structure.inc_shape in self.structure.linear_element_shapes:
             # Semi-analytic integration following KD 9/9/16 notes. Fastest!
                 self.AC_mode_power = NumBAT.ac_mode_energy_int_v4(
@@ -430,20 +435,18 @@ class Simmo(object):
 ### Calc unnormalised elastic energy in each AC mode - PRA Eq. 16.
         try:
             nnodes = 6
-            # import time
-            # start = time.time()
             if self.structure.inc_shape in self.structure.linear_element_shapes:
-            # # Semi-analytic integration. Fastest!
-            #     self.AC_mode_energy_elastic = NumBAT.ac_mode_elastic_energy_int_v4(
-            #         self.num_modes, self.n_msh_el, self.n_msh_pts,
-            #         nnodes, self.table_nod, self.type_el, self.x_arr,
-            #         self.structure.nb_typ_el_AC, self.structure.rho,
-            #         self.Omega_AC, self.sol1)
-            # else:
-            #     if self.structure.inc_shape not in self.structure.curvilinear_element_shapes:
-            #         print("Warning: ac_mode_elastic_energy_int - not sure if mesh contains curvi-linear elements", 
-            #             "\n using slow quadrature integration by default.\n\n")
-            # # Integration by quadrature. Slowest.
+            # Semi-analytic integration. Fastest!
+                self.AC_mode_energy_elastic = NumBAT.ac_mode_elastic_energy_int_v4(
+                    self.num_modes, self.n_msh_el, self.n_msh_pts,
+                    nnodes, self.table_nod, self.type_el, self.x_arr,
+                    self.structure.nb_typ_el_AC, self.structure.rho,
+                    self.Omega_AC, self.sol1)
+            else:
+                if self.structure.inc_shape not in self.structure.curvilinear_element_shapes:
+                    print("Warning: ac_mode_elastic_energy_int - not sure if mesh contains curvi-linear elements", 
+                        "\n using slow quadrature integration by default.\n\n")
+            # Integration by quadrature. Slowest.
                 self.AC_mode_energy_elastic = NumBAT.ac_mode_elastic_energy_int(
                     self.num_modes, self.n_msh_el, self.n_msh_pts,
                     nnodes, self.table_nod, self.type_el, self.x_arr,
@@ -451,10 +454,6 @@ class Simmo(object):
                     self.Omega_AC, self.sol1, AC_FEM_debug)
         except KeyboardInterrupt:
             print("\n\n FEM routine AC_mode_elastic_energy_int interrupted by keyboard.\n\n")
-
-        # print(self.AC_mode_power/self.AC_mode_energy_elastic)
-        # print(3e8/(self.AC_mode_power/self.AC_mode_energy_elastic))
-        # print(np.shape(self.structure.rho))
 
 
 def bkwd_Stokes_modes(EM_sim):

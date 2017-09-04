@@ -27,7 +27,7 @@ lc3 = lc/1; // cylinder1 centres
 lc4 = lc/1; // centres of top and bottom
 lc5 = lc/1; // slab
 
-hy = dy; // Thickness: square profile => hy=d
+hy = dy/2 + (slab_h/2) + radius1y; // 
 hx = 0.;
 
 
@@ -35,6 +35,7 @@ Point(1) = {0, 0, 0, lc};
 Point(2) = {-hx, -hy, 0, lc};
 Point(3) = {-hx+d, -hy, 0, lc};
 Point(4) = {d, 0, 0,lc};
+
 
 // Slab
 Point(250) = {d/2-slab_w/2, -hy+slab_h, 0, lc};
@@ -49,6 +50,11 @@ Point(9) = {-hx+d/2+radius1, -hy+radius1y+slab_h, 0, lc2};
 
 Point(10) = {-hx+d/2, 0, 0, lc};
 Point(12) = {-hx+d/2, -hy, 0, lc};
+
+Point(990) = {-hx, -dy, 0, lc};
+Point(991) = {-hx+d, -dy, 0, lc};
+Point(992) = {-hx+d/2, -dy, 0, lc};
+
 Line(1) = {1,10};
 Line(2) = {10,4};
 Line(10) = {7,5};
@@ -66,6 +72,13 @@ If(slab_w_full == 0)
     Line(4) = {253,3};
 EndIf
 
+If(slab_w_full == 1)
+    Line(63) = {2, 990};
+    Line(64) = {990, 992};
+    Line(65) = {992, 991};
+    Line(66) = {991, 3};
+    Line(67) = {12, 992};
+EndIf
 
 If(rect == 0)
     Ellipsis(17) = {9,5,6,6};
@@ -338,3 +351,4 @@ Mesh.ColorCarousel = 2;
 // Use the frontal algo to make sure that the periodic mesh is
 // not modified when meshing the surface
 Mesh.Algorithm=6;
+

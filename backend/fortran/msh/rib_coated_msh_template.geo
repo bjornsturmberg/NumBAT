@@ -1,91 +1,93 @@
-// Coated rib waveguide mesh template.
+// Template mesh geometry file for a rib waveguide.
 
-// Meshing parameters
-lc = 0; // base level meshing parameter
-lc2 = lc/1; // mesh refinement parameters
-lc3 = lc/1; // mesh refinement parameters
+d = 1; // grating period
+d_in_nm = 100;
+dy_in_nm = 50;
+dy = dy_in_nm/d_in_nm;
+a1 = 20;
+a1y = 10;
+radius1 = (a1/(2*d_in_nm))*d;
+radius1y = (a1y/(2*d_in_nm))*d;
 
-// Unit cell
-d_in_nm = 1000;
-dy_in_nm = 600;
-d = 1; // normalised unitcell limits x
-h = dy_in_nm/d_in_nm; // unitcell limit y
+slabx = 80;
+slaby = 10;
+slab_w = slabx/d_in_nm;
+slab_h = slaby/d_in_nm;
+
+coatx = 2;
+coaty = 2;
+coat_w = coatx/d_in_nm;
+coat_h = coaty/d_in_nm;
+
+lc = 0; // background and unitcell edge
+lc2 = lc/1; // rib
+lc3 = lc/1; // slab
+
+hy = dy/2 + (slab_h/2) + radius1y; // 
+hx = 0.;
+
 
 Point(1) = {0, 0, 0, lc};
-Point(2) = {0, -h, 0, lc};
-Point(3) = {d, -h, 0, lc};
+Point(2) = {-hx, -dy, 0, lc};
+Point(3) = {-hx+d, -dy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
-// Bottom slab
-slab1 = 100;
-s1 = slab1/d_in_nm;
-Point(5) = {0, -h+s1, 0, lc};
-Point(6) = {d, -h+s1, 0, lc};
-
-// Waveguide slab
-slab2 = 50;
-s2 = slab2/d_in_nm;
-Point(7) = {0, -h+s1+s2, 0, lc};
-Point(8) = {d, -h+s1+s2, 0, lc};
+// Slab
+Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc3};
+Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc3};
+Point(13) = {d/2-slab_w/2, -hy, 0, lc3};
+Point(14) = {d/2+slab_w/2, -hy, 0, lc3};
 
 // Rib
-ribx = 200;
-riby = 30;
-rx = ribx/d_in_nm;
-ry = riby/d_in_nm;
-Point(9) = {d/2-rx/2, -h+s1+s2, 0, lc2};
-Point(10) = {d/2+rx/2, -h+s1+s2, 0, lc2};
-Point(11) = {d/2-rx/2, -h+s1+s2+ry, 0, lc2};
-Point(12) = {d/2+rx/2, -h+s1+s2+ry, 0, lc2};
+Point(7) = {-hx+d/2-radius1, -hy+slab_h, 0, lc2};
+Point(8) = {-hx+d/2+radius1, -hy+slab_h, 0, lc2};
+Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h, 0, lc2};
+Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h, 0, lc2};
 
-// Coating
-coatx = 20; // around rib
-coaty = 20;
-cx = coatx/d_in_nm;
-cy = coaty/d_in_nm;
-Point(13) = {0, -h+s1+s2+cy, 0, lc};
-Point(14) = {d, -h+s1+s2+cy, 0, lc};
-Point(15) = {d/2-rx/2-cx, -h+s1+s2+cy, 0, lc};
-Point(16) = {d/2+rx/2+cx, -h+s1+s2+cy, 0, lc};
-Point(17) = {d/2-rx/2-cx, -h+s1+s2+cy+ry, 0, lc};
-Point(18) = {d/2+rx/2+cx, -h+s1+s2+cy+ry, 0, lc};
+// Coat
+Point(15) = {d/2-slab_w/2, -hy+slab_h+coat_h, 0, lc3};
+Point(16) = {d/2+slab_w/2, -hy+slab_h+coat_h, 0, lc3};
+Point(17) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h, 0, lc3};
+Point(18) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h, 0, lc3};
+Point(19) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc3};
+Point(20) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc3};
 
-Line(1) = {1, 4};
-Line(2) = {4, 14};
-Line(3) = {14, 8};
-Line(4) = {8, 6};
-Line(5) = {6, 3};
-Line(6) = {3, 2};
-Line(7) = {2, 5};
-Line(8) = {5, 7};
-Line(9) = {7, 13};
-Line(10) = {13, 1};
-Line(11) = {5, 6};
-Line(12) = {8, 10};
-Line(14) = {9, 7};
-Line(15) = {13, 15};
-Line(16) = {15, 17};
-Line(17) = {17, 18};
-Line(18) = {18, 16};
-Line(19) = {14, 16};
-Line(20) = {10, 12};
-Line(21) = {12, 11};
-Line(22) = {11, 9};
-Line Loop(23) = {10, 1, 2, 19, -18, -17, -16, -15};
-Plane Surface(24) = {23};
-Line Loop(25) = {14, 9, 15, 16, 17, 18, -19, 3, 12, 20, 21, 22};
-Plane Surface(26) = {25};
-Line Loop(27) = {4, -11, 8, -14, -22, -21, -20, -12};
-Plane Surface(28) = {27};
-Line Loop(29) = {11, 5, 6, 7};
-Plane Surface(30) = {29};
+Line(1) = {1, 2};
+Line(2) = {2, 3};
+Line(3) = {3, 4};
+Line(4) = {4, 1};
+Line(5) = {5, 7};
+Line(6) = {7, 9};
+Line(7) = {9, 10};
+Line(8) = {10, 8};
+Line(9) = {8, 7};
+Line(10) = {8, 6};
+Line(11) = {6, 14};
+Line(12) = {14, 13};
+Line(13) = {13, 5};
 
-Physical Line(31) = {10, 9, 8, 7};
-Physical Line(32) = {6};
-Physical Line(33) = {1};
-Physical Line(35) = {2, 3, 4, 5};
+Physical Line(21) = {1};
+Physical Line(22) = {2};
+Physical Line(23) = {3};
+Physical Line(24) = {4};
 
-Physical Surface(1) = {24};
-Physical Surface(2) = {28};
-Physical Surface(3) = {30};
-Physical Surface(4) = {26};
+Line(25) = {5, 15};
+Line(26) = {15, 17};
+Line(27) = {17, 19};
+Line(28) = {19, 20};
+Line(29) = {20, 18};
+Line(30) = {18, 16};
+Line(31) = {16, 6};
+Line Loop(32) = {4, 1, 2, 3};
+Line Loop(33) = {28, 29, 30, 31, 11, 12, 13, 25, 26, 27};
+Plane Surface(34) = {32, 33};
+Line Loop(35) = {6, 7, 8, 9};
+Plane Surface(36) = {35};
+Line Loop(37) = {9, -5, -13, -12, -11, -10};
+Plane Surface(38) = {37};
+Line Loop(39) = {26, 27, 28, 29, 30, 31, -10, -8, -7, -6, -5, 25};
+Plane Surface(40) = {39};
+Physical Surface(1) = {34};
+Physical Surface(2) = {36};
+Physical Surface(3) = {38};
+Physical Surface(4) = {40};

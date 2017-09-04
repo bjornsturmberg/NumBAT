@@ -38,11 +38,11 @@ num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
 num_modes_AC = 20
-# The first EM mode(s) for which to calculate interaction with AC modes.
+# The EM pump mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival_pump = 0
-# The second EM mode(s) for which to calculate interaction with AC modes.
-EM_ival_Stokes = EM_ival_pump
+# The EM Stokes mode(s) for which to calculate interaction with AC modes.
+EM_ival_Stokes = 0
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
@@ -51,7 +51,7 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=materials.Si_2016_Smith,
-                        lc_bkg=2, lc2=200.0, lc3=5.0, check_msh=False)
+                        lc_bkg=2, lc2=200.0, lc3=5.0, check_mesh=False)
 
 # Explicitly remind ourselves what data we're using.
 print('\nUsing %s material data from' % wguide.material_a.chemical)
@@ -78,7 +78,7 @@ n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 print("\n Fundamental optical mode ")
 print(" n_eff = ", np.round(n_eff_sim, 4))
 # Acoustic wavevector
-k_AC = np.real(sim_EM_pump.Eig_values[0] - sim_EM_Stokes.Eig_values[0])
+k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
 print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
 
 # Calculate Acoustic modes, using the mesh from the EM calculation.
@@ -86,24 +86,29 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # Print the frequencies of AC modes.
 print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
+# Do not calculate the acoustic loss from our fields, instead set a Q factor.
+set_q_factor = 1000.
+
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
-SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
-    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
-    EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
+SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
+    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, EM_ival_pump=EM_ival_pump, 
+    EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
 # Print the Backward SBS gain of the AC modes.
-print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:])
-print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:])
-print("SBS_gain total \n", SBS_gain[EM_ival_Stokes,EM_ival_pump,:])
+print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:])
+print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:])
+print("SBS_gain total \n", SBS_gain[EM_ival_pump,EM_ival_Stokes,:])
 # Mask negligible gain values to improve clarity of print out.
 threshold = -1e-3
-masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
-masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
-masked = np.ma.masked_inside(SBS_gain[EM_ival_Stokes,EM_ival_pump,:], 0, threshold)
+masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
+masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
+masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 
 print("\n SBS_gain PE contribution \n", masked_PE)
 print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)
+print("SBS_gain linewidth [Hz] \n", linewidth_Hz)
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
+

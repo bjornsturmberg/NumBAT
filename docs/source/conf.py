@@ -41,9 +41,18 @@ class Mock(object):
         else:
             return Mock()
 
+# Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-    'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1']
+    'make_axes_locatable', 'fortran',
+    'csv', 'subprocess'] # 'copy', 'json',
+
+
+# MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
+#     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
+#     'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
+#     'csv', 'time', 'subprocess',] # 'copy', 'json',
+
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
 
@@ -67,7 +76,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-   'sphinx.ext.githubpages',
+    'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
 ]
 

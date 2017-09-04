@@ -58,11 +58,11 @@ num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
 num_AC_modes = 20
-# The first EM mode(s) for which to calculate interaction with AC modes.
+# The EM pump mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival_pump = 0
-# The second EM mode(s) for which to calculate interaction with AC modes.
-EM_ival_Stokes = EM_ival_pump
+# The EM Stokes mode(s) for which to calculate interaction with AC modes.
+EM_ival_Stokes = 0
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival='All'
 
@@ -87,7 +87,7 @@ sim_AC_wguide = wguide.calc_AC_modes(num_AC_modes, k_AC=k_AC, EM_sim=sim_EM_pump
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
-SBS_gain, SBS_gain_PE, SBS_gain_MB, alpha, Q_factors = integration.gain_and_qs(
+SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
     sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Mask negligible gain values to improve clarity of print out.
@@ -98,9 +98,9 @@ threshold_indices = abs(SBS_gain_MB) < threshold
 SBS_gain_MB[threshold_indices] = 0
 threshold_indices = abs(SBS_gain) < threshold
 SBS_gain[threshold_indices] = 0
-masked_PE = SBS_gain_PE[EM_ival_Stokes,EM_ival_pump,:]
-masked_MB = SBS_gain_MB[EM_ival_Stokes,EM_ival_pump,:]
-masked = SBS_gain[EM_ival_Stokes,EM_ival_pump,:]
+masked_PE = SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:]
+masked_MB = SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:]
+masked = SBS_gain[EM_ival_pump,EM_ival_Stokes,:]
 
 test_list1 = list(zip(sim_EM_pump.Eig_values, sim_AC_wguide.Eig_values))
 test_list2 = list(zip(masked_PE, masked_MB, masked))
