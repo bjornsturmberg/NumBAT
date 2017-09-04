@@ -255,41 +255,47 @@ The following figures show a selection of electromagnetic and acoustic mode prof
 in this example.
 
 .. figure:: ../../tutorials/tut_02-fields/EM_E_field_0.png
-   :scale: 50 %
+   :scale: 40 %
    
    Fundamental optical mode fields.
 
 
 .. figure:: ../../tutorials/tut_02-fields/AC_field_2.png
-   :scale: 50 %
+   :scale: 40 %
    
    Acoustic mode with high gain due to moving boundary effect.
 
 
 .. figure:: ../../tutorials/tut_02-fields/AC_field_4.png
-   :scale: 50 %
+   :scale: 40 %
    
    Acoustic mode with high gain due to moving boundary effect.
 
+.. raw:: latex
+
+    \clearpage
+
 This example also generates gain spectra.
 
+.. _fig-gainspec1-label:
+
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps.png
-   :scale: 50 %
+   :scale: 35 %
    
    Gain spectra showing gain due to the photoelastic effect, gain due to moving boundary effect, and the total gain.
 
 
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps_zoom.png
-   :scale: 50 %
+   :scale: 35 %
    
-   Zoomed-in gain spectra.
+   Zoomed-in gain spectra from :numref:`fig-gainspec1-label`.
 
 .. raw:: latex
 
     \clearpage
 
 
-Investigating Dispersion and np.save np.load
+Investigating Dispersion and np.save/np.load
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 .. literalinclude:: ../../tutorials/simo-tut_03_1-dispersion-npload.py
