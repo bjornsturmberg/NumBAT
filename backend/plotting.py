@@ -514,16 +514,16 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
         if EM_AC=='EM_E' or EM_AC=='EM_H':
             n_eff = sim_wguide.Eig_values[ival] * sim_wguide.wl_m / (2*np.pi)
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = r'n$_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
+                n_str = r'$n_\text{eff} = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             else:
-                k_str = r'k$_z = %(re_k)f6 + %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
+                n_str = r'$n_\text{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             # plt.text(10, 0.3, n_str, fontsize=title_font)
         else:
