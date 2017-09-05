@@ -1,4 +1,5 @@
-""" Onion
+""" Example showing how the 'onion' geometry template can be used
+    to simulate a circular Si waveguide clad in SiO2.
 """
 
 import time
