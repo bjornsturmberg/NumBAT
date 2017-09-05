@@ -105,9 +105,9 @@ print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 # Plot the AC modes fields, important to specify this with EM_AC='AC'.
 # The AC modes are calculated on a subset of the full unitcell,
 # which excludes vacuum regions, so no need to restrict area plotted.
-# We want to get pdf files so set pdf_png='pdf' 
+# If we wanted to get pdf files we would set pdf_png='pdf' 
 # (default is png as these are easier to flick through).
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='pdf', contours=True, 
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='png', contours=True, 
                          prefix_str=prefix_str)
 
 # Calculate the acoustic loss from our fields.
