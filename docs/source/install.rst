@@ -30,16 +30,16 @@ where the <dependencies> packages are listed dependencies.txt. Note that it is s
 
 Well there's more if you want to change it up.
 
-The Fortran components (NumBAT source code and libraries) have been successfully compiled with intel's ifortran as well as open-source gfortran. In this documentation we use gfortran, but this can be easily adjusted in ``NumBAT/backend/fortran/Makefile``
+The Fortran components (NumBAT source code and libraries) have been successfully compiled with intel's ``ifortran`` as well as open-source ``gfortran``. In this documentation we use ``gfortran``, but this can be easily adjusted in ``NumBAT/backend/fortran/Makefile``
 
-On non-ubuntu OS you may also need to compile a local version of Suitesparse, which is described in the next section.
+On non-ubuntu OSes you may also need to compile a local version of Suitesparse, which is described in the next section.
 
 Manual installation of SuiteSparse
 ----------------------------------
 
 The FEM routine used in NumBAT makes use of the highly optimised `UMFPACK <https://www.cise.ufl.edu/research/sparse/umfpack/>`_ (Unsymmetric MultiFrontal Package) direct solver for sparse matrices developed by Prof. Timothy A. Davis. This is distributed as part of the  SuiteSparse libraries under a GPL license. It can be downloaded from `https://www.cise.ufl.edu/research/sparse/SuiteSparse/ <https://www.cise.ufl.edu/research/sparse/SuiteSparse/>`_
 
-This is the process I followed in my installations, however this was some years ago and may need to be modified.
+This is the process we have used in the past, however this was some years ago and may need to be modified.
 
 Unpack SuiteSparse into ``NumBAT/backend/fortran/``, it should create a directory there; ``SuiteSparse/``
 Make a directory where you want SuiteSparse installed, in my case SS_installed ::
@@ -104,3 +104,11 @@ NumBAT Makefile
 Edit ``NumBAT/backend/fortran/Makefile`` to reflect what compiler you are using and how you installed the libraries. The Makefile has further details.
 
 Then finally run the setup.sh script!
+
+.. _sec-contribute-label:
+
+Contributing to NumBAT
+----------------------------------
+
+NumBAT is open source software licensed under the GPL with all source and documentation available
+at `github.com <github.com/bjornsturmberg/NumBAT.git>`_. We welcome additions to NumBAT code, documentation and the materials library. Interested users should fork the standard release from github and make a pull request when ready.  For major changes, we strongly suggest contacting the NumBAT team before starting work at ``michael.steel@mq.edu.au``.

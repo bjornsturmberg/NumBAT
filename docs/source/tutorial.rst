@@ -1,6 +1,6 @@
 .. _chap-tutorial-label:
 
-Simulation Structure
+Simulation Procedure
 ------------------------------------------------
 
 Simulations with NumBAT are generally carried out using a python script file.
@@ -27,7 +27,21 @@ This will return you into an interactive python session in which all simulation 
 where we have accessed the docstring of the Struct class from ``objects.py``.
 
 
-Geometries
+Script Structure
+----------------------------
+
+As will be seen in the tutorials below, most NumBAT scripts proceed with a standard
+structure: 
+  - defining materials
+  - defining waveguide geometries and associating them with material properties
+  - solving electromagnetic and acoustic modes 
+  - calculating gain and other derived quantities
+
+The following section provides some information about the pre-defined range of waveguide
+structures and the key parameters controlling finite-element meshing.
+Information on how to add new structures to NumBAT is provided in :numref:`sec-newmesh-label`.
+
+Waveguide Geometries
 ----------------------
 
 The following figures give some examples of how material types and physical 
@@ -93,7 +107,7 @@ as a series of ``.png`` file.
 
 
 
-The parameters ``lc_bkg``, ``lc2``, ``lc3``  to be encountered below set the fineness of the FEM mesh. ``lc_bkg`` sets the reference background mesh size, larger ``lc_bkg`` = larger (more coarse) mesh. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be ``lc_bkg`` mesh elements along the horizontal outside edge; in other words the outside edge is divided into ``lc_bkg`` elements. At the interface between materials the mesh is refined to be ``lc_bkg/lc2``, therefore larger ``lc2`` = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh it typically also refined at the centers of important regions, eg in the center of a waveguide, which is done with ``lc3``, which just like ``lc2`` refines the mesh size at these points as ``lc_bkg/lc3``.
+The parameters ``lc_bkg``, ``lc2``, ``lc3``  to be encountered below set the fineness of the FEM mesh. ``lc_bkg`` sets the reference background mesh size, larger ``lc_bkg`` = larger (more coarse) mesh. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be ``lc_bkg`` mesh elements along the horizontal outside edge; in other words the outside edge is divided into ``lc_bkg`` elements. At the interface between materials the mesh is refined to be ``lc_bkg/lc2``, therefore larger ``lc2`` = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh is typically also refined at the centers of important regions, such as in the center of a waveguide, which is done with ``lc3``, which analogously to ``lc2``, refines the mesh size at these points as ``lc_bkg/lc3``.
 
 Choosing appropriate values of ``lc_bkg``, ``lc2``, ``lc3`` is crucial NumBAT to give accurate results. The values depend strongly on the type of structure being studied, and so it is recommended to carry out a convergence test before delving into new structures (see Tutorial 5) starting from similar parameters as used in the tutoarial simulations. You can also visually check the resolution of your mesh by setting ``check_msh=True`` when you define your ``objects.Struct`` (see Tutorial 1), or by running the following command ::
     

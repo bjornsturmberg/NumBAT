@@ -1,5 +1,9 @@
+ 
+
 FEM Mode Solvers
 ====================
+
+.. _sec-newmesh-label:
 
 Making New Mesh
 ------------------------------------------------
