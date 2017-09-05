@@ -50,7 +50,8 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib.externals', 'matplotlib.externals.six', 
     'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
     'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-    'matplotlib.axis', ] # 'copy', 'json',
+    'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
+    'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
 
 
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
@@ -58,8 +59,8 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
 #     'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
 #     'csv', 'time', 'subprocess',] # 'copy', 'json',
 
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
+# for mod_name in MOCK_MODULES:
+#     sys.modules[mod_name] = Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
