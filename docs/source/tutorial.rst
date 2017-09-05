@@ -398,7 +398,7 @@ Silica Nanowire
 .. figure:: ../../tutorials/tut_06-gain_spectra-MB_PE_comps_SiO2_NW.png
    :scale: 50 %
    
-   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+   Gain spectra showing gain due to photoelastic effect, gain due to moving boundary effect, and total gain.
 
 .. raw:: latex
 
@@ -415,7 +415,7 @@ Slot Waveguide
 .. figure:: ../../tutorials/tut_07-gain_spectra-MB_PE_comps_slot.png
    :scale: 50 %
    
-   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+   Gain spectra showing gain due to photoelastic effect, gain due to moving boundary effect, and total gain.
 
 .. raw:: latex
 
@@ -449,9 +449,6 @@ Anisotropic Elastic Materials
 
     \clearpage
 
-.. raw:: latex
-
-    \clearpage
 
 
 
@@ -468,6 +465,16 @@ We note the particular importance of examples 5-8 which include experimental and
 
 2013 - Laude - AIP Adv - BSBS - Rectangular Waveguide - Silica
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+This example is based on the calculation of backward SBS
+in a small rectangular silica waveguide described in V. Laude and J.-C. Beugnot, 
+`Generation of phonons from electrostriction in small-core optical waveguides 
+<http://dx.doi.org/10.1063/1.4801936>`_, *AIP Advances* **3**, 042109 (2013).
+
+Observe the use of a material named ``materials.SiO2_2013_Laude`` 
+specifically modelled on the parameters in this paper.
+This technique allows users to easily compare exactly to other authors
+without changing their preferred material values for their own samples and experiments.
 
 .. literalinclude:: ../../lit_examples/simo-lit_01-Laude-AIPAdv_2013-silica.py
     :lines: 0-
@@ -502,9 +509,18 @@ We note the particular importance of examples 5-8 which include experimental and
    
    Gain spectra zoomed in on mode D.
 
+.. raw:: latex
+
+    \clearpage
 
 2013 - Laude - AIP Adv - BSBS - Rectangular Waveguide - Silicon
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+This example again follows the paper of
+V. Laude and J.-C. Beugnot, 
+`Generation of phonons from electrostriction in small-core optical waveguides 
+<http://dx.doi.org/10.1063/1.4801936>`_, *AIP Advances* **3**, 042109 (2013),
+but this time looks at the *silicon* waveguide case.
 
 .. literalinclude:: ../../lit_examples/simo-lit_02-Laude-AIPAdv_2013-silicon.py
     :lines: 0-
@@ -521,9 +537,17 @@ We note the particular importance of examples 5-8 which include experimental and
    
    Gain spectra on semilogy axis.
 
+.. raw:: latex
+
+    \clearpage
 
 2014 - Beugnot - Nat Comm - BSBS - Tapered Fibre - Scanning Widths
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+This example is based on the calculation of backward SBS
+in a micron scale optical fibre described in J.-C. Beugnot *et al.*, 
+`Brillouin light scattering from surface acoustic waves in a subwavelength-diameter optical fibre
+<http://dx.doi.org/10.1038/ncomms6242>`_, *Nature Communications* **5**, 5242 (2014).
 
 .. literalinclude:: ../../lit_examples/simo-lit_03-Beugnot-NatComm_2014.py
     :lines: 0-
@@ -534,11 +558,21 @@ We note the particular importance of examples 5-8 which include experimental and
    
    Full acoustic wave spectrum for silica microwire, as per Fig. 4a in paper.
 
+.. raw:: latex
+
+    \clearpage
 
 2015 - Van Laer - Nat Phot - FSBF - Waveguide on a Pedestal
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+This example is based on the calculation of forward SBS
+in a pedestal silicon waveguide described in R. Van Laer *et al.*, 
+`Interaction between light and highly confined hypersound in a silicon photonic nanowire 
+<http://dx.doi.org/10.1038/ncomms6242>`_, *Nature Photonics* **9**, 199 (2015).
 
-Note the absence of an absorptive boundary causes issue of slab layer significantly distorting acoustic modes.
+Note that the absence of an absorptive boundary in the acoustic model 
+causes a problem where the slab layer significantly distorting acoustic modes.
+Adding this feature is a priority for the next release of NumBAT.
+The following example shows an approximate way to avoid the problem for now.
 
 .. literalinclude:: ../../lit_examples/simo-lit_04-Van_Laer-NatPhot_2015.py
     :lines: 0-
@@ -556,6 +590,9 @@ Note the absence of an absorptive boundary causes issue of slab layer significan
    Dominant high gain acoustic mode.
    Note how the absence of an absorptive boundary on the SiO2 slab causes this layer to significantly distorted the acoustic modes.
 
+.. raw:: latex
+
+    \clearpage
 
 2015 - Van Laer - New J Phys - FSBF - Waveguide without Pedestal
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -576,6 +613,9 @@ Note the absence of an absorptive boundary causes issue of slab layer significan
    Dominant high gain acoustic mode.
 
 
+.. raw:: latex
+
+    \clearpage
 
 2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel - d = 550 nm
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -602,6 +642,9 @@ Note the absence of an absorptive boundary causes issue of slab layer significan
    Gain spectra of NW diameter 550 nm, matching blue curve of Fig. 3b in paper.
 
 
+.. raw:: latex
+
+    \clearpage
 
 2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel - d = 1160 nm
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -622,6 +665,9 @@ Note the absence of an absorptive boundary causes issue of slab layer significan
    Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
 
 
+.. raw:: latex
+
+    \clearpage
 
 2016 - Kittlaus - Nat Phot - FSBF - Rib Waveguide
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -645,9 +691,12 @@ Note the absence of an absorptive boundary causes issue of slab layer significan
 .. figure:: ../../lit_examples/lit_07-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+   Gain spectra showing gain due to photoelastic effect, gain due to moving boundary effect, and total gain.
 
 
+.. raw:: latex
+
+    \clearpage
 
 2017 - Kittlaus - Nat Comm - FSBF - Intermode
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -677,8 +726,11 @@ Note the absence of an absorptive boundary causes issue of slab layer significan
 .. figure:: ../../lit_examples/lit_08-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+   Gain spectra showing gain due to photoelastic effect, gain due to moving boundary effect, and total gain.
 
+.. raw:: latex
+
+    \clearpage
 
 
 2017 - Morrison - Optica - BSBS - Chalcogenide Rib Waveguide
@@ -691,4 +743,4 @@ Note the absence of an absorptive boundary causes issue of slab layer significan
 .. figure:: ../../lit_examples/lit_09-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra showing gain due to photoelastic effec, gain due to moving boundary effect, and total gain.
+   Gain spectra showing gain due to photoelastic effect, gain due to moving boundary effect, and total gain.
