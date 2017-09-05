@@ -848,7 +848,7 @@ class Struct(object):
 
         elif self.inc_shape in ['onion']:
             msh_template = 'onion'
-            self.nb_typ_el = 15
+            self.nb_typ_el = 16
             msh_name = 'onion_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
             'd': dec_float_str(self.unitcell_x),
             'dy': dec_float_str(self.unitcell_y),
@@ -870,23 +870,23 @@ class Struct(object):
             'o': dec_float_str(self.inc_o_x)}
             if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
                 geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
-                geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
-                geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
-                geo = geo.replace('a1 = 2;', "a1 = %f;" % self.inc_a_x)
-                geo = geo.replace('a2 = 2;', "a2 = %f;" % self.inc_b_x)
-                geo = geo.replace('a3 = 2;', "a3 = %f;" % self.inc_c_x)
-                geo = geo.replace('a4 = 2;', "a4 = %f;" % self.inc_d_x)
-                geo = geo.replace('a5 = 2;', "a5 = %f;" % self.inc_e_x)
-                geo = geo.replace('a6 = 2;', "a6 = %f;" % self.inc_f_x)
-                geo = geo.replace('a7 = 2;', "a7 = %f;" % self.inc_g_x)
-                geo = geo.replace('a8 = 2;', "a8 = %f;" % self.inc_h_x)
-                geo = geo.replace('a9 = 2;', "a9 = %f;" % self.inc_i_x)
-                geo = geo.replace('a10 = 2;', "a10 = %f;" % self.inc_j_x)
-                geo = geo.replace('a11 = 2;', "a11 = %f;" % self.inc_k_x)
-                geo = geo.replace('a12 = 2;', "a12 = %f;" % self.inc_l_x)
-                geo = geo.replace('a13 = 2;', "a13 = %f;" % self.inc_m_x)
-                geo = geo.replace('a14 = 2;', "a14 = %f;" % self.inc_n_x)
-                geo = geo.replace('a15 = 2;', "a15 = %f;" % self.inc_o_x)
+                geo = geo_tmp.replace('d_in_nm = 1000;', "d_in_nm = %f;" % self.unitcell_x)
+                geo = geo.replace('dy_in_nm = 1000;', "dy_in_nm = %f;" % self.unitcell_y)
+                geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                if self.inc_b_x is float or self.inc_b_x is int: geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
+                if self.inc_c_x is float or self.inc_c_x is int: geo = geo.replace('a3 = 20;', "a3 = %f;" % self.inc_c_x)
+                if self.inc_d_x is float or self.inc_d_x is int: geo = geo.replace('a4 = 20;', "a4 = %f;" % self.inc_d_x)
+                if self.inc_e_x is float or self.inc_e_x is int: geo = geo.replace('a5 = 20;', "a5 = %f;" % self.inc_e_x)
+                if self.inc_f_x is float or self.inc_f_x is int: geo = geo.replace('a6 = 20;', "a6 = %f;" % self.inc_f_x)
+                if self.inc_g_x is float or self.inc_g_x is int: geo = geo.replace('a7 = 20;', "a7 = %f;" % self.inc_g_x)
+                if self.inc_h_x is float or self.inc_h_x is int: geo = geo.replace('a8 = 20;', "a8 = %f;" % self.inc_h_x)
+                if self.inc_i_x is float or self.inc_i_x is int: geo = geo.replace('a9 = 20;', "a9 = %f;" % self.inc_i_x)
+                if self.inc_j_x is float or self.inc_j_x is int: geo = geo.replace('a10 = 20;', "a10 = %f;" % self.inc_j_x)
+                if self.inc_k_x is float or self.inc_k_x is int: geo = geo.replace('a11 = 20;', "a11 = %f;" % self.inc_k_x)
+                if self.inc_l_x is float or self.inc_l_x is int: geo = geo.replace('a12 = 20;', "a12 = %f;" % self.inc_l_x)
+                if self.inc_m_x is float or self.inc_m_x is int: geo = geo.replace('a13 = 20;', "a13 = %f;" % self.inc_m_x)
+                if self.inc_n_x is float or self.inc_n_x is int: geo = geo.replace('a14 = 20;', "a14 = %f;" % self.inc_n_x)
+                if self.inc_o_x is float or self.inc_o_x is int: geo = geo.replace('a15 = 20;', "a15 = %f;" % self.inc_o_x)
                 geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                 geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                 geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
@@ -964,7 +964,10 @@ class Struct(object):
 def dec_float_str(dec_float):
     """ Convert float with decimal point into string with '_' in place of '.' """
     # string = str(dec_float)
-    string = '%8.2f' %dec_float
+    if type(dec_float) is float or type(dec_float) is int: 
+        string = '%8.2f' % dec_float
+    else:
+        string = ''
     string = string.replace('.', '_')
     string = string.replace(" ", "")
     return string

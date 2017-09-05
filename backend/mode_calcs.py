@@ -270,8 +270,8 @@ class Simmo(object):
             el_convert_tbl = {}
             el_convert_tbl_inv = {}
             node_convert_tbl = {}
-            if AC_FEM_debug == 1:
-                plotting.plot_msh(x_arr, 'orig')
+            if self.structure.plt_mesh:
+                plotting.plot_msh(x_arr, prefix_str=self.structure.mesh_file, suffix_str='_AC-orig')
 
             for el in range(n_msh_el):
                 # print type_el[el]
@@ -390,11 +390,8 @@ class Simmo(object):
 
 
         if self.structure.plt_mesh:
-            plotting.plot_msh(x_arr_out, prefix_str=self.structure.mesh_file, suffix_str='_AC')
-
-        if AC_FEM_debug == 1:
-            plotting.plot_msh(x_arr_AC, 'in')
-            plotting.plot_msh(x_arr_out, 'out')
+            plotting.plot_msh(x_arr_AC, prefix_str=self.structure.mesh_file, suffix_str='_AC-in')
+            plotting.plot_msh(x_arr_out, prefix_str=self.structure.mesh_file, suffix_str='_AC-out')
 
         # if self.EM_sim is None:
         #     table_nod_out = None
