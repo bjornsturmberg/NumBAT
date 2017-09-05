@@ -45,10 +45,12 @@ class Mock(object):
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
     'make_axes_locatable', 'fortran',
-    'csv', 'subprocess', 'matplotlib.externals', 'matplotlib.externals.six', 
-    'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes',
+    'csv', 'subprocess', 
+    'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
+    'matplotlib.externals', 'matplotlib.externals.six', 
+    'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
     'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-    'matplotlib.axis'] # 'copy', 'json',
+    'matplotlib.axis', ] # 'copy', 'json',
 
 
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
