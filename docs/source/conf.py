@@ -16,12 +16,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-
-# import sys
-# import os
+import os
 
 class Mock(object):
     __all__ = []
@@ -41,17 +37,21 @@ class Mock(object):
         else:
             return Mock()
 
-# Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-    'make_axes_locatable', 'fortran',
-    'csv', 'subprocess',] 
-    # 'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
-    # 'matplotlib.externals', 'matplotlib.externals.six', 
-    # 'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
-    # 'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-    # 'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
-    # 'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
+    'fortran']
+
+# # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
+# MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
+#     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
+#     'make_axes_locatable', 'fortran',
+#     'csv', 'subprocess',] 
+#     # 'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
+#     # 'matplotlib.externals', 'matplotlib.externals.six', 
+#     # 'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
+#     # 'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
+#     # 'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
+#     # 'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
 
 
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
