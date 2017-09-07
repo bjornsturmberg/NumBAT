@@ -23,23 +23,23 @@ sys.path.insert(0, os.path.abspath('.'))
 # import sys
 # import os
 
-# class Mock(object):
-#     __all__ = []
+class Mock(object):
+    __all__ = []
 
-#     def __init__(self, *args, **kwargs):
-#         pass
+    def __init__(self, *args, **kwargs):
+        pass
 
-#     def __call__(self, *args, **kwargs):
-#         return Mock()
+    def __call__(self, *args, **kwargs):
+        return Mock()
 
-#     @classmethod
-#     def __getattr__(cls, name):
-#         if name in ('__file__', '__path__'):
-#             return '/dev/null'
-#         elif name[0] == name[0].upper():
-#             return type(name, (), {})
-#         else:
-#             return Mock()
+    @classmethod
+    def __getattr__(cls, name):
+        if name in ('__file__', '__path__'):
+            return '/dev/null'
+        elif name[0] == name[0].upper():
+            return type(name, (), {})
+        else:
+            return Mock()
 
 # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
