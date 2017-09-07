@@ -5,9 +5,9 @@ from scipy import sqrt
 import subprocess
 # from matplotlib.mlab import griddata
 # from scipy import interpolate
-# import matplotlib
-# matplotlib.use('pdf')
-# import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as plt
 # import matplotlib.gridspec as gridspec
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
 # from matplotlib import ticker
@@ -21,8 +21,6 @@ def zeros_int_str(zero_int):
 
         Args:
             sim_AC : An AC ``Struct`` instance that has had calc_modes calculated
-
-            SBS_gain  (array): Totlat SBS gain of modes.
 
             SBS_gain_PE  (array): Moving Bountary gain of modes.
 
