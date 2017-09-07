@@ -424,11 +424,11 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
         # Flip y order as imshow has origin at top left
         v_plots = [m_ReEx[:,::-1],m_ReEy[:,::-1],m_ReEz[:,::-1],m_ImEx[:,::-1],m_ImEy[:,::-1],m_ImEz[:,::-1],m_AbsE[:,::-1]]
         if EM_AC=='EM_E':
-            v_labels = ["Re(E_x)","Re(E_y)","Re(E_z)","Im(E_x)","Im(E_y)","Im(E_z)","Abs(E)"]
+            v_labels = ["Re($E_x$)","Re($E_y$)","Re($E_z$)","Im($E_x$)","Im($E_y$)","Im($E_z$)","$|E|$"]
         elif EM_AC == 'EM_H':
-            v_labels = ["Re(H_x)","Re(H_y)","Re(H_z)","Im(H_x)","Im(H_y)","Im(H_z)","Abs(H)"]
+            v_labels = ["Re($H_x$)","Re($H_y$)","Re($H_z$)","Im($H_x$)","Im($H_y$)","Im($H_z$)","$|H|$"]
         else:
-            v_labels = ["Re(u_x)","Re(u_y)","Re(u_z)","Im(u_x)","Im(u_y)","Im(u_z)","Abs(u)"]
+            v_labels = ["Re($u_x$)","Re($u_y$)","Re($u_z$)","Im($u_x$)","Im($u_y$)","Im($u_z$)","$|u|$"]
 
         # field plots
         plot_threshold = 1e-4 # set negligible components to explicitly zero
@@ -514,16 +514,16 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
         if EM_AC=='EM_E' or EM_AC=='EM_H':
             n_eff = sim_wguide.Eig_values[ival] * sim_wguide.wl_m / (2*np.pi)
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'k$_z = %(re_k)f6 %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = r'n$_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
+                n_str = r'$n_\text{eff} = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             else:
-                k_str = r'k$_z = %(re_k)f6 + %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = r'n$_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
+                n_str = r'$n_\text{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             # plt.text(10, 0.3, n_str, fontsize=title_font)
         else:
@@ -595,7 +595,7 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
 
             # Flip y order as imshow has origin at top left
             del_mat = np.array([del_x_Ex[:,::-1].real, del_x_Ey[:,::-1].real, del_x_Ez[:,::-1].real, del_x_Ex[:,::-1].imag, del_x_Ey[:,::-1].imag, del_x_Ez[:,::-1].imag, del_y_Ex[:,::-1].real, del_y_Ey[:,::-1].real, del_y_Ez[:,::-1].real, del_y_Ex[:,::-1].imag, del_y_Ey[:,::-1].imag, del_y_Ez[:,::-1].imag, del_z_Ex[:,::-1].real, del_z_Ey[:,::-1].real, del_z_Ez[:,::-1].real, del_z_Ex[:,::-1].imag, del_z_Ey[:,::-1].imag, del_z_Ez[:,::-1].imag])
-            v_labels = ["Re(S_xx)","Re(S_xy)","Re(S_xz)","Im(S_xx)","Im(S_xy)","Im(S_xz)","Re(S_yx)","Re(S_yy)","Re(S_yz)","Im(S_yx)","Im(S_yy)","Im(S_yz)","Re(S_zx)","Re(S_zy)","Re(S_zz)","Im(S_zx)","Im(S_zy)","Im(S_zz)"]
+            v_labels = ["Re($S_{xx}$)","Re($S_{xy}$)","Re($S_{xz}$)","Im($S_{xx}$)","Im($S_{xy}$)","Im($S_{xz}$)","Re($S_{yx}$)","Re($S_{yy}$)","Re($S_{yz}$)","Im($S_{yx}$)","Im($S_{yy}$)","Im($S_{yz}$)","Re($S_{zx}$)","Re($S_{zy}$)","Re($S_{zz}$)","Im($S_{zx}$)","Im($S_{zy}$)","Im($S_{zz}$)"]
 
             # field plots
             plt.clf()

@@ -625,7 +625,7 @@ class Struct(object):
                 elif self.coat_y is not None and self.inc_b_x is None:
                         raise NotImplementedError("Have not implemented 1 coated inclusions.")
                 else:
-                    raise ValueError("NumBAT doesn't understand you geometry.")
+                    raise ValueError("NumBAT doesn't understand your geometry.")
             elif self.slab_a_x is not None:
                 if self.coat_y is None and self.inc_b_x is None:
                     msh_template = '1_on_slab'
@@ -652,7 +652,7 @@ class Struct(object):
                 elif self.coat_y is not None and self.inc_b_x is None:
                         raise NotImplementedError("Have not implemented 1 coated inclusions.")
                 else:
-                    raise ValueError("NumBAT doesn't understand you geometry.")
+                    raise ValueError("NumBAT doesn't understand your geometry.")
             elif self.inc_a_x is not None:
                 if self.coat_y is None and self.inc_b_x is None:
                     msh_template = '1'
@@ -675,7 +675,7 @@ class Struct(object):
                 elif self.coat_y is not None and self.inc_b_x is None:
                         raise NotImplementedError("Have not implemented 1 coated inclusions.")
                 else:
-                    raise ValueError("NumBAT doesn't understand you geometry.")
+                    raise ValueError("NumBAT doesn't understand your geometry.")
             else:
                 raise ValueError("must have at least one nonzero inclusion.")
             if self.inc_shape == 'circular': msh_name+='-c'

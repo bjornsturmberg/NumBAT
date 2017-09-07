@@ -2,6 +2,8 @@
     silicon waveguide surrounded in air.
 """
 
+# Step 1
+
 import time
 import datetime
 import numpy as np
@@ -22,6 +24,7 @@ from fortran import NumBAT
 
 start = time.time()
 
+# Step 2
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
 # Unit cell must be large to ensure fields are zero at boundary.
@@ -33,6 +36,7 @@ inc_a_y = 0.9*inc_a_x
 # Shape of the waveguide.
 inc_shape = 'rectangular'
 
+# Step 3
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
@@ -46,6 +50,7 @@ EM_ival_Stokes = 0
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
+# Step 4
 # Use specified parameters to create a waveguide object.
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
@@ -59,6 +64,7 @@ print('Author:', wguide.material_a.author)
 print('Year:', wguide.material_a.date)
 print('Ref:', wguide.material_a.doi)
 
+# Step 5
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
@@ -73,6 +79,7 @@ sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # # Alt
 # sim_EM_Stokes = wguide.calc_EM_modes(wl_nm, num_modes_EM_Stokes, n_eff, Stokes=True)
 
+# Step 6
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))
 print("\n Fundamental optical mode ")
@@ -81,6 +88,7 @@ print(" n_eff = ", np.round(n_eff_sim, 4))
 k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
 print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
 
+# Step 7
 # Calculate Acoustic modes, using the mesh from the EM calculation.
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # Print the frequencies of AC modes.
@@ -89,6 +97,7 @@ print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 
 # Do not calculate the acoustic loss from our fields, instead set a Q factor.
 set_q_factor = 1000.
 
+# Step 8
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB. Also calculate acoustic loss alpha.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
