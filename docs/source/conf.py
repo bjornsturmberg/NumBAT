@@ -22,23 +22,23 @@ sys.path.insert(0,os.path.abspath('.'))
 sys.path.insert(0,os.path.abspath('../'))
 sys.path.insert(0,os.path.abspath('../../'))
 
-class Mock(object):
-    __all__ = []
+# class Mock(object):
+#     __all__ = []
 
-    def __init__(self, *args, **kwargs):
-        pass
+#     def __init__(self, *args, **kwargs):
+#         pass
 
-    def __call__(self, *args, **kwargs):
-        return Mock()
+#     def __call__(self, *args, **kwargs):
+#         return Mock()
 
-    @classmethod
-    def __getattr__(cls, name):
-        if name in ('__file__', '__path__'):
-            return '/dev/null'
-        elif name[0] == name[0].upper():
-            return type(name, (), {})
-        else:
-            return Mock()
+#     @classmethod
+#     def __getattr__(cls, name):
+#         if name in ('__file__', '__path__'):
+#             return '/dev/null'
+#         elif name[0] == name[0].upper():
+#             return type(name, (), {})
+#         else:
+#             return Mock()
 
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
@@ -62,19 +62,22 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
 #     'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
 #     'csv', 'time', 'subprocess',] # 'copy', 'json',
 
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
+# for mod_name in MOCK_MODULES:
+#     sys.modules[mod_name] = Mock()
 
 
-# from unittest.mock import MagicMock
 
-# class Mock(MagicMock):
-#     @classmethod
-#     def __getattr__(cls, name):
-#             return MagicMock()
 
-# # MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'numpy', 'pandas']
-# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+            return MagicMock()
+
+# MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'numpy', 'pandas']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
 
