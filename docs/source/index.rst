@@ -53,6 +53,7 @@ Python Backend
     mode_calcs
     integration
     plotting
+    test
 
 ==================
 Fortran Backends
