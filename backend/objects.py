@@ -8,7 +8,7 @@
 
 import os
 import numpy as np
-import materials
+# import materials
 from mode_calcs import Simmo
 from fortran import NumBAT
 
