@@ -42,7 +42,10 @@ sys.path.insert(0,os.path.abspath('../../'))
 
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-    'fortran','make_axes_locatable','csv','mpl_toolkits', 'json', 'matplotlib.externals']
+    'fortran','make_axes_locatable','csv','mpl_toolkits', 'json', 'matplotlib.externals',
+    'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
+    'matplotlib.transforms', 'matplotlib.artist',
+    'matplotlib.axis']
 
 # # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
