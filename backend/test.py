@@ -1,6 +1,6 @@
 
-# import os
-# import numpy as np
+import os
+import numpy as np
 # from scipy import sqrt
 # import subprocess
 # from matplotlib.mlab import griddata
@@ -12,7 +12,7 @@
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
 # from matplotlib import ticker
 
-from fortran import NumBAT
+# from fortran import NumBAT
 
 #### Short utility functions ##################################################
 def zeros_int_str(zero_int):
