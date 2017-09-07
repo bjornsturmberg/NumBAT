@@ -1,1 +1,1 @@
-sphinxcontrib-napoleon restview joblib
+sphinxcontrib-napoleon
