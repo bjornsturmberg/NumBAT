@@ -63,7 +63,7 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
 #     sys.modules[mod_name] = Mock()
 
 
-# from unittest.mock import MagicMock
+from unittest.mock import MagicMock
 
 class Mock(MagicMock):
     @classmethod
