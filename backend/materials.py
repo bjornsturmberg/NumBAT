@@ -43,7 +43,7 @@ class Material(object):
             alt_path  (str): non standard path to data_file
         
         """
-        with open(data_location+data_file+'.json','r') as fin:
+        # with open(data_location+data_file+'.json','r') as fin:
             # s_in = ''.join(fin.readlines())
             # s_in = re.sub(r'//.*\n','\n', s_in)
 
@@ -177,9 +177,9 @@ class Material(object):
             #     self.eta_64 = self._params['eta_64']
             #     self.eta_65 = self._params['eta_65']
             #     self.eta_66 = self._params['eta_66']
-                self.anisotropic = True
-            except KeyError:
-                self.anisotropic = False
+            #     self.anisotropic = True
+            # except KeyError:
+            #     self.anisotropic = False
 
 
     def rotate_axis(self, theta, rotate_axis, save_rotated_tensors=False):
