@@ -13,7 +13,6 @@ matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 
 import json
-import re
 
 data_location = '../backend/material_data/'
 
