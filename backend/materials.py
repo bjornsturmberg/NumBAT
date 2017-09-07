@@ -44,8 +44,8 @@ class Material(object):
         
         """
         with open(data_location+data_file+'.json','r') as fin:
-            s_in = ''.join(fin.readlines())
-            s_in = re.sub(r'//.*\n','\n', s_in)
+            # s_in = ''.join(fin.readlines())
+            # s_in = re.sub(r'//.*\n','\n', s_in)
 
             self._params = json.loads(s_in)
 
