@@ -1,8 +1,8 @@
 
 import os
 import numpy as np
-# from scipy import sqrt
-# import subprocess
+from scipy import sqrt
+import subprocess
 # from matplotlib.mlab import griddata
 # from scipy import interpolate
 # import matplotlib
