@@ -39,19 +39,19 @@ class Mock(object):
 
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-    'fortran','make_axes_locatable','csv']#, 'subprocess']
+    'fortran','make_axes_locatable','csv',
 
 # # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
 #     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
 #     'fortran',#'make_axes_locatable', 
-#     'csv', 'subprocess'] 
-#     # 'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
-#     # 'matplotlib.externals', 'matplotlib.externals.six', 
-#     # 'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
-#     # 'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-#     # 'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
-#     # 'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
+#     'csv']  # 'subprocess' - troublemaker
+    'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
+    'matplotlib.externals', 'matplotlib.externals.six', 
+    'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
+    'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
+    'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
+    'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
 
 
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
