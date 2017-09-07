@@ -65,7 +65,7 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'fortran','make_axes_locatable','csv','mpl_toolkits', 'json', 'matplotlib.externals',
     'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
     'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-    'matplotlib.axis', 'mpl_toolkits.axes_grid1']
+    'matplotlib.axis', 'mpl_toolkits.axes_grid1', 're']
 
 
 from unittest.mock import MagicMock
@@ -84,12 +84,6 @@ sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../backend/'))
-sys.path.insert(0, os.path.abspath('../../backend/material_data/'))
-sys.path.insert(0, os.path.abspath('../backend/material_data/'))
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath('../../'))
 #
 
 # -- General configuration ------------------------------------------------
