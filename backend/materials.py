@@ -6,13 +6,6 @@
     Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou
 """
 
-import numpy as np
-from scipy.interpolate import interp1d
-import matplotlib
-matplotlib.use('pdf')
-import matplotlib.pyplot as plt
-
-import json
 
 data_location = '../backend/material_data/'
 
