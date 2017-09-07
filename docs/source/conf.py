@@ -18,13 +18,6 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath('../../'))
-
-# import sys
-# import os
 
 # class Mock(object):
 #     __all__ = []
@@ -92,6 +85,11 @@ sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../backend/'))
 sys.path.insert(0, os.path.abspath('../../backend/material_data/'))
+sys.path.insert(0, os.path.abspath('../backend/material_data/'))
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('../../'))
 #
 
 # -- General configuration ------------------------------------------------
