@@ -45,7 +45,7 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'fortran','make_axes_locatable','csv','mpl_toolkits', 'json', 'matplotlib.externals',
     'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
     'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-    'matplotlib.axis']
+    'matplotlib.axis', 'mpl_toolkits.axes_grid1']
 
 # # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
