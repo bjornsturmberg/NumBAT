@@ -20,14 +20,6 @@ def zeros_int_str(zero_int):
             
 
         Args:
-            sim_AC : An AC ``Struct`` instance that has had calc_modes calculated
-
-            SBS_gain_PE  (array): Moving Bountary gain of modes.
-
-            SBS_gain_MB  (array): Photoelastic gain of modes.
-
-            linewidth_Hz  (array): Linewidth of each mode [Hz].
-
             k_AC  (float): Acoustic wavevector.
 
             EM_ival_pump  (int or 'All'): Which EM pump mode(s) to consider.
