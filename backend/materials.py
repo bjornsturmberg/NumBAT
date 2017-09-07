@@ -20,23 +20,7 @@ class Material(object):
             Acoustic loss tensor component [Pa s]
 
     """
-    def __init__(self,data_file):
-
-        self.load_data_file(data_file)
-
-
-    def load_data_file(self, data_file, alt_path=''):  
-        """
-        Load data from json file.
-        
-        Args:
-            data_file  (str): name of data file located in NumBAT/backend/material_data
-            
-            alt_path  (str): non standard path to data_file
-        
-        """
-        with open(data_location+data_file+'.json','r') as fin:
-
+ 
 
 # Array that converts between 4th rank tensors in terms of x,y,z and Voigt notation
 #               [[xx,xy,xz], [yx,yy,yz], [zx,zy,zz]]
