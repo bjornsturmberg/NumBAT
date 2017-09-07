@@ -461,6 +461,15 @@ Anisotropic Elastic Materials
 
 .. raw:: latex
 
+
+Multilayered 'Onion'
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../tutorials/simo-tut_10-onion.py
+
+
+.. raw:: latex
+
     \clearpage
 
 

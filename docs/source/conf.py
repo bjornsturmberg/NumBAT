@@ -16,36 +16,42 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
-
-import sys
 import os
+import sys
+sys.path.insert(0, os.path.abspath('.'))
 
-class Mock(object):
-    __all__ = []
+# import sys
+# import os
 
-    def __init__(self, *args, **kwargs):
-        pass
+# class Mock(object):
+#     __all__ = []
 
-    def __call__(self, *args, **kwargs):
-        return Mock()
+#     def __init__(self, *args, **kwargs):
+#         pass
 
-    @classmethod
-    def __getattr__(cls, name):
-        if name in ('__file__', '__path__'):
-            return '/dev/null'
-        elif name[0] == name[0].upper():
-            return type(name, (), {})
-        else:
-            return Mock()
+#     def __call__(self, *args, **kwargs):
+#         return Mock()
+
+#     @classmethod
+#     def __getattr__(cls, name):
+#         if name in ('__file__', '__path__'):
+#             return '/dev/null'
+#         elif name[0] == name[0].upper():
+#             return type(name, (), {})
+#         else:
+#             return Mock()
 
 # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
     'make_axes_locatable', 'fortran',
-    'csv', 'subprocess'] # 'copy', 'json',
+    'csv', 'subprocess', 
+    'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
+    'matplotlib.externals', 'matplotlib.externals.six', 
+    'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
+    'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
+    'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
+    'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
 
 
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
@@ -53,8 +59,22 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
 #     'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
 #     'csv', 'time', 'subprocess',] # 'copy', 'json',
 
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
+# for mod_name in MOCK_MODULES:
+#     sys.modules[mod_name] = Mock()
+
+
+# from unittest.mock import MagicMock
+
+# class Mock(MagicMock):
+#     @classmethod
+#     def __getattr__(cls, name):
+#             return MagicMock()
+
+# # MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'numpy', 'pandas']
+# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

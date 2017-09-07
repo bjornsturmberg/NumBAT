@@ -3,7 +3,7 @@
     these represent dispersive lossy refractive indices and possess
     methods to interpolate n from tabulated data.
 
-    Copyright (C) 2016  Bjorn Sturmberg, Kokou Dossou
+    Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou
 """
 
 import numpy as np
