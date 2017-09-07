@@ -65,7 +65,7 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'fortran','make_axes_locatable','csv','mpl_toolkits', 'json', 'matplotlib.externals',
     'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
     'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-    'matplotlib.axis', 'mpl_toolkits.axes_grid1', 're']
+    'matplotlib.axis', 'mpl_toolkits.axes_grid1']
 
 
 from unittest.mock import MagicMock
