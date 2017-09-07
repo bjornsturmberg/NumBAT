@@ -9,8 +9,8 @@
 import os
 import numpy as np
 # import materials
-from mode_calcs import Simmo
-from fortran import NumBAT
+# from mode_calcs import Simmo
+# from fortran import NumBAT
 
 msh_location = '../backend/fortran/msh/'
 
