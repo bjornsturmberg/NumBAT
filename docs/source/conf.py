@@ -41,17 +41,17 @@ sys.path.insert(0, os.path.abspath('.'))
 #         else:
 #             return Mock()
 
-# Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
-MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
-    'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-    'make_axes_locatable', 'fortran',
-    'csv', 'subprocess', 
-    'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
-    'matplotlib.externals', 'matplotlib.externals.six', 
-    'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
-    'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-    'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
-    'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
+# # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
+# MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
+#     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
+#     'make_axes_locatable', 'fortran',
+#     'csv', 'subprocess', 
+#     'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
+#     'matplotlib.externals', 'matplotlib.externals.six', 
+#     'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
+#     'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
+#     'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
+#     'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
 
 
 # MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
@@ -63,15 +63,23 @@ MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
 #     sys.modules[mod_name] = Mock()
 
 
-# from unittest.mock import MagicMock
 
-# class Mock(MagicMock):
-#     @classmethod
-#     def __getattr__(cls, name):
-#             return MagicMock()
+MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
+    'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
+    'fortran','make_axes_locatable','csv','mpl_toolkits', 'json', 'matplotlib.externals',
+    'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
+    'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
+    'matplotlib.axis', 'mpl_toolkits.axes_grid1']
 
-# # MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'numpy', 'pandas']
-# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+            return MagicMock()
+
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
 
