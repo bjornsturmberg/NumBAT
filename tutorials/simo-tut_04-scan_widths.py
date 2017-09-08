@@ -60,6 +60,8 @@ def modes_n_gain(wguide):
     SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
         sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
+    # Clear memory
+    sim_EM_pump = sim_EM_Stokes = sim_AC = None
 
     print ('Completed mode calculation for width a_x = %f' % wguide.inc_a_x)
     return [sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC]

@@ -19,46 +19,6 @@
 import os
 import sys
 
-# class Mock(object):
-#     __all__ = []
-
-#     def __init__(self, *args, **kwargs):
-#         pass
-
-#     def __call__(self, *args, **kwargs):
-#         return Mock()
-
-#     @classmethod
-#     def __getattr__(cls, name):
-#         if name in ('__file__', '__path__'):
-#             return '/dev/null'
-#         elif name[0] == name[0].upper():
-#             return type(name, (), {})
-#         else:
-#             return Mock()
-
-# # Add any and all python packages imported in NumBAT repo to this list to appease sphinx!
-# MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
-#     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-#     'make_axes_locatable', 'fortran',
-#     'csv', 'subprocess', 
-#     'mpl_toolkits', 'mpl_toolkits.axes_grid1','pkg_resources','matplotlib.color', 
-#     'matplotlib.externals', 'matplotlib.externals.six', 
-#     'matplotlib.externals.six.moves', 'matplotlib.cbook', 'matplotlib.axes', 'matplotlib.axes.prop_cycle',
-#     'matplotlib.transforms', 'matplotlib.externals.six', 'matplotlib.artist',
-#     'matplotlib.axis', 'plt.rcParams', 'plt.style', 'axes.prop_cycle', 
-#     'pkg_resources.iter_entry_points', 'theming' ] # 'copy', 'json',
-
-
-# MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
-#     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
-#     'fortran', 'make_axes_locatable', 'mpl_toolkits', 'mpl_toolkits.axes_grid1',
-#     'csv', 'time', 'subprocess',] # 'copy', 'json',
-
-# for mod_name in MOCK_MODULES:
-#     sys.modules[mod_name] = Mock()
-
-
 
 MOCK_MODULES = ['scipy', 'scipy.interpolate', 'numpy',
     'matplotlib', 'matplotlib.pyplot', 'matplotlib.mlab', 'matplotlib.gridspec',
