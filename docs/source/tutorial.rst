@@ -191,7 +191,7 @@ Or, taking the session ID from the previous example::
 
 
 Terminating NumBAT simulations
-,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 If a simulation hangs, we can kill all python instances upon the machine::
 
@@ -461,6 +461,8 @@ Anisotropic Elastic Materials
 
 .. raw:: latex
 
+    \clearpage
+
 
 Multilayered 'Onion'
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -654,9 +656,7 @@ energy being excessively concentrated in the substrate.
 
 This example looks at the phenomenon of Brillouin "self-cancellation" due to 
 the electrostrictive and radiation pressure effects acting with opposite sign. 
-This was described in 
- O. Florez *et al.*, 
-`Brillouin self-cancellation 
+This was described in O. Florez *et al.*, `Brillouin self-cancellation 
 <http://dx.doi.org/10.1038/ncomms11759>`_, *Nature Communications* **7**, 11759 (2016).
 
 .. literalinclude:: ../../lit_examples/simo-lit_06_1-Florez-NatComm_2016-d550nm.py
@@ -689,9 +689,7 @@ This was described in
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 This example again looks at the paper 
- O. Florez *et al.*, 
-`Brillouin self-cancellation 
-<http://dx.doi.org/10.1038/ncomms11759>`_, *Nature Communications* **7**, 11759 (2016),
+ O. Florez *et al.*, `Brillouin self-cancellation <http://dx.doi.org/10.1038/ncomms11759>`_, *Nature Communications* **7**, 11759 (2016),
 but now for a wider core.
 
 .. literalinclude:: ../../lit_examples/simo-lit_06_2-Florez-NatComm_2016-1160nm.py
@@ -718,9 +716,7 @@ but now for a wider core.
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 This examples explores a first geometry showing large forward SBS in silicon
-as described in 
- E. Kittlaus *et al.*, 
-`Large Brillouin amplification in silicon 
+as described in E. Kittlaus *et al.*, `Large Brillouin amplification in silicon 
 <http://dx.doi.org/10.1038/nphoton.2016.112>`_, *Nature Photonics* **10**, 463 (2016).
 
 
