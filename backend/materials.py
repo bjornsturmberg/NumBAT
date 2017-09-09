@@ -3,7 +3,7 @@
     these represent dispersive lossy refractive indices and possess
     methods to interpolate n from tabulated data.
 
-    Copyright (C) 2016  Bjorn Sturmberg, Kokou Dossou
+    Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou
 """
 
 import numpy as np
@@ -30,7 +30,11 @@ class Material(object):
     """
     def __init__(self,data_file):
 
-        self.load_data_file(data_file)
+        try:
+            self.load_data_file(data_file)
+        except FileNotFoundError:
+            print('Material data file not found.')
+
 
 
     def load_data_file(self, data_file, alt_path=''):  

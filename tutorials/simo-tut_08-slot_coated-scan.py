@@ -93,6 +93,9 @@ def ac_mode_freqs(coat_y):
 
     # Convert to GHz
     mode_freqs = sim_AC.Eig_values*1.e-9
+    # Clear memory
+    wguide = sim_EM_pump = sim_EM_Stokes = sim_AC = None
+    SBS_gain = SBS_gain_PE = SBS_gain_MB = linewidth_Hz = Q_factors = alpha = None
 
     print('Completed mode calculation for coating coat_y = %f'% coat_y)
 

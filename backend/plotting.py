@@ -2,7 +2,7 @@
     plotting.py is a subroutine of NumBAT that contains numerous plotting
     routines.
 
-    Copyright (C) 2016  Bjorn Sturmberg
+    Copyright (C) 2017  Bjorn Sturmberg
 """
 
 import os

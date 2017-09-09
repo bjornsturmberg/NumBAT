@@ -64,6 +64,8 @@ def ac_mode_freqs(k_ac):
     sim_AC = wguide.calc_AC_modes(num_modes_AC, k_ac, EM_sim=sim_EM_pump)
     prop_AC_modes = np.array([np.real(x) for x in sim_AC.Eig_values if abs(np.real(x)) > abs(np.imag(x))])
     mode_freqs = prop_AC_modes*1.e-9
+    # Clear memory
+    sim_AC = None
 
     print('Completed mode calculation for width a_x = %f'% k_ac)
 
