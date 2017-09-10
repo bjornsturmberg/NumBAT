@@ -111,6 +111,9 @@ coat_y_list = np.linspace(coat_min,coat_max,nu_coats)
 num_cores = 5  # should be appropriate for individual machine/vm, and memory!
 pool = Pool(num_cores)
 pooled_mode_freqs = pool.map(ac_mode_freqs, coat_y_list)
+# Note pool.map() doesn't pass errors back from fortran routines very well.
+# It's good practise to run the extrema of your simulation range through map()
+# before launcing full multicore simulation.
 
 # We will pack the above values into a single array for plotting purposes, initialise first
 freq_arr = np.empty((nu_coats, num_modes_AC))

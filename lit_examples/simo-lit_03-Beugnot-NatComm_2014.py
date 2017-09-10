@@ -86,6 +86,9 @@ def modes_n_gain(inc_a_x):
 # Run widths in parallel across num_cores CPUs using multiprocessing package.
 pool = Pool(num_cores)
 width_objs = pool.map(modes_n_gain, inc_a_x_range)
+# Note pool.map() doesn't pass errors back from fortran routines very well.
+# It's good practise to run the extrema of your simulation range through map()
+# before launcing full multicore simulation.
 
 
 gain_array = np.zeros((num_interp_pts, num_widths))
