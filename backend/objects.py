@@ -2,7 +2,7 @@
     objects.py is a subroutine of NumBAT. It contains the Struct
     objects that represent the structure being simulated.
 
-    Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou, Christian Wolff.
+    Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou.
 
 """
 

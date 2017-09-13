@@ -77,6 +77,10 @@ def modes_n_gain(inc_a_x):
         EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min, freq_max, num_interp_pts=num_interp_pts, 
         save_fig=False, suffix_str='%i' %int(inc_a_x))
 
+    # Clear memory
+    wguide = sim_EM_pump = sim_EM_Stokes = sim_AC = None
+    SBS_gain = SBS_gain_PE = SBS_gain_MB = linewidth_Hz = Q_factors = alpha = None
+
     return interp_values
 
 # Run widths in parallel across num_cores CPUs using multiprocessing package.
