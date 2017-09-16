@@ -40,7 +40,7 @@ class Struct(object):
 
             inc_shape  (str): Shape of inclusions that have template mesh,
                 currently: 'circular', 'rectangular', 'slot', 'rib'
-                'slot_coated', 'rib_coated', 'pedestal', 'onion'. 
+                'slot_coated', 'rib_coated', 'rib_double_coated', 'pedestal', 'onion'. 
                 Rectangular is default.
 
             slab_a_x  (float): The horizontal diameter in nm of the slab
@@ -60,7 +60,16 @@ class Struct(object):
             incs_y_offset  (float): Vertical offset between centers of
                 inclusions in nm.
 
-            coat_y  (float): The thickness of any coat layer around
+            coat_x  (float): The width of the first coat layer around
+                the inclusion.
+
+            coat_y  (float): The thickness of the first coat layer around
+                the inclusion.
+
+            coat2_x  (float): The width of the second coat layer around
+                the inclusion.
+
+            coat2_y  (float): The thickness of the second coat layer around
                 the inclusion.
 
             symmetry_flag  (bool): True if materials all have sufficient
@@ -121,7 +130,8 @@ class Struct(object):
     def __init__(self, unitcell_x, inc_a_x,
                  unitcell_y=None, inc_a_y=None, inc_shape='rectangular',
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
-                 coat_x=None, coat_y=None, inc_b_x=None, inc_b_y=None,
+                 coat_x=None, coat_y=None, coat2_x=None, coat2_y=None, 
+                 inc_b_x=None, inc_b_y=None,
                  two_inc_sep=None, incs_y_offset=None,
                  pillar_x=None, pillar_y=None,
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
@@ -182,6 +192,8 @@ class Struct(object):
         self.inc_o_x = inc_o_x
         self.coat_x = coat_x
         self.coat_y = coat_y
+        self.coat2_x = coat2_x
+        self.coat2_y = coat2_y
         self.two_inc_sep = two_inc_sep
         # Structures material properties - need to check geometry definition 
         # to ensure connecting material type with correct surface of geometry
@@ -588,7 +600,8 @@ class Struct(object):
         self.p_tensor = p_tensor
         self.eta_tensor = eta_tensor
 
-        self.linear_element_shapes = ['rectangular', 'slot', 'slot_coated', 'rib', 'rib_coated', 'pedestal']
+        self.linear_element_shapes = ['rectangular', 'slot', 'slot_coated', 'rib', 
+                                      'rib_coated', 'rib_double_coated', 'pedestal']
         self.curvilinear_element_shapes = ['circular', 'onion']
 
 
@@ -821,6 +834,40 @@ class Struct(object):
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
+
+        elif self.inc_shape in ['rib_double_coated']:
+                msh_template = 'rib_double_coated'
+                self.nb_typ_el = 4
+                msh_name = 'rib_double_coated_%(d)s_%(dy)s_%(a)s_%(b)s_%(cz)s_%(c)s_%(czz)s_%(czzz)s_%(cc)s_%(ccc)s_%(cccc)s' % {
+                'd': dec_float_str(self.unitcell_x),
+                'dy': dec_float_str(self.unitcell_y),
+                'a': dec_float_str(self.inc_a_x),
+                'b': dec_float_str(self.inc_a_y),
+                'cz': dec_float_str(self.coat_x),
+                'c': dec_float_str(self.coat_y),
+                'czz': dec_float_str(self.coat2_x),
+                'czzz': dec_float_str(self.coat2_y),
+                'cc': dec_float_str(self.slab_a_x),
+                'ccc': dec_float_str(self.slab_a_y),
+                'cccc': dec_float_str(self.slab_b_y)}
+                if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                    geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                    geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                    geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
+                    geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
+                    geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
+                    geo = geo.replace('slab2y = 5;', "slab2y = %f;" % self.slab_b_y)
+                    geo = geo.replace('coatx = 2;', "coatx = %f;" % self.coat_x)
+                    geo = geo.replace('coaty = 2;', "coaty = %f;" % self.coat_y)
+                    geo = geo.replace('coat2x = 4;', "coat2x = %f;" % self.coat2_x)
+                    geo = geo.replace('coat2y = 4;', "coat2y = %f;" % self.coat2_y)
+                    geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc3)
 
         elif self.inc_shape in ['pedestal']:
                 msh_template = 'pedestal'
