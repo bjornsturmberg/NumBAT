@@ -424,11 +424,11 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
         # Flip y order as imshow has origin at top left
         v_plots = [m_ReEx[:,::-1],m_ReEy[:,::-1],m_ReEz[:,::-1],m_ImEx[:,::-1],m_ImEy[:,::-1],m_ImEz[:,::-1],m_AbsE[:,::-1]]
         if EM_AC=='EM_E':
-            v_labels = ["Re($E_x$)","Re($E_y$)","Re($E_z$)","Im($E_x$)","Im($E_y$)","Im($E_z$)","$|E|$"]
+            v_labels = [r"Re($E_x$)",r"Re($E_y$)",r"Re($E_z$)",r"Im($E_x$)",r"Im($E_y$)",r"Im($E_z$)",r"$|E|$"]
         elif EM_AC == 'EM_H':
-            v_labels = ["Re($H_x$)","Re($H_y$)","Re($H_z$)","Im($H_x$)","Im($H_y$)","Im($H_z$)","$|H|$"]
+            v_labels = [r"Re($H_x$)",r"Re($H_y$)",r"Re($H_z$)",r"Im($H_x$)",r"Im($H_y$)",r"Im($H_z$)",r"$|H|$"]
         else:
-            v_labels = ["Re($u_x$)","Re($u_y$)","Re($u_z$)","Im($u_x$)","Im($u_y$)","Im($u_z$)","$|u|$"]
+            v_labels = [r"Re($u_x$)",r"Re($u_y$)",r"Re($u_z$)",r"Im($u_x$)",r"Im($u_y$)",r"Im($u_z$)",r"$|u|$"]
 
         # field plots
         plot_threshold = 1e-4 # set negligible components to explicitly zero
@@ -514,30 +514,30 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
         if EM_AC=='EM_E' or EM_AC=='EM_H':
             n_eff = sim_wguide.Eig_values[ival] * sim_wguide.wl_m / (2*np.pi)
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = '$k_z = %(re_k)f6 %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = '$n_\text{eff} = %(re_k)f6 %(im_k)f6 i$'% \
+                n_str = r'$n_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             else:
-                k_str = '$k_z = %(re_k)f6 + %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = '$n_\text{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
+                n_str = r'$n_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             # plt.text(10, 0.3, n_str, fontsize=title_font)
         else:
             n_str = ''
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = '$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
-                k_str = '$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
         # plt.text(10, 0.5, k_str, fontsize=title_font)
-        plt.suptitle(k_str + '   ' + n_str+"\n", fontsize=title_font)
+        plt.suptitle('Mode #' + str(ival) + '   ' + k_str + '   ' + n_str+"\n", fontsize=title_font)
         # plt.tight_layout(pad=2.5, w_pad=0.5, h_pad=1.0)
         fig.set_tight_layout(True)
 
@@ -642,14 +642,14 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             fig.set_tight_layout(True)
             n_str = ''
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = '$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
-                k_str = '$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
-            plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
+            plt.suptitle('Mode #' + str(ival) + '   ' + k_str + '   ' + n_str, fontsize=title_font)
 
             if pdf_png=='png':
                 plt.savefig('%(pre)sfields/%(s)s_S_field_%(i)i%(add)s.png' %
