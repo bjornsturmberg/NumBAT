@@ -7,6 +7,7 @@
 """
 
 import os
+import subprocess
 import numpy as np
 import materials
 from mode_calcs import Simmo
@@ -90,7 +91,9 @@ class Struct(object):
                 including .mail if 2D_array (eg. 600_60.mail), or .txt if
                 1D_array. It must be located in backend/fortran/msh/
 
-            plt_mesh  (bool): Plot a png of the mesh.
+            plt_mesh  (bool): Plot a png of the geometry and mesh files.
+
+            check_mesh  (bool): Inspect the geometry and mesh files in gmsh.
 
             lc_bkg  (float): Length constant of meshing of background medium
                 (smaller = finer mesh)
@@ -899,8 +902,21 @@ class Struct(object):
         self.mesh_file = msh_name + '.mail'
         if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
             open(msh_location + msh_name + '.geo', "w").write(geo)
-            NumBAT.conv_gmsh(msh_location+msh_name)
+            NumBAT.conv_gmsh(msh_location + msh_name)
 
+        if self.plt_mesh is True:
+            # Automatically create png files of mesh.
+            conv_tmp = open(msh_location + 'geo_to_png', "r").read()
+            conv = conv_tmp.replace('tmp', msh_name + '_g')
+            open(msh_location + msh_name + '.2png', "w").write(conv) 
+            subprocess.Popen(['gmsh', msh_name + '.geo', msh_name + '.2png'], 
+                cwd=os.path.dirname(os.path.realpath(__file__))+'/fortran/msh')
+            os.wait()
+            conv_tmp = open(msh_location + 'msh_to_png', "r").read()
+            conv = conv_tmp.replace('tmp', msh_name + '_m')
+            open(msh_location + msh_name + '.2png', "w").write(conv) 
+            subprocess.Popen(['gmsh', msh_name + '.msh', msh_name + '.2png'], 
+                cwd=os.path.dirname(os.path.realpath(__file__))+'/fortran/msh')
         if self.check_mesh is True:
             # Automatically show created mesh in gmsh.
             gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'

@@ -6,10 +6,10 @@
   "institution": "Uni. of Sydney",  // Source institution
   "doi": "dx.doi.org/10.1364/OPTICA.4.000847",  // doi or, failing that, the http address
   "n": 2.44,  // Refractive index []
-  "s": 3470,  // Density [kg/m3]
-  "c_11": 2.15e10,  // Stiffness tensor component [Pa]
-  "c_12": 8.107e9,  // Stiffness tensor component [Pa]
-  "c_44": 6.6965e9,  // Stiffness tensor component [Pa]
+  "s": 3150,  // Density [kg/m3]
+  "c_11": 19.75e9,  // Stiffness tensor component [Pa]
+  "c_12": 8.7e9,  // Stiffness tensor component [Pa]
+  "c_44": 5.525e9,  // Stiffness tensor component [Pa]
   "p_11": 0.25,  // Photoelastic tensor component []
   "p_12": 0.23,  // Photoelastic tensor component []
   "p_44": 0.01,  // Photoelastic tensor component []
