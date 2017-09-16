@@ -642,11 +642,11 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             fig.set_tight_layout(True)
             n_str = ''
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                k_str = '$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                k_str = '$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
