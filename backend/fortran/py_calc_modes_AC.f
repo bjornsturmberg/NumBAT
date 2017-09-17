@@ -90,9 +90,9 @@ C  Variable used by valpr
       double precision tol
 
 C  Names and Controls
-      character mesh_file*100, gmsh_file*100, log_file*100
-      character gmsh_file_pos*100, dir_name*100
-      character*100 tchar
+      character mesh_file*1000, gmsh_file*1000, log_file*1000
+      character gmsh_file_pos*1000, dir_name*1000
+      character*1000 tchar
 
 c     new breed of variables to prise out of a, b and c
       double precision x_arr(2,npt)

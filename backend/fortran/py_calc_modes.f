@@ -98,10 +98,10 @@ C  Timing variables
       character*(8) start_date, end_date
       character*(10) start_time, end_time
 C  Names and Controls
-      character mesh_file*100, gmsh_file*100, log_file*100
-      character gmsh_file_pos*100
-      character overlap_file*100, dir_name*100
-      character*100 tchar
+      character mesh_file*1000, gmsh_file*1000, log_file*1000
+      character gmsh_file_pos*1000
+      character overlap_file*1000, dir_name*1000
+      character*1000 tchar
       integer*8 namelength, PrintAll!, Checks
       integer*8 plot_modes
       integer*8 pair_warning, homogeneous_check

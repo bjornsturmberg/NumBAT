@@ -17,7 +17,7 @@ c
       parameter (max_typ_el=10)
       double precision x(2,npt), xx(2)
 
-      character mesh_file*100
+      character mesh_file*1000
 
       integer*8 npt2, nel2, ui
       integer*8 i, j, k
