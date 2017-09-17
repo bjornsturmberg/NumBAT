@@ -87,12 +87,12 @@ as a series of ``.png`` file.
    A slot waveguide (``material_a`` is low index).
 
 .. figure:: ../msh_type_lib/slot_coated.png
-   :scale: 30 %
+   :scale: 10 %
 
    A coated slot waveguide (``material_a`` is low index).
 
 .. figure:: ../msh_type_lib/onion.png
-   :scale: 30 %
+   :scale: 10 %
 
    A concentric layered structure.
 
