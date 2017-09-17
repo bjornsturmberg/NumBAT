@@ -71,17 +71,12 @@ as a series of ``.png`` file.
 
    A conventional rib waveguide.
 
-.. figure:: ../msh_type_lib/1_on_slab.png
-   :scale: 30 %
-
-   A rib waveguide on a different substrate.
-
 .. figure:: ../msh_type_lib/rib_coated.png
    :scale: 30 %
 
    A coated rib waveguide.
 
-.. figure:: ../msh_type_lib/1_on_2slabs.png
+.. figure:: ../msh_type_lib/rib_double_coated.png
    :scale: 30 %
 
    A rib waveguide on two substrates.

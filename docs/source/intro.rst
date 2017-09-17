@@ -27,6 +27,6 @@ to contribute are available in :numref:`sec-contribute-label`.
 
 Development team
 ================
-NumBAT was developed by Bjorn Sturmberg, Kokou Dossou, Blair Morrison, Christian Wolff, Chris Poulton and Michael Steel in a collaboration between Macquarie University, the University of Technology Sydney, and the University of Sydney, as part of the Australian Research Council Discovery Project DP160101691.
+NumBAT was developed by Bjorn Sturmberg, Kokou Dossou, Blair Morrison, Chris Poulton and Michael Steel in a collaboration between Macquarie University, the University of Technology Sydney, and the University of Sydney, as part of the Australian Research Council Discovery Project DP160101691.
 
 
