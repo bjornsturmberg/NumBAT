@@ -34,10 +34,24 @@ unitcell_y = 0.2*unitcell_x
 inc_a_x = 1500
 inc_a_y = 80
 # Shape of the waveguide.
-inc_shape = 'rib'
+# Use double coated geometry to control meshing around rib waveguide.
+inc_shape = 'rib_double_coated'
 
 slab_a_x = 2850
 slab_a_y = 135
+
+# areas included purely
+slab_b_y = 100
+coat_x = 50 
+coat_y = 100
+coat2_x = 100
+coat2_y = 200
+lc_bkg = 5  # background
+lc2 = 4000  # edge of rib
+lc3 = 500  # edge of slab_a 
+lc4 = 30  # edge of coat
+lc5 = 10   # edge of slab_b
+lc6 = 4  # edge of coat2
 
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
@@ -60,11 +74,15 @@ prefix_str = 'lit_08-'
 
 # Use specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        slab_a_x=slab_a_x, slab_a_y=slab_a_y,
+                        slab_a_x=slab_a_x, slab_a_y=slab_a_y, slab_b_y=slab_b_y, 
+                        coat_x=coat_x, coat_y=coat_y, coat2_x=coat2_x, coat2_y=coat2_y,
                         material_bkg=materials.Vacuum,
-                        material_a=Si_110,
-                        material_b=Si_110, symmetry_flag=False,
-                        lc_bkg=5, lc2=4000.0, lc3=2000.0)
+                        material_a=Si_110, plt_mesh=True,
+                        material_b=Si_110, material_c=materials.Vacuum,
+                        material_d=materials.Vacuum, material_e=materials.Vacuum,
+                        symmetry_flag=False,
+                        lc_bkg=lc_bkg, lc2=lc2, lc3=lc3,
+                        lc4=lc4, lc5=lc5, lc6=lc6)
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 

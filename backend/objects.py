@@ -101,17 +101,17 @@ class Struct(object):
                 ``Material`` instance.
 
             make_mesh_now  (bool): If True, program creates a FEM mesh with
-                provided :NanoStruct: parameters. If False, must provide
+                provided :Struct: parameters. If False, must provide
                 mesh_file name of existing .mail that will be run despite
-                :NanoStruct: parameters.
+                :Struct: parameters.
 
             force_mesh  (bool): If True, a new mesh is created despite
                 existence of mesh with same parameter. This is used to make
                 mesh with equal period etc. but different lc refinement.
 
             mesh_file  (str): If using a set pre-made mesh give its name
-                including .mail if 2D_array (eg. 600_60.mail), or .txt if
-                1D_array. It must be located in backend/fortran/msh/
+                including .mail. It must be located in backend/fortran/msh/
+                Note: len(mesh_file) < 100.
 
             plt_mesh  (bool): Plot a png of the geometry and mesh files.
 
@@ -794,14 +794,14 @@ class Struct(object):
         elif self.inc_shape in ['rib_double_coated']:
                 msh_template = 'rib_double_coated'
                 self.nb_typ_el = 6
-                msh_name = 'rib_double_coated_%(d)s_%(dy)s_%(a)s_%(b)s_%(cz)s_%(c)s_%(czz)s_%(czzz)s_%(cc)s_%(ccc)s_%(cccc)s' % {
+                # Note: len(msh_name) < 100.
+                msh_name = 'rib_d_c_%(d)s_%(dy)s_%(a)s_%(b)s_%(cz)s_%(c)s_%(czzz)s_%(cc)s_%(ccc)s_%(cccc)s' % {
                 'd': dec_float_str(self.unitcell_x),
                 'dy': dec_float_str(self.unitcell_y),
                 'a': dec_float_str(self.inc_a_x),
                 'b': dec_float_str(self.inc_a_y),
                 'cz': dec_float_str(self.coat_x),
                 'c': dec_float_str(self.coat_y),
-                'czz': dec_float_str(self.coat2_x),
                 'czzz': dec_float_str(self.coat2_y),
                 'cc': dec_float_str(self.slab_a_x),
                 'ccc': dec_float_str(self.slab_a_y),
@@ -824,6 +824,7 @@ class Struct(object):
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
                     geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
                     geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
+                    geo = geo.replace('lc6 = lc/1;', "lc6 = lc/%f;" % self.lc6)
 
         elif self.inc_shape in ['pedestal']:
                 msh_template = 'pedestal'
@@ -983,7 +984,7 @@ def dec_float_str(dec_float):
     """ Convert float with decimal point into string with '_' in place of '.' """
     # string = str(dec_float)
     if type(dec_float) is float or type(dec_float) is int: 
-        string = '%8.2f' % dec_float
+        string = '%8.1f' % dec_float
     else:
         string = ''
     string = string.replace('.', '_')
