@@ -81,16 +81,6 @@ as a series of ``.png`` file.
 
    A rib waveguide on two substrates.
 
-.. figure:: ../msh_type_lib/slot.png
-   :scale: 30 %
-
-   A slot waveguide (``material_a`` is low index).
-
-.. figure:: ../msh_type_lib/slot_coated.png
-   :scale: 30 %
-
-   A coated slot waveguide (``material_a`` is low index).
-
 .. figure:: ../msh_type_lib/onion.png
    :scale: 30 %
 
