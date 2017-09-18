@@ -1,2 +1,2 @@
 Print "tmp.png";
-Exit;
+//Exit;

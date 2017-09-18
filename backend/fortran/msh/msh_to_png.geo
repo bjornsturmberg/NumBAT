@@ -10,4 +10,4 @@ Mesh.ColorCarousel = 2;
   // Default value: 1
 General.SmallAxes = 0;
 Print Sprintf("tmp.png");
-Exit;
+//Exit;
