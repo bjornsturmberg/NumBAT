@@ -912,13 +912,13 @@ class Struct(object):
 
         if self.plt_mesh is True:
             # Automatically create png files of mesh.
-            conv_tmp = open(msh_location + 'geo_to_png', "r").read()
+            conv_tmp = open(msh_location + 'geo_to_png.geo', "r").read()
             conv = conv_tmp.replace('tmp', msh_name + '_g')
             open(msh_location + msh_name + '.2png', "w").write(conv) 
             subprocess.Popen(['gmsh', msh_name + '.geo', msh_name + '.2png'], 
                 cwd=os.path.dirname(os.path.realpath(__file__))+'/fortran/msh')
             os.wait()
-            conv_tmp = open(msh_location + 'msh_to_png', "r").read()
+            conv_tmp = open(msh_location + 'msh_to_png.geo', "r").read()
             conv = conv_tmp.replace('tmp', msh_name + '_m')
             open(msh_location + msh_name + '.2png', "w").write(conv) 
             subprocess.Popen(['gmsh', msh_name + '.msh', msh_name + '.2png'], 

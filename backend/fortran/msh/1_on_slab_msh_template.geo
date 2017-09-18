@@ -335,20 +335,3 @@ If(rect == 1)
 
     EndIf
 EndIf
-
-
-///////////////////////
-
-// Display faces of surface mesh?
-// Default value: 0
-Mesh.SurfaceFaces = 1;
-
-// Mesh coloring (0=by element type, 1=by elementary entity, 2=by physical entity, 3=by partition)
-// Default value: 1
-Mesh.ColorCarousel = 2;
-
-// 2D mesh algorithm (1=MeshAdapt, 2=Automatic, 5=Delaunay, 6=Frontal,7=bamg, 8=delquad)
-// Use the frontal algo to make sure that the periodic mesh is
-// not modified when meshing the surface
-Mesh.Algorithm=6;
-
