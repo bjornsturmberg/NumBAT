@@ -34,9 +34,9 @@ from matplotlib import ticker
 from fortran import NumBAT
 
 try: 
-    plt.style.use('bjornstyle')
-    colors = [color['color'] for color in list(plt.rcParams['axes.prop_cycle'])]
-except (ValueError, IOError, AttributeError): "Preferred matplotlib style file not found."
+    plt.style.use('NumBATstyle2')
+except (ValueError, IOError, AttributeError): print("Preferred matplotlib style file not found.")
+colors = [color['color'] for color in list(plt.rcParams['axes.prop_cycle'])]
 
 
 # font = {'family' : 'normal',

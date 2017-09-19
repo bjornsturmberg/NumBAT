@@ -1,0 +1,62 @@
+# Copy to .config/matplotlib/stylelib/
+
+lines.linewidth: 4
+lines.solid_capstyle: butt
+
+legend.fancybox: true
+
+# Plot area
+figure.figsize: 13.6, 8.4
+figure.facecolor: white
+figure.edgecolor: white
+axes.facecolor : white
+#axes.prop_cycle: cycler('color', ['008fd5', 'fc4f30', 'e5ae38', '6d904f', '8b8b8b', '810f7c'])
+axes.prop_cycle: cycler('color', ['0.122, 0.467, 0.706', '0.839, 0.153, 0.157', '0.173, 0.627, 0.173', '1.,  0.498, 0.055', '0.58,  0.404, 0.741', '0.09,  0.745, 0.812', '0.498, 0.498, 0.498', '0.89,  0.467, 0.761'])
+axes.axisbelow: true
+axes.grid: true
+
+# Axes and ticks
+axes.linewidth: 3
+axes.edgecolor: black
+xtick.direction: in
+ytick.direction: in
+xtick.major.size: 10
+xtick.major.width: 2
+xtick.minor.size: 10
+xtick.minor.width: 2
+ytick.major.size: 10
+ytick.major.width: 2
+ytick.minor.size: 10
+ytick.minor.width: 2
+
+# Space xlabels lower than default.
+xtick.major.pad: 10
+xtick.minor.pad: 10
+
+# Font sizes for various elements.
+font.size: 28
+axes.titlesize: 28
+axes.labelsize: 28
+xtick.labelsize: 26
+ytick.labelsize: 26
+legend.fontsize: 20
+
+# Use sans-serif LaTeX for all text.
+#font.family: serif
+#font.sans-serif: Georgia
+
+image.cmap: inferno
+
+# Plot elements
+lines.markersize: 10
+
+# savefig options (avoid clipping at margins)
+savefig.bbox : tight
+savefig.pad_inches : 0.2
+figure.subplot.left: 0.08
+figure.subplot.right: 0.95
+figure.subplot.bottom: 0.07
+
+
+
+

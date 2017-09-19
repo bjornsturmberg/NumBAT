@@ -32,3 +32,9 @@ Followed by ::
     $ sudo ./setup.sh
 
 from the NumBAT/ directory.
+
+For optimal results ::
+
+	$ cp NumBAT/backend/NumBATstyle.mplstyle ~/.config/matplotlib/stylelib/
+
+or replace plt.style.use('NumBATstyle') in NumBAT/backend/plotting.py with your own prefered matplotlib style file.
