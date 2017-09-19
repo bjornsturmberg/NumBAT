@@ -51,15 +51,15 @@ dimensions are represented in the mesh geometries. These can also be found in th
 
 as a series of ``.png`` file.
 
-.. figure:: ../msh_type_lib/1_circular.png
-   :scale: 15 %
-
-   Elliptical waveguide.
-
 .. figure:: ../msh_type_lib/1.png
    :scale: 30 %
 
    Rectangular waveguide.
+
+.. figure:: ../msh_type_lib/1_circular.png
+   :scale: 15 %
+
+   Elliptical waveguide.
 
 .. figure:: ../msh_type_lib/2.png
    :scale: 30 %
