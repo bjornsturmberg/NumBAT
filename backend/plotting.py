@@ -34,7 +34,7 @@ from matplotlib import ticker
 from fortran import NumBAT
 
 try: 
-    plt.style.use('NumBATstyle2')
+    plt.style.use('NumBATstyle')
 except (ValueError, IOError, AttributeError): print("Preferred matplotlib style file not found.")
 colors = [color['color'] for color in list(plt.rcParams['axes.prop_cycle'])]
 
@@ -527,26 +527,26 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
         if EM_AC=='EM_E' or EM_AC=='EM_H':
             n_eff = sim_wguide.Eig_values[ival] * sim_wguide.wl_m / (2*np.pi)
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'$k_z = %(re_k)f6 %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f %(im_k)f i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = r'$n_{eff} = %(re_k)f6 %(im_k)f6 i$'% \
+                n_str = r'$n_{eff} = %(re_k)f %(im_k)f i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             else:
-                k_str = r'$k_z = %(re_k)f6 + %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f + %(im_k)f i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = r'$n_{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
+                n_str = r'$n_{eff} = %(re_k)f + %(im_k)f i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             # plt.text(10, 0.3, n_str, fontsize=title_font)
         else:
             n_str = ''
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f %(im_k)f i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f + %(im_k)f i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
         # plt.text(10, 0.5, k_str, fontsize=title_font)
@@ -655,11 +655,11 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             fig.set_tight_layout(True)
             n_str = ''
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f %(im_k)f i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f + %(im_k)f i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             plt.suptitle('Mode #' + str(ival) + '   ' + k_str + '   ' + n_str, fontsize=title_font)

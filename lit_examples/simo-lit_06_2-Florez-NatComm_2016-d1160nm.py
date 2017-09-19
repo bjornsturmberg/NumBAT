@@ -53,9 +53,9 @@ n_eff = 1.4
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 
-# plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ivals=[0],
-#                          ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', 
-#                          prefix_str=prefix_str, pdf_png='png')
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ivals=[0],
+                         ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', 
+                         prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -71,7 +71,7 @@ shift_Hz = 4e9
 # Calculate Acoustic Modes
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 
-# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str)
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str)
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
