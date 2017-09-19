@@ -669,7 +669,7 @@ class Struct(object):
                     geo = geo.replace('a2 = 10;', "a2 = %f;" % self.inc_b_x)
                     geo = geo.replace('a2y = 20;', "a2y = %f;" % self.inc_b_y)
                     geo = geo.replace('sep = 10;', "sep = %f;" % self.two_inc_sep)
-                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
+                    # geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
                 if msh_template == '2':
                     geo = geo.replace('yoff = -5;;', "yoff = %f;" % self.incs_y_offset)
                 if msh_template == '1_on_slab' or msh_template == '1_on_2slabs' or msh_template == '1_on_slab' or msh_template == '2_on_2slabs':
@@ -742,6 +742,7 @@ class Struct(object):
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
 
         elif self.inc_shape in ['rib']:
                 msh_template = 'rib'
@@ -790,6 +791,7 @@ class Struct(object):
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
 
         elif self.inc_shape in ['rib_double_coated']:
                 msh_template = 'rib_double_coated'
