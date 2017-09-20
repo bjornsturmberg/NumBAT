@@ -22,7 +22,7 @@ A full description of the NumBAT physics and numerical algorithms  is available 
 in September 2017.
 
 NumBAT is open-source software and the authors welcome additions to the code.  Details for how
-to contribute are available in :numref:`sec-contribute-label`.
+to contribute are available in :ref:`sec-contribute-label`.
 
 
 Development team

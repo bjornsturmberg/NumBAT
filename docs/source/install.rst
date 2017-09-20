@@ -26,6 +26,12 @@ Or, if you prefer to do things manually, this is equivalent to ::
 
 where the <dependencies> packages are listed dependencies.txt. Note that it is safer to pip install matplotlib than apt-get'ing as will install matplotlib 2.0 without conflicting older versions.
 
+For optimal results ::
+
+    $ cp NumBAT/backend/NumBATstyle.mplstyle ~/.config/matplotlib/stylelib/
+
+or replace plt.style.use('NumBATstyle') in NumBAT/backend/plotting.py with your own prefered matplotlib style file.
+
 **This is all there is, there isn't any more.**
 
 Well there's more if you want to change it up.
