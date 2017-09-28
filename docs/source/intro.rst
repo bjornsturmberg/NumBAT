@@ -1,6 +1,9 @@
 .. role:: raw-math(raw)
     :format: latex html
 
+.. figure:: NumBAT_logo.png
+   :scale: 40 %
+
 Introduction
 ================
 
