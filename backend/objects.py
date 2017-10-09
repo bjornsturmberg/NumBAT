@@ -670,7 +670,7 @@ class Struct(object):
                     geo = geo.replace('sep = 10;', "sep = %f;" % self.two_inc_sep)
                     # geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
                 if msh_template == '2':
-                    geo = geo.replace('yoff = -5;;', "yoff = %f;" % self.incs_y_offset)
+                    geo = geo.replace('yoff = -5;', "yoff = %f;" % self.incs_y_offset)
                 if msh_template == '1_on_slab' or msh_template == '1_on_2slabs' or msh_template == '1_on_slab' or msh_template == '2_on_2slabs':
                     geo = geo.replace('slab_width = d_in_nm;', "slab_width = %f;" % self.slab_a_x)
                     geo = geo.replace('slab_height = 10;', "slab_height = %f;" % self.slab_a_y)
