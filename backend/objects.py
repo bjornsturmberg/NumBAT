@@ -206,6 +206,7 @@ class Struct(object):
         self.coat2_x = coat2_x
         self.coat2_y = coat2_y
         self.two_inc_sep = two_inc_sep
+        self.incs_y_offset = incs_y_offset
         # Structures material properties - need to check geometry definition 
         # to ensure connecting material type with correct surface of geometry
         self.material_bkg = material_bkg
