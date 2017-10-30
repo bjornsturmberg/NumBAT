@@ -72,7 +72,7 @@ To create the lines that connect the points, and the mesh surfaces it is easiest
 
 Navigate through the side menu to Modules/Geometry/Elementary entities/Add and click "Straight line". Now click consecutively on the point you wish to connect.
 
-Navigate through the side menu to Modules/Geometry/Elementary entities/Add and click "Plane surface". Now click on the boundary of each enclosed area.
+Navigate through the side menu to Modules/Geometry/Elementary entities/Add and click "Plane surface". Now click on the boundary of each enclosed area. Remember to separate out your inclusion from the background by highlighting it when asked for “hole boundaries". If the inclusion is complicated it is best to carve up the background area into smaller simpler areas that don't have any inclusions ("holes"), for example see slot coated.
 
 Navigate through the side menu to Modules/Geometry/Physical groups/Add and click "Line". Now click on the lines that make up each side of the unit cell boundary, pressing the "e" key to end your selection once the each side is fully highlighted. 
 
