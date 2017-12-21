@@ -8,7 +8,7 @@ c     Explicit inputs
      *    cmplx_max, real_max, int_max,
 c     Outputs
      *    beta1, sol1, mode_pol,
-     *    table_nod, type_el, type_nod, x_arr)
+     *    table_nod, type_el, type_nod, x_arr, ls_material)
 
 C************************************************************************
 C
@@ -132,6 +132,8 @@ c     new breed of variables to prise out of a, b and c
       complex*16, pointer :: beta(:)
       complex*16 mode_pol(4,nval)
 
+      complex*16 ls_material(1,nnodes+7,nel)
+
 Cf2py intent(in) lambda, nval
 Cf2py intent(in) debug, mesh_file, npt, nel
 Cf2py intent(in) n_eff, bloch_vec, d_in_m, shift
@@ -141,7 +143,7 @@ Cf2py intent(in) cmplx_max, real_max, int_max, nb_typ_el
 
 Cf2py depend(n_eff) nb_typ_el
 
-Cf2py intent(out) beta1, type_nod
+Cf2py intent(out) beta1, type_nod, ls_material
 Cf2py intent(out) sol1, mode_pol, table_nod, type_el, x_arr
 
 
@@ -750,6 +752,9 @@ C     (see Eq. (25) of the JOSAA 2012 paper)
           enddo
         enddo
       enddo
+
+      call array_material_EM (nel, npt, 
+     *  nb_typ_el, n_eff, type_el, ls_material)
 
 C
 C    Save Original solution

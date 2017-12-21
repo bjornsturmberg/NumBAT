@@ -120,8 +120,8 @@ class Simmo(object):
                 self.structure.plot_imag, self.structure.plot_abs,
                 cmplx_max, real_max, int_max)
 
-            self.Eig_values, self.sol1, self.mode_pol, \
-            self.table_nod, self.type_el, self.type_nod, self.x_arr = resm
+            self.Eig_values, self.sol1, self.mode_pol, self.table_nod, \
+            self.type_el, self.type_nod, self.x_arr, self.ls_material = resm
 
         except KeyboardInterrupt:
             print("\n\n FEM routine calc_EM_modes",\
