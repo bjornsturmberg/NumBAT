@@ -577,12 +577,14 @@ def interp_py_fields(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, n_points,
     nnodes = 6
     trimmed_EM_field_p = np.zeros((ncomps,nnodes,n_msh_el_AC), dtype=complex)
     trimmed_EM_field_S = np.zeros((ncomps,nnodes,n_msh_el_AC), dtype=complex)
+    trimmed_EM_n = np.zeros((1,nnodes,n_msh_el_AC), dtype=complex)
     for el in range(n_msh_el_AC):
         new_el = sim_AC.el_convert_tbl[el]
         for n in range(nnodes):
             for x in range(ncomps):
                 trimmed_EM_field_p[x,n,el] = sim_EM_pump.sol1[x,n,EM_ival_pump,new_el]
                 trimmed_EM_field_S[x,n,el] = sim_EM_Stokes.sol1[x,n,EM_ival_Stokes,new_el]
+            trimmed_EM_n[0,n,el] = sim_EM_pump.ls_material[0,n,new_el]
 
     # field mapping
     x_tmp = []
@@ -622,6 +624,7 @@ def interp_py_fields(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, n_points,
     v_Ex6p_E_S = np.zeros(6*sim_AC.n_msh_el, dtype=np.complex128)
     v_Ey6p_E_S = np.zeros(6*sim_AC.n_msh_el, dtype=np.complex128)
     v_Ez6p_E_S = np.zeros(6*sim_AC.n_msh_el, dtype=np.complex128)
+    v_n = np.zeros(6*sim_AC.n_msh_el, dtype=np.complex128)
     v_triang6p = []
 
     i = 0
@@ -641,6 +644,7 @@ def interp_py_fields(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, n_points,
             v_Ex6p_E_S[i] = trimmed_EM_field_S[0,i_node,i_el]
             v_Ey6p_E_S[i] = trimmed_EM_field_S[1,i_node,i_el]
             v_Ez6p_E_S[i] = trimmed_EM_field_S[2,i_node,i_el]
+            v_n[i] = trimmed_EM_n[0,i_node,i_el]
             i += 1
 
     xy = list(zip(v_x6p, v_y6p))
@@ -692,10 +696,15 @@ def interp_py_fields(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, n_points,
     dy = grid_y[0,-1] - grid_y[0,-2]
     del_u_mat, del_u_mat_star = grad_u(dx, dy, u_mat, k_AC)
 
-    return n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star 
+    m_Ren = interpolate.griddata(xy, v_n.real, (grid_x, grid_y), method='cubic')
+    m_Imn = interpolate.griddata(xy, v_n.imag, (grid_x, grid_y), method='cubic')
+    m_n = m_Ren + 1j*m_Imn
+    m_n = m_n.reshape(n_pts_x,n_pts_y)
+
+    return n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star, m_n
 
 
-def grid_integral(relevant_eps_effs, sim_AC_structure, sim_AC_Omega_AC, n_pts_x, n_pts_y, 
+def grid_integral(m_n, sim_AC_structure, sim_AC_Omega_AC, n_pts_x, n_pts_y, 
                   dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star, AC_ival):
     """ Quadrature integration of AC energy density, AC loss (alpha), and PE gain.
     """
@@ -741,7 +750,8 @@ def grid_integral(relevant_eps_effs, sim_AC_structure, sim_AC_Omega_AC, n_pts_x,
         for k in range(3):
             for l in range(3):
                 for j in range(3):
-                    integrand_PE = relevant_eps_effs[0]**2 * E_mat_p[j]*np.conj(E_mat_S[i])*sim_AC_structure.p_tensor[i,j,k,l]*del_u_mat_star[k,l]
+                    # integrand_PE = relevant_eps_effs[0]**2 * E_mat_p[j]*np.conj(E_mat_S[i])*sim_AC_structure.p_tensor[i,j,k,l]*del_u_mat_star[k,l]
+                    integrand_PE = m_n**4 * E_mat_p[j]*np.conj(E_mat_S[i])*sim_AC_structure.p_tensor[i,j,k,l]*del_u_mat_star[k,l]
                     I = np.zeros( n_pts_x )
                     for r in range(n_pts_x):
                         I[r] = np.trapz( np.real(integrand_PE[r,:]), dx=dy )
@@ -768,10 +778,10 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, comsol_data_file, coms
     n_points = 100
     n_points_comsol_data = 100
 
-    relevant_eps_effs =[]
-    for el_typ in range(sim_EM_pump.structure.nb_typ_el):
-        if el_typ+1 in sim_AC.typ_el_AC:
-            relevant_eps_effs.append(sim_EM_pump.n_list[el_typ]**2)
+    # relevant_eps_effs =[]
+    # for el_typ in range(sim_EM_pump.structure.nb_typ_el):
+    #     if el_typ+1 in sim_AC.typ_el_AC:
+    #         relevant_eps_effs.append(sim_EM_pump.n_list[el_typ]**2)
 
     energy_py = np.zeros(comsol_ivals, dtype=np.complex128)
     alpha_py = np.zeros(comsol_ivals)
@@ -782,13 +792,13 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, comsol_data_file, coms
 
     for AC_ival in range(comsol_ivals): # Comsol data only contains some AC modes
         # Interpolate NumBAT FEM fields onto grid
-        n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star = interp_py_fields(
+        n_pts_x, n_pts_y, dx, dy, E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star, m_n = interp_py_fields(
             sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
             n_points, EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 
         # Carry out integration
         energy_py[AC_ival], alpha_py[AC_ival], Q_PE_py[EM_ival_pump,EM_ival_Stokes,AC_ival] = grid_integral(
-                relevant_eps_effs, sim_AC.structure, sim_AC.Omega_AC, n_pts_x, n_pts_y, dx, dy, 
+                m_n, sim_AC.structure, sim_AC.Omega_AC, n_pts_x, n_pts_y, dx, dy, 
                 E_mat_p, E_mat_S, u_mat, del_u_mat, del_u_mat_star, AC_ival)
 
         # Load Comsol FEM fields onto grid - acoustic displacement fields
@@ -801,7 +811,7 @@ def gain_python(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, comsol_data_file, coms
         n_pts_x_comsol = n_points_comsol_data
         n_pts_y_comsol = n_points_comsol_data
         energy_comsol[AC_ival], alpha_comsol[AC_ival], Q_PE_comsol[EM_ival_pump,EM_ival_Stokes,AC_ival] = grid_integral(
-                relevant_eps_effs, sim_AC.structure, sim_AC.Omega_AC, n_pts_x_comsol, n_pts_y_comsol, 
+                m_n, sim_AC.structure, sim_AC.Omega_AC, n_pts_x_comsol, n_pts_y_comsol, 
                 dx_comsol, dy_comsol, E_mat_p, E_mat_S, 
                 u_mat_comsol, del_u_mat_comsol, del_u_mat_star_comsol, AC_ival)
 
