@@ -118,7 +118,7 @@ Cf2py depend(c_tensor) nb_typ_el
 Cf2py depend(rho) nb_typ_el
 Cf2py depend(type_nod) npt
 Cf2py depend(table_nod) nnodes, nel
-Cf2py depend(type_el) npt
+Cf2py depend(type_el) nel
 Cf2py depend(x_arr) npt
 
 Cf2py intent(out) beta1

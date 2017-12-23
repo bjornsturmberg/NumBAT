@@ -400,6 +400,11 @@ class Simmo(object):
             print("\n\n FEM routine calc_AC_modes",\
             "interrupted by keyboard.\n\n")
 
+        # Retrieve the material properties of each mesh point.
+        self.ls_material = NumBAT.array_material_ac(self.n_msh_pts, self.n_msh_el,
+             self.structure.nb_typ_el_AC, type_el_AC,
+             self.structure.rho, self.structure.c_tensor, 
+             self.structure.p_tensor, self.structure.eta_tensor)
 
         if self.structure.plt_mesh:
             plotting.plot_msh(x_arr_AC, prefix_str=self.structure.mesh_file, suffix_str='_AC-in')
