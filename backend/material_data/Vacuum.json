@@ -5,7 +5,8 @@
   "date": "N/A",  // Year of data publication/creation
   "institution": "N/A",  // Source institution
   "doi": "N/A",  // doi or, failing that, the http address
-  "n": 1,  // Refractive index []
+  "Re_n": 1.0,  // Real part of refractive index []
+  "Im_n": 0.0,  // Imaginary part of refractive index []
   "s": null,  // Density [kg/m3]
   "c_11": null,  // Stiffness tensor component [Pa]
   "c_12": null,  // Stiffness tensor component [Pa]
