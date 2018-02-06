@@ -78,6 +78,7 @@ class Simmo(object):
                 j += 1
             i += 1
         self.n_list = np.array(n_list)
+        n_list = None
 
         if self.structure.loss is False:
             self.n_list = self.n_list.real

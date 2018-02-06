@@ -74,7 +74,7 @@ class Material(object):
 
             Re_n = self._params['Re_n']  # Real part of refractive index []
             Im_n = self._params['Im_n']  # Imaginary part of refractive index []
-            self.n = Re_n + 1j*Im_n  # Complex refractive index []
+            self.n = (Re_n + 1j*Im_n)  # Complex refractive index []
             self.s = self._params['s']  # Density [kg/m3]
             self.c_11 = self._params['c_11']  # Stiffness tensor component [Pa]
             self.c_12 = self._params['c_12']  # Stiffness tensor component [Pa]
