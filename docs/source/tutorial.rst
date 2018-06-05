@@ -39,7 +39,7 @@ structure:
 
 The following section provides some information about the pre-defined range of waveguide
 structures and the key parameters controlling finite-element meshing.
-Information on how to add new structures to NumBAT is provided in :numref:`sec-newmesh-label`.
+Information on how to add new structures to NumBAT is provided in :ref:`sec-newmesh-label`.
 
 Waveguide Geometries
 ----------------------
@@ -215,9 +215,9 @@ Tutorial
 --------
 
 In this section we walk through a number of simple simulations that demonstrate the basic use of NumBAT.
-:numref:`sec-literature-label` looks at a number of literature examples taken from many of
+:ref:`sec-literature-label` looks at a number of literature examples taken from many of
 the well-known groups in this field.
-The full Python interface is documented in :numref:`chap-pythonbackend-label`.
+The full Python interface is documented in :ref:`chap-pythonbackend-label`.
 
 
 
@@ -297,7 +297,7 @@ This example also generates gain spectra.
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps_zoom.png
    :scale: 35 %
    
-   Zoomed-in gain spectra from :numref:`fig-gainspec1-label`.
+   Zoomed-in gain spectra from :ref:`fig-gainspec1-label`.
 
 .. raw:: latex
 
