@@ -423,28 +423,28 @@ class Simmo(object):
         self.type_el = type_el_out
         self.x_arr = x_arr_out
 
-### Calc unnormalised power in each AC mode - PRA Eq. 18.
-        try:
-            nnodes = 6
-            if self.structure.inc_shape in self.structure.linear_element_shapes:
-            # Semi-analytic integration following KD 9/9/16 notes. Fastest!
-                self.AC_mode_power = NumBAT.ac_mode_power_int_v4(
-                    self.num_modes, self.n_msh_el, self.n_msh_pts,
-                    nnodes, self.table_nod, self.type_el, self.x_arr,
-                    self.structure.nb_typ_el_AC, self.structure.c_tensor,
-                    self.k_AC, self.Omega_AC, self.sol1)
-            else:
-                if self.structure.inc_shape not in self.structure.curvilinear_element_shapes:
-                    print("Warning: ac_mode_power_int - not sure if mesh contains curvi-linear elements", 
-                        "\n using slow quadrature integration by default.\n\n")
-            # Integration by quadrature. Slowest.
-                self.AC_mode_power = NumBAT.ac_mode_power_int(
-                    self.num_modes, self.n_msh_el, self.n_msh_pts,
-                    nnodes, self.table_nod, self.type_el, self.x_arr,
-                    self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
-                    self.k_AC, self.Omega_AC, self.sol1, AC_FEM_debug)
-        except KeyboardInterrupt:
-            print("\n\n FEM routine AC_mode_energy_int interrupted by keyboard.\n\n")
+# ### Calc unnormalised power in each AC mode - PRA Eq. 18.
+#         try:
+#             nnodes = 6
+#             if self.structure.inc_shape in self.structure.linear_element_shapes:
+#             # Semi-analytic integration following KD 9/9/16 notes. Fastest!
+#                 self.AC_mode_power = NumBAT.ac_mode_power_int_v4(
+#                     self.num_modes, self.n_msh_el, self.n_msh_pts,
+#                     nnodes, self.table_nod, self.type_el, self.x_arr,
+#                     self.structure.nb_typ_el_AC, self.structure.c_tensor,
+#                     self.k_AC, self.Omega_AC, self.sol1)
+#             else:
+#                 if self.structure.inc_shape not in self.structure.curvilinear_element_shapes:
+#                     print("Warning: ac_mode_power_int - not sure if mesh contains curvi-linear elements", 
+#                         "\n using slow quadrature integration by default.\n\n")
+#             # Integration by quadrature. Slowest.
+#                 self.AC_mode_power = NumBAT.ac_mode_power_int(
+#                     self.num_modes, self.n_msh_el, self.n_msh_pts,
+#                     nnodes, self.table_nod, self.type_el, self.x_arr,
+#                     self.structure.nb_typ_el_AC, self.structure.c_tensor_z,
+#                     self.k_AC, self.Omega_AC, self.sol1, AC_FEM_debug)
+#         except KeyboardInterrupt:
+#             print("\n\n FEM routine AC_mode_energy_int interrupted by keyboard.\n\n")
 
 
 ### Calc unnormalised elastic energy in each AC mode - PRA Eq. 16.
