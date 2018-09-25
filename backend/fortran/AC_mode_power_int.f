@@ -1,7 +1,7 @@
 C Calculate the overlap integral of an AC mode with itself using
 C numerical quadrature. 
 C
-      subroutine AC_mode_energy_int (nval, 
+      subroutine AC_mode_power_int (nval, 
      *  nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, c_tensor_z, beta_AC, Omega_AC, soln_AC,
      *  debug, overlap)
@@ -67,15 +67,15 @@ C
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
-        write(ui,*) "AC_mode_energy_int: problem nnodes = ", nnodes
-        write(ui,*) "AC_mode_energy_int: nnodes should be equal to 6 !"
-        write(ui,*) "AC_mode_energy_int: Aborting..."
+        write(ui,*) "AC_mode_power_int: problem nnodes = ", nnodes
+        write(ui,*) "AC_mode_power_int: nnodes should be equal to 6 !"
+        write(ui,*) "AC_mode_power_int: Aborting..."
         stop
       endif
 C
       call quad_triangle (nquad, nquad_max, wq, xq, yq)
       if (debug .eq. 1) then
-        write(ui,*) "AC_mode_energy_int: nquad, nquad_max = ",
+        write(ui,*) "AC_mode_power_int: nquad, nquad_max = ",
      *              nquad, nquad_max
       endif
 C
@@ -209,4 +209,4 @@ C Multiply through prefactor
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-      end subroutine AC_mode_energy_int
+      end subroutine AC_mode_power_int

@@ -1,7 +1,7 @@
 C Calculate the overlap integral of an AC mode with itself using
 C analytic expressions for basis function overlaps on linear elements. 
 C
-      subroutine AC_mode_energy_int_v2 (nval, 
+      subroutine AC_mode_power_int_v2 (nval, 
      *  nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, c_tensor_z, beta_AC, Omega_AC, soln_AC,
      *  overlap)
@@ -59,10 +59,10 @@ C
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
-        write(ui,*) "AC_mode_energy_int_v3: problem nnodes = ", 
+        write(ui,*) "AC_mode_power_int_v2: problem nnodes = ", 
      *              nnodes
         write(ui,*) " --------- nnodes should be equal to 6 !"
-        write(ui,*) "AC_mode_energy_int_v3: Aborting..."
+        write(ui,*) "AC_mode_power_int_v2: Aborting..."
         stop
       endif
 C
@@ -125,9 +125,9 @@ C         Gradient of transverse components of basis function
                 elseif(k_eq == 3) then
                   z_tmp1 = p2_p2(itrial,ltest) * ii * beta_AC
                 else
-                  write(ui,*) "AC_mode_energy_int_v3: invalid value "
-                  write(ui,*) "AC_mode_energy_int_v3: k_eq = ", k_eq
-                  write(ui,*) "AC_mode_energy_int_v3: Aborting..."
+                  write(ui,*) "AC_mode_power_int_v2: invalid value "
+                  write(ui,*) "AC_mode_power_int_v2: k_eq = ", k_eq
+                  write(ui,*) "AC_mode_power_int_v2: Aborting..."
                   stop
                 endif
                 coeff = c_tensor_z(i_eq,k_eq,l_eq,typ_e)
@@ -177,4 +177,4 @@ C       close (unit=26)
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-      end subroutine AC_mode_energy_int_v2
+      end subroutine AC_mode_power_int_v2

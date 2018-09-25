@@ -53,9 +53,9 @@ def gain_and_qs(sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
             (\varepsilon_a^{-1} - \varepsilon_b^{-1})  \varepsilon_0^{-1} ({\rm \hat n \cdot \mathbf{d}}) 
             \cdot ({\rm \hat n \cdot \mathbf{d}}) \big],\\
 
-            \alpha = \frac{\Omega^2}{P_{ac}} \int {\rm d}^2r \sum_{ijkl} \partial_i u_j^{*} \eta_{ijkl} \partial_k u_l,\\
+            \alpha = \frac{\Omega^2}{\mathcal{E}_{ac}} \int {\rm d}^2r \sum_{ijkl} \partial_i u_j^{*} \eta_{ijkl} \partial_k u_l,\\
 
-            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_p P_s P_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \kappa^2}.
+            \Gamma =  \frac{2 \omega \Omega {\rm Re} (Q_1 Q_1^*)}{P_p P_s \mathcal{E}_{ac}} \frac{1}{\alpha} \frac{\alpha^2}{\alpha^2 + \kappa^2}.
   
 
         Args:

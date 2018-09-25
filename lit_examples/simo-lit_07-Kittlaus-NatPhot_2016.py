@@ -127,7 +127,7 @@ freq_min = 4.2  # GHz
 freq_max = 4.3  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-    prefix_str=prefix_str, suffix_str='')
+    prefix_str=prefix_str, suffix_str='', pdf_png='pdf')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
