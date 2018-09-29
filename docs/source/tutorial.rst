@@ -592,21 +592,36 @@ causes a problem where the slab layer significantly distorting acoustic modes.
 Adding this feature is a priority for the next release of NumBAT.
 The following example shows an approximate way to avoid the problem for now.
 
-.. literalinclude:: ../../lit_examples/simo-lit_04-Van_Laer-NatPhot_2015.py
+.. literalinclude:: ../../lit_examples/simo-lit_04-pillar-Van_Laer-NatPhot_2015.py
     :lines: 0-
 
 
-.. figure:: ../../lit_examples/lit_04-fields/EM_E_field_0.png
+.. figure:: ../../lit_examples/lit_04-pillar-fields/EM_E_field_0.png
    :scale: 50 %
    
    Fundamental optical mode fields.
 
 
-.. figure:: ../../lit_examples/lit_04-fields/AC_field_38.png
+.. figure:: ../../lit_examples/lit_04-pillar-fields/AC_field_38.png
    :scale: 50 %
    
    Dominant high gain acoustic mode.
    Note how the absence of an absorptive boundary on the SiO2 slab causes this layer to significantly distorted the acoustic modes.
+
+
+We may also choose to study the simplified situation where the pedestal is removed.
+
+
+.. literalinclude:: ../../lit_examples/simo-lit_04-no_pillar-Van_Laer-NatPhot_2015.py
+    :lines: 0-
+
+Which gives good agreement for the gain spectrum.
+
+.. figure:: ../../lit_examples/lit_04-pillar-fields/lit_04-no_pillar-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectrum for the simplified case of a waveguide surrounded by vacuum.
+
 
 .. raw:: latex
 

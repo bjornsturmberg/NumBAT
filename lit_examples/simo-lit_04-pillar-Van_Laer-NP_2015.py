@@ -12,6 +12,7 @@ import sys
 import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
+import copy
 
 sys.path.append("../backend/")
 import materials
@@ -43,14 +44,18 @@ EM_ival_pump = 0
 EM_ival_Stokes = 0
 AC_ival = 'All'
 
-prefix_str = 'lit_04-'
+prefix_str = 'lit_04-pillar-'
+
+# Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
+Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
+Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         pillar_x=pillar_x, pillar_y=pillar_y,
                         material_bkg=materials.Vacuum,            # background
-                        material_a=materials.Si_2015_Van_Laer,    # rib
+                        material_a=Si_110,                        # rib
                         material_b=materials.SiO2_2015_Van_Laer,  # slab
                         material_c=materials.SiO2_2015_Van_Laer,  # pillar
                         lc_bkg=6, lc2=3000.0, lc3=100.0)
@@ -60,7 +65,7 @@ n_eff = wguide.material_a.n-0.1
 
 # Calculate Electromagnetic Modes
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
-sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 
 plotting.plt_mode_fields(sim_EM_pump, ivals=[0],
                          xlim_min=0.4, xlim_max=0.4, ylim_min=0.4, ylim_max=0.2, 
@@ -97,4 +102,3 @@ plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, 
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
-

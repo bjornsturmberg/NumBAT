@@ -77,6 +77,10 @@ sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ivals=[0], 
+                         ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
+                         prefix_str=prefix_str, pdf_png='pdf')
+
 # Calculate the Electromagnetic modes of the Stokes field.
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
@@ -101,6 +105,9 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # # np.savez('wguide_data_AC', sim_AC=sim_AC)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC = npzfile['sim_AC'].tolist()
+
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str,
+     num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='pdf')
 
 # Print the frequencies of AC modes.
 print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
@@ -135,4 +142,3 @@ plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, 
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
-

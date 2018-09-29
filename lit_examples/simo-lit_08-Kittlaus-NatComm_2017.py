@@ -47,11 +47,11 @@ coat_y = 100
 coat2_x = 100
 coat2_y = 200
 lc_bkg = 5  # background
-lc2 = 4000  # edge of rib
-lc3 = 500  # edge of slab_a 
-lc4 = 30  # edge of coat
-lc5 = 10   # edge of slab_b
-lc6 = 4  # edge of coat2
+lc2 = 6000  # edge of rib
+lc3 = 800   # edge of slab_a 
+lc4 = 30    # edge of coat
+lc5 = 10    # edge of slab_b
+lc6 = 4     # edge of coat2
 
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
@@ -97,9 +97,9 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 # npzfile = np.load('wguide_data2.npz')
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
-                         ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
-                         prefix_str=prefix_str, pdf_png='png')
+# plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
+#                          ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
+#                          prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -122,8 +122,8 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str,
-     num_ticks=3, xlim_min=0.1, xlim_max=0.1)
+# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str,
+#      num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='png')
 
 set_q_factor = 460.
 
@@ -152,4 +152,3 @@ plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, 
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
-

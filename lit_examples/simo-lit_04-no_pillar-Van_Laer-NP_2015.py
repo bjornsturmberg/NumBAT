@@ -1,13 +1,19 @@
 """ Replicating the results of
-    Large Brillouin amplification in silicon
-    Kittlaus et al.
-    http://dx.doi.org/10.1038/nphoton.2016.112
+    Interaction between light and highly confined 
+    hypersound in a silicon photonic nanowire
+    Van Laer et al.
+    http://dx.doi.org/10.1038/nphoton.2015.11
+
+    Making simplification of ignoring the pillar.
 """
 
 import time
 import datetime
 import numpy as np
 import sys
+import matplotlib
+matplotlib.use('pdf')
+import matplotlib.pyplot as plt
 import copy
 
 sys.path.append("../backend/")
@@ -18,54 +24,35 @@ import integration
 import plotting
 from fortran import NumBAT
 
-# Naming conventions
-# AC: acoustic
-# EM: electromagnetic
-# k_AC: acoustic wavenumber
 
 start = time.time()
 
 # Geometric Parameters - all in nm.
-wl_nm = 1550 # Wavelength of EM wave in vacuum.
-# Unit cell must be large to ensure fields are zero at boundary.
+wl_nm = 1550
 unitcell_x = 5*wl_nm
-unitcell_y = 0.2*unitcell_x
-# Waveguide widths.
-inc_a_x = 1000
-inc_a_y = 80
-# Shape of the waveguide.
-inc_shape = 'rib'
+unitcell_y = 0.5*unitcell_x
+inc_a_x = 450
+inc_a_y = 230
+inc_shape = 'rectangular'
 
-slab_a_x = 3000
-slab_a_y = 130
-
-# Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
-# Number of acoustic modes to solve for.
-num_modes_AC = 40
-# The EM pump mode(s) for which to calculate interaction with AC modes.
-# Can specify a mode number (zero has lowest propagation constant) or 'All'.
+num_modes_AC = 60
 EM_ival_pump = 0
-# The EM Stokes mode(s) for which to calculate interaction with AC modes.
 EM_ival_Stokes = 0
-# The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
-# Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
+prefix_str = 'lit_04-no_pillar-'
+
+# Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
 Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
-
-prefix_str = 'lit_07-'
-
-# Use specified parameters to create a waveguide object.
-# Note use of rough mesh for demonstration purposes.
+# Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         material_bkg=materials.Vacuum,
-                        material_a=Si_110,
-                        material_b=Si_110, symmetry_flag=False,
-                        lc_bkg=5, lc2=4000.0, lc3=2000.0)
+                        material_a=Si_110, symmetry_flag=False,
+                        lc_bkg=4, lc2=3000.0, lc3=2000.0)
+
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
@@ -76,9 +63,12 @@ sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 # sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
 sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
+# np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
+# npzfile = np.load('wguide_data2.npz')
+# sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ivals=[0], 
-                         ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.45, xlim_max=0.45, ivals=[0], 
+                         ylim_min=0.45, ylim_max=0.45, EM_AC='EM_E', 
                          prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
@@ -88,23 +78,21 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
 print("n_eff = ", np.round(n_eff_sim, 4))
 
-k_AC = 5
-
-shift_Hz = 2e9
+k_AC = 5 # close but not quite zero
 
 # Calculate Acoustic Modes
-sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
+sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # np.savez('wguide_data_AC', sim_AC=sim_AC)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.
+print('Freq of AC modes (GHz) \n', np.round((sim_AC.Eig_values)*1e-9, 4))
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, ivals=[0,1,2,3,4,5,6,7,8,9],
-     num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='png')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, pdf_png='png')
 
-set_q_factor = 680.
+set_q_factor = 306
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
@@ -123,12 +111,13 @@ print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = 4.2  # GHz
-freq_max = 4.3  # GHz
+freq_min = 9.1 # GHz
+freq_max = 9.4 # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-    prefix_str=prefix_str, suffix_str='', pdf_png='pdf')
+    prefix_str=prefix_str, suffix_str='', pdf_png='png')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
+
 
