@@ -198,7 +198,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     if save_fig:
         plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
         plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
-        plt.plot(interp_grid, np.abs(interp_values), 'b', linewidth=2, label="Total")
+        plt.plot(interp_grid, np.abs(interp_values), 'b', linewidth=3, label="Total")
         plt.legend(loc=0)
         if freq_min and freq_max:
             plt.xlim(freq_min,freq_max)
@@ -231,7 +231,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
 
         max_G = np.max(interp_values)
         dB_const = dB_peak_amp/(4.34*max_G)
-        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*dB_const))), 'b', linewidth=2, label="Total")
+        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*dB_const))), 'b', linewidth=3, label="Total")
         plt.legend(loc=0)
         if freq_min and freq_max:
             plt.xlim(freq_min,freq_max)

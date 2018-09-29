@@ -67,7 +67,7 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.45, xlim_max=0.45, ivals=[0], 
                          ylim_min=0.45, ylim_max=0.45, EM_AC='EM_E', 
-                         prefix_str=prefix_str, pdf_png='pdf')
+                         prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -88,10 +88,9 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 print('Freq of AC modes (GHz) \n', np.round((sim_AC.Eig_values)*1e-9, 4))
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, pdf_png='pdf')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, pdf_png='png')
 
-# set_q_factor = 230 # NJP
-set_q_factor = 306 # NP
+set_q_factor = 230 # NJP
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
@@ -118,5 +117,3 @@ plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, 
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
-
-

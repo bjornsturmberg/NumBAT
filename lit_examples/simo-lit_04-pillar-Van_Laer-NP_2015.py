@@ -69,7 +69,7 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 
 plotting.plt_mode_fields(sim_EM_pump, ivals=[0],
                          xlim_min=0.4, xlim_max=0.4, ylim_min=0.4, ylim_max=0.2, 
-                         EM_AC='EM_E', pdf_png='png', prefix_str=prefix_str)
+                         EM_AC='EM_E', prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))

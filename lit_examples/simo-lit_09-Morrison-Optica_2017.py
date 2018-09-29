@@ -47,7 +47,7 @@ coat_y = 1000
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
 # Number of acoustic modes to solve for.
-num_modes_AC = 50
+num_modes_AC = 100
 # The EM pump mode(s) for which to calculate interaction with AC modes.
 # Can specify a mode number (zero has lowest propagation constant) or 'All'.
 EM_ival_pump = 0
@@ -79,7 +79,7 @@ sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
 
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ivals=[0], 
                          ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
-                         prefix_str=prefix_str, pdf_png='pdf')
+                         prefix_str=prefix_str, pdf_png='png')
 
 # Calculate the Electromagnetic modes of the Stokes field.
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
@@ -101,13 +101,14 @@ print('\n AC wavenumber (1/m) = ', np.round(k_AC, 4))
 k_AC= 2.*9173922.1698
 
 # Calculate Acoustic modes.
-sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
+shift_Hz = 7.5*1e9 # select the lowest frequency to start FEM search from.
+sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 # # np.savez('wguide_data_AC', sim_AC=sim_AC)
 # npzfile = np.load('wguide_data_AC.npz')
 # sim_AC = npzfile['sim_AC'].tolist()
 
 plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str,
-     num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='pdf')
+     num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='png')
 
 # Print the frequencies of AC modes.
 print('\n Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
@@ -134,8 +135,8 @@ print("SBS_gain total \n", masked)
 
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = 6  # GHz
-freq_max = 8.5  # GHz
+freq_min = 7.2  # GHz
+freq_max = 8.1  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
     prefix_str=prefix_str, pdf_png='pdf')
