@@ -28,8 +28,8 @@ start = time.time()
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
 # Unit cell must be large to ensure fields are zero at boundary.
-unitcell_x = 5*wl_nm
-unitcell_y = 0.2*unitcell_x
+unitcell_x = 7*wl_nm
+unitcell_y = 0.7*unitcell_x
 # Waveguide widths.
 inc_a_x = 1500
 inc_a_y = 80
@@ -46,11 +46,11 @@ coat_x = 50
 coat_y = 100
 coat2_x = 100
 coat2_y = 200
-lc_bkg = 5  # background
-lc2 = 6000  # edge of rib
-lc3 = 800   # edge of slab_a 
-lc4 = 30    # edge of coat
-lc5 = 10    # edge of slab_b
+lc_bkg = 4  # background
+lc2 = 8000  # edge of rib
+lc3 = 3000   # edge of slab_a 
+lc4 = 50    # edge of coat
+lc5 = 20    # edge of slab_b
 lc6 = 4     # edge of coat2
 
 # Number of electromagnetic modes to solve for.
@@ -68,7 +68,45 @@ AC_ival = 'All'
 
 # Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
+Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
+
+
+print("c_11", Si_110.c_11)
+print("c_12", Si_110.c_12)
+print("c_13", Si_110.c_13)
+print("c_14", Si_110.c_14)
+print("c_15", Si_110.c_15)
+print("c_16", Si_110.c_16)
+print("c_21", Si_110.c_21)
+print("c_22", Si_110.c_22)
+print("c_23", Si_110.c_23)
+print("c_24", Si_110.c_24)
+print("c_25", Si_110.c_25)
+print("c_26", Si_110.c_26)
+print("c_31", Si_110.c_31)
+print("c_32", Si_110.c_32)
+print("c_33", Si_110.c_33)
+print("c_34", Si_110.c_34)
+print("c_35", Si_110.c_35)
+print("c_36", Si_110.c_36)
+print("c_41", Si_110.c_41)
+print("c_42", Si_110.c_42)
+print("c_43", Si_110.c_43)
+print("c_44", Si_110.c_44)
+print("c_45", Si_110.c_45)
+print("c_46", Si_110.c_46)
+print("c_51", Si_110.c_51)
+print("c_52", Si_110.c_52)
+print("c_53", Si_110.c_53)
+print("c_54", Si_110.c_54)
+print("c_55", Si_110.c_55)
+print("c_56", Si_110.c_56)
+print("c_61", Si_110.c_61)
+print("c_62", Si_110.c_62)
+print("c_63", Si_110.c_63)
+print("c_64", Si_110.c_64)
+print("c_65", Si_110.c_65)
+print("c_66", Si_110.c_66)
 
 prefix_str = 'lit_08-'
 
@@ -77,7 +115,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y, slab_b_y=slab_b_y, 
                         coat_x=coat_x, coat_y=coat_y, coat2_x=coat2_x, coat2_y=coat2_y,
                         material_bkg=materials.Vacuum,
-                        material_a=Si_110, plt_mesh=True,
+                        material_a=Si_110, #plt_mesh=True,
                         material_b=Si_110, material_c=materials.Vacuum,
                         material_d=materials.Vacuum, material_e=materials.Vacuum,
                         symmetry_flag=False,

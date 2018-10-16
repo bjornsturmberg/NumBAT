@@ -4,7 +4,7 @@
     Van Laer et al.
     http://dx.doi.org/10.1038/nphoton.2015.11
 
-    Making simplification of ignoring the pillar.
+    Making simplification of ignoring the pedestal.
 """
 
 import time
@@ -45,8 +45,9 @@ AC_ival = 'All'
 prefix_str = 'lit_04-no_pillar-'
 
 # Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
-Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
+# Si_110 = copy.deepcopy(materials.Si_2016_Smith)
+Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
+Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
@@ -67,9 +68,9 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 # npzfile = np.load('wguide_data2.npz')
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.45, xlim_max=0.45, ivals=[0], 
-                         ylim_min=0.45, ylim_max=0.45, EM_AC='EM_E', 
-                         prefix_str=prefix_str, pdf_png='png')
+# plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.45, xlim_max=0.45, ivals=[0], 
+#                          ylim_min=0.45, ylim_max=0.45, EM_AC='EM_E', 
+#                          prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -90,9 +91,10 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 print('Freq of AC modes (GHz) \n', np.round((sim_AC.Eig_values)*1e-9, 4))
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, pdf_png='png')
+# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, pdf_png='png')
 
-set_q_factor = 306
+# set_q_factor = 306
+set_q_factor = 249
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
@@ -111,8 +113,8 @@ print("SBS_gain MB contribution \n", masked_MB)
 print("SBS_gain total \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
-freq_min = 9.1 # GHz
-freq_max = 9.4 # GHz
+freq_min = 8#9.1 # GHz
+freq_max = 10#9.4 # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
     prefix_str=prefix_str, suffix_str='', pdf_png='pdf')

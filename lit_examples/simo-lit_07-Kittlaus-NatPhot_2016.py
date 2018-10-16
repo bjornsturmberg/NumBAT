@@ -28,8 +28,8 @@ start = time.time()
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
 # Unit cell must be large to ensure fields are zero at boundary.
-unitcell_x = 5*wl_nm
-unitcell_y = 0.2*unitcell_x
+unitcell_x = 6*wl_nm
+unitcell_y = 0.4*unitcell_x
 # Waveguide widths.
 inc_a_x = 1000
 inc_a_y = 80
