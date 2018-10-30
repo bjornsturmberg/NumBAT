@@ -387,9 +387,9 @@ def isotropic_stiffness(E, v):
     Ref: www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
 
     Args:
-        E  (float): Youngs_modulus
+        E  (float): Youngs modulus
 
-        v  (float): Poisson_ratio
+        v  (float): Poisson ratio
     """
     c_11 = E*(1-v)/((1+v)*(1-2*v))
     c_12 = E*(v)/((1+v)*(1-2*v))

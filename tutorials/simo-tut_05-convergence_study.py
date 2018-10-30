@@ -24,8 +24,8 @@ from fortran import NumBAT
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 300
+inc_a_y = 280
 inc_shape = 'rectangular'
 
 num_modes_EM_pump = 20
@@ -37,9 +37,9 @@ AC_ival = 'All'
 
 prefix_str = 'tut_05-'
 
-nu_lcs = 4
+nu_lcs = 6
 lc_bkg_list = 4*np.ones(nu_lcs)
-lc_list = np.linspace(5e2,5e3,nu_lcs)
+lc_list = np.linspace(5e2,3e3,nu_lcs)
 x_axis = lc_bkg_list
 x_axis = lc_list
 conv_list = []
@@ -115,7 +115,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"EM k$_z$ ($\times 10^6$ 1/m)")
 ax2.set_ylabel(r"Relative Error EM k$_z$")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-freq_EM.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-freq_EM.png', bbox_inches='tight')
 plt.close()
@@ -141,7 +141,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"AC Freq (GHz)")
 ax2.set_ylabel(r"Relative Error AC Freq")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-freq_AC.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-freq_AC.png', bbox_inches='tight')
 plt.close()
@@ -167,7 +167,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-Gain.png', bbox_inches='tight')
 plt.close()
@@ -193,7 +193,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain (PE)")
 ax2.set_ylabel(r"Relative Error Gain (PE)")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain_PE.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-Gain_PE.png', bbox_inches='tight')
 plt.close()
@@ -219,7 +219,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain (MB)")
 ax2.set_ylabel(r"Relative Error Gain (MB)")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain_MB.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-Gain_MB.png', bbox_inches='tight')
 plt.close()

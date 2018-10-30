@@ -32,13 +32,13 @@ start = time.time()
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 300
+inc_a_y = 280
 inc_shape = 'rectangular'
 
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
-num_modes_AC = 20
+num_modes_AC = 25
 EM_ival_pump = 0
 EM_ival_Stokes = 0
 AC_ival = 'All'

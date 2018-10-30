@@ -26,13 +26,13 @@ start = time.time()
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 300
+inc_a_y = 280
 inc_shape = 'rectangular'
 # Choose modes to include.
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
-num_modes_AC = 20
+num_modes_AC = 25
 EM_ival_pump = 0
 EM_ival_Stokes = 0
 AC_ival = 'All'
@@ -45,9 +45,11 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
-# Calculate Electromagnetic modes.
+# # Calculate Electromagnetic modes.
 # sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
 # np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
+# sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+# np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
 
 # Assuming this calculation is run directly after simo-tut_02
 # we don't need to recalculate EM modes, but can load them in.
@@ -81,7 +83,7 @@ for i_ac, q_ac in enumerate(np.linspace(0.0,k_AC,nu_ks)):
             sym_D, = plt.plot(np.real(q_ac/k_AC), Om, '^g')
 
     print("Wavevector loop", i_ac+1, "/", nu_ks)
-ax.set_ylim(0,20)
+ax.set_ylim(0,25)
 ax.set_xlim(0,1)
 plt.legend([sym_A, sym_B, sym_C, sym_D],['E',r'C$_2$',r'$\sigma_y$',r'$\sigma_x$'], loc='lower right')
 plt.xlabel(r'Axial wavevector (normalised)')

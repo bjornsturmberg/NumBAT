@@ -31,8 +31,8 @@ wl_nm = 1550 # Wavelength of EM wave in vacuum.
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
 # Waveguide widths.
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 300
+inc_a_y = 280
 # Shape of the waveguide.
 inc_shape = 'rectangular'
 
