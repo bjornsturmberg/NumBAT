@@ -37,10 +37,9 @@ AC_ival = 'All'
 
 prefix_str = 'tut_05-'
 
-nu_lcs = 6
-lc_bkg_list = 4*np.ones(nu_lcs)
-lc_list = np.linspace(5e2,3e3,nu_lcs)
-x_axis = lc_bkg_list
+nu_lcs = 7
+lc_bkg_list = 8*np.ones(nu_lcs)
+lc_list = [100,500,1000,1500,2000,2500,3000]
 x_axis = lc_list
 conv_list = []
 time_list = []
@@ -75,7 +74,7 @@ for i_lc, lc_ref in enumerate(lc_list):
 
 # It is crucial that you preselect modes with significant gain!
 # Otherwise you will observe large relative errors similar to dividing by zero.
-rel_modes = [2,4,8]
+rel_modes = [3,4,8,10]
 # If you do not know the mode numbers of the significant AC modes you may wish to simply plot them all
 # by uncommenting the line below and check if the modes with large gain have low relative errors.
 # rel_modes = np.linspace(0,num_modes_AC-1,num_modes_AC)
