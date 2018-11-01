@@ -45,8 +45,8 @@ AC_ival = 'All'
 prefix_str = 'lit_04-no_pillar-'
 
 # Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
-# Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
+Si_110 = copy.deepcopy(materials.Si_2016_Smith)
+# Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
 Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
