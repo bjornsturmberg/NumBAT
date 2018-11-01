@@ -70,44 +70,6 @@ AC_ival = 'All'
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
 Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 
-
-print("c_11", Si_110.c_11)
-print("c_12", Si_110.c_12)
-print("c_13", Si_110.c_13)
-print("c_14", Si_110.c_14)
-print("c_15", Si_110.c_15)
-print("c_16", Si_110.c_16)
-print("c_21", Si_110.c_21)
-print("c_22", Si_110.c_22)
-print("c_23", Si_110.c_23)
-print("c_24", Si_110.c_24)
-print("c_25", Si_110.c_25)
-print("c_26", Si_110.c_26)
-print("c_31", Si_110.c_31)
-print("c_32", Si_110.c_32)
-print("c_33", Si_110.c_33)
-print("c_34", Si_110.c_34)
-print("c_35", Si_110.c_35)
-print("c_36", Si_110.c_36)
-print("c_41", Si_110.c_41)
-print("c_42", Si_110.c_42)
-print("c_43", Si_110.c_43)
-print("c_44", Si_110.c_44)
-print("c_45", Si_110.c_45)
-print("c_46", Si_110.c_46)
-print("c_51", Si_110.c_51)
-print("c_52", Si_110.c_52)
-print("c_53", Si_110.c_53)
-print("c_54", Si_110.c_54)
-print("c_55", Si_110.c_55)
-print("c_56", Si_110.c_56)
-print("c_61", Si_110.c_61)
-print("c_62", Si_110.c_62)
-print("c_63", Si_110.c_63)
-print("c_64", Si_110.c_64)
-print("c_65", Si_110.c_65)
-print("c_66", Si_110.c_66)
-
 prefix_str = 'lit_08-'
 
 # Use specified parameters to create a waveguide object.
@@ -135,9 +97,9 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 # npzfile = np.load('wguide_data2.npz')
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-# plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
-#                          ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
-#                          prefix_str=prefix_str, pdf_png='png')
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
+                         ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
+                         prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -160,8 +122,8 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str,
-#      num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='png')
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str,
+     num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='png')
 
 set_q_factor = 460.
 
@@ -186,7 +148,7 @@ freq_min = 0.5  # GHz
 freq_max = 9.5  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-    prefix_str=prefix_str, suffix_str='', pdf_png='pdf')
+    prefix_str=prefix_str, suffix_str='', pdf_png='png')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
