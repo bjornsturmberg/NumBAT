@@ -10,15 +10,18 @@ It has also been successfully installed by users on Debian, RedHat and on Window
 
 In general, you can simply run the setup script ::
 
-    $ sudo ./setup.sh
+    $ ./setup.sh
 
 from the ``NumBAT/`` directory.
 
-Or, if you prefer to do things manually, this is equivalent to ::
+You may wish to update your system ::
 
     $ sudo apt-get update
     $ sudo apt-get upgrade
-    $ sudo apt-get install -y <dependencies>
+
+Or, if you prefer to do things manually, this is equivalent to ::
+
+    $ apt-get install -y <dependencies>
     $ cd backend/fortran/
     $ make
     $ cd ../../tests/
