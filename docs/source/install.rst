@@ -12,16 +12,20 @@ In general, you can simply run the setup script ::
 
     $ ./setup.sh
 
+or, depending on your system configuration as ::
+
+    $ sudo ./setup.sh
+
 from the ``NumBAT/`` directory.
 
-You may wish to update your system ::
+Before doing so you may wish to update your system ::
 
     $ sudo apt-get update
     $ sudo apt-get upgrade
 
 Or, if you prefer to do things manually, this is equivalent to ::
 
-    $ apt-get install -y <dependencies>
+    $ sudo apt-get install -y <dependencies>
     $ cd backend/fortran/
     $ make
     $ cd ../../tests/
