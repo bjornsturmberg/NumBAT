@@ -91,5 +91,33 @@ plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, 
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
     prefix_str=prefix_str, pdf_png='png')
 
+# Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
+freq_min = 5.86  # GHz
+freq_max = 5.9  # GHz
+plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
+    prefix_str=prefix_str, suffix_str='-5', pdf_png='png')
+
+# Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
+freq_min = 6.28  # GHz
+freq_max = 6.32  # GHz
+plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
+    prefix_str=prefix_str, suffix_str='-6', pdf_png='png')
+
+# Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
+freq_min = 8.09  # GHz
+freq_max = 8.13  # GHz
+plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
+    prefix_str=prefix_str, suffix_str='-8', pdf_png='png')
+
+# Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
+freq_min = 11.65  # GHz
+freq_max = 11.69  # GHz
+plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
+    EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
+    prefix_str=prefix_str, suffix_str='-11', pdf_png='png')
+
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))

@@ -675,6 +675,20 @@ Which gives good agreement for the gain spectrum.
    Gain spectra of NW diameter 550 nm, matching blue curve of Fig. 3b in paper.
 
 
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-5.png
+   :scale: 50 %
+
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-6.png
+   :scale: 50 %
+
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-8.png
+   :scale: 50 %
+
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-11.png
+   :scale: 50 %
+   
+   Zoomed in gain spectra around gaint peaks of 550 nm diameter NW.
+
 .. raw:: latex
 
     \clearpage
