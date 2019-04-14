@@ -62,13 +62,15 @@ C
 c
       i_sym = 0
 c
-      call cpu_time(time1)  ! initial time  in unit = sec./100 (For CPU time)
+c     initial time  in unit = sec./100 (For CPU time)
+      call cpu_time(time1)  
 
       gmsh_type_line = 8
       gmsh_type_el = 9
 
       if(gmsh_version .eq. 2) then
-        number_tags = 5 !formerly 6 on windows gmsh 2.5.0
+c       formerly 6 on windows gmsh 2.5.0
+        number_tags = 5 
         physic_tag = 4
       else
         number_tags = 5
@@ -191,9 +193,11 @@ c
 c
       do i=1,ne_d1
         j = typ_el_d1(i)
-        k = nu_d1(1,i) ! tab_ns(nu_d1(1,i))
+C         tab_ns(nu_d1(1,i))
+        k = nu_d1(1,i) 
         idfn(k) = j
-        k = nu_d1(2,i) ! tab_ns(nu_d1(2,i))
+C         tab_ns(nu_d1(2,i))
+        k = nu_d1(2,i) 
         idfn(k) = j
         k = nu_d1(3,i)
         idfn(k) = j
@@ -239,7 +243,8 @@ c
 c      call matlab(npt,ne_d2,nu_d2,idfn,typ_el_d2,x,y)
 c
       If(debug .eq. 1) then
-        call cpu_time(time2)  ! temps initial (sert pour la durree des calcul)
+C         temps initial (sert pour la durree des calcul)
+        call cpu_time(time2)  
         open (unit=ui,file=file_ui)
         write(ui,*) "conv_gmsh_m: debug = ", debug
         write(ui,*) "gmsh_version = ", gmsh_version

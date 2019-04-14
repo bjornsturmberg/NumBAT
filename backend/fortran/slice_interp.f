@@ -175,7 +175,8 @@ c           Quadratique interpolation
               sol_3d_X(j,inod_2,iel_2,i_h) =
      *                    sol_3d_X(j,inod_2,iel_2,i_h) + z_sol(j)
             enddo
-            if (i >= 2 .and. i <= nel_X) then  ! node which belong to two sub-intervals
+C             ! node which belong to two sub-intervals
+            if (i >= 2 .and. i <= nel_X) then  
               inod_2 = 1
               iel_2 = i
               inod_3 = 2
@@ -281,7 +282,8 @@ c           Quadratique interpolation
               sol_3d_Y(j,inod_2,iel_2,i_h) =
      *                    sol_3d_Y(j,inod_2,iel_2,i_h) + z_sol(j)
             enddo
-            if (i >= 2 .and. i <= nel_Y) then  ! node which belong to two sub-intervals
+C             ! node which belong to two sub-intervals
+            if (i >= 2 .and. i <= nel_Y) then  
               inod_2 = 1
               iel_2 = i
               inod_3 = 2
@@ -374,7 +376,8 @@ c           Quadratique interpolation
               sol_3d_D_1(j,inod_2,iel_2,i_h) =
      *                    sol_3d_D_1(j,inod_2,iel_2,i_h) + z_sol(j)
             enddo
-            if (i >= 2 .and. i <= nel_D_1) then  ! node which belong to two sub-intervals
+C             ! node which belong to two sub-intervals
+            if (i >= 2 .and. i <= nel_D_1) then  
               inod_2 = 1
               iel_2 = i
               inod_3 = 2
@@ -467,7 +470,8 @@ c           Quadratique interpolation
               sol_3d_D_2(j,inod_2,iel_2,i_h) =
      *                    sol_3d_D_2(j,inod_2,iel_2,i_h) + z_sol(j)
             enddo
-            if (i >= 2 .and. i <= nel_D_2) then  ! node which belong to two sub-intervals
+C             ! node which belong to two sub-intervals
+            if (i >= 2 .and. i <= nel_D_2) then  
               inod_2 = 1
               iel_2 = i
               inod_3 = 2
@@ -490,9 +494,11 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
       if (i_h == 1 .and. ival == 1) then
         if (nb_intersect >= 1 ) then
-          info_elem(iel) = nb_intersect  ! the element contains nb_intersect slice points
+C           ! the element contains nb_intersect slice points
+          info_elem(iel) = nb_intersect  
         else
-          info_elem(iel) = -1 !   the element contains no nb_intersect slice points and will no longer be processed
+C           !   the element contains no nb_intersect slice points and will no longer be processed
+          info_elem(iel) = -1 
         endif
       endif
 c

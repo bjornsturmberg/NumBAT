@@ -25,7 +25,7 @@ C
 
 C  Local parameters:
       integer*8 int_max, cmplx_max, int_used, cmplx_used
-      integer*8 real_max, real_used!, n_64
+      integer*8 real_max, real_used
 C      parameter (int_max=2**22, cmplx_max=2**26)
 C      parameter (real_max=2**21)
 C     !   a(int_max)
@@ -63,7 +63,7 @@ c     E_H_field = 1 => Electric field formulation (E-Field)
 c     E_H_field = 2 => Magnetic field formulation (H-Field)
       integer*8 E_H_field
       integer*8 neq, debug
-      integer*8 npt_p3!, numberprop_N
+      integer*8 npt_p3
 C  Variable used by valpr
       integer*8 nval, nvect, itermax, ltrav
       integer*8 n_conv, i_base
@@ -81,7 +81,7 @@ C  Renumbering
 c      integer*8 ip_row_ptr, ip_bandw_1, ip_adjncy
 c      integer*8 len_adj, len_adj_max, len_0_adj_max
 c, iout, nonz_1, nonz_2
-      integer*8 i, j!, mesh_format
+      integer*8 i, j
       integer*8 ival, iel, inod
 c     Wavelength lambda in units of m
       double precision lambda, d_in_m
@@ -102,7 +102,7 @@ C  Names and Controls
       character gmsh_file_pos*1000
       character overlap_file*1000, dir_name*1000
       character*1000 tchar
-      integer*8 namelength, PrintAll!, Checks
+      integer*8 namelength, PrintAll
       integer*8 plot_modes
       integer*8 pair_warning, homogeneous_check
       integer*8 q_average, plot_real, plot_imag, plot_abs
@@ -164,8 +164,10 @@ c     ii = sqrt(-1)
 C     Old inputs now internal to here and commented out by default.
 C      mesh_format = 1
 C      Checks = 0 ! check completeness, energy conservation
-      PrintAll = debug ! only need to print when debugging J overlap, orthogonal
-      tol = 0.0 ! ARPACK accuracy (0.0 for machine precision)
+C       ! only need to print when debugging J overlap, orthogonal
+      PrintAll = debug 
+C       ! ARPACK accuracy (0.0 for machine precision)
+      tol = 0.0 
 C       lx=1.0 ! Diameter of unit cell. Default, lx = 1.0.
 C       ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell.
 

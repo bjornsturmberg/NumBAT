@@ -37,12 +37,14 @@ c
 ccccccccccccccccccccccccccccccccccccc
 c
 
-      gnuplot_info = 1  ! if gnuplot_info = 1: Write the  gnuplot command line file
+C       ! if gnuplot_info = 1: Write the  gnuplot command line file
+      gnuplot_info = 1  
 
 
       namelen = len_trim(gmsh_file)
       gnuplot_file = gmsh_file(1:namelen-4)// "_gnuplot.txt"
-      gnuplot_file_png = gmsh_file(1+7:namelen-4)// ".png" ! 1+7: Remove "Normed/" from the file name
+C       ! 1+7: Remove "Normed/" from the file name
+      gnuplot_file_png = gmsh_file(1+7:namelen-4)// ".png" 
 
       open (unit=26,file=gnuplot_file)
       do iel=1,nel
@@ -51,7 +53,8 @@ c
           xel(1,j) = x(1,j1)
           xel(2,j) = x(2,j1)
         enddo
-        k=nvertex+1  ! The nodes xel(:,j) form a closed hexagon
+C         ! The nodes xel(:,j) form a closed hexagon
+        k=nvertex+1  
         j=1
           j1 = table_nod(j,iel)
           xel(1,k) = x(1,j1)
@@ -75,7 +78,8 @@ c
           write(26,*) " set size ratio -1"
           namelen = len_trim(gnuplot_file)
           gnuplot_file_print = " plot """//
-     *    gnuplot_file(1+7:namelen)//"""" ! Remove "Normed/" from the file name
+C      ! Remove "Normed/" from the file name
+     *    gnuplot_file(1+7:namelen)//"""" 
           namelen_print = len_trim(gnuplot_file)
           write(26,*) gnuplot_file_print(1:namelen_print)
           write(26,*)
@@ -90,7 +94,8 @@ c
           write(26,*)
           namelen = len_trim(gnuplot_file)
           gnuplot_file_print = " plot """//
-     *    gnuplot_file(1+7:namelen)//"""" ! Remove "Normed/" from the file name
+C      ! Remove "Normed/" from the file name
+     *    gnuplot_file(1+7:namelen)//"""" 
           namelen_print = len_trim(gnuplot_file)
           write(26,*) gnuplot_file_print(1:namelen_print)
           write(26,*)

@@ -44,7 +44,8 @@ c  ii = sqrt(-1)
         enddo
       enddo
       det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-      if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
+C       ! TEMPORARY CHANGE
+      if (abs(det_b) .le. 1.0d-22) then  
 cc      if (abs(det_b) .le. 1.0d-8) then
         write(*,*) '?? mat_el: Determinant = 0 :', det_b
         write(*,*) "xel = ", xel
@@ -82,7 +83,8 @@ c
 c=================  Construction of the matrix mat_M =================
 c     Integral [rho * P(i) * P(i)]
       do i=1,6
-        do i_xyz=1,3  ! The components x, y and z
+C         ! The components x, y and z
+        do i_xyz=1,3  
           i_p = 3*(i-1) + i_xyz
           do j=1,6
             j_xyz = i_xyz

@@ -55,12 +55,16 @@ c
       y = xel_0(2,inode)
 c
       i = 1
-        phi0_xi = (-11 - 27*x**2 + x*(36 - 54*y)   ! x-derivative over the reference triangle
-     *                + 36*y - 27*y**2)/2.0d0 ! y-derivative over the reference triangle
+C         ! x-derivative over the reference triangle
+        phi0_xi = (-11 - 27*x**2 + x*(36 - 54*y)   
+C      ! y-derivative over the reference triangle
+     *                + 36*y - 27*y**2)/2.0d0 
         phi0_yi = (-11 - 27*x**2 + x*(36 - 54*y) 
      *                + 36*y - 27*y**2)/2.0d0
-        phi_xi =c(1,1)*phi0_xi+c(1,2)*phi0_yi ! x-derivative over the current triangle
-        phi_yi =c(2,1)*phi0_xi+c(2,2)*phi0_yi ! y-derivative over the current triangle
+C         ! x-derivative over the current triangle
+        phi_xi =c(1,1)*phi0_xi+c(1,2)*phi0_yi 
+C         ! y-derivative over the current triangle
+        phi_yi =c(2,1)*phi0_xi+c(2,2)*phi0_yi 
         vec_grad(1,i) = phi_xi
         vec_grad(2,i) = phi_yi
       i = 2

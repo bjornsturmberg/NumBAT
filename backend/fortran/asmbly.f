@@ -216,7 +216,8 @@ c               unpack row into i_work
                 do i=col_start,col_end
                   i_work(row_ind(i) + i_base2) = i
                 enddo
-                if (jtest .le. nddl_t) then ! edge or face element
+C                 ! edge or face element
+                if (jtest .le. nddl_t) then 
 c                 Determine the basis vector
                   call basis_vec (j_eq, jtest, basis_list, phi2_list,
      *             grad1_mat, grad2_mat, vec_phi_j, curl_phi_j)
@@ -242,7 +243,8 @@ c                 Determine the basis vector
                         write(ui,*) "phase_fact: ", ind_jp, ind_ip, 
      *                z_phase_fact, val_exp(jtest), val_exp(itrial)
                       endif
-                      if (itrial .le. nddl_t) then ! edge or face element
+C                       ! edge or face element
+                      if (itrial .le. nddl_t) then 
                         call basis_vec (i_eq, itrial, basis_list, 
      *                  phi2_list, grad1_mat, grad2_mat, vec_phi_i, 
      *                  curl_phi_i)

@@ -57,20 +57,26 @@ c
           xel(1,j) = x(1,j1)
           xel(2,j) = x(2,j1)
         enddo
-        j=1 ! an element is a face
+C         ! an element is a face
+        j=1 
         j1 = table_N_E_F(j,i)
-        x_E_F(1,j1) = (xel(1,1) + xel(1,2) + xel(1,3))/3.0d0 ! centre of the elements
+C         ! centre of the elements
+        x_E_F(1,j1) = (xel(1,1) + xel(1,2) + xel(1,3))/3.0d0 
         x_E_F(2,j1) = (xel(2,1) + xel(2,2) + xel(2,3))/3.0d0
-        type_N_E_F(1,j1) = 0  ! Topologically, a face is an interior domain
-        type_N_E_F(2,j1) = 2 ! Face => dimension two
-        do j=1,3 ! scan the 3 element edges
+C         ! Topologically, a face is an interior domain
+        type_N_E_F(1,j1) = 0  
+C         ! Face => dimension two
+        type_N_E_F(2,j1) = 2 
+C         ! scan the 3 element edges
+        do j=1,3 
           j1 = table_N_E_F(j+1,i)
           x_E_F(1,j1) = xel(1,j+3)
           x_E_F(2,j1) = xel(2,j+3)
           if (visite(j1) .eq. 0) then
             visite(j1) = 1
             type_N_E_F(1,j1) = type_n(j+3)
-            type_N_E_F(2,j1) = 1 ! Edge => dimension one
+C             ! Edge => dimension one
+            type_N_E_F(2,j1) = 1 
           endif
         enddo
       enddo

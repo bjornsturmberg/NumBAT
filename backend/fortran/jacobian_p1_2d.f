@@ -45,10 +45,10 @@ c
 ccccccccccccccccccccccccccccc
 c        mat_T = mat_B
 c
-      N_32 = 2 ! The order of the matrix mat_B
-      NRHS_32 = N_32 ! The number of right hand sides
-      LDB_32 = N_32 ! The leading dimension of the array mat_B
-      LDT_32 = N_32 ! The leading dimension of the array mat_T
+      N_32 = 2 
+      NRHS_32 = N_32 
+      LDB_32 = N_32 
+      LDT_32 = N_32 
 c
 c     X_g = B X + (x_0, y_0, z_0)^t
 c     Initialisation for DGEMV X_g = xel(1:2,1)

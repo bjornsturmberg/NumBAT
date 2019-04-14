@@ -48,13 +48,13 @@ c
         write(63,"(2(g25.17))") beta(ival)
         write(64,"(2(g25.17))") beta(ival)
         do iel=1,nel
-          write(63,12) iel, (dble(sol(1,i,ival,iel)),i=1,nnodes)  ! x-component
-          write(63,12) iel, (dble(sol(2,i,ival,iel)),i=1,nnodes)  ! 3-component
-          write(63,12) iel, (dble(sol(3,i,ival,iel)),i=1,nnodes)  ! z-component
+          write(63,12) iel, (dble(sol(1,i,ival,iel)),i=1,nnodes)
+          write(63,12) iel, (dble(sol(2,i,ival,iel)),i=1,nnodes)
+          write(63,12) iel, (dble(sol(3,i,ival,iel)),i=1,nnodes)
 c
-          write(64,12) iel, (imag(sol(1,i,ival,iel)),i=1,nnodes)  ! x-component
-          write(64,12) iel, (imag(sol(2,i,ival,iel)),i=1,nnodes)  ! 3-component
-          write(64,12) iel, (imag(sol(3,i,ival,iel)),i=1,nnodes)  ! z-component
+          write(64,12) iel, (imag(sol(1,i,ival,iel)),i=1,nnodes)
+          write(64,12) iel, (imag(sol(2,i,ival,iel)),i=1,nnodes)
+          write(64,12) iel, (imag(sol(3,i,ival,iel)),i=1,nnodes)
         enddo
         close(63)
         close(64)

@@ -25,7 +25,8 @@ c     Local variables
       double precision xel(2,nnodes_P2_0)
       complex*16 E_field_el(3,nnodes_P2_0)
       complex*16 H_field_el(3,nnodes_P2_0)
-      complex*16 Ez_field_el_P3(nnodes_P3_0)  !  P3 Ez-field
+C       !  P3 Ez-field
+      complex*16 Ez_field_el_P3(nnodes_P3_0)  
       double precision p2_p2(nnodes_P2_0,nnodes_P2_0)
       integer*8 i, j, j1
       integer*8 iel, ival, inod
@@ -79,7 +80,8 @@ c       maps the current triangle to the reference triangle.
           enddo
         enddo
         det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-        if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
+C         ! TEMPORARY CHANGE
+        if (abs(det_b) .le. 1.0d-22) then  
 cc        if (abs(det_b) .le. 1.0d-8) then
           write(*,*) '?? EM_mode_energy_int_v2_Ez: Deter. = 0 :', det_b
           write(*,*) "xel = ", xel
@@ -107,20 +109,20 @@ c         The component E_z of the mode ival. The FEM code uses the scaling:
 c         E_z = ii * beta1 * \hat{E}_z
           j=3
             z_tmp1 = soln_k1(j,i,ival,iel)
-            E_field_el(j,i) = z_tmp1 ! * ii * beta1
+            E_field_el(j,i) = z_tmp1
         enddo
 c       E_z-field:
         do i=1,3
 c         The longitudinal component at the vertices (P3 elements)
           j=3
           z_tmp1 = soln_k1(j,i,ival,iel)
-          Ez_field_el_P3(i) = z_tmp1 ! * ii * beta1
+          Ez_field_el_P3(i) = z_tmp1
         enddo
         do i=4,nnodes_P3_0
 c         The longitudinal component at the edge nodes and interior node (P3 elements)
           j=3
           z_tmp1 = soln_k1(j,i+nnodes_P2-3,ival,iel)
-          Ez_field_el_P3(i) = z_tmp1 ! * ii * beta1
+          Ez_field_el_P3(i) = z_tmp1
         enddo
 c
         call get_H_field_p3 (nnodes_P2, k_0, beta1, mat_T,

@@ -27,7 +27,7 @@ c     Local variables
       double precision xel(2,nnodes_P2_0)
       complex*16 E_field_el(3,nnodes_P2_0)
       complex*16 H_field_el(3,nnodes_P2_0)
-      complex*16 Ez_field_el_P3(nnodes_P3_0)  !  P3 Ez-field
+      complex*16 Ez_field_el_P3(nnodes_P3_0)
       double precision p2_p2(nnodes_P2_0,nnodes_P2_0)
       integer*8 i, j, j1
       integer*8 iel, ival
@@ -84,7 +84,7 @@ c       maps the current triangle to the reference triangle.
           enddo
         enddo
         det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-        if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
+        if (abs(det_b) .le. 1.0d-22) then 
 cc        if (abs(det_b) .le. 1.0d-8) then
           write(*,*) '?? EM_mode_energy_int_v2: Deter. = 0 :', det_b
           write(*,*) "xel = ", xel
@@ -136,7 +136,7 @@ c       The matrix p2_p2 contains the overlap integrals between the P2-polynomia
         do itrial=1,nnodes_P2_0
           do i=1,3
             z_tmp1 = E_field_el(i,itrial)
-            vec_i(i) = z_tmp1   !!!!    conjg(z_tmp1)
+            vec_i(i) = z_tmp1 
           enddo
           do jtest=1,nnodes_P2_0
             do i=1,3

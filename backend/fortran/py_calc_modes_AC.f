@@ -24,13 +24,17 @@ C***********************************************************************
 C
       implicit none
 C  Local parameters:
-      complex*16 beta_in ! Propagation constant
+C       ! Propagation constant
+      complex*16 beta_in 
       integer*8 int_max, cmplx_max, int_used, cmplx_used
       integer*8 real_max, real_used, plot_modes
       integer :: alloc_stat=0
-      integer*8, dimension(:), allocatable :: a   !  (int_max)
-      complex*16, dimension(:), allocatable :: b   !  (cmplx_max)
-      double precision, dimension(:), allocatable :: c   !  (real_max)
+C       !  (int_max)
+      integer*8, dimension(:), allocatable :: a   
+C       !  (cmplx_max)
+      complex*16, dimension(:), allocatable :: b   
+C       !  (real_max)
+      double precision, dimension(:), allocatable :: c   
       integer*8 supplied_geo_flag, symmetry_flag
 
 C  Declare the pointers of the integer super-vector
@@ -129,7 +133,8 @@ CCCCCCCCCCCCCCCCCCCC  Start Program - get parameters  CCCCCCCCCCCCCCCCCC
 C
 C     Set parameter for the super-vectors of integer and real numbers
 C
-      ui = 6     !ui = Unite dImpression
+C       !ui = Unite dImpression
+      ui = 6     
 C      nnodes = 6 ! Number of nodes per element
       pi = 3.141592653589793d0
 c     ii = sqrt(-1)
@@ -192,7 +197,8 @@ C     clean mesh_format
         write(*,*) "gmsh_file = ", gmsh_file
       endif
 
-      call cpu_time(time1)  ! initial time  in unit = sec.
+C       ! initial time  in unit = sec.
+      call cpu_time(time1)  
       call date_and_time ( start_date, start_time )
 C
 C      tol = 0.0 ! ARPACK accuracy (0.0 for machine precision)
@@ -229,7 +235,8 @@ C
          stop
       endif
 
-      ip_visite = 1 ! pointer to FEM connectivity table
+C       ! pointer to FEM connectivity table
+      ip_visite = 1 
       ip_eq = ip_visite + npt
       jp_x = 1
 C
@@ -333,7 +340,8 @@ c     jp_rhs will also be used (in gmsh_post_process) to store a solution
       jp_workd = jp_vect2 + neq
       jp_resid = jp_workd + 3*neq
       jp_eigenval_tmp = jp_resid + 3*nnodes*nval*nel
-      jp_vschur = jp_eigenval_tmp + nval + 1     ! Eigenvectors
+C       ! Eigenvectors
+      jp_vschur = jp_eigenval_tmp + nval + 1     
       jp_eigen_pol = jp_vschur + neq*nvect
       jp_trav = jp_eigen_pol + nval*4
 

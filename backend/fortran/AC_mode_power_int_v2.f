@@ -87,7 +87,8 @@ cccccccccccc
         enddo
       enddo
       det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-      if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
+C       ! TEMPORARY CHANGE
+      if (abs(det_b) .le. 1.0d-22) then  
 cc      if (abs(det_b) .le. 1.0d-8) then
         write(*,*) '?? AC_alpha_int_v2: Determinant = 0 :', det_b
         write(*,*) "xel = ", xel

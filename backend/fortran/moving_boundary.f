@@ -113,9 +113,11 @@ C
       do iel=1,nel
         typ_e = type_el(iel)
         if(typ_e == typ_select_in) then
-          do inod=4,6  ! Scan the edges
+C           ! Scan the edges
+          do inod=4,6  
             j = table_nod(inod,iel)
-            nb_visite(j) = nb_visite(j) + 1  ! Will indicate the number of
+C             ! Will indicate the number of
+            nb_visite(j) = nb_visite(j) + 1  
           enddo
         endif
       enddo
@@ -139,7 +141,8 @@ c     Outward pointing normal vector to the interface edges
       do iel=1,nel
         typ_e = type_el(iel)
         if(typ_e == typ_select_in) then
-          do inod=4,6  ! Scan the edges
+C           ! Scan the edges
+          do inod=4,6  
             j = table_nod(inod,iel)
             if (nb_visite(j) == 1) then
               inod_1 = edge_endpoints(1,inod-3)
@@ -196,7 +199,8 @@ c     Numerical integration
           else
             eps_b = eps_lst(typ_select_out)
           endif
-          do inod=4,6  ! Scan the edges
+C           ! Scan the edges
+          do inod=4,6  
             j = table_nod(inod,iel)
             xy_3(1) = x(1,j)
             xy_3(2) = x(2,j)
@@ -209,12 +213,18 @@ C               write(*,*) "an edge"
               xy_2(1) = x(1,inod_2)
               xy_2(2) = x(2,inod_2)
 c             List of the nodes coordinates
-              ls_xy(1,1) = xy_1(1) ! x-coord. of node 1
-              ls_xy(2,1) = xy_1(2) ! y-coord. of node 1
-              ls_xy(1,2) = xy_2(1) ! x-coord. of node 2
-              ls_xy(2,2) = xy_2(2) ! y-coord. of node 2
-              ls_xy(1,3) = xy_3(1) ! x-coord. of mid-edge node
-              ls_xy(2,3) = xy_3(2) ! y-coord. of mid-edge node
+C               ! x-coord. of node 1
+              ls_xy(1,1) = xy_1(1) 
+C               ! y-coord. of node 1
+              ls_xy(2,1) = xy_1(2) 
+C               ! x-coord. of node 2
+              ls_xy(1,2) = xy_2(1) 
+C               ! y-coord. of node 2
+              ls_xy(2,2) = xy_2(2) 
+C               ! x-coord. of mid-edge node
+              ls_xy(1,3) = xy_3(1) 
+C               ! y-coord. of mid-edge node
+              ls_xy(2,3) = xy_3(2) 
 c
               edge_vec(1) = ls_xy(1,2) - ls_xy(1,1)
               edge_vec(2) = ls_xy(2,2) - ls_xy(2,1)
@@ -600,8 +610,10 @@ c
 C       debug = 1
 C       if (debug .eq. 1) then
 C         version_number = 2.2
-C         file_type = 0  ! An integer equal to 0 in the ASCII file format
-C         data_size = 8 ! An integer equal to the size of the floating point numbers used in the file
+C ! An integer equal to 0 in the ASCII file format
+C         file_type = 0  
+C ! An integer equal to the size of the floating point numbers used in the file
+C         data_size = 8 
 C         open (unit=27,file="../Output/edge_data.msh")
 C         write(27,'(a11)') "$MeshFormat"
 C         write(27,'((f4.1,1x,I1,1x,I1,1x))') version_number,
@@ -622,7 +634,8 @@ C         enddo
 C         write(27,'(a9)') "$EndNodes"
 C         write(27,'(a9)') "$Elements"
 C         write(27,'(I0.1)') nb_interface_edges
-C         element_type = 15  ! 1-node point
+C ! 1-node point
+C         element_type = 15  
 C         number_of_tags = 2
 C         j = 0
 C         do inod=1,npt
@@ -645,9 +658,12 @@ C         write(27,*) " ""View of tangential vector"" "
 C         write(27,*) number_of_real_tags
 C         write(27,*) 0.0
 C         write(27,*) number_of_integer_tags
-C         write(27,*) 0 ! the time step (0; time steps always start at 0)
-C         write(27,*) 3 ! 3-component (vector) field
-C         write(27,*) nb_interface_edges ! Number of associated nodal values
+C ! the time step (0; time steps always start at 0)
+C         write(27,*) 0 
+C ! 3-component (vector) field
+C         write(27,*) 3 
+C ! Number of associated nodal values
+C         write(27,*) nb_interface_edges 
 C c        node-number value
 C         zz = 0.0d0
 C         j = 0
@@ -679,9 +695,12 @@ C         write(27,*) " ""View of the normal vector"" "
 C         write(27,*) number_of_real_tags
 C         write(27,*) 0.0
 C         write(27,*) number_of_integer_tags
-C         write(27,*) 0 ! the time step (0; time steps always start at 0)
-C         write(27,*) 3 ! 3-component (vector) field
-C         write(27,*) nb_interface_edges ! Number of associated nodal values
+C ! the time step (0; time steps always start at 0)
+C         write(27,*) 0 
+C ! 3-component (vector) field
+C         write(27,*) 3 
+C ! Number of associated nodal values
+C         write(27,*) nb_interface_edges 
 C c        node-number value
 C         zz = 0.0d0
 C         j = 0

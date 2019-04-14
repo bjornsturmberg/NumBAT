@@ -49,7 +49,8 @@ c
             endif
           endif
         enddo
-        do j=4,nnodes ! scan the element edge
+C         ! scan the element edge
+        do j=4,nnodes 
           j1 = table_nod(j,i)
           k = visite(j1)
           if (k .eq. 0) then

@@ -43,7 +43,8 @@ c  ii = sqrt(-1)
         enddo
       enddo
       det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-      if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
+C       ! TEMPORARY CHANGE
+      if (abs(det_b) .le. 1.0d-22) then  
 cc      if (abs(det_b) .le. 1.0d-8) then
         write(*,*) '?? mat_el_v2: Determinant = 0 :', det_b
         write(*,*) "xel = ", xel
@@ -81,7 +82,8 @@ c
 c=================  Construction of the matrix mat_M =================
 c     Integral [rho * P(i) * P(i)]
       do i=1,6
-        do i_xyz=1,3  ! The components x, y and z
+C         ! The components x, y and z
+        do i_xyz=1,3  
           i_p = 3*(i-1) + i_xyz
           do j=1,6
             j_xyz = i_xyz
@@ -107,41 +109,50 @@ c     Journal of Sound and Vibration, vol. 194, no. 2, pp. 119-136, 1996.
             if (i_xyz == 1) then
 c             Overlap: row 1 of [C]*[B] ###########
               z_tmp1 = p2x_p2x(i,j)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)  !!!!!! C(1,1) * S_xx * conjg(S_xx)
+C               !!!!!! C(1,1) * S_xx * conjg(S_xx)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 5 of [C]*[B]  ###########
               z_tmp1 = p2_p2(i,j) * beta**2
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,5)  !!!!!! C(5,5) * S_zx * conjg(S_zx)
+C               !!!!!! C(5,5) * S_zx * conjg(S_zx)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,5)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 6 of [C]*[B]  ###########
               z_tmp1 = p2y_p2y(i,j)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,6)  !!!!!! C(6,6) * S_yx * conjg(S_yx)
+C               !!!!!! C(6,6) * S_yx * conjg(S_yx)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,6)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 2) then
 c             Overlap: row 2 of [C]*[B]  ###########
               z_tmp1 = p2y_p2y(i,j)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)  !!!!!! C(2,2) * S_yy * conjg(S_yy)
+C               !!!!!! C(2,2) * S_yy * conjg(S_yy)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 4 of [C]*[B]  ###########
               z_tmp1 = p2_p2(i,j) * beta**2
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,4)  !!!!!! C(4,4) * S_zy * conjg(S_zy)
+C               !!!!!! C(4,4) * S_zy * conjg(S_zy)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,4)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 6 of [C]*[B]  ###########
               z_tmp1 = p2x_p2x(i,j)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,6)  !!!!!! C(6,6) * S_xy * conjg(S_xy)
+C               !!!!!! C(6,6) * S_xy * conjg(S_xy)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,6)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 3) then
 c             Overlap: column 3 of [C]*[B]  ###########
               z_tmp1 = p2_p2(i,j) * beta**2
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)  !!!!!! C(3,3) * S_zz * conjg(S_zz)
+C               !!!!!! C(3,3) * S_zz * conjg(S_zz)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,i_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 4 of [C]*[B]  ###########
               z_tmp1 = p2y_p2y(i,j)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,4)  !!!!!! C(4,4) * S_yz * conjg(S_yz)
+C               !!!!!! C(4,4) * S_yz * conjg(S_yz)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,4)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 5 of [C]*[B]  ###########
               z_tmp1 = p2x_p2x(i,j)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,5)  !!!!!! C(5,5) * S_xz * conjg(S_xz)
+C               !!!!!! C(5,5) * S_xz * conjg(S_xz)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,5)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             endif
           enddo
@@ -156,39 +167,45 @@ c             Overlap: row 1 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2y(i,j)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  !!!!!! C(1,2) * S_xx * conjg(S_yy)
+C               !!!!!! C(1,2) * S_xx * conjg(S_yy)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 6 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2y(j,i)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,6)  !!!!!! C(6,6) * S_yx * conjg(S_xy)
+C               !!!!!! C(6,6) * S_yx * conjg(S_xy)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+5,6)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 2) then
 c             Overlap: row 2 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2y(j,i) * (-beta)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  !!!!!! C(2,3) * S_yy * conjg(S_zz)
+C               !!!!!! C(2,3) * S_yy * conjg(S_zz)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 4 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2y(i,j) * beta
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,4)  !!!!!! C(4,4) * S_zy * conjg(S_yz)
+C               !!!!!! C(4,4) * S_zy * conjg(S_yz)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,4)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 3) then
 c             Overlap: row 3 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2x(i,j) * (-beta)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  !!!!!! C(3,1) * S_zz * conjg(S_xx)
+C               !!!!!! C(3,1) * S_zz * conjg(S_xx)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 5 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2x(j,i) * beta
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,5)  !!!!!! C(5,5) * S_xz * conjg(S_zx)
+C               !!!!!! C(5,5) * S_xz * conjg(S_zx)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+2,5)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             endif
           enddo
@@ -203,39 +220,45 @@ c             Overlap: row 1 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2x(j,i) * (-beta)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  !!!!!! C(1,3) * S_xx * conjg(S_zz)
+C               !!!!!! C(1,3) * S_xx * conjg(S_zz)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 5 of [C]*[B]  ###########
               j_xyz = 3
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2x(i,j) * beta
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,5)  !!!!!! C(5,5) * S_zx * conjg(S_xz)
+C               !!!!!! C(5,5) * S_zx * conjg(S_xz)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,5)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 2) then
 c             Overlap: row 2 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2y(j,i)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  !!!!!! C(2,1) * S_yy * conjg(S_xx)
+C               !!!!!! C(2,1) * S_yy * conjg(S_xx)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 6 of [C]*[B]  ###########
               j_xyz = 1
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2x_p2y(i,j)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,6)  !!!!!! C(6,6) * S_xy * conjg(S_yx)
+C               !!!!!! C(6,6) * S_xy * conjg(S_yx)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+4,6)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             elseif (i_xyz == 3) then
 c             Overlap: row 3 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2y(i,j) * (-beta)
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  !!!!!! C(3,2) * S_zz * conjg(S_yy)
+C               !!!!!! C(3,2) * S_zz * conjg(S_yy)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz,j_xyz)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
 c             Overlap: row 4 of [C]*[B]  ###########
               j_xyz = 2
               j_p = 3*(j-1) + j_xyz
               z_tmp1 = p2_p2y(j,i) * beta
-              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,4)  !!!!!! C(4,4) * S_yz * conjg(S_zy)
+C               !!!!!! C(4,4) * S_yz * conjg(S_zy)
+              z_tmp1 = z_tmp1 * c_tensor_el(i_xyz+1,4)  
               mat_K(i_p,j_p) = mat_K(i_p,j_p) + z_tmp1
             endif
           enddo

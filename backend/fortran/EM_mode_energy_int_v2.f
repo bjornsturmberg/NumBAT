@@ -25,7 +25,8 @@ c     Local variables
       double precision xel(2,nnodes_P2_0)
       complex*16 E_field_el(3,nnodes_P2_0)
       complex*16 H_field_el(3,nnodes_P2_0)
-      complex*16 Ez_field_el_P3(nnodes_P3_0)  !  P3 Ez-field
+C       !  P3 Ez-field
+      complex*16 Ez_field_el_P3(nnodes_P3_0)  
       double precision p2_p2(nnodes_P2_0,nnodes_P2_0)
       integer*8 i, j, j1
       integer*8 iel, ival, inod
@@ -79,7 +80,7 @@ c       maps the current triangle to the reference triangle.
           enddo
         enddo
         det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-        if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
+        if (abs(det_b) .le. 1.0d-22) then
 cc        if (abs(det_b) .le. 1.0d-8) then
           write(*,*) '?? EM_mode_energy_int_v2: Deter. = 0 :', det_b
           write(*,*) "xel = ", xel

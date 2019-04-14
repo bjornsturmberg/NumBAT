@@ -27,7 +27,8 @@ c       Dirichlet boundary condition (fixed interface): all interior points have
         neq = 0
         do i=1,npt
           i_boundary = type_nod(i)
-          if (i_boundary .eq. 0) then ! each element is associated to 3 interior Degrees Of Freedom (DOF)
+C           ! each element is associated to 3 interior Degrees Of Freedom (DOF)
+          if (i_boundary .eq. 0) then 
             ineq(1,i) = neq + 1
             ineq(2,i) = neq + 2
             ineq(3,i) = neq + 3

@@ -36,20 +36,28 @@ c
       list_end(1,i) = 1
       list_end(2,i) = 3
 c
-      do i=1,1 ! scan the element face
+C       ! scan the element face
+      do i=1,1 
 c       The mid-edge nodes of the face
-        do j=1,3 ! scan the mid-edge nodes of the face
-          basis_list(1,j,i) = 3  ! number on data to be stored
-          basis_list(2,j,i) = j+3 ! the mid-edge number
-          j2 = mod(j+2,3) ! give the node opposite to the mid-edge node (j+3)
+C         ! scan the mid-edge nodes of the face
+        do j=1,3 
+C           ! number on data to be stored
+          basis_list(1,j,i) = 3  
+C           ! the mid-edge number
+          basis_list(2,j,i) = j+3 
+C           ! give the node opposite to the mid-edge node (j+3)
+          j2 = mod(j+2,3) 
           if( j2 .eq. 0 ) j2 = 3
           basis_list(3,j,i) = j2
-          basis_list(4,j,i) = 0  !  actually, it will not be used 
+C           !  actually, it will not be used 
+          basis_list(4,j,i) = 0  
         enddo
       enddo
-      do i=2,4 ! scan the 3 element edges
+C       ! scan the 3 element edges
+      do i=2,4 
 c       2 end-point basis vectors are attached to the edge i
-        do j=1,2 ! scan the end nodes of the edge
+C         ! scan the end nodes of the edge
+        do j=1,2 
           j1 = list_end(j,i-1)
           ls_n(j) = nod_el(j1)
         enddo
@@ -61,18 +69,22 @@ c       2 end-point basis vectors are attached to the edge i
         j2 = ls_n_sorted(2)
         j2 = list_end(j2,i-1)
         j = 1
-        basis_list(1,j,i) = 3  ! number on data to be stored
+C         ! number on data to be stored
+        basis_list(1,j,i) = 3  
         basis_list(2,j,i) = j1
         basis_list(3,j,i) = j2
         basis_list(4,j,i) = 0
         j = 2
-        basis_list(1,j,i) = 3  ! number on data to be stored
+C         ! number on data to be stored
+        basis_list(1,j,i) = 3  
         basis_list(2,j,i) = j2
         basis_list(3,j,i) = j1
         basis_list(4,j,i) = 0
         j = 3
-        basis_list(1,j,i) = 4  ! number on data to be stored
-        basis_list(2,j,i) = i+2 ! add 2 to get the correct edge number
+C         ! number on data to be stored
+        basis_list(1,j,i) = 4  
+C         ! add 2 to get the correct edge number
+        basis_list(2,j,i) = i+2 
         basis_list(3,j,i) = j1
         basis_list(4,j,i) = j2
           if (j1 .eq. j2) then

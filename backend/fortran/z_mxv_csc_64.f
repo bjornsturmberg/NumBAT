@@ -28,7 +28,8 @@ c     valpr.f has changed the CSC indexing to 0-based indexing
 c     so we must add 1 to the CSD row_pointer row_ind
       i_base = 1
 c
-      do i=1,neq   ! Column index
+      ! Column index
+      do i=1,neq   
         col_start = col_ptr(i) + i_base
         col_end = col_ptr(i+1) - 1 + i_base
         do j=col_start,col_end

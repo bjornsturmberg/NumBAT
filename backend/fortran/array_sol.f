@@ -193,7 +193,8 @@ c           Contribution to the transverse component
                 ind_jp = ineq(j_eq,jp)
                 if (ind_jp .gt. 0) then
                   m  = basis_list(2, j_eq, jtest)
-                  if (m .eq. inod) then  !  inod correspond to a P2 interpolation node
+                  if (m .eq. inod) then  
+C                   !  inod correspond to a P2 interpolation node
 c                                           The contribution is nonzero only when m=inod.
 c                 Determine the basis vector
                   call basis_vec (j_eq, jtest, basis_list, phi2_list,
@@ -217,8 +218,10 @@ c                 Determine the basis vector
               enddo
             enddo
 c           Contribution to the longitudinal component
-            do jtest=nddl_t+1,nddl_0  !  The initial P3 value of Ez isinterpolated over P2 nodes
-              do j_eq=1,1  ! 3
+C             !  The initial P3 value of Ez isinterpolated over P2 nodes
+            do jtest=nddl_t+1,nddl_0  
+C               ! 3
+              do j_eq=1,1  
                 jp = table_N_E_F(jtest,iel)
                 ind_jp = ineq(j_eq,jp)
                 if (ind_jp .gt. 0) then
