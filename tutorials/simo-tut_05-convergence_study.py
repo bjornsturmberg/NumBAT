@@ -24,8 +24,8 @@ from fortran import NumBAT
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 300
+inc_a_y = 280
 inc_shape = 'rectangular'
 
 num_modes_EM_pump = 20
@@ -37,10 +37,9 @@ AC_ival = 'All'
 
 prefix_str = 'tut_05-'
 
-nu_lcs = 4
-lc_bkg_list = 4*np.ones(nu_lcs)
-lc_list = np.linspace(5e2,5e3,nu_lcs)
-x_axis = lc_bkg_list
+nu_lcs = 7
+lc_bkg_list = 8*np.ones(nu_lcs)
+lc_list = [100,500,1000,1500,2000,2500,3000]
 x_axis = lc_list
 conv_list = []
 time_list = []
@@ -75,7 +74,7 @@ for i_lc, lc_ref in enumerate(lc_list):
 
 # It is crucial that you preselect modes with significant gain!
 # Otherwise you will observe large relative errors similar to dividing by zero.
-rel_modes = [2,4,8]
+rel_modes = [3,4,8,10]
 # If you do not know the mode numbers of the significant AC modes you may wish to simply plot them all
 # by uncommenting the line below and check if the modes with large gain have low relative errors.
 # rel_modes = np.linspace(0,num_modes_AC-1,num_modes_AC)
@@ -115,7 +114,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"EM k$_z$ ($\times 10^6$ 1/m)")
 ax2.set_ylabel(r"Relative Error EM k$_z$")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-freq_EM.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-freq_EM.png', bbox_inches='tight')
 plt.close()
@@ -141,7 +140,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"AC Freq (GHz)")
 ax2.set_ylabel(r"Relative Error AC Freq")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-freq_AC.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-freq_AC.png', bbox_inches='tight')
 plt.close()
@@ -167,7 +166,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain")
 ax2.set_ylabel(r"Relative Error Gain")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-Gain.png', bbox_inches='tight')
 plt.close()
@@ -193,7 +192,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain (PE)")
 ax2.set_ylabel(r"Relative Error Gain (PE)")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain_PE.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-Gain_PE.png', bbox_inches='tight')
 plt.close()
@@ -219,7 +218,7 @@ ax2.legend(handles, labels)
 ax1.set_xlabel(xlabel)
 ax1.set_ylabel(r"Gain (MB)")
 ax2.set_ylabel(r"Relative Error Gain (MB)")
-ax2.set_yscale('log', nonposx='clip')
+ax2.set_yscale('log')#, nonposx='clip')
 plt.savefig(prefix_str+'convergence-Gain_MB.pdf', bbox_inches='tight')
 plt.savefig(prefix_str+'convergence-Gain_MB.png', bbox_inches='tight')
 plt.close()

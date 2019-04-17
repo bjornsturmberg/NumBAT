@@ -44,17 +44,26 @@ c     S_index(i_xyz,i_u_xyz): index of S_{i_xyz,i_u_xyz} in the Voigt notation
 c     i_xyz represents the x,y, or z-derivative
 c     i_u_xyz represents the x,y, or z-field component
 
-      S_index(1,1) = 1  ! S_xx => 1
-      S_index(2,1) = 6  ! S_yx => 6
-      S_index(3,1) = 5  ! S_zx => 5
+C       ! S_xx => 1
+      S_index(1,1) = 1  
+C       ! S_yx => 6
+      S_index(2,1) = 6  
+C       ! S_zx => 5
+      S_index(3,1) = 5  
 
-      S_index(1,2) = 6  ! S_xy => 6
-      S_index(2,2) = 2  ! S_yy => 2
-      S_index(3,2) = 4  ! S_zy => 4
+C       ! S_xy => 6
+      S_index(1,2) = 6  
+C       ! S_yy => 2
+      S_index(2,2) = 2  
+C       ! S_zy => 4
+      S_index(3,2) = 4  
 
-      S_index(1,3) = 5  ! S_xz => 5
-      S_index(2,3) = 4  ! S_yz => 4
-      S_index(3,3) = 3  ! S_zz => 3
+C       ! S_xz => 5
+      S_index(1,3) = 5  
+C       ! S_yz => 4
+      S_index(2,3) = 4  
+C       ! S_zz => 3
+      S_index(3,3) = 3  
 
       do i=1,2
         do j=1,2
@@ -62,7 +71,8 @@ c     i_u_xyz represents the x,y, or z-field component
         enddo
       enddo
       det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-      if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
+C       ! TEMPORARY CHANGE
+      if (abs(det_b) .le. 1.0d-22) then  
 cc      if (abs(det_b) .le. 1.0d-8) then
         write(*,*) '?? mat_el_v3: Determinant = 0 :', det_b
         write(*,*) "xel = ", xel
@@ -125,11 +135,13 @@ c     z_mat_xyz: contains the overlap integrals of the x,y and z-derivatives
                 z_tmp1 = p2_p2y(j,i) * z_beta
                 z_mat_xyz(i,j,i_xyz,j_xyz) = z_tmp1
               elseif (i_xyz == 3 .and. j_xyz == 1) then
-                z_beta = - ii * beta         ! Conjugate
+C                 ! Conjugate
+                z_beta = - ii * beta         
                 z_tmp1 = p2_p2x(i,j) * z_beta
                 z_mat_xyz(i,j,i_xyz,j_xyz) = z_tmp1
               elseif (i_xyz == 3 .and. j_xyz == 2) then
-                z_beta = - ii * beta         ! Conjugate
+C                 ! Conjugate
+                z_beta = - ii * beta         
                 z_tmp1 = p2_p2y(i,j) * z_beta
                 z_mat_xyz(i,j,i_xyz,j_xyz) = z_tmp1
               elseif (i_xyz == 3 .and. j_xyz == 3) then
@@ -152,7 +164,8 @@ c
 c=================  Construction of the matrix mat_M =================
 c     Integral [rho * P(i) * P(i)]
       do i=1,6
-        do i_xyz=1,3  ! The components x, y and z
+C         ! The components x, y and z
+        do i_xyz=1,3  
           i_p = 3*(i-1) + i_xyz
           do j=1,6
             j_xyz = i_xyz
@@ -170,14 +183,18 @@ c     A.-C. Hladky-Hennion
 c     "Finite element analysis of the propagation of acoustic waves in waveguides," 
 c     Journal of Sound and Vibration, vol. 194, no. 2, pp. 119-136, 1996. 
       do i=1,6
-        do i_u_xyz=1,3  ! Components of the displacement vector
+C         ! Components of the displacement vector
+        do i_u_xyz=1,3  
           i_p = 3*(i-1) + i_u_xyz
           do j=1,6
-            do j_u_xyz=1,3  ! Components of the displacement vector
+C             ! Components of the displacement vector
+            do j_u_xyz=1,3  
               j_p = 3*(j-1) + j_u_xyz
-              do i_xyz=1,3  ! Derivatives
+C               ! Derivatives
+              do i_xyz=1,3  
                 i_ind = S_index(i_xyz,i_u_xyz)
-                do j_xyz=1,3  ! Derivatives
+C                 ! Derivatives
+                do j_xyz=1,3  
                   j_ind = S_index(j_xyz,j_u_xyz)
                   z_tensor = c_tensor_el(i_ind,j_ind)
                   z_tmp1 = z_mat_xyz(i,j,i_xyz,j_xyz)

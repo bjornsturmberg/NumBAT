@@ -89,6 +89,10 @@ for width in waveguide_widths:
 # Run widths in parallel across num_cores CPUs using multiprocessing package.
 pool = Pool(num_cores)
 width_objs = pool.map(modes_n_gain, geo_objects_list)
+# Note pool.map() doesn't pass errors back from fortran routines very well.
+# It's good practise to run the extrema of your simulation range through map()
+# before launcing full multicore simulation.
+
 # np.savez('Simo_results', width_objs=width_objs)
 # npzfile = np.load('Simo_results.npz')
 # width_objs = npzfile['width_objs'].tolist()

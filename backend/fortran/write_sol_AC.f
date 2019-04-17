@@ -8,7 +8,7 @@ c
       double precision lambda
       complex*16 sol(3,nnodes,nval,nel)
       complex*16 beta(nval)
-      character mesh_file*100
+      character mesh_file*1000
 c     Local variables
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
@@ -17,8 +17,8 @@ c     Local variables
       integer*8 namelen, namelength, namelen2
 
       character*11 ivalue, jvalue
-      character dir_name*100
-      character*100 tchar1, tchar2
+      character dir_name*1000
+      character*1000 tchar1, tchar2
 c
       namelen = len_trim(mesh_file)
       namelength = len_trim(dir_name)
@@ -48,13 +48,13 @@ c
         write(63,"(2(g25.17))") beta(ival)
         write(64,"(2(g25.17))") beta(ival)
         do iel=1,nel
-          write(63,12) iel, (dble(sol(1,i,ival,iel)),i=1,nnodes)  ! x-component
-          write(63,12) iel, (dble(sol(2,i,ival,iel)),i=1,nnodes)  ! 3-component
-          write(63,12) iel, (dble(sol(3,i,ival,iel)),i=1,nnodes)  ! z-component
+          write(63,12) iel, (dble(sol(1,i,ival,iel)),i=1,nnodes)
+          write(63,12) iel, (dble(sol(2,i,ival,iel)),i=1,nnodes)
+          write(63,12) iel, (dble(sol(3,i,ival,iel)),i=1,nnodes)
 c
-          write(64,12) iel, (imag(sol(1,i,ival,iel)),i=1,nnodes)  ! x-component
-          write(64,12) iel, (imag(sol(2,i,ival,iel)),i=1,nnodes)  ! 3-component
-          write(64,12) iel, (imag(sol(3,i,ival,iel)),i=1,nnodes)  ! z-component
+          write(64,12) iel, (imag(sol(1,i,ival,iel)),i=1,nnodes)
+          write(64,12) iel, (imag(sol(2,i,ival,iel)),i=1,nnodes)
+          write(64,12) iel, (imag(sol(3,i,ival,iel)),i=1,nnodes)
         enddo
         close(63)
         close(64)

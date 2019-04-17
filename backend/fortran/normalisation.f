@@ -21,7 +21,7 @@ c              z_tmp2 =  1.0d0/z_tmp1
               do i=1,nnodes+7
                 do j=1,3
                   soln_k1(j,i,ival,iel) =
-     *               soln_k1(j,i,ival,iel)  !  * z_tmp2
+     *               soln_k1(j,i,ival,iel) 
                   soln_k2(j,i,ival,iel) =
      *               soln_k2(j,i,ival,iel) * z_tmp2
                 enddo

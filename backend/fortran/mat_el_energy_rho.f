@@ -43,7 +43,7 @@ c  ii = sqrt(-1)
         enddo
       enddo
       det_b = mat_B(1,1) * mat_B(2,2) - mat_B(1,2) * mat_B(2,1)
-      if (abs(det_b) .le. 1.0d-22) then  ! TEMPORARY CHANGE
+      if (abs(det_b) .le. 1.0d-22) then
 cc      if (abs(det_b) .le. 1.0d-8) then
         write(*,*) '?? mat_el_energy_rho: Determinant = 0 :', det_b
         write(*,*) "xel = ", xel

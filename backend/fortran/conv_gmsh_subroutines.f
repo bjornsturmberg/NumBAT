@@ -95,7 +95,8 @@ c
           i1 = nut(i+3)
           if(visite(i1) .eq. 0) then
             visite(i1) = 1
-          else  ! les points sur larete i ont deja ete compte
+C           ! les points sur larete i ont deja ete compte
+          else  
             k = nut(i)
             lb(k) = lb(k) - 2
             k = nut(ip(1,i))
@@ -574,7 +575,7 @@ c
 c     creation de la nouvelle table tcp2
 c     ----------------------------------
 c
-      if(.true.) then   ! ##########################
+      if(.true.) then   
       do i = 1, npt
         invperm(perm(i)) = i
       enddo
@@ -601,7 +602,7 @@ c
 c
 c     $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 c
-      endif   ! ##########################
+      endif  
 c
       return
       end

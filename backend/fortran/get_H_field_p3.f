@@ -11,7 +11,8 @@ C
       double precision k_0, mat_T(2,2)
       complex*16 beta1
       complex*16 E_field_el(3,nnodes_P2)
-      complex*16 Ez_field_el_P3(10)  !  P3 Ez-field
+C        !  P3 Ez-field
+      complex*16 Ez_field_el_P3(10) 
       complex*16 H_field_el(3,nnodes_P2)
 
 c     Local variables

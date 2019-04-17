@@ -1,7 +1,7 @@
 C Calculate the overlap integral of an AC mode with itself using
 C analytic expressions for basis function overlaps on linear elements. 
 C
-      subroutine AC_mode_energy_int_v4 (nval, 
+      subroutine AC_mode_power_int_v4 (nval, 
      *  nel, npt, nnodes, table_nod, type_el, x,
      *  nb_typ_el, c_tensor, beta_AC, Omega_AC, soln_AC,
      *  overlap)
@@ -55,10 +55,10 @@ C
       ii = cmplx(0.0d0, 1.0d0)
 C
       if ( nnodes .ne. 6 ) then
-        write(ui,*) "AC_mode_energy_int_v4: problem nnodes = ", 
+        write(ui,*) "AC_mode_power_int_v4: problem nnodes = ", 
      *              nnodes
         write(ui,*) " --------- nnodes should be equal to 6 !"
-        write(ui,*) "AC_mode_energy_int_v4: Aborting..."
+        write(ui,*) "AC_mode_power_int_v4: Aborting..."
         stop
       endif
 C
@@ -125,4 +125,4 @@ C       close (unit=26)
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-      end subroutine AC_mode_energy_int_v4
+      end subroutine AC_mode_power_int_v4

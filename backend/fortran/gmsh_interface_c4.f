@@ -35,7 +35,8 @@ ccccccccccccccccccccccccccccccccccccc
 c
       ui = 6
       debug = 1
-      type_cyl = 4 ! Cylinder type
+C       ! Cylinder type
+      type_cyl = 4 
 c
       period = lat_vecs(1,1)
 c
@@ -59,17 +60,20 @@ c     Determination of the cylinder centre (center of the unit cell)
       xx_0(2) = (y_max + y_min)/2.0d0
       do i=1,2
         if (i .eq. 1) then
-          ss1  = -1.0d0  ! Sign
+C           ! Sign
+          ss1  = -1.0d0  
         else
           ss1  = 1.0d0
         endif
         do j=1,2
           if (j .eq. 1) then
-            ss2  = -1.0d0  ! Sign
+C             ! Sign
+            ss2  = -1.0d0  
           else
             ss2  = 1.0d0
           endif
-          k = i + 2*(j-1)  ! count the centres
+C           ! count the centres
+          k = i + 2*(j-1)  
           centre(1,k) = xx_0(1) + ss1*period/4.0d0
           centre(2,k) = xx_0(2) + ss2*period/4.0d0
         enddo
@@ -97,7 +101,8 @@ c     Determination of the cylinder radius
         endif
       enddo
       do k=1,4
-        rad_cyl(k) = sqrt(rad_cyl(k)) ! Cylinder radius
+C         ! Cylinder radius
+        rad_cyl(k) = sqrt(rad_cyl(k)) 
       enddo
 
 c
@@ -105,7 +110,8 @@ ccccccccccccccccccccccccccccccccccccc
 c
 
       do k=i,5
-        xyz(3,i) = 0.0d0  ! Z-coordinate = 0
+C         ! Z-coordinate = 0
+        xyz(3,i) = 0.0d0  
       enddo
       open (unit=26,file="Bloch_fields/interface_c4.geo")
           write(26,*) "lc = 0.101;"

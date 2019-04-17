@@ -24,7 +24,8 @@ c
         visite(j) = 0
       enddo
 c
-      mm = 4 ! The first 4 entries of table_N_E_F(*,i) correspond to face and edges
+C       ! The first 4 entries of table_N_E_F(*,i) correspond to face and edges
+      mm = 4 
       mm2 = n_edge + n_face
       nn = 0
       do iel=1,nel
@@ -102,7 +103,8 @@ c               This is possible only when the elements iel and iel2 have opposi
               elseif (vert_2(1) .eq. vert_1(2) .and. 
      *          vert_2(2) .eq. vert_1(1)) then
 c               The nodes on the edges inod and inod2 are numbered in the opposite order
-                j1 = 3 - j ! the numbering of the nodes are reversed
+C                 ! the numbering of the nodes are reversed
+                j1 = 3 - j 
                 m1 = j1+2*(inod-4)+3
                 m2 = j+2*(inod2-4)+3
                 table_N_E_F(m1+mm,iel) = table_N_E_F(m2+mm,iel2)
@@ -123,7 +125,8 @@ c               The nodes on the edges inod and inod2 are numbered in the opposi
           endif
         enddo
 c       Numbering the interior nodes of the triangle
-        do j=1,1  ! there is only one interior node for a P3 triangle
+C         ! there is only one interior node for a P3 triangle
+        do j=1,1  
           nn = nn+1
           table_N_E_F(j+9+mm,iel) = nn + mm2
         enddo

@@ -1,10 +1,22 @@
-"""
-    materials.py is a subroutine of NumBAT that defines Material objects,
-    these represent dispersive lossy refractive indices and possess
-    methods to interpolate n from tabulated data.
+# materials.py is a subroutine of NumBAT that defines Material objects,
+# these represent dispersive lossy refractive indices and possess
+# methods to interpolate n from tabulated data.
 
-    Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou
-"""
+# Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou.
+
+# NumBAT is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 
 import numpy as np
 from scipy.interpolate import interp1d
@@ -60,7 +72,9 @@ class Material(object):
             self.institution = self._params['institution']  # Source institution
             self.doi = self._params['doi']  # doi or, failing that, the http address
 
-            self.n = self._params['n']  # Refractive index []
+            Re_n = self._params['Re_n']  # Real part of refractive index []
+            Im_n = self._params['Im_n']  # Imaginary part of refractive index []
+            self.n = (Re_n + 1j*Im_n)  # Complex refractive index []
             self.s = self._params['s']  # Density [kg/m3]
             self.c_11 = self._params['c_11']  # Stiffness tensor component [Pa]
             self.c_12 = self._params['c_12']  # Stiffness tensor component [Pa]
@@ -373,9 +387,9 @@ def isotropic_stiffness(E, v):
     Ref: www.efunda.com/formulae/solid_mechanics/mat_mechanics/hooke_isotropic.cfm
 
     Args:
-        E  (float): Youngs_modulus
+        E  (float): Youngs modulus
 
-        v  (float): Poisson_ratio
+        v  (float): Poisson ratio
     """
     c_11 = E*(1-v)/((1+v)*(1-2*v))
     c_12 = E*(v)/((1+v)*(1-2*v))

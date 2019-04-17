@@ -95,8 +95,10 @@ c
       x_mid = (x_min + x_max) / 2.0d0
       y_mid = (y_min + y_max) / 2.0d0
 
-      lx = x_max - x_min  !  Length in the x direction
-      ly = y_max - y_min  !  Length in the y direction
+C       !  Length in the x direction
+      lx = x_max - x_min  
+C       !  Length in the y direction
+      ly = y_max - y_min  
 
       rx = sqrt(nel * lx / (2.0d0 * ly))
       ry = rx * ly/lx

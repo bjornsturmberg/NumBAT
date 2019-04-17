@@ -90,12 +90,14 @@ c
               vec_phi(trans) = 0.0d0
             enddo
             do inode=1,nnodes
-              do trans=1,3      ! transverse field components
+C               ! transverse field components
+              do trans=1,3      
                 vec_phi(trans) = vec_phi(trans) + 
      *            sol(trans,inode,ival,iel) * phi2_list(inode)
               enddo
             enddo
-            vec_phi(3) = vec_phi(3) * beta1(ival)  ! E_z = i * \hat{E}_z * (i*beta) (because of the change of variable)
+C             ! E_z = i * \hat{E}_z * (i*beta) (because of the change of variable)
+            vec_phi(3) = vec_phi(3) * beta1(ival)  
             do trans=1,3
               z_tmp = coeff_1 * abs(vec_phi(trans))**2
               mode_pol(trans,ival) = mode_pol(trans,ival) + z_tmp

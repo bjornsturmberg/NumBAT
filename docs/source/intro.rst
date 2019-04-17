@@ -1,6 +1,9 @@
 .. role:: raw-math(raw)
     :format: latex html
 
+.. figure:: NumBAT_logo.png
+   :scale: 40 %
+
 Introduction
 ================
 
@@ -22,11 +25,11 @@ A full description of the NumBAT physics and numerical algorithms  is available 
 in September 2017.
 
 NumBAT is open-source software and the authors welcome additions to the code.  Details for how
-to contribute are available in :numref:`sec-contribute-label`.
+to contribute are available in :ref:`sec-contribute-label`.
 
 
 Development team
 ================
-NumBAT was developed by Bjorn Sturmberg, Kokou Dossou, Blair Morrison, Christian Wolff, Chris Poulton and Michael Steel in a collaboration between Macquarie University, the University of Technology Sydney, and the University of Sydney, as part of the Australian Research Council Discovery Project DP160101691.
+NumBAT was developed by Bjorn Sturmberg, Kokou Dossou, Blair Morrison, Chris Poulton and Michael Steel in a collaboration between Macquarie University, the University of Technology Sydney, and the University of Sydney, as part of the Australian Research Council Discovery Project DP160101691.
 
 

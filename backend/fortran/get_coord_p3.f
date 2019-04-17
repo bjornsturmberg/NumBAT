@@ -63,15 +63,18 @@ c     Initialisation
 c
 cccccccccccccccccccccccc
 c
-      mm = 4 ! The first 4 entries of table_N_E_F(*,i) correspond to face and edges
+C       ! The first 4 entries of table_N_E_F(*,i) correspond to face and edges
+      mm = 4 
       do iel=1,nel
         do inod=1,nnodes
           nut0(inod) = table_nod(inod,iel)
         enddo
-        do inod=1,10  ! the 10 node of a P3 element
+C         ! the 10 node of a P3 element
+        do inod=1,10  
           nut_N_E_F(inod) = table_N_E_F(inod+mm,iel)
         enddo
-        do inod=1,3  ! scan the vertices ############
+C         ! scan the vertices ############
+        do inod=1,3  
           k = nut0(inod)
           if(visite(k) .eq. 0) then
             visite(k) = iel
@@ -80,10 +83,12 @@ c
             x_N_E_F(1,inod2) = x(1,inod1)
             x_N_E_F(2,inod2) = x(2,inod1)
             type_N_E_F(1,inod2) = type_nod(inod1)
-            type_N_E_F(2,inod2) = 0 ! Vertex => dimension zero
+C             ! Vertex => dimension zero
+            type_N_E_F(2,inod2) = 0 
           endif
         enddo
-        do inod=4,nnodes ! scan the nodes located on the edges ############
+C         ! scan the nodes located on the edges ############
+        do inod=4,nnodes 
           k=nut0(inod)
           if(k .lt. 1) then
             print*, 'k = ', k
@@ -102,13 +107,16 @@ c           Endpoints of the edge
             yy2 = x(2,k1)
             dx1 = (xx2-xx1)/3.0d0
             dy1 = (yy2-yy1)/3.0d0
-            ind = type_nod(nut0(inod))  ! type of the mid-edge node of the initial P2 mesh
-            do inod2=1,2  ! 2 nodes per edge (for P3 element)
+C             ! type of the mid-edge node of the initial P2 mesh
+            ind = type_nod(nut0(inod))  
+C             ! 2 nodes per edge (for P3 element)
+            do inod2=1,2  
               k1 = nut_N_E_F(inod2+2*(inod-4)+3)
               x_N_E_F(1,k1) = xx1 + inod2*dx1
               x_N_E_F(2,k1) = yy1 + inod2*dy1
               type_N_E_F(1,k1) = ind
-              type_N_E_F(2,k1) = 0 ! Node => dimension zero
+C               ! Node => dimension zero
+              type_N_E_F(2,k1) = 0 
             enddo
           endif
         enddo
@@ -123,8 +131,10 @@ c       Coordonate of the vertices
         xx3 = x(1,k1)
         yy3 = x(2,k1)
 c       The tenth node is a at the center of the triangle
-        n = 10 ! dimension(P3) = 10
-        k1 = nut_N_E_F(n) ! this node is an interior node of the triangle ############
+C         ! dimension(P3) = 10
+        n = 10 
+C         ! this node is an interior node of the triangle ############
+        k1 = nut_N_E_F(n) 
         tmp1 = 1.0d0/3.0d0
         tmp2 = 1.0d0/3.0d0
         tmp3 = 1.0d0/3.0d0
@@ -132,8 +142,10 @@ c       The tenth node is a at the center of the triangle
         tmp_y = yy1*tmp1+yy2*tmp2+yy3*tmp3
         x_N_E_F(1,k1) = tmp_x
         x_N_E_F(2,k1) = tmp_y
-        type_N_E_F(1,k1) = 0  ! interior node
-        type_N_E_F(2,k1) = 0 ! Node => dimension zero
+C         ! interior node
+        type_N_E_F(1,k1) = 0  
+C         ! Node => dimension zero
+        type_N_E_F(2,k1) = 0 
       enddo
 c
       return

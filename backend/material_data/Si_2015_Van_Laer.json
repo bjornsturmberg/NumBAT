@@ -5,7 +5,8 @@
   "date": "2015",  // Year of data publication/creation
   "institution": "Ghent",  // Source institution
   "doi": "dx.doi.org/10.1038/nphoton.2015.11",  // doi or, failing that, the http address
-  "n": 3.5,  // Refractive index []
+  "Re_n": 3.5,  // Real part of refractive index []
+  "Im_n": 0.0,  // Imaginary part of refractive index []
   "s": 2330,  // Density [kg/m3]
   "c_11": 166e9,  // Stiffness tensor component [Pa]
   "c_12": 64e9,  // Stiffness tensor component [Pa]

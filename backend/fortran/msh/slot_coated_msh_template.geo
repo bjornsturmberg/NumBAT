@@ -23,6 +23,7 @@ cov1y = (c1y/(2*d_in_nm))*d;
 lc = 0; // background and unitcell edge
 lc2 = lc/1; // rib
 lc3 = lc/1; // slab
+lc4 = lc/1; // coating
 
 hy = dy/2 + (slab_h/2) + radius1y; // 
 hx = 0.;
@@ -51,11 +52,11 @@ Point(21) = {-hx+d/2+radius1+radius2, -hy+slab_h, 0, lc2};
 Point(22) = {-hx+d/2-radius1-radius2, -hy+2*radius1y+slab_h, 0, lc2};
 Point(23) = {-hx+d/2+radius1+radius2, -hy+2*radius1y+slab_h, 0, lc2};
 
-
-Point(30) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h+cov1y, 0, lc2};
-Point(31) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h+cov1y, 0, lc2};
-Point(32) = {-hx+d/2-radius1-radius2, -hy+2*radius1y+slab_h+cov1y, 0, lc2};
-Point(33) = {-hx+d/2+radius1+radius2, -hy+2*radius1y+slab_h+cov1y, 0, lc2};
+// Coating
+Point(30) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h+cov1y, 0, lc4};
+Point(31) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h+cov1y, 0, lc4};
+Point(32) = {-hx+d/2-radius1-radius2, -hy+2*radius1y+slab_h+cov1y, 0, lc4};
+Point(33) = {-hx+d/2+radius1+radius2, -hy+2*radius1y+slab_h+cov1y, 0, lc4};
 
 Point(11) = {0, -hy+slab_h, 0, lc};
 Point(12) = {d, -hy+slab_h, 0, lc};

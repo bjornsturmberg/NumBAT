@@ -1,12 +1,24 @@
-"""
-    objects.py is a subroutine of NumBAT. It contains the Struct
-    objects that represent the structure being simulated.
+# objects.py is a subroutine of NumBAT. It contains the Struct
+# objects that represent the structure being simulated.
 
-    Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou.
+# Copyright (C) 2017  Bjorn Sturmberg, Kokou Dossou.
 
-"""
+# NumBAT is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 
 import os
+import subprocess
 import numpy as np
 import materials
 from mode_calcs import Simmo
@@ -39,7 +51,7 @@ class Struct(object):
 
             inc_shape  (str): Shape of inclusions that have template mesh,
                 currently: 'circular', 'rectangular', 'slot', 'rib'
-                'slot_coated', 'rib_coated', 'pedestal', 'onion'. 
+                'slot_coated', 'rib_coated', 'rib_double_coated', 'pedestal', 'onion'. 
                 Rectangular is default.
 
             slab_a_x  (float): The horizontal diameter in nm of the slab
@@ -59,7 +71,16 @@ class Struct(object):
             incs_y_offset  (float): Vertical offset between centers of
                 inclusions in nm.
 
-            coat_y  (float): The thickness of any coat layer around
+            coat_x  (float): The width of the first coat layer around
+                the inclusion.
+
+            coat_y  (float): The thickness of the first coat layer around
+                the inclusion.
+
+            coat2_x  (float): The width of the second coat layer around
+                the inclusion.
+
+            coat2_y  (float): The thickness of the second coat layer around
                 the inclusion.
 
             symmetry_flag  (bool): True if materials all have sufficient
@@ -78,19 +99,21 @@ class Struct(object):
                 ``Material`` instance.
 
             make_mesh_now  (bool): If True, program creates a FEM mesh with
-                provided :NanoStruct: parameters. If False, must provide
+                provided :Struct: parameters. If False, must provide
                 mesh_file name of existing .mail that will be run despite
-                :NanoStruct: parameters.
+                :Struct: parameters.
 
             force_mesh  (bool): If True, a new mesh is created despite
                 existence of mesh with same parameter. This is used to make
                 mesh with equal period etc. but different lc refinement.
 
             mesh_file  (str): If using a set pre-made mesh give its name
-                including .mail if 2D_array (eg. 600_60.mail), or .txt if
-                1D_array. It must be located in backend/fortran/msh/
+                including .mail. It must be located in backend/fortran/msh/
+                Note: len(mesh_file) < 100.
 
-            plt_mesh  (bool): Plot a png of the mesh.
+            plt_mesh  (bool): Plot a png of the geometry and mesh files.
+
+            check_mesh  (bool): Inspect the geometry and mesh files in gmsh.
 
             lc_bkg  (float): Length constant of meshing of background medium
                 (smaller = finer mesh)
@@ -98,8 +121,8 @@ class Struct(object):
             lc2  (float): factor by which lc_bkg will be reduced on inclusion
                 surfaces; lc_surface = lc_bkg / lc2. Larger lc2 = finer mesh.
 
-            lc3-6'  (float): factor by which lc_bkg will be reduced at center
-                of inclusions.
+            lc3-6'  (float): factor by which lc_bkg will be reduced on chosen
+                surfaces; lc_surface = lc_bkg / lc3. see relevant .geo files.
 
             plotting_fields  (bool): Unless set to true field data deleted.
                 Also plots modes (ie. FEM solutions) in gmsh format.
@@ -118,7 +141,8 @@ class Struct(object):
     def __init__(self, unitcell_x, inc_a_x,
                  unitcell_y=None, inc_a_y=None, inc_shape='rectangular',
                  slab_a_x=None, slab_a_y=None, slab_b_x=None, slab_b_y=None,
-                 coat_x=None, coat_y=None, inc_b_x=None, inc_b_y=None,
+                 coat_x=None, coat_y=None, coat2_x=None, coat2_y=None, 
+                 inc_b_x=None, inc_b_y=None,
                  two_inc_sep=None, incs_y_offset=None,
                  pillar_x=None, pillar_y=None,
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
@@ -179,7 +203,10 @@ class Struct(object):
         self.inc_o_x = inc_o_x
         self.coat_x = coat_x
         self.coat_y = coat_y
+        self.coat2_x = coat2_x
+        self.coat2_y = coat2_y
         self.two_inc_sep = two_inc_sep
+        self.incs_y_offset = incs_y_offset
         # Structures material properties - need to check geometry definition 
         # to ensure connecting material type with correct surface of geometry
         self.material_bkg = material_bkg
@@ -585,7 +612,8 @@ class Struct(object):
         self.p_tensor = p_tensor
         self.eta_tensor = eta_tensor
 
-        self.linear_element_shapes = ['rectangular', 'slot', 'slot_coated', 'rib', 'rib_coated', 'pedestal']
+        self.linear_element_shapes = ['rectangular', 'slot', 'slot_coated', 'rib', 
+                                      'rib_coated', 'rib_double_coated', 'pedestal']
         self.curvilinear_element_shapes = ['circular', 'onion']
 
 
@@ -596,63 +624,9 @@ class Struct(object):
         """
         if self.inc_shape in ['circular', 'rectangular']:
             if self.slab_b_x is not None:
-                if self.coat_y is None and self.inc_b_x is None:
-                    msh_template = '1_on_2slabs'
-                    msh_name = '1_on_2s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s_%(diasss)s_%(diassss)s' % {
-                   'd': dec_float_str(self.unitcell_x),
-                   'dy': dec_float_str(self.unitcell_y),
-                   'dia': dec_float_str(self.inc_a_x),
-                   'dias': dec_float_str(self.inc_a_y),
-                   'dias': dec_float_str(self.slab_a_x),
-                   'diass': dec_float_str(self.slab_a_y),
-                   'diasss': dec_float_str(self.slab_b_x),
-                   'diassss': dec_float_str(self.slab_b_y)}
-                elif self.coat_y is None and self.inc_b_x is not None:
-                    msh_template = '2_on_2slabs'
-                    msh_name = '2_on_2s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diab)s_%(diasb)s_%(diass)s_%(diasss)s_%(diassss)s' % {
-                   'd': dec_float_str(self.unitcell_x),
-                   'dy': dec_float_str(self.unitcell_y),
-                   'dia': dec_float_str(self.inc_a_x),
-                   'dias': dec_float_str(self.inc_a_y),
-                   'diab': dec_float_str(self.inc_a_x),
-                   'diasb': dec_float_str(self.inc_a_y),
-                   'dias': dec_float_str(self.slab_a_x),
-                   'diass': dec_float_str(self.slab_a_y),
-                   'diasss': dec_float_str(self.slab_b_x),
-                   'diassss': dec_float_str(self.slab_b_y)}
-                elif self.coat_y is not None and self.inc_b_x is not None:
-                    raise NotImplementedError("Have not implemented 2 coated inclusions.")
-                elif self.coat_y is not None and self.inc_b_x is None:
-                        raise NotImplementedError("Have not implemented 1 coated inclusions.")
-                else:
-                    raise ValueError("NumBAT doesn't understand your geometry.")
+                raise ValueError("NumBAT doesn't understand your geometry.")
             elif self.slab_a_x is not None:
-                if self.coat_y is None and self.inc_b_x is None:
-                    msh_template = '1_on_slab'
-                    msh_name = '1_on_s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diass)s' % {
-                   'd': dec_float_str(self.unitcell_x),
-                   'dy': dec_float_str(self.unitcell_y),
-                   'dia': dec_float_str(self.inc_a_x),
-                   'dias': dec_float_str(self.inc_a_y),
-                   'dias': dec_float_str(self.slab_a_x),
-                   'diass': dec_float_str(self.slab_a_y)}
-                elif self.coat_y is None and self.inc_b_x is not None:
-                    msh_template = '2_on_slab'
-                    msh_name = '2_on_s%(d)s_%(dy)s_%(dia)s_%(dias)s_%(diab)s_%(diasb)s_%(diass)s' % {
-                   'd': dec_float_str(self.unitcell_x),
-                   'dy': dec_float_str(self.unitcell_y),
-                   'dia': dec_float_str(self.inc_a_x),
-                   'dias': dec_float_str(self.inc_a_y),
-                   'diab': dec_float_str(self.inc_a_x),
-                   'diasb': dec_float_str(self.inc_a_y),
-                   'dias': dec_float_str(self.slab_a_x),
-                   'diass': dec_float_str(self.slab_a_y)}
-                elif self.coat_y is not None and self.inc_b_x is not None:
-                    raise NotImplementedError("Have not implemented 2 coated inclusions.")
-                elif self.coat_y is not None and self.inc_b_x is None:
-                        raise NotImplementedError("Have not implemented 1 coated inclusions.")
-                else:
-                    raise ValueError("NumBAT doesn't understand your geometry.")
+                raise ValueError("NumBAT doesn't understand your geometry.")
             elif self.inc_a_x is not None:
                 if self.coat_y is None and self.inc_b_x is None:
                     msh_template = '1'
@@ -694,9 +668,9 @@ class Struct(object):
                     geo = geo.replace('a2 = 10;', "a2 = %f;" % self.inc_b_x)
                     geo = geo.replace('a2y = 20;', "a2y = %f;" % self.inc_b_y)
                     geo = geo.replace('sep = 10;', "sep = %f;" % self.two_inc_sep)
-                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
+                    # geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
                 if msh_template == '2':
-                    geo = geo.replace('yoff = -5;;', "yoff = %f;" % self.incs_y_offset)
+                    geo = geo.replace('yoff = -5;', "yoff = %f;" % self.incs_y_offset)
                 if msh_template == '1_on_slab' or msh_template == '1_on_2slabs' or msh_template == '1_on_slab' or msh_template == '2_on_2slabs':
                     geo = geo.replace('slab_width = d_in_nm;', "slab_width = %f;" % self.slab_a_x)
                     geo = geo.replace('slab_height = 10;', "slab_height = %f;" % self.slab_a_y)
@@ -767,7 +741,7 @@ class Struct(object):
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
 
         elif self.inc_shape in ['rib']:
                 msh_template = 'rib'
@@ -790,7 +764,6 @@ class Struct(object):
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-
 
         elif self.inc_shape in ['rib_coated']:
                 msh_template = 'rib_coated'
@@ -817,7 +790,42 @@ class Struct(object):
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
 
+        elif self.inc_shape in ['rib_double_coated']:
+                msh_template = 'rib_double_coated'
+                self.nb_typ_el = 6
+                # Note: len(msh_name) < 100.
+                msh_name = 'rib_d_c_%(d)s_%(dy)s_%(a)s_%(b)s_%(cz)s_%(c)s_%(czzz)s_%(cc)s_%(ccc)s_%(cccc)s' % {
+                'd': dec_float_str(self.unitcell_x),
+                'dy': dec_float_str(self.unitcell_y),
+                'a': dec_float_str(self.inc_a_x),
+                'b': dec_float_str(self.inc_a_y),
+                'cz': dec_float_str(self.coat_x),
+                'c': dec_float_str(self.coat_y),
+                'czzz': dec_float_str(self.coat2_y),
+                'cc': dec_float_str(self.slab_a_x),
+                'ccc': dec_float_str(self.slab_a_y),
+                'cccc': dec_float_str(self.slab_b_y)}
+                if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+                    geo_tmp = open(msh_location + '%s_msh_template.geo' % msh_template, "r").read()
+                    geo = geo_tmp.replace('d_in_nm = 100;', "d_in_nm = %f;" % self.unitcell_x)
+                    geo = geo.replace('dy_in_nm = 50;', "dy_in_nm = %f;" % self.unitcell_y)
+                    geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
+                    geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
+                    geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
+                    geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
+                    geo = geo.replace('slab2y = 5;', "slab2y = %f;" % self.slab_b_y)
+                    geo = geo.replace('coatx = 2;', "coatx = %f;" % self.coat_x)
+                    geo = geo.replace('coaty = 2;', "coaty = %f;" % self.coat_y)
+                    geo = geo.replace('coat2x = 4;', "coat2x = %f;" % self.coat2_x)
+                    geo = geo.replace('coat2y = 4;', "coat2y = %f;" % self.coat2_y)
+                    geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
+                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
+                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
+                    geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
+                    geo = geo.replace('lc6 = lc/1;', "lc6 = lc/%f;" % self.lc6)
 
         elif self.inc_shape in ['pedestal']:
                 msh_template = 'pedestal'
@@ -844,7 +852,6 @@ class Struct(object):
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-
 
         elif self.inc_shape in ['onion']:
             msh_template = 'onion'
@@ -896,11 +903,27 @@ class Struct(object):
             "is not currently implemented. Please make a mesh with gmsh, & \n " \
             "consider contributing this to NumBAT via gitlab." % self.inc_shape)
 
-        self.mesh_file = msh_name + '.mail'
         if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
+            if len(msh_location) + len(msh_name) > 95:
+                trim_len = 95 - len(msh_location)
+                msh_name = msh_name[0:trim_len]
             open(msh_location + msh_name + '.geo', "w").write(geo)
-            NumBAT.conv_gmsh(msh_location+msh_name)
+            NumBAT.conv_gmsh(msh_location + msh_name)
+        self.mesh_file = msh_name + '.mail'
 
+        if self.plt_mesh is True:
+            # Automatically create png files of mesh.
+            conv_tmp = open(msh_location + 'geo_to_png.geo', "r").read()
+            conv = conv_tmp.replace('tmp', msh_name + '_g')
+            open(msh_location + msh_name + '.2png', "w").write(conv) 
+            subprocess.Popen(['gmsh', msh_name + '.geo', msh_name + '.2png'], 
+                cwd=os.path.dirname(os.path.realpath(__file__))+'/fortran/msh')
+            os.wait()
+            conv_tmp = open(msh_location + 'msh_to_png.geo', "r").read()
+            conv = conv_tmp.replace('tmp', msh_name + '_m')
+            open(msh_location + msh_name + '.2png', "w").write(conv) 
+            subprocess.Popen(['gmsh', msh_name + '.msh', msh_name + '.2png'], 
+                cwd=os.path.dirname(os.path.realpath(__file__))+'/fortran/msh')
         if self.check_mesh is True:
             # Automatically show created mesh in gmsh.
             gmsh_cmd = 'gmsh '+ msh_location + msh_name + '.geo'
@@ -965,7 +988,7 @@ def dec_float_str(dec_float):
     """ Convert float with decimal point into string with '_' in place of '.' """
     # string = str(dec_float)
     if type(dec_float) is float or type(dec_float) is int: 
-        string = '%8.2f' % dec_float
+        string = '%8.1f' % dec_float
     else:
         string = ''
     string = string.replace('.', '_')

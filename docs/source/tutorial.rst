@@ -5,7 +5,7 @@ Simulation Procedure
 
 Simulations with NumBAT are generally carried out using a python script file.
 This file is kept in its own directory which is placed in the NumBAT directory.
-All results of the simulation are automatically created within this directory. This directory then serves as a complete record of the calculation. Often, we will also save the simulation objects (scattering matrices, propagation constants etc.) within this folder for future inspection, manipulation, plotting, etc.
+All results of the simulation are automatically created within this directory. This directory then serves as a complete record of the calculation. Often, we will also save the simulation objects within this folder for future inspection, manipulation, plotting, etc.
 
 Traditionally the name of the python script file begins with simo\-. This is convenient for setting terminal alias' for running the script.
 Throughout the tutorial the script file will be called simo.py.
@@ -39,7 +39,7 @@ structure:
 
 The following section provides some information about the pre-defined range of waveguide
 structures and the key parameters controlling finite-element meshing.
-Information on how to add new structures to NumBAT is provided in :numref:`sec-newmesh-label`.
+Information on how to add new structures to NumBAT is provided in :ref:`sec-newmesh-label`.
 
 Waveguide Geometries
 ----------------------
@@ -51,15 +51,15 @@ dimensions are represented in the mesh geometries. These can also be found in th
 
 as a series of ``.png`` file.
 
-.. figure:: ../msh_type_lib/1_circular.png
-   :scale: 15 %
-
-   Elliptical waveguide.
-
 .. figure:: ../msh_type_lib/1.png
    :scale: 30 %
 
    Rectangular waveguide.
+
+.. figure:: ../msh_type_lib/1_circular.png
+   :scale: 15 %
+
+   Elliptical waveguide.
 
 .. figure:: ../msh_type_lib/2.png
    :scale: 30 %
@@ -71,17 +71,12 @@ as a series of ``.png`` file.
 
    A conventional rib waveguide.
 
-.. figure:: ../msh_type_lib/1_on_slab.png
-   :scale: 30 %
-
-   A rib waveguide on a different substrate.
-
 .. figure:: ../msh_type_lib/rib_coated.png
    :scale: 30 %
 
    A coated rib waveguide.
 
-.. figure:: ../msh_type_lib/1_on_2slabs.png
+.. figure:: ../msh_type_lib/rib_double_coated.png
    :scale: 30 %
 
    A rib waveguide on two substrates.
@@ -107,9 +102,9 @@ as a series of ``.png`` file.
 
 
 
-The parameters ``lc_bkg``, ``lc2``, ``lc3``  to be encountered below set the fineness of the FEM mesh. ``lc_bkg`` sets the reference background mesh size, larger ``lc_bkg`` = larger (more coarse) mesh. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be ``lc_bkg`` mesh elements along the horizontal outside edge; in other words the outside edge is divided into ``lc_bkg`` elements. At the interface between materials the mesh is refined to be ``lc_bkg/lc2``, therefore larger ``lc2`` = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh is typically also refined at the centers of important regions, such as in the center of a waveguide, which is done with ``lc3``, which analogously to ``lc2``, refines the mesh size at these points as ``lc_bkg/lc3``.
+The parameters ``lc_bkg``, ``lc2``, ``lc3``  to be encountered below set the fineness of the FEM mesh. ``lc_bkg`` sets the reference background mesh size, larger ``lc_bkg`` = larger (more coarse) mesh. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be ``lc_bkg`` mesh elements along the horizontal outside edge; in other words the outside edge is divided into ``lc_bkg`` elements. At the interface between materials the mesh is refined to be ``lc_bkg/lc2``, therefore larger ``lc2`` = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh is typically also refined at the centers of important regions, such as in the center of a waveguide, which is done with ``lc3``, which analogously to ``lc2``, refines the mesh size at these points as ``lc_bkg/lc3``. For definition of lc3+ parameters see the particular .geo file.
 
-Choosing appropriate values of ``lc_bkg``, ``lc2``, ``lc3`` is crucial NumBAT to give accurate results. The values depend strongly on the type of structure being studied, and so it is recommended to carry out a convergence test before delving into new structures (see Tutorial 5) starting from similar parameters as used in the tutoarial simulations. You can also visually check the resolution of your mesh by setting ``check_msh=True`` when you define your ``objects.Struct`` (see Tutorial 1), or by running the following command ::
+Choosing appropriate values of ``lc_bkg``, ``lc2``, ``lc3`` is crucial NumBAT to give accurate results. The values depend strongly on the type of structure being studied, and so it is recommended to carry out a convergence test before delving into new structures (see Tutorial 5) starting from similar parameters as used in the tutoarial simulations. You can also visually check the resolution of your mesh by setting ``plt_mesh=True`` or ``check_mesh=True`` when you define your ``objects.Struct`` - the first saves a png of the mesh the second opens mesh in gmsh - (see Tutorial 1), or by running the following command ::
     
     NumBAT/backend/fortran/msh$ gmsh <msh_name>.msh
 
@@ -220,9 +215,9 @@ Tutorial
 --------
 
 In this section we walk through a number of simple simulations that demonstrate the basic use of NumBAT.
-:numref:`sec-literature-label` looks at a number of literature examples taken from many of
+:ref:`sec-literature-label` looks at a number of literature examples taken from many of
 the well-known groups in this field.
-The full Python interface is documented in :numref:`chap-pythonbackend-label`.
+The full Python interface is documented in :ref:`chap-pythonbackend-label`.
 
 
 
@@ -257,7 +252,7 @@ but adds plotting of fields, gain spectra and techniques for saving and reusing 
 calculations. 
 
 Elements to note:
-  #. Both electric and magnetic fields can be selected using ``EM_E`` or ``EM_H`` as the value of ``EM_AC` in 
+  #. Both electric and magnetic fields can be selected using ``EM_E`` or ``EM_H`` as the value of ``EM_AC`` in 
        ``plotting.mode_fields``.
   #. ``np.savez`` and ``np.load`` allow storage of arbitrary data between simulations.
 
@@ -302,7 +297,7 @@ This example also generates gain spectra.
 .. figure:: ../../tutorials/tut_02-gain_spectra-MB_PE_comps_zoom.png
    :scale: 35 %
    
-   Zoomed-in gain spectra from :numref:`fig-gainspec1-label`.
+   Zoomed-in gain spectra from :ref:`fig-gainspec1-label`.
 
 .. raw:: latex
 
@@ -599,21 +594,36 @@ causes a problem where the slab layer significantly distorting acoustic modes.
 Adding this feature is a priority for the next release of NumBAT.
 The following example shows an approximate way to avoid the problem for now.
 
-.. literalinclude:: ../../lit_examples/simo-lit_04-Van_Laer-NatPhot_2015.py
+.. literalinclude:: ../../lit_examples/simo-lit_04-pillar-Van_Laer-NatPhot_2015.py
     :lines: 0-
 
 
-.. figure:: ../../lit_examples/lit_04-fields/EM_E_field_0.png
+.. figure:: ../../lit_examples/lit_04-pillar-fields/EM_E_field_0.png
    :scale: 50 %
    
    Fundamental optical mode fields.
 
 
-.. figure:: ../../lit_examples/lit_04-fields/AC_field_38.png
+.. figure:: ../../lit_examples/lit_04-pillar-fields/AC_field_38.png
    :scale: 50 %
    
    Dominant high gain acoustic mode.
    Note how the absence of an absorptive boundary on the SiO2 slab causes this layer to significantly distorted the acoustic modes.
+
+
+We may also choose to study the simplified situation where the pedestal is removed.
+
+
+.. literalinclude:: ../../lit_examples/simo-lit_04-no_pillar-Van_Laer-NatPhot_2015.py
+    :lines: 0-
+
+Which gives good agreement for the gain spectrum.
+
+.. figure:: ../../lit_examples/lit_04-pillar-fields/lit_04-no_pillar-gain_spectra-MB_PE_comps.png
+   :scale: 50 %
+   
+   Gain spectrum for the simplified case of a waveguide surrounded by vacuum.
+
 
 .. raw:: latex
 
@@ -680,6 +690,20 @@ This was described in O. Florez *et al.*, `Brillouin self-cancellation
    
    Gain spectra of a nanowire with diameter 550 nm, matching blue curve of Fig. 3b in paper.
 
+
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-5.png
+   :scale: 50 %
+
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-6.png
+   :scale: 50 %
+
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-8.png
+   :scale: 50 %
+
+.. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-11.png
+   :scale: 50 %
+   
+   Zoomed in gain spectra around gaint peaks of 550 nm diameter NW.
 
 .. raw:: latex
 

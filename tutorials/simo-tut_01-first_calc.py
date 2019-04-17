@@ -31,8 +31,8 @@ wl_nm = 1550 # Wavelength of EM wave in vacuum.
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
 # Waveguide widths.
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 300
+inc_a_y = 280
 # Shape of the waveguide.
 inc_shape = 'rectangular'
 
@@ -52,11 +52,12 @@ AC_ival = 'All'
 
 # Step 4
 # Use specified parameters to create a waveguide object.
-# Note use of rough mesh for demonstration purposes.
+# Note use of rough mesh for demonstration purposes, and use plt_mesh=True
+# to save the geometry and mesh as png files in backend/fortran/msh/
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=materials.Si_2016_Smith,
-                        lc_bkg=2, lc2=200.0, lc3=5.0, check_mesh=False)
+                        lc_bkg=2, lc2=200.0, lc3=5.0, plt_mesh=True)
 
 # Explicitly remind ourselves what data we're using.
 print('\nUsing %s material data from' % wguide.material_a.chemical)

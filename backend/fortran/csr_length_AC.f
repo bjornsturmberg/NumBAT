@@ -11,7 +11,7 @@ c
       integer*8 ipointer, int_max
       integer*8 table_N_E_F(nnodes,nel)
       integer*8 ineq(3,n_ddl)
-      integer*8 col_ind(*)  !  col_ind(nonz_max)
+      integer*8 col_ind(*) 
       integer*8 row_ptr(neq+1)
       integer*8 max_row_len
 

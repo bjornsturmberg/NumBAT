@@ -28,8 +28,8 @@ start = time.time()
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
 # Unit cell must be large to ensure fields are zero at boundary.
-unitcell_x = 5*wl_nm
-unitcell_y = 0.2*unitcell_x
+unitcell_x = 6*wl_nm
+unitcell_y = 0.4*unitcell_x
 # Waveguide widths.
 inc_a_x = 1000
 inc_a_y = 80
@@ -101,8 +101,8 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, #ivals=[0,1,2,3,4,5,6,7,8,9],
-     num_ticks=3, xlim_min=0.1, xlim_max=0.1)
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, ivals=[0,1,2,3,4,5,6,7,8,9],
+     num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='png')
 
 set_q_factor = 680.
 
@@ -127,8 +127,7 @@ freq_min = 4.2  # GHz
 freq_max = 4.3  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-    prefix_str=prefix_str, suffix_str='')
+    prefix_str=prefix_str, suffix_str='', pdf_png='png')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
-

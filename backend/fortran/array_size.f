@@ -96,7 +96,8 @@ c     I have observed that: max_row_len < 200
 cccccc
       ip_type_nod = 1
       ip_type_el = ip_type_nod + npt
-      ip_table_nod = ip_type_el + nel ! pointer to FEM connectivity table
+C       ! pointer to FEM connectivity table
+      ip_table_nod = ip_type_el + nel 
       ip_table_N_E_F = ip_table_nod + nnodes*nel
 
       n_ddl_max = npt + nel
@@ -142,7 +143,8 @@ c     jp_rhs will also be used (in gmsh_post_process) to store a solution
       jp_sol1b_H = jp_sol1_H + 3*nnodes*nval*nel
       jp_eigenval1 = jp_sol1b_H + 3*nnodes*nval*nel
       jp_eigenval2 = jp_eigenval1 + nval + 1
-      jp_vschur = jp_eigenval2 + nval + 1     ! Eigenvectors
+C       ! Eigenvectors
+      jp_vschur = jp_eigenval2 + nval + 1     
       jp_eigenval = jp_vschur + neq*nvect
       jp_eigen_pol = jp_eigenval + nval + 1
       jp_eigenval_tmp = jp_eigen_pol + nval*4

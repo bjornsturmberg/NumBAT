@@ -10,14 +10,21 @@ It has also been successfully installed by users on Debian, RedHat and on Window
 
 In general, you can simply run the setup script ::
 
+    $ ./setup.sh
+
+or, depending on your system configuration as ::
+
     $ sudo ./setup.sh
 
 from the ``NumBAT/`` directory.
 
-Or, if you prefer to do things manually, this is equivalent to ::
+Before doing so you may wish to update your system ::
 
     $ sudo apt-get update
     $ sudo apt-get upgrade
+
+Or, if you prefer to do things manually, this is equivalent to ::
+
     $ sudo apt-get install -y <dependencies>
     $ cd backend/fortran/
     $ make
@@ -25,6 +32,12 @@ Or, if you prefer to do things manually, this is equivalent to ::
     $ nosetests3
 
 where the <dependencies> packages are listed dependencies.txt. Note that it is safer to pip install matplotlib than apt-get'ing as will install matplotlib 2.0 without conflicting older versions.
+
+For optimal results ::
+
+    $ cp NumBAT/backend/NumBATstyle.mplstyle ~/.config/matplotlib/stylelib/
+
+or replace plt.style.use('NumBATstyle') in NumBAT/backend/plotting.py with your own prefered matplotlib style file.
 
 **This is all there is, there isn't any more.**
 

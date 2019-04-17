@@ -1,9 +1,21 @@
-"""
-    plotting.py is a subroutine of NumBAT that contains numerous plotting
-    routines.
+# plotting.py is a subroutine of NumBAT that contains numerous plotting
+# routines.
 
-    Copyright (C) 2017  Bjorn Sturmberg
-"""
+# Copyright (C) 2017  Bjorn Sturmberg.
+
+# NumBAT is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 
 import os
 import numpy as np
@@ -21,9 +33,9 @@ from matplotlib import ticker
 from fortran import NumBAT
 
 try: 
-    plt.style.use('bjornstyle')
-    colors = [color['color'] for color in list(plt.rcParams['axes.prop_cycle'])]
-except (ValueError, IOError, AttributeError): "Preferred matplotlib style file not found."
+    plt.style.use('NumBATstyle')
+except (ValueError, IOError, AttributeError): print("Preferred matplotlib style file not found.")
+colors = [color['color'] for color in list(plt.rcParams['axes.prop_cycle'])]
 
 
 # font = {'family' : 'normal',
@@ -186,7 +198,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     if save_fig:
         plt.plot(interp_grid, np.abs(interp_values_PE), 'r', linewidth=3, label="PE")
         plt.plot(interp_grid, np.abs(interp_values_MB), 'g', linewidth=3, label="MB")
-        plt.plot(interp_grid, np.abs(interp_values), 'b', linewidth=2, label="Total")
+        plt.plot(interp_grid, np.abs(interp_values), 'b', linewidth=3, label="Total")
         plt.legend(loc=0)
         if freq_min and freq_max:
             plt.xlim(freq_min,freq_max)
@@ -219,7 +231,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
 
         max_G = np.max(interp_values)
         dB_const = dB_peak_amp/(4.34*max_G)
-        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*dB_const))), 'b', linewidth=2, label="Total")
+        plt.plot(interp_grid, np.abs(10*np.log10(np.exp(abs(interp_values)*dB_const))), 'b', linewidth=3, label="Total")
         plt.legend(loc=0)
         if freq_min and freq_max:
             plt.xlim(freq_min,freq_max)
@@ -424,11 +436,11 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
         # Flip y order as imshow has origin at top left
         v_plots = [m_ReEx[:,::-1],m_ReEy[:,::-1],m_ReEz[:,::-1],m_ImEx[:,::-1],m_ImEy[:,::-1],m_ImEz[:,::-1],m_AbsE[:,::-1]]
         if EM_AC=='EM_E':
-            v_labels = ["Re($E_x$)","Re($E_y$)","Re($E_z$)","Im($E_x$)","Im($E_y$)","Im($E_z$)","$|E|$"]
+            v_labels = [r"Re($E_x$)",r"Re($E_y$)",r"Re($E_z$)",r"Im($E_x$)",r"Im($E_y$)",r"Im($E_z$)",r"$|E|$"]
         elif EM_AC == 'EM_H':
-            v_labels = ["Re($H_x$)","Re($H_y$)","Re($H_z$)","Im($H_x$)","Im($H_y$)","Im($H_z$)","$|H|$"]
+            v_labels = [r"Re($H_x$)",r"Re($H_y$)",r"Re($H_z$)",r"Im($H_x$)",r"Im($H_y$)",r"Im($H_z$)",r"$|H|$"]
         else:
-            v_labels = ["Re($u_x$)","Re($u_y$)","Re($u_z$)","Im($u_x$)","Im($u_y$)","Im($u_z$)","$|u|$"]
+            v_labels = [r"Re($u_x$)",r"Re($u_y$)",r"Re($u_z$)",r"Im($u_x$)",r"Im($u_y$)",r"Im($u_z$)",r"$|u|$"]
 
         # field plots
         plot_threshold = 1e-4 # set negligible components to explicitly zero
@@ -514,30 +526,30 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
         if EM_AC=='EM_E' or EM_AC=='EM_H':
             n_eff = sim_wguide.Eig_values[ival] * sim_wguide.wl_m / (2*np.pi)
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'$k_z = %(re_k)f6 %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f %(im_k)f i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = r'$n_\text{eff} = %(re_k)f6 %(im_k)f6 i$'% \
+                n_str = r'$n_{eff} = %(re_k)f %(im_k)f i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             else:
-                k_str = r'$k_z = %(re_k)f6 + %(im_k)f6 i$'% \
+                k_str = r'$k_z = %(re_k)f + %(im_k)f i$'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival])}
-                n_str = r'$n_\text{eff} = %(re_k)f6 + %(im_k)f6 i$'% \
+                n_str = r'$n_{eff} = %(re_k)f + %(im_k)f i$'% \
                     {'re_k' : np.real(n_eff), 'im_k' : np.imag(n_eff)}
             # plt.text(10, 0.3, n_str, fontsize=title_font)
         else:
             n_str = ''
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f %(im_k)f i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f + %(im_k)f i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
         # plt.text(10, 0.5, k_str, fontsize=title_font)
-        plt.suptitle(k_str + '   ' + n_str+"\n", fontsize=title_font)
+        plt.suptitle('Mode #' + str(ival) + '   ' + k_str + '   ' + n_str+"\n", fontsize=title_font)
         # plt.tight_layout(pad=2.5, w_pad=0.5, h_pad=1.0)
         fig.set_tight_layout(True)
 
@@ -642,14 +654,14 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=500, quiver_steps=50,
             fig.set_tight_layout(True)
             n_str = ''
             if np.imag(sim_wguide.Eig_values[ival]) < 0:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f %(im_k)f i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
             else:
-                k_str = r'$\Omega/2\pi = %(re_k)f6 + %(im_k)f6 i$ GHz'% \
+                k_str = r'$\Omega/2\pi = %(re_k)f + %(im_k)f i$ GHz'% \
                     {'re_k' : np.real(sim_wguide.Eig_values[ival]*1e-9),
                     'im_k' : np.imag(sim_wguide.Eig_values[ival]*1e-9)}
-            plt.suptitle(k_str + '   ' + n_str, fontsize=title_font)
+            plt.suptitle('Mode #' + str(ival) + '   ' + k_str + '   ' + n_str, fontsize=title_font)
 
             if pdf_png=='png':
                 plt.savefig('%(pre)sfields/%(s)s_S_field_%(i)i%(add)s.png' %

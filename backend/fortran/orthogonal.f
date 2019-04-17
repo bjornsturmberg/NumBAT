@@ -79,7 +79,8 @@ c
       endif
 C
       redo = 0
-122   continue                !second rearranged overlap
+C      !second rearranged overlap
+122   continue               
 C
       do jval=1,nval
         do ival=1,nval
@@ -311,7 +312,7 @@ C
       do jval=1,nval
         do ival=1,nval
           r_tmp1 = abs(mat_overlap(ival,jval))
-          if (ival .eq. jval) then ! Diagonal
+          if (ival .eq. jval) then 
             if (val_max_diag .lt. r_tmp1) then
               val_max_diag = r_tmp1
             endif

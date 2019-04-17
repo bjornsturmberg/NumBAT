@@ -35,7 +35,8 @@ c     Local variables
 c
 c     NQUAD: The number of quadrature points used in each element.
       integer*8 nquad, nquad_max, iq
-      parameter (nquad_max = 16) ! Limit to P2 polynomials
+C       ! Limit to P2 polynomials
+      parameter (nquad_max = 16) 
       double precision wq(nquad_max)
       double precision xq(nquad_max), yq(nquad_max)
       double precision xx(2), xx_g(2), ww, det

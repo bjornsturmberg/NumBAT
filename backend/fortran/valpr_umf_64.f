@@ -76,9 +76,12 @@ c      integer*8 max_nvect
 c      parameter(max_nvect=3000) ! previously 1500
 c
       integer alloc_stat
-      complex*16, dimension(:), allocatable :: workev !  (3*max_nvect), 
-      double precision, dimension(:), allocatable :: rwork  !  (max_nvect)
-      logical, dimension(:), allocatable :: select  !  (max_nvect)
+C       !  (3*max_nvect), 
+      complex*16, dimension(:), allocatable :: workev 
+C       !  (max_nvect)
+      double precision, dimension(:), allocatable :: rwork  
+C       !  (max_nvect)
+      logical, dimension(:), allocatable :: select  
 
 
 c     Local variables

@@ -32,13 +32,13 @@ start = time.time()
 wl_nm = 1550
 unitcell_x = 2.5*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 314.7
-inc_a_y = 0.9*inc_a_x
+inc_a_x = 300
+inc_a_y = 280
 inc_shape = 'rectangular'
 
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
-num_modes_AC = 20
+num_modes_AC = 25
 EM_ival_pump = 0
 EM_ival_Stokes = 0
 AC_ival = 'All'
@@ -80,10 +80,11 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 # Only plot fields of fundamental (ival = 0) mode.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
                          ylim_max=0.4, ivals=[0], contours=True, EM_AC='EM_E', 
-                         prefix_str=prefix_str)
+                         pdf_png='png', prefix_str=prefix_str)
 # Plot the H fields of the EM modes - specified with EM_AC='EM_H'.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
-                         ylim_max=0.4, ivals=[0], EM_AC='EM_H', prefix_str=prefix_str)
+                         ylim_max=0.4, ivals=[0], EM_AC='EM_H', 
+                         pdf_png='png', prefix_str=prefix_str)
 
 # Calculate the EM effective index of the waveguide.
 n_eff_sim = np.real(sim_EM_pump.Eig_values[0]*((wl_nm*1e-9)/(2.*np.pi)))

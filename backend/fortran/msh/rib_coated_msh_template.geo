@@ -22,6 +22,7 @@ coat_h = coaty/d_in_nm;
 lc = 0; // background and unitcell edge
 lc2 = lc/1; // rib
 lc3 = lc/1; // slab
+lc4 = lc/1; // coat
 
 hy = dy/2 + (slab_h/2) + radius1y; // 
 hx = 0.;
@@ -45,12 +46,12 @@ Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h, 0, lc2};
 Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h, 0, lc2};
 
 // Coat
-Point(15) = {d/2-slab_w/2, -hy+slab_h+coat_h, 0, lc3};
-Point(16) = {d/2+slab_w/2, -hy+slab_h+coat_h, 0, lc3};
-Point(17) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h, 0, lc3};
-Point(18) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h, 0, lc3};
-Point(19) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc3};
-Point(20) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc3};
+Point(15) = {d/2-slab_w/2, -hy+slab_h+coat_h, 0, lc4};
+Point(16) = {d/2+slab_w/2, -hy+slab_h+coat_h, 0, lc4};
+Point(17) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h, 0, lc4};
+Point(18) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h, 0, lc4};
+Point(19) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc4};
+Point(20) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc4};
 
 Line(1) = {1, 2};
 Line(2) = {2, 3};

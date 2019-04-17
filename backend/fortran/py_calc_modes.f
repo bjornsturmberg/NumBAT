@@ -8,7 +8,7 @@ c     Explicit inputs
      *    cmplx_max, real_max, int_max,
 c     Outputs
      *    beta1, sol1, mode_pol,
-     *    table_nod, type_el, type_nod, x_arr)
+     *    table_nod, type_el, type_nod, x_arr, ls_material)
 
 C************************************************************************
 C
@@ -25,7 +25,7 @@ C
 
 C  Local parameters:
       integer*8 int_max, cmplx_max, int_used, cmplx_used
-      integer*8 real_max, real_used!, n_64
+      integer*8 real_max, real_used
 C      parameter (int_max=2**22, cmplx_max=2**26)
 C      parameter (real_max=2**21)
 C     !   a(int_max)
@@ -63,7 +63,7 @@ c     E_H_field = 1 => Electric field formulation (E-Field)
 c     E_H_field = 2 => Magnetic field formulation (H-Field)
       integer*8 E_H_field
       integer*8 neq, debug
-      integer*8 npt_p3!, numberprop_N
+      integer*8 npt_p3
 C  Variable used by valpr
       integer*8 nval, nvect, itermax, ltrav
       integer*8 n_conv, i_base
@@ -81,7 +81,7 @@ C  Renumbering
 c      integer*8 ip_row_ptr, ip_bandw_1, ip_adjncy
 c      integer*8 len_adj, len_adj_max, len_0_adj_max
 c, iout, nonz_1, nonz_2
-      integer*8 i, j!, mesh_format
+      integer*8 i, j
       integer*8 ival, iel, inod
 c     Wavelength lambda in units of m
       double precision lambda, d_in_m
@@ -98,11 +98,11 @@ C  Timing variables
       character*(8) start_date, end_date
       character*(10) start_time, end_time
 C  Names and Controls
-      character mesh_file*100, gmsh_file*100, log_file*100
-      character gmsh_file_pos*100
-      character overlap_file*100, dir_name*100
-      character*100 tchar
-      integer*8 namelength, PrintAll!, Checks
+      character mesh_file*1000, gmsh_file*1000, log_file*1000
+      character gmsh_file_pos*1000
+      character overlap_file*1000, dir_name*1000
+      character*1000 tchar
+      integer*8 namelength, PrintAll
       integer*8 plot_modes
       integer*8 pair_warning, homogeneous_check
       integer*8 q_average, plot_real, plot_imag, plot_abs
@@ -132,6 +132,8 @@ c     new breed of variables to prise out of a, b and c
       complex*16, pointer :: beta(:)
       complex*16 mode_pol(4,nval)
 
+      complex*16 ls_material(1,nnodes+7,nel)
+
 Cf2py intent(in) lambda, nval
 Cf2py intent(in) debug, mesh_file, npt, nel
 Cf2py intent(in) n_eff, bloch_vec, d_in_m, shift
@@ -141,7 +143,7 @@ Cf2py intent(in) cmplx_max, real_max, int_max, nb_typ_el
 
 Cf2py depend(n_eff) nb_typ_el
 
-Cf2py intent(out) beta1, type_nod
+Cf2py intent(out) beta1, type_nod, ls_material
 Cf2py intent(out) sol1, mode_pol, table_nod, type_el, x_arr
 
 
@@ -162,8 +164,10 @@ c     ii = sqrt(-1)
 C     Old inputs now internal to here and commented out by default.
 C      mesh_format = 1
 C      Checks = 0 ! check completeness, energy conservation
-      PrintAll = debug ! only need to print when debugging J overlap, orthogonal
-      tol = 0.0 ! ARPACK accuracy (0.0 for machine precision)
+C       ! only need to print when debugging J overlap, orthogonal
+      PrintAll = debug 
+C       ! ARPACK accuracy (0.0 for machine precision)
+      tol = 0.0 
 C       lx=1.0 ! Diameter of unit cell. Default, lx = 1.0.
 C       ly=1.0 ! NOTE: currently requires ly=lx, ie rectangular unit cell.
 
@@ -750,6 +754,9 @@ C     (see Eq. (25) of the JOSAA 2012 paper)
           enddo
         enddo
       enddo
+
+      call array_material_EM (nel, npt, 
+     *  nb_typ_el, n_eff, type_el, ls_material)
 
 C
 C    Save Original solution

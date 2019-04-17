@@ -1,0 +1,23 @@
+
+  # You can type the following command line to start gnuplot: gnuplot < gnuplot_info.txt
+
+  # To plot the data in a file:
+
+  set style data lines
+  set size ratio -1
+  plot "diatom_sq_4.mail_gnuplot.txt
+
+  # To create a PNG format of the gnuplot image:
+
+  set term png
+  set output "diatom_sq_4.mail.png" 
+
+  plot "diatom_sq_4.mail_gnuplot.txt
+
+  quit
+
+
+  # Meaning of set size ratio -1:
+  #    gnuplot tries to set the scales so that 
+  #    the unit has the same length on both 
+  #    the x and y axes

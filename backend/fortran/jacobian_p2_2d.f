@@ -59,10 +59,14 @@ c
 ccccccccccccccccccccccccccccc
 c        mat_T = mat_B
 c
-      N_32 = 2 ! The order of the matrix mat_B
-      NRHS_32 = N_32 ! The number of right hand sides
-      LDB_32 = N_32 ! The leading dimension of the array mat_B
-      LDT_32 = N_32 ! The leading dimension of the array mat_T
+C       ! The order of the matrix mat_B
+      N_32 = 2 
+C       ! The number of right hand sides
+      NRHS_32 = N_32 
+C       ! The leading dimension of the array mat_B
+      LDB_32 = N_32 
+C       ! The leading dimension of the array mat_T
+      LDT_32 = N_32 
 c
 c     Initialisation for DGESV: mat_T = identity
       do i=1,2

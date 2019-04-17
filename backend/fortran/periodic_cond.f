@@ -86,17 +86,20 @@ c       Periodic boundary condition: all points have a degree of freedom
           i_boundary = type_N_E_F(1,i)
           i_dim = type_N_E_F(2,i)
           if (i_boundary .eq. 0) then
-            if (i_dim .eq. 2) then ! each element is associated to 3 interior Degrees Of Freedom (DOF)
+C             ! each element is associated to 3 interior Degrees Of Freedom (DOF)
+            if (i_dim .eq. 2) then 
               ineq(1,i) = neq + 1
               ineq(2,i) = neq + 2
               ineq(3,i) = neq + 3
               neq = neq + 3
-            elseif (i_dim .eq. 1) then ! each edge is associated to 3 Degrees Of Freedom (DOF)
+C             ! each edge is associated to 3 Degrees Of Freedom (DOF)
+            elseif (i_dim .eq. 1) then 
               ineq(1,i) = neq + 1
               ineq(2,i) = neq + 2
               ineq(3,i) = neq + 3
               neq = neq + 3
-            elseif (i_dim .eq. 0) then ! each nodee is associated to 1 Degree Of Freedom (DOF)
+C             ! each nodee is associated to 1 Degree Of Freedom (DOF)
+            elseif (i_dim .eq. 0) then 
               ineq(1,i) = neq + 1
               ineq(2,i) = 0
               ineq(3,i) = 0
@@ -116,17 +119,20 @@ c       Periodic boundary condition: all points have a degree of freedom
           if (i_boundary .ne. 0) then
             j = ip_period_E_F(i)
             if(j .eq. i) then
-              if (i_dim .eq. 2) then ! each element is associated to 3 interior Degrees Of Freedom (DOF)
+C               ! each element is associated to 3 interior Degrees Of Freedom (DOF)
+              if (i_dim .eq. 2) then 
                 ineq(1,i) = neq + 1
                 ineq(2,i) = neq + 2
                 ineq(3,i) = neq + 3
                 neq = neq + 3
-              elseif (i_dim .eq. 1) then ! each edge is associated to 3 Degrees Of Freedom (DOF)
+C               ! each edge is associated to 3 Degrees Of Freedom (DOF)
+              elseif (i_dim .eq. 1) then 
                 ineq(1,i) = neq + 1
                 ineq(2,i) = neq + 2
                 ineq(3,i) = neq + 3
                 neq = neq + 3
-              elseif (i_dim .eq. 0) then ! each nodee is associated to 1 Degree Of Freedom (DOF)
+C               ! each nodee is associated to 1 Degree Of Freedom (DOF)
+              elseif (i_dim .eq. 0) then 
                 ineq(1,i) = neq + 1
                 ineq(2,i) = 0
                 ineq(3,i) = 0

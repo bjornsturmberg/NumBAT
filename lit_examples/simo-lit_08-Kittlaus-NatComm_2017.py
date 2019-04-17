@@ -28,16 +28,30 @@ start = time.time()
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
 # Unit cell must be large to ensure fields are zero at boundary.
-unitcell_x = 5*wl_nm
-unitcell_y = 0.2*unitcell_x
+unitcell_x = 7*wl_nm
+unitcell_y = 0.7*unitcell_x
 # Waveguide widths.
 inc_a_x = 1500
 inc_a_y = 80
 # Shape of the waveguide.
-inc_shape = 'rib'
+# Use double coated geometry to control meshing around rib waveguide.
+inc_shape = 'rib_double_coated'
 
 slab_a_x = 2850
 slab_a_y = 135
+
+# areas included purely
+slab_b_y = 100
+coat_x = 50 
+coat_y = 100
+coat2_x = 100
+coat2_y = 200
+lc_bkg = 4  # background
+lc2 = 8000  # edge of rib
+lc3 = 3000   # edge of slab_a 
+lc4 = 50    # edge of coat
+lc5 = 20    # edge of slab_b
+lc6 = 4     # edge of coat2
 
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
@@ -54,17 +68,21 @@ AC_ival = 'All'
 
 # Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
+Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 
 prefix_str = 'lit_08-'
 
 # Use specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        slab_a_x=slab_a_x, slab_a_y=slab_a_y,
+                        slab_a_x=slab_a_x, slab_a_y=slab_a_y, slab_b_y=slab_b_y, 
+                        coat_x=coat_x, coat_y=coat_y, coat2_x=coat2_x, coat2_y=coat2_y,
                         material_bkg=materials.Vacuum,
-                        material_a=Si_110,
-                        material_b=Si_110, symmetry_flag=False,
-                        lc_bkg=5, lc2=4000.0, lc3=2000.0)
+                        material_a=Si_110, #plt_mesh=True,
+                        material_b=Si_110, material_c=materials.Vacuum,
+                        material_d=materials.Vacuum, material_e=materials.Vacuum,
+                        symmetry_flag=False,
+                        lc_bkg=lc_bkg, lc2=lc2, lc3=lc3,
+                        lc4=lc4, lc5=lc5, lc6=lc6)
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
@@ -105,7 +123,7 @@ sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=s
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
 plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str,
-     num_ticks=3, xlim_min=0.1, xlim_max=0.1)
+     num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='png')
 
 set_q_factor = 460.
 
@@ -130,8 +148,7 @@ freq_min = 0.5  # GHz
 freq_max = 9.5  # GHz
 plotting.gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
     EM_ival_pump, EM_ival_Stokes, AC_ival, freq_min=freq_min, freq_max=freq_max,
-    prefix_str=prefix_str, suffix_str='')
+    prefix_str=prefix_str, suffix_str='', pdf_png='png')
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
-
