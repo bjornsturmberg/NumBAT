@@ -57,7 +57,7 @@ def ac_mode_freqs(coat_y):
                             material_b=materials.SiO2_2013_Laude,     # slab
                             material_c=materials.Si_2016_Smith,       # walls of slot
                             material_d=materials.SiO2_2013_Laude,     # coating
-                            lc_bkg=5, lc2=2000.0, lc3=1000.0)
+                            lc_bkg=1, lc2=400.0, lc3=200.0)
 
     # Expected effective index of fundamental guided mode.
     n_eff = wguide.material_a.n-0.1

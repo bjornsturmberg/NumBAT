@@ -49,7 +49,7 @@ prefix_str = 'tut_02-'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=materials.Si_2016_Smith,
-                        lc_bkg=2, lc2=200.0, lc3=5.0)
+                        lc_bkg=1, lc2=600.0, lc3=300.0)
 
 
 # Expected effective index of fundamental guided mode.

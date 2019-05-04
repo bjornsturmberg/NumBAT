@@ -41,17 +41,18 @@ slab_a_x = 2850
 slab_a_y = 135
 
 # areas included purely
-slab_b_y = 100
+slab_b_y = 500
 coat_x = 50 
 coat_y = 100
 coat2_x = 100
 coat2_y = 200
-lc_bkg = 4  # background
-lc2 = 8000  # edge of rib
-lc3 = 3000   # edge of slab_a 
-lc4 = 50    # edge of coat
-lc5 = 20    # edge of slab_b
-lc6 = 4     # edge of coat2
+
+lc_bkg = 1  # background
+lc2 = 2000  # edge of rib
+lc3 = 600   # edge of slab_a 
+lc4 = 10    # edge of coat
+lc5 = 4    # edge of slab_b
+lc6 = 1     # edge of coat2
 
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
