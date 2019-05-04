@@ -57,7 +57,10 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=materials.Si_2016_Smith,
-                        lc_bkg=1, lc2=600.0, lc3=300.0, plt_mesh=True)
+                        lc_bkg=1, # in vacuum background
+                        lc2=600.0, # on cylinder surfaces
+                        lc3=300.0, # on cylinder center
+                        plt_mesh=True)
 
 # Explicitly remind ourselves what data we're using.
 print('\nUsing %s material data from' % wguide.material_a.chemical)

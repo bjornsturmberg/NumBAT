@@ -37,7 +37,7 @@ AC_ival = 'All'
 
 prefix_str = 'tut_05-'
 
-lc_list = [20,200,500,1000,1500,2000,3000]
+lc_list = [20,100,500,1000,1500,2000,2500]
 nu_lcs = len(lc_list)
 lc_bkg_list = 1*np.ones(nu_lcs)
 x_axis = lc_list
@@ -47,7 +47,7 @@ time_list = []
 for i_lc, lc_ref in enumerate(lc_list):
     start = time.time()
     print("\n Running simulation", i_lc+1, "/", nu_lcs)
-    lc3 = lc_ref/5
+    lc3 = lc_ref/2
     lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
@@ -224,4 +224,3 @@ plt.savefig(prefix_str+'convergence-Gain_MB.png', bbox_inches='tight')
 plt.close()
 
 print("Calculation time", time_list)
-
