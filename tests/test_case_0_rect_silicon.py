@@ -105,13 +105,13 @@ masked = SBS_gain[EM_ival_pump,EM_ival_Stokes,:]
 test_list1 = list(zip(sim_EM_pump.Eig_values, sim_AC_wguide.Eig_values))
 test_list2 = list(zip(masked_PE, masked_MB, masked))
 
-# SAVE DATA AS REFERENCE
-# Only run this after changing what is simulated - this
-# generates a new set of reference answers to check against
-# in the future
-np.savez_compressed("ref/%s.npz" % casefile_name, 
-        test_list1 = test_list1, test_list2 = test_list2)
-assert False, "Reference results saved successfully, \n tests would pass trivially so we'll skip them."
+# # SAVE DATA AS REFERENCE
+# # Only run this after changing what is simulated - this
+# # generates a new set of reference answers to check against
+# # in the future
+# np.savez_compressed("ref/%s.npz" % casefile_name, 
+#         test_list1 = test_list1, test_list2 = test_list2)
+# assert False, "Reference results saved successfully, \n tests would pass trivially so we'll skip them."
 
 def test_list_matches_saved(casefile_name = casefile_name):
     rtol = 1e-6
