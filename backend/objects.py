@@ -901,7 +901,7 @@ class Struct(object):
         else:
             raise NotImplementedError("\n Selected inc_shape = '%s' \n " \
             "is not currently implemented. Please make a mesh with gmsh, & \n " \
-            "consider contributing this to NumBAT via gitlab." % self.inc_shape)
+            "consider contributing this to NumBAT via github." % self.inc_shape)
 
         if not os.path.exists(msh_location + msh_name + '.mail') or self.force_mesh is True:
             if len(msh_location) + len(msh_name) > 95:
@@ -909,7 +909,7 @@ class Struct(object):
                 msh_name = msh_name[0:trim_len]
             open(msh_location + msh_name + '.geo', "w").write(geo)
             NumBAT.conv_gmsh(msh_location + msh_name)
-        self.mesh_file = msh_name + '.mail'
+        self.mesh_file = msh_location + msh_name + '.mail'
 
         if self.plt_mesh is True:
             # Automatically create png files of mesh.
