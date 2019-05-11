@@ -24,7 +24,8 @@ import materials
 from mode_calcs import Simmo
 from fortran import NumBAT
 
-msh_location = '../backend/fortran/msh/'
+this_directory = os.path.dirname(os.path.realpath(__file__))
+msh_location = os.path.join(this_directory, "fortran", "msh", "")
 
 # # Acknowledgments
 # print '\n##################################################################\n'\
