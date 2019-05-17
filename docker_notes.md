@@ -37,9 +37,9 @@ mkdir NumBAT-local
 
 We now copy the source code into the NumBAT-local folder from the docker image. From the present working directory (ie without moving into NumBAT-local) execute the following:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 docker run --rm --entrypoint tar morblockdock/numbat cC /home/NumBAT/ . | tar xvC ./NumBAT-local
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This command runs the docker image, copies the source code and then removes the
 running docker container. 
@@ -58,7 +58,7 @@ Changes made in the NumBAT source code now occur for the container also,
 allowing for local development and easy access of results.
 
 Finally, scripts can be run directly in a container by passing the path, for
-example
+example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 docker run -v $(pwd)/NumBAT-local/:/home/NumBAT/ -it morblockdock/numbat python3 /home/NumBAT/tutorials/simo-tut_01-first_calc.py
@@ -73,7 +73,9 @@ If you wish to build your own docker image, the local dockerfile
 is provided as an example. From the higher directory you can build a docker
 image using \`\`\`
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 docker build -t "numbat" NumBAT
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 \`\`\`. The dockerfile is a direct mapping of the setup script, in the syntax
 currently preferred in the docker image build process
