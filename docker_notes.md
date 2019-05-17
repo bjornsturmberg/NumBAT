@@ -1,13 +1,13 @@
 Using NumBAT with docker
 ========================
 
-Start by obtaining the docker image and source code. Pull the docker image
+Start by obtaining the docker image and source code. Pull the docker image:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 docker pull morblockdock/numbat
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The docker image can be run simply with
+The docker image can be run simply with:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 docker run -it morblockdock/numbat bash
@@ -52,7 +52,7 @@ docker run -v $(pwd)/NumBAT-local/:/home/NumBAT/ -it morblockdock/numbat bash
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This runs the docker image, mounting the local directory to the path
-/home/NumBAT/ in the docker dontainer, and runs the bash shell)
+/home/NumBAT/ in the docker dontainer, and runs the bash shell).
 
 Changes made in the NumBAT source code now occur for the container also,
 allowing for local development and easy access of results.
@@ -71,11 +71,11 @@ Runs the `simo-tut_01-first_calc.py` script directly from the local commandline
 
 If you wish to build your own docker image, the local dockerfile
 is provided as an example. From the higher directory you can build a docker
-image using \`\`\`
+image using:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 docker build -t "numbat" NumBAT
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-\`\`\`. The dockerfile is a direct mapping of the setup script, in the syntax
+The dockerfile is a direct mapping of the setup script, in the syntax
 currently preferred in the docker image build process
