@@ -181,6 +181,7 @@ class Struct(object):
                 self.inc_b_y = float(inc_b_x)
             else:
                 self.inc_b_y = float(inc_b_y)
+        print('have x,y', self.inc_b_x, self.inc_b_y)
         self.inc_shape = inc_shape
         self.slab_a_x = slab_a_x
         self.slab_a_y = slab_a_y
@@ -854,6 +855,7 @@ class Struct(object):
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
         elif self.inc_shape in ['onion']:
+            print ('doing onion', self.inc_a_x, self.inc_b_x)
             msh_template = 'onion'
             self.nb_typ_el = 16
             msh_name = 'onion_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
@@ -880,20 +882,21 @@ class Struct(object):
                 geo = geo_tmp.replace('d_in_nm = 1000;', "d_in_nm = %f;" % self.unitcell_x)
                 geo = geo.replace('dy_in_nm = 1000;', "dy_in_nm = %f;" % self.unitcell_y)
                 geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
-                if self.inc_b_x is float or self.inc_b_x is int: geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
-                if self.inc_c_x is float or self.inc_c_x is int: geo = geo.replace('a3 = 20;', "a3 = %f;" % self.inc_c_x)
-                if self.inc_d_x is float or self.inc_d_x is int: geo = geo.replace('a4 = 20;', "a4 = %f;" % self.inc_d_x)
-                if self.inc_e_x is float or self.inc_e_x is int: geo = geo.replace('a5 = 20;', "a5 = %f;" % self.inc_e_x)
-                if self.inc_f_x is float or self.inc_f_x is int: geo = geo.replace('a6 = 20;', "a6 = %f;" % self.inc_f_x)
-                if self.inc_g_x is float or self.inc_g_x is int: geo = geo.replace('a7 = 20;', "a7 = %f;" % self.inc_g_x)
-                if self.inc_h_x is float or self.inc_h_x is int: geo = geo.replace('a8 = 20;', "a8 = %f;" % self.inc_h_x)
-                if self.inc_i_x is float or self.inc_i_x is int: geo = geo.replace('a9 = 20;', "a9 = %f;" % self.inc_i_x)
-                if self.inc_j_x is float or self.inc_j_x is int: geo = geo.replace('a10 = 20;', "a10 = %f;" % self.inc_j_x)
-                if self.inc_k_x is float or self.inc_k_x is int: geo = geo.replace('a11 = 20;', "a11 = %f;" % self.inc_k_x)
-                if self.inc_l_x is float or self.inc_l_x is int: geo = geo.replace('a12 = 20;', "a12 = %f;" % self.inc_l_x)
-                if self.inc_m_x is float or self.inc_m_x is int: geo = geo.replace('a13 = 20;', "a13 = %f;" % self.inc_m_x)
-                if self.inc_n_x is float or self.inc_n_x is int: geo = geo.replace('a14 = 20;', "a14 = %f;" % self.inc_n_x)
-                if self.inc_o_x is float or self.inc_o_x is int: geo = geo.replace('a15 = 20;', "a15 = %f;" % self.inc_o_x)
+                print('replacing', self.inc_b_x, type(self.inc_b_x), self.inc_b_x is float, self.inc_b_x is int) 
+                if isinstance(self.inc_b_x, float) or isinstance(self.inc_b_x, int): geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
+                if isinstance(self.inc_c_x, float) or isinstance(self.inc_c_x, int): geo = geo.replace('a3 = 20;', "a3 = %f;" % self.inc_c_x)
+                if isinstance(self.inc_d_x, float) or isinstance(self.inc_d_x, int): geo = geo.replace('a4 = 20;', "a4 = %f;" % self.inc_d_x)
+                if isinstance(self.inc_e_x, float) or isinstance(self.inc_e_x, int): geo = geo.replace('a5 = 20;', "a5 = %f;" % self.inc_e_x)
+                if isinstance(self.inc_f_x, float) or isinstance(self.inc_f_x, int): geo = geo.replace('a6 = 20;', "a6 = %f;" % self.inc_f_x)
+                if isinstance(self.inc_g_x, float) or isinstance(self.inc_g_x, int): geo = geo.replace('a7 = 20;', "a7 = %f;" % self.inc_g_x)
+                if isinstance(self.inc_h_x, float) or isinstance(self.inc_h_x, int): geo = geo.replace('a8 = 20;', "a8 = %f;" % self.inc_h_x)
+                if isinstance(self.inc_i_x, float) or isinstance(self.inc_i_x, int): geo = geo.replace('a9 = 20;', "a9 = %f;" % self.inc_i_x)
+                if isinstance(self.inc_j_x, float) or isinstance(self.inc_j_x, int): geo = geo.replace('a10 = 20;', "a10 = %f;" % self.inc_j_x)
+                if isinstance(self.inc_k_x, float) or isinstance(self.inc_k_x, int): geo = geo.replace('a11 = 20;', "a11 = %f;" % self.inc_k_x)
+                if isinstance(self.inc_l_x, float) or isinstance(self.inc_l_x, int): geo = geo.replace('a12 = 20;', "a12 = %f;" % self.inc_l_x)
+                if isinstance(self.inc_m_x, float) or isinstance(self.inc_m_x, int): geo = geo.replace('a13 = 20;', "a13 = %f;" % self.inc_m_x)
+                if isinstance(self.inc_n_x, float) or isinstance(self.inc_n_x, int): geo = geo.replace('a14 = 20;', "a14 = %f;" % self.inc_n_x)
+                if isinstance(self.inc_o_x, float) or isinstance(self.inc_o_x, int): geo = geo.replace('a15 = 20;', "a15 = %f;" % self.inc_o_x)
                 geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                 geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                 geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
@@ -932,7 +935,8 @@ class Struct(object):
             os.system(gmsh_cmd)
 
 
-    def calc_EM_modes(self, num_modes, wl_nm, n_eff, Stokes=False, **args):
+    def calc_EM_modes(self, num_modes, wl_nm, n_eff, Stokes=False, debug=False, 
+       **args):
         """ Run a simulation to find the Struct's EM modes.
 
             Args:
@@ -946,14 +950,15 @@ class Struct(object):
             Returns:
                 ``Simmo`` object
         """
-        simmo = Simmo(self, num_modes=num_modes, wl_nm=wl_nm, n_eff=n_eff, Stokes=Stokes)
+        simmo = Simmo(self, num_modes=num_modes, wl_nm=wl_nm, n_eff=n_eff, Stokes=Stokes, debug=debug)
 
+        print("Calculating EM modes")
         simmo.calc_EM_modes(**args)
         return simmo
 
 
     def calc_AC_modes(self, num_modes, k_AC,
-                      shift_Hz=None, EM_sim=None, **args):
+                      shift_Hz=None, EM_sim=None, debug=False, **args):
         """ Run a simulation to find the Struct's acoustic modes.
 
             Args:
@@ -978,7 +983,7 @@ class Struct(object):
         """
         simmo_AC = Simmo(self, num_modes=num_modes,
                          k_AC=k_AC, shift_Hz=shift_Hz,
-                         EM_sim=EM_sim)
+                         EM_sim=EM_sim, debug=debug)
 
         simmo_AC.calc_AC_modes(**args)
         return simmo_AC
