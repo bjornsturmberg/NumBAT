@@ -181,7 +181,6 @@ class Struct(object):
                 self.inc_b_y = float(inc_b_x)
             else:
                 self.inc_b_y = float(inc_b_y)
-        print('have x,y', self.inc_b_x, self.inc_b_y)
         self.inc_shape = inc_shape
         self.slab_a_x = slab_a_x
         self.slab_a_y = slab_a_y
@@ -855,7 +854,6 @@ class Struct(object):
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
         elif self.inc_shape in ['onion']:
-            print ('doing onion', self.inc_a_x, self.inc_b_x)
             msh_template = 'onion'
             self.nb_typ_el = 16
             msh_name = 'onion_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
@@ -882,7 +880,6 @@ class Struct(object):
                 geo = geo_tmp.replace('d_in_nm = 1000;', "d_in_nm = %f;" % self.unitcell_x)
                 geo = geo.replace('dy_in_nm = 1000;', "dy_in_nm = %f;" % self.unitcell_y)
                 geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
-                print('replacing', self.inc_b_x, type(self.inc_b_x), self.inc_b_x is float, self.inc_b_x is int) 
                 if isinstance(self.inc_b_x, float) or isinstance(self.inc_b_x, int): geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
                 if isinstance(self.inc_c_x, float) or isinstance(self.inc_c_x, int): geo = geo.replace('a3 = 20;', "a3 = %f;" % self.inc_c_x)
                 if isinstance(self.inc_d_x, float) or isinstance(self.inc_d_x, int): geo = geo.replace('a4 = 20;', "a4 = %f;" % self.inc_d_x)
