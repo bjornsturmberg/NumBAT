@@ -9,6 +9,7 @@ import datetime
 import numpy as np
 import sys
 import copy
+from matplotlib.ticker import AutoMinorLocator
 
 sys.path.append("../backend/")
 import materials
@@ -16,8 +17,55 @@ import objects
 import mode_calcs
 import integration
 import plotting
+from plotting import FieldDecorator
 from fortran import NumBAT
 
+class EMDecorator(FieldDecorator):
+  def __init__(self):
+    super().__init__()
+
+  def extra_axes_commands(self, ax):
+
+    ax.tick_params(axis='x',color='gray', which='both')
+    ax.tick_params(axis='y',color='gray', which='both')
+    if self._is_single:
+      ax.tick_params(axis='x',length=20)
+      ax.tick_params(axis='y',length=20)
+      ax.tick_params(axis='x',width=2)
+      ax.tick_params(axis='y',width=2)
+
+      ax.tick_params(axis='x',length=10,which='minor')
+      ax.tick_params(axis='y',length=10,which='minor')
+      ax.tick_params(axis='x',width=2, which='minor')
+      ax.tick_params(axis='y',width=2, which='minor')
+
+      ax.set_xticks(np.arange(-1.00,1.01,.1), minor=True)
+      ax.set_yticks([-.3,0,.3])
+      ax.set_yticks([-.5,-.4,-.2,-.1,.1,.2,.4,.5], minor=True)
+
+    ax.set_aspect('equal')
+
+emdecorate=EMDecorator()
+
+class ACDecorator(plotting.FieldDecorator):
+  def __init__(self):
+    super().__init__()
+
+    self.set_singleplot_fontsize('ax_label',30) 
+    self.set_singleplot_fontsize('subplot_title',30)
+    self.set_singleplot_fontsize('cbar_tick',20)
+    self.set_singleplot_fontsize('ax_tick',30)
+
+    self.set_singleplot_axes_property('cbar_pad','-30%')  # compensate for call to set_aspect() below
+    self.set_multiplot_axes_property('cbar_pad','-30%')   # compensate for call to set_aspect() below
+    self.set_singleplot_axes_property('cbar_size','2%')   # compensate for call to set_aspect() below
+    self.set_multiplot_axes_property('cbar_size','2%')    # compensate for call to set_aspect() below
+
+  def extra_axes_commands(self, ax):
+    ax.set_aspect(3)
+    pass
+
+acdecorate=ACDecorator()
 # Naming conventions
 # AC: acoustic
 # EM: electromagnetic
@@ -47,12 +95,41 @@ coat_y = 100
 coat2_x = 100
 coat2_y = 200
 
+#original old gmsh set that works
+lc_bkg = 4  # background
+lc2 = 8000  # edge of rib
+lc3 = 3000   # edge of slab_a 
+lc4 = 50    # edge of coat
+lc5 = 20    # edge of slab_b
+lc6 = 4     # edge of coat2
+
+##working set
+lc_bkg = .5  # background
+lc2 = 1000  # edge of rib
+lc3 = 400   # edge of slab_a 
+lc4 = 10    # edge of coat
+lc5 = 5   # edge of slab_b
+lc6 = 1   # edge of coat2
+
+#scaled working set: doesn't work
 lc_bkg = 1  # background
 lc2 = 2000  # edge of rib
 lc3 = 600   # edge of slab_a 
 lc4 = 10    # edge of coat
-lc5 = 4    # edge of slab_b
-lc6 = 1     # edge of coat2
+lc5 = 4   # edge of slab_b
+lc6 = 1  # edge of coat2
+
+##scaled working set: doesn't work
+#lc_bkg = .1  # background
+#lc2 = 200  # edge of rib
+#lc3 = 75   # edge of slab_a 
+#lc4 = 50    # edge of coat
+#c5  = 50  # edge of slab_b
+#lc6 = 50  # edge of coat2
+
+
+
+
 
 # Number of electromagnetic modes to solve for.
 num_modes_EM_pump = 20
@@ -71,7 +148,7 @@ AC_ival = 'All'
 Si_110 = copy.deepcopy(materials.Si_2016_Smith)
 Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 
-prefix_str = 'lit_08-'
+prefix_str = 'fig16-'
 
 # Use specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
@@ -88,19 +165,30 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
 n_eff = wguide.material_a.n-0.1
 
 # Calculate Electromagnetic Modes
-sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
-# np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+print("starting EM pump modes")
+#sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff, debug=True)
+#np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
+npzfile = np.load('wguide_data.npz', allow_pickle=True)
+sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
+print("starting EM Stokes modes")
 sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 # np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
-# npzfile = np.load('wguide_data2.npz')
+# npzfile = np.load('wguide_data2.npz', allow_pickle=True)
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.35, xlim_max=0.35, ivals=[0,1], 
-                         ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
-                         prefix_str=prefix_str, pdf_png='png')
+print("starting EM field plotting ")
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4 , xlim_max=0.4 , ivals=[0,1], 
+                         ylim_min=0.435 , ylim_max=0.435 , EM_AC='EM_E', num_ticks=3,
+                         prefix_str=prefix_str, pdf_png='png', ticks=True,
+                          decorator=emdecorate, quiver_steps=20, 
+                          comps=('Ex','Ey', 'Ez','Eabs','Et'), n_points=2000, colorbar=True)
+
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4 , xlim_max=0.4 , ivals=[0,1], 
+                         ylim_min=0.435 , ylim_max=0.435 , EM_AC='EM_H', num_ticks=3,
+                         prefix_str=prefix_str, pdf_png='png', ticks=True,
+                          decorator=emdecorate, quiver_steps=20, 
+                          comps=('Hx','Hy', 'Hz','Habs','Ht'), n_points=2000, colorbar=True)
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -115,16 +203,20 @@ print('Intermode q_AC (Hz) \n', k_AC)
 shift_Hz = 2e9
 
 # Calculate Acoustic Modes
-sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
-# np.savez('wguide_data_AC', sim_AC=sim_AC)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC = npzfile['sim_AC'].tolist()
+print("starting acoustic modes")
+#sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz, debug=True)
+#np.savez('wguide_data_AC', sim_AC=sim_AC)
+npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
+sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str,
-     num_ticks=3, xlim_min=0.1, xlim_max=0.1, pdf_png='png')
+print("plotting acoustic modes")
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, ivals=(7, 13, 23,), num_ticks=3, 
+     xlim_min=-.05, xlim_max=-0.05, ylim_min=-.1, ylim_max=-0.1, quiver_steps=20,
+     pdf_png='png',ticks=True, comps=('ux','ut','uz','uabs'), decorator=acdecorate, colorbar=True)
+
 
 set_q_factor = 460.
 

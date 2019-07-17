@@ -45,7 +45,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,inc_shape=inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=materials.Si_2016_Smith,
                         material_b=materials.SiO2_2016_Smith,
-                        lc_bkg=1, lc2=100.0, lc3=5.0, plt_mesh=False)
+                        lc_bkg=1, lc2=100.0, lc3=5.0, plt_mesh=True)
 
 
 # Expected effective index of fundamental guided mode.
@@ -54,12 +54,12 @@ n_eff = wguide.material_a.n-0.1
 # Calculate Electromagnetic modes.
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
 # np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
-# npzfile = np.load('wguide_data.npz')
+# npzfile = np.load('wguide_data.npz', pickle=True)
 # sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
-# npzfile = np.load('wguide_data2.npz')
+# npzfile = np.load('wguide_data2.npz', pickle=True)
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # Print the wavevectors of EM modes.
@@ -82,7 +82,7 @@ k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[E
 # Calculate Acoustic modes.
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
 # np.savez('wguide_data_AC', sim_AC=sim_AC)
-# npzfile = np.load('wguide_data_AC.npz')
+# npzfile = np.load('wguide_data_AC.npz', pickle=True)
 # sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.

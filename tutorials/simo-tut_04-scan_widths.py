@@ -94,7 +94,7 @@ width_objs = pool.map(modes_n_gain, geo_objects_list)
 # before launcing full multicore simulation.
 
 # np.savez('Simo_results', width_objs=width_objs)
-# npzfile = np.load('Simo_results.npz')
+# npzfile = np.load('Simo_results.npz', pickle=True)
 # width_objs = npzfile['width_objs'].tolist()
 
 
