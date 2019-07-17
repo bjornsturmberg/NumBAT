@@ -53,48 +53,48 @@ n_eff = 1.4
 # Calculate Electromagnetic Modes
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 # np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
-	# npzfile = np.load('wguide_data.npz', allow_pickle=True)
-	# sim_EM_pump = npzfile['sim_EM_pump'].tolist()
-	# plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
-	#                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', 
-	#                           prefix_str=prefix_str, suffix_str='NW')
-	# plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM_E', prefix_str=prefix_str, suffix_str='NW')
+# npzfile = np.load('wguide_data.npz', allow_pickle=True)
+# sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+# plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
+#                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', 
+#                           prefix_str=prefix_str, suffix_str='NW')
+# plotting.plt_mode_fields(sim_EM_pump, EM_AC='EM_E', prefix_str=prefix_str, suffix_str='NW')
 
-	sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
-	# np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
-	# npzfile = np.load('wguide_data2.npz', allow_pickle=True)
-	# sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
+sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+# np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
+# npzfile = np.load('wguide_data2.npz', allow_pickle=True)
+# sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-	# Print the wavevectors of EM modes.
-	print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
+# Print the wavevectors of EM modes.
+print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 
-	# Calculate the EM effective index of the waveguide.
-	n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
-	print("n_eff = ", np.round(n_eff_sim, 4))
+# Calculate the EM effective index of the waveguide.
+n_eff_sim = np.real(sim_EM_pump.Eig_values*((wl_nm*1e-9)/(2.*np.pi)))
+print("n_eff = ", np.round(n_eff_sim, 4))
 
-	k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
+k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
 
-	shift_Hz = 4e9
+shift_Hz = 4e9
 
-	# Calculate Acoustic modes.
-	sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
-	# np.savez('wguide_data_AC', sim_AC=sim_AC)
-	# npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
-	# sim_AC = npzfile['sim_AC'].tolist()
-	# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, suffix_str='NW')
+# Calculate Acoustic modes.
+sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
+# np.savez('wguide_data_AC', sim_AC=sim_AC)
+# npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
+# sim_AC = npzfile['sim_AC'].tolist()
+# plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, suffix_str='NW')
 
-	# Print the frequencies of AC modes.
-	print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
+# Print the frequencies of AC modes.
+print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-	set_q_factor = 1000.
+set_q_factor = 1000.
 
-	# Calculate interaction integrals and SBS gain for PE and MB effects combined, 
-	# as well as just for PE, and just for MB.
-	SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
-			sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
-			EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
-	# np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, SBS_gain_MB=SBS_gain_MB, alpha=alpha)
-	# npzfile = np.load('wguide_data_AC_gain.npz', allow_pickle=True)
+# Calculate interaction integrals and SBS gain for PE and MB effects combined, 
+# as well as just for PE, and just for MB.
+SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
+    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
+    EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
+# np.savez('wguide_data_AC_gain', SBS_gain=SBS_gain, SBS_gain_PE=SBS_gain_PE, SBS_gain_MB=SBS_gain_MB, alpha=alpha)
+# npzfile = np.load('wguide_data_AC_gain.npz')
 # SBS_gain = npzfile['SBS_gain']
 # SBS_gain_PE = npzfile['SBS_gain_PE']
 # SBS_gain_MB = npzfile['SBS_gain_MB']

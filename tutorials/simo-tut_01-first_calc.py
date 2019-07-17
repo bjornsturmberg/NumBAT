@@ -60,7 +60,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         lc_bkg=1, # in vacuum background
                         lc2=600.0, # on cylinder surfaces
                         lc3=300.0, # on cylinder center
-                        plt_mesh=True)
+                        plt_mesh=False)
 
 # Explicitly remind ourselves what data we're using.
 print('\nUsing %s material data from' % wguide.material_a.chemical)
