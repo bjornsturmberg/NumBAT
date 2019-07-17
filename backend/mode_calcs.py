@@ -108,7 +108,7 @@ class Simmo(object):
             if not os.path.exists("Output"):
                 os.mkdir("Output")
 
-        with open("../backend/fortran/msh/"+self.structure.mesh_file) as f:
+        with open(self.structure.mesh_file) as f:
             self.n_msh_pts, self.n_msh_el = [int(i) for i in f.readline().split()]
 
         # Size of Fortran's complex superarray (scales with mesh)

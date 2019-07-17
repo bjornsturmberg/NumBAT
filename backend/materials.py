@@ -18,6 +18,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+import os
 import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib
@@ -27,7 +28,8 @@ import matplotlib.pyplot as plt
 import json
 import re
 
-data_location = '../backend/material_data/'
+this_directory = os.path.dirname(os.path.realpath(__file__))
+data_location = os.path.join(this_directory, "material_data", "")
 
 
 class Material(object):

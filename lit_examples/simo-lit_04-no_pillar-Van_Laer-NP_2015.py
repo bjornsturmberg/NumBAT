@@ -52,7 +52,7 @@ Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=Si_110, symmetry_flag=False,
-                        lc_bkg=4, lc2=3000.0, lc3=2000.0)
+                        lc_bkg=1, lc2=800.0, lc3=500.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
