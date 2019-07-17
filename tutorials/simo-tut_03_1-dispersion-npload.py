@@ -53,9 +53,9 @@ n_eff = wguide.material_a.n-0.1
 
 # Assuming this calculation is run directly after simo-tut_02
 # we don't need to recalculate EM modes, but can load them in.
-npzfile = np.load('wguide_data.npz')
+npzfile = np.load('wguide_data.npz', allow_pickle=True)
 sim_EM_pump = npzfile['sim_EM_pump'].tolist()
-npzfile = np.load('wguide_data2.npz')
+npzfile = np.load('wguide_data2.npz', allow_pickle=True)
 sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # Will scan from forward to backward SBS so need to know k_AC of backward SBS.

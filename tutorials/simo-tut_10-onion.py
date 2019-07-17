@@ -51,16 +51,20 @@ wguide = objects.Struct(unitcell_x,inc_a_x,inc_shape=inc_shape,
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
-# Calculate Electromagnetic modes.
-sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
-# np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
-# npzfile = np.load('wguide_data.npz')
-# sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+new_calcs=True
 
-sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
-# np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
-# npzfile = np.load('wguide_data2.npz')
-# sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
+# Calculate Electromagnetic modes.
+if new_calcs:
+  sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
+  np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
+
+  sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+  np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
+else:
+  npzfile = np.load('wguide_data.npz', allow_pickle=True)
+  sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+  npzfile = np.load('wguide_data2.npz', allow_pickle=True)
+  sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -74,22 +78,28 @@ print("n_eff", np.round(n_eff_sim, 4))
 # # Only plot fields of fundamental (ival = 0) mode.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ylim_min=0.3,
                          ylim_max=0.3, ivals=[0], contours=True, EM_AC='EM_E', 
-                         prefix_str=prefix_str)
+                         prefix_str=prefix_str, ticks=True, quiver_steps=20, comps=['Et'])
+
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ylim_min=0.3,
+                         ylim_max=0.3, ivals=[0], contours=True, EM_AC='EM_H', 
+                         prefix_str=prefix_str, ticks=True, quiver_steps=20, comps=['Ht'])
 
 # Acoustic wavevector
 k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
 
 # Calculate Acoustic modes.
-sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
-# np.savez('wguide_data_AC', sim_AC=sim_AC)
-# npzfile = np.load('wguide_data_AC.npz')
-# sim_AC = npzfile['sim_AC'].tolist()
+if new_calcs:
+  sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump)
+  np.savez('wguide_data_AC', sim_AC=sim_AC)
+else:
+  npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
+  sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='png', contours=True, 
-                         prefix_str=prefix_str)
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', pdf_png='png', contours=False, 
+                         prefix_str=prefix_str, ticks=True, ivals=[0], quiver_steps=20)
 
 # Calculate the acoustic loss from our fields.
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 

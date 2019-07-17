@@ -32,7 +32,7 @@ class Simmo(object):
     """
     def __init__(self, structure, num_modes=20, wl_nm=1, n_eff=None, shift_Hz=None, 
                  k_AC=None, EM_sim=None, Stokes=False, 
-                 calc_EM_mode_energy=False, calc_AC_mode_power=False):
+                 calc_EM_mode_energy=False, calc_AC_mode_power=False, debug=False):
         self.structure = structure
         self.wl_m = wl_nm*1e-9
         self.n_eff = n_eff
@@ -49,7 +49,7 @@ class Simmo(object):
         self.omega_EM = 2*np.pi*speed_c/self.wl_m # Angular freq in units of Hz
         self.calc_EM_mode_energy = calc_EM_mode_energy
         self.calc_AC_mode_power = calc_AC_mode_power
-
+        self.debug = debug
 
     def calc_EM_modes(self):
         """ Run a Fortran FEM calculation to find the optical modes.
@@ -94,7 +94,7 @@ class Simmo(object):
         self.E_H_field = 1  # Selected formulation (1=E-Field, 2=H-Field)
         i_cond = 2  # Boundary conditions (0=Dirichlet,1=Neumann,2=unitcell_x)
         itermax = 30  # Maximum number of iterations for convergence
-        EM_FEM_debug = 0  # Fortran routines will display & save add. info
+        EM_FEM_debug = self.debug  # Fortran routines will display & save add. info
 
         # Calculate where to center the Eigenmode solver around.
         # (Shift and invert FEM method)
@@ -113,6 +113,8 @@ class Simmo(object):
 
         # Size of Fortran's complex superarray (scales with mesh)
         int_max, cmplx_max, real_max = NumBAT.array_size(self.n_msh_el, self.num_modes)
+        if EM_FEM_debug == 1:
+          print("Mesh calculated: %d nodes."%self.n_msh_el)
 
         try:
             resm = NumBAT.calc_em_modes(
@@ -145,11 +147,13 @@ class Simmo(object):
         #     self.n_msh_el = None
 
         if self.structure.plt_mesh:
-            plotting.plot_msh(self.x_arr, prefix_str=self.structure.mesh_file, suffix_str='_EM')
+            print("Suppressed inefficient matplotlib plotting of mesh...")
+            #plotting.plot_msh(self.x_arr, prefix_str=self.structure.mesh_file, suffix_str='_EM')
 
 
 ### Calc unnormalised power in each EM mode Kokou equiv. of Eq. 8.
         try:
+            print("Calculating EM mode powers...")
             nnodes = 6
             if self.structure.inc_shape in self.structure.linear_element_shapes:
             ## Integration using analytically evaluated basis function integrals. Fast.
@@ -175,6 +179,7 @@ class Simmo(object):
 
 ### Calc energy (not power) in each EM mode - PRA Eq. 6.
         if self.calc_EM_mode_energy is True:
+            print("Calculating EM mode energies...")
             try:
                 nnodes = 6
                 # import time

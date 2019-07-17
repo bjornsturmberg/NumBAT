@@ -53,7 +53,7 @@ n_eff = 1.4
 # Calculate Electromagnetic Modes
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 # np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
-# npzfile = np.load('wguide_data.npz')
+# npzfile = np.load('wguide_data.npz', allow_pickle=True)
 # sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 # plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
 #                           ylim_min=0.4, ylim_max=0.4, EM_AC='EM_E', 
@@ -62,7 +62,7 @@ sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff)
 
 sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
 # np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
-# npzfile = np.load('wguide_data2.npz')
+# npzfile = np.load('wguide_data2.npz', allow_pickle=True)
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 # Print the wavevectors of EM modes.
@@ -79,7 +79,7 @@ shift_Hz = 4e9
 # Calculate Acoustic modes.
 sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz)
 # np.savez('wguide_data_AC', sim_AC=sim_AC)
-# npzfile = np.load('wguide_data_AC.npz')
+# npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
 # sim_AC = npzfile['sim_AC'].tolist()
 # plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, suffix_str='NW')
 

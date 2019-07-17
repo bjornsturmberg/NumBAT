@@ -37,6 +37,7 @@ AC_ival = 'All'
 
 prefix_str = 'tut_05-'
 
+# Warning: The fine grids in this list will take considerable time to run!
 lc_list = [20,100,500,1000,1500,2000,2500]
 nu_lcs = len(lc_list)
 lc_bkg_list = 1*np.ones(nu_lcs)

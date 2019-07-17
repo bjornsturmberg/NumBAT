@@ -60,8 +60,8 @@ def modes_n_gain(wguide):
     SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
         sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
         EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
-    # Clear memory
-    sim_EM_pump = sim_EM_Stokes = sim_AC = None
+    ## Clear memory
+    #sim_EM_pump = sim_EM_Stokes = sim_AC = None
 
     print ('Completed mode calculation for width a_x = %f' % wguide.inc_a_x)
     return [sim_EM_pump, sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC]
@@ -86,18 +86,22 @@ for width in waveguide_widths:
     geo_objects_list.append(wguide)
 
 
-# Run widths in parallel across num_cores CPUs using multiprocessing package.
-pool = Pool(num_cores)
-width_objs = pool.map(modes_n_gain, geo_objects_list)
-# Note pool.map() doesn't pass errors back from fortran routines very well.
-# It's good practise to run the extrema of your simulation range through map()
-# before launcing full multicore simulation.
+new_calcs=True
+if new_calcs:
+  # Run widths in parallel across num_cores CPUs using multiprocessing package.
+  pool = Pool(num_cores)
+  
+  # Note pool.map() doesn't pass errors back from fortran routines very well.
+  # It's good practise to run the extrema of your simulation range through map()
+  # before launcing full multicore simulation.
 
-# np.savez('Simo_results', width_objs=width_objs)
-# npzfile = np.load('Simo_results.npz')
-# width_objs = npzfile['width_objs'].tolist()
-
-
+  width_objs = pool.map(modes_n_gain, geo_objects_list)
+  np.savez('Simo_results', width_objs=width_objs)
+  
+else:
+  npzfile = np.load('Simo_results.npz', allow_pickle=True)
+  width_objs = npzfile['width_objs'].tolist()
+  
 n_effs = []
 freqs_gains = []
 interp_grid_points = 10000
@@ -117,6 +121,7 @@ for i_w, width_obj in enumerate(width_objs):
     n_eff_sim = np.round(np.real((k_AC/2.)*((wl_nm*1e-9)/(2.*np.pi))), 4)
     n_effs.append(n_eff_sim)
 
+    print(sim_AC)
     # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
     freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 5  # GHz
     freq_max = np.real(sim_AC.Eig_values[-1])*1e-9 + 5  # GHz

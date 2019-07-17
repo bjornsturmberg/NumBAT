@@ -10,9 +10,9 @@ lit02:
 lit03: 
 	$(PYTHON) simo-lit_03-Beugnot-NatComm_2014.py
 lit04-1: 
-	$(PYTHON) simo-lit_04-no_pillar-Van_Laer-NP_2015
+	$(PYTHON) simo-lit_04-no_pillar-Van_Laer-NP_2015.py
 lit04-2: 
-	$(PYTHON) simo-lit_04-pillar-Van_Laer-NP_2015
+	$(PYTHON) simo-lit_04-pillar-Van_Laer-NP_2015.py
 lit05: 
 	$(PYTHON) simo-lit_05-Van_Laer-NJP_2015.py
 lit06a: 

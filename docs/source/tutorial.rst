@@ -186,7 +186,7 @@ Or, taking the session ID from the previous example::
 
 
 Terminating NumBAT simulations
-,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 If a simulation hangs, we can kill all python instances upon the machine::
 
@@ -456,6 +456,8 @@ Anisotropic Elastic Materials
 
 .. raw:: latex
 
+    \clearpage
+
 
 Multilayered 'Onion'
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -630,6 +632,15 @@ Which gives good agreement for the gain spectrum.
 2015 - Van Laer - New J Phys - FSBF - Waveguide without Pedestal
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
+This example continues  the study of forward SBS
+in a pedestal silicon waveguide described in R. Van Laer *et al.*, 
+`Interaction between light and highly confined hypersound in a silicon photonic nanowire 
+<http://dx.doi.org/10.1038/ncomms6242>`_, *Nature Photonics* **9**, 199 (2015).
+
+In this case, we simply remove the pedestal and model the main rectangular waveguide.
+This makes the acoustic loss calculation incorrect but avoids the problem of acoustic
+energy being excessively concentrated in the substrate.
+
 .. literalinclude:: ../../lit_examples/simo-lit_05-Van_Laer-NJP_2015.py
     :lines: 0-
 
@@ -653,6 +664,11 @@ Which gives good agreement for the gain spectrum.
 2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel - d = 550 nm
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
+This example looks at the phenomenon of Brillouin "self-cancellation" due to 
+the electrostrictive and radiation pressure effects acting with opposite sign. 
+This was described in O. Florez *et al.*, `Brillouin self-cancellation 
+<http://dx.doi.org/10.1038/ncomms11759>`_, *Nature Communications* **7**, 11759 (2016).
+
 .. literalinclude:: ../../lit_examples/simo-lit_06_1-Florez-NatComm_2016-d550nm.py
     :lines: 0-
 
@@ -660,19 +676,19 @@ Which gives good agreement for the gain spectrum.
 .. figure:: ../../lit_examples/lit_06_1-fields/AC_field_4.png
    :scale: 50 %
    
-   TR21 acoustic mode fields of NW diameter 550 nm.
+   :math:`TR_{21}` acoustic mode fields of a nanowire with diameter 550 nm.
 
 
 .. figure:: ../../lit_examples/lit_06_1-fields/AC_field_5.png
    :scale: 50 %
    
-   R01 acoustic mode fields of NW diameter 550 nm.
+   :math:`R_{01}` acoustic mode fields of a nanowire with diameter 550 nm.
 
 
 .. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 550 nm, matching blue curve of Fig. 3b in paper.
+   Gain spectra of a nanowire with diameter 550 nm, matching blue curve of Fig. 3b in paper.
 
 
 .. figure:: ../../lit_examples/lit_06_1-gain_spectra-MB_PE_comps-5.png
@@ -696,6 +712,10 @@ Which gives good agreement for the gain spectrum.
 2016 - Florez - Nat Comm - BSBS - Tapered Fibre - Self Cancel - d = 1160 nm
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
+This example again looks at the paper 
+ O. Florez *et al.*, `Brillouin self-cancellation <http://dx.doi.org/10.1038/ncomms11759>`_, *Nature Communications* **7**, 11759 (2016),
+but now for a wider core.
+
 .. literalinclude:: ../../lit_examples/simo-lit_06_2-Florez-NatComm_2016-1160nm.py
     :lines: 0-
 
@@ -703,13 +723,13 @@ Which gives good agreement for the gain spectrum.
 .. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
+   Gain spectra of a nanowire with diameter 1160 nm, as in Fig. 4 of Florez, showing near perfect cancellation at 5.4 GHz.
 
 
 .. figure:: ../../lit_examples/lit_06_2-gain_spectra-MB_PE_comps-logy.png
    :scale: 50 %
    
-   Gain spectra of NW diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
+   Gain spectra of a nanowire with diameter 1160 nm, as in Fig. 4 of paper, showing near perfect cancellation at 5.4 GHz.
 
 
 .. raw:: latex
@@ -718,6 +738,12 @@ Which gives good agreement for the gain spectrum.
 
 2016 - Kittlaus - Nat Phot - FSBF - Rib Waveguide
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+This examples explores a first geometry showing large forward SBS in silicon
+as described in E. Kittlaus *et al.*, `Large Brillouin amplification in silicon 
+<http://dx.doi.org/10.1038/nphoton.2016.112>`_, *Nature Photonics* **10**, 463 (2016).
+
+
 
 .. literalinclude:: ../../lit_examples/simo-lit_07-Kittlaus-NatPhot_2016.py
     :lines: 0-
