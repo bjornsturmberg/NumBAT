@@ -34,6 +34,8 @@ msh_location = os.path.join(this_directory, "fortran", "msh", "")
 #     + 'Starting NumBAT calculation ...\n' + \
 #       '##################################################################\n'
 
+def is_real_number(x):                
+  return isinstance(x, float) or isinstance(x, int)
 
 class Struct(object):
     """ Represents a structured layer.
@@ -52,7 +54,8 @@ class Struct(object):
 
             inc_shape  (str): Shape of inclusions that have template mesh,
                 currently: 'circular', 'rectangular', 'slot', 'rib'
-                'slot_coated', 'rib_coated', 'rib_double_coated', 'pedestal', 'onion'. 
+                'slot_coated', 'rib_coated', 'rib_double_coated', 'pedestal', 
+                'onion', 'onion2', 'onion3'. 
                 Rectangular is default.
 
             slab_a_x  (float): The horizontal diameter in nm of the slab
@@ -615,7 +618,7 @@ class Struct(object):
 
         self.linear_element_shapes = ['rectangular', 'slot', 'slot_coated', 'rib', 
                                       'rib_coated', 'rib_double_coated', 'pedestal']
-        self.curvilinear_element_shapes = ['circular', 'onion']
+        self.curvilinear_element_shapes = ['circular', 'onion', 'onion2', 'onion3']
 
 
     def make_mesh(self):
@@ -854,8 +857,9 @@ class Struct(object):
                     geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                     geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
 
-        elif self.inc_shape in ['onion']:
-            msh_template = 'onion'
+        elif self.inc_shape in ['onion', 'onion2', 'onion3']:
+            #msh_template = 'onion'
+            msh_template = self.inc_shape
             self.nb_typ_el = 16
             msh_name = 'onion_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(d)s_%(e)s_%(f)s_%(g)s' % {
             'd': dec_float_str(self.unitcell_x),
@@ -881,20 +885,20 @@ class Struct(object):
                 geo = geo_tmp.replace('d_in_nm = 1000;', "d_in_nm = %f;" % self.unitcell_x)
                 geo = geo.replace('dy_in_nm = 1000;', "dy_in_nm = %f;" % self.unitcell_y)
                 geo = geo.replace('a1 = 20;', "a1 = %f;" % self.inc_a_x)
-                if isinstance(self.inc_b_x, float) or isinstance(self.inc_b_x, int): geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
-                if isinstance(self.inc_c_x, float) or isinstance(self.inc_c_x, int): geo = geo.replace('a3 = 20;', "a3 = %f;" % self.inc_c_x)
-                if isinstance(self.inc_d_x, float) or isinstance(self.inc_d_x, int): geo = geo.replace('a4 = 20;', "a4 = %f;" % self.inc_d_x)
-                if isinstance(self.inc_e_x, float) or isinstance(self.inc_e_x, int): geo = geo.replace('a5 = 20;', "a5 = %f;" % self.inc_e_x)
-                if isinstance(self.inc_f_x, float) or isinstance(self.inc_f_x, int): geo = geo.replace('a6 = 20;', "a6 = %f;" % self.inc_f_x)
-                if isinstance(self.inc_g_x, float) or isinstance(self.inc_g_x, int): geo = geo.replace('a7 = 20;', "a7 = %f;" % self.inc_g_x)
-                if isinstance(self.inc_h_x, float) or isinstance(self.inc_h_x, int): geo = geo.replace('a8 = 20;', "a8 = %f;" % self.inc_h_x)
-                if isinstance(self.inc_i_x, float) or isinstance(self.inc_i_x, int): geo = geo.replace('a9 = 20;', "a9 = %f;" % self.inc_i_x)
-                if isinstance(self.inc_j_x, float) or isinstance(self.inc_j_x, int): geo = geo.replace('a10 = 20;', "a10 = %f;" % self.inc_j_x)
-                if isinstance(self.inc_k_x, float) or isinstance(self.inc_k_x, int): geo = geo.replace('a11 = 20;', "a11 = %f;" % self.inc_k_x)
-                if isinstance(self.inc_l_x, float) or isinstance(self.inc_l_x, int): geo = geo.replace('a12 = 20;', "a12 = %f;" % self.inc_l_x)
-                if isinstance(self.inc_m_x, float) or isinstance(self.inc_m_x, int): geo = geo.replace('a13 = 20;', "a13 = %f;" % self.inc_m_x)
-                if isinstance(self.inc_n_x, float) or isinstance(self.inc_n_x, int): geo = geo.replace('a14 = 20;', "a14 = %f;" % self.inc_n_x)
-                if isinstance(self.inc_o_x, float) or isinstance(self.inc_o_x, int): geo = geo.replace('a15 = 20;', "a15 = %f;" % self.inc_o_x)
+                if is_real_number(self.inc_b_x): geo = geo.replace('a2 = 20;', "a2 = %f;" % self.inc_b_x)
+                if is_real_number(self.inc_c_x): geo = geo.replace('a3 = 20;', "a3 = %f;" % self.inc_c_x)
+                if is_real_number(self.inc_d_x): geo = geo.replace('a4 = 20;', "a4 = %f;" % self.inc_d_x)
+                if is_real_number(self.inc_e_x): geo = geo.replace('a5 = 20;', "a5 = %f;" % self.inc_e_x)
+                if is_real_number(self.inc_f_x): geo = geo.replace('a6 = 20;', "a6 = %f;" % self.inc_f_x)
+                if is_real_number(self.inc_g_x): geo = geo.replace('a7 = 20;', "a7 = %f;" % self.inc_g_x)
+                if is_real_number(self.inc_h_x): geo = geo.replace('a8 = 20;', "a8 = %f;" % self.inc_h_x)
+                if is_real_number(self.inc_i_x): geo = geo.replace('a9 = 20;', "a9 = %f;" % self.inc_i_x)
+                if is_real_number(self.inc_j_x): geo = geo.replace('a10 = 20;', "a10 = %f;" % self.inc_j_x)
+                if is_real_number(self.inc_k_x): geo = geo.replace('a11 = 20;', "a11 = %f;" % self.inc_k_x)
+                if is_real_number(self.inc_l_x): geo = geo.replace('a12 = 20;', "a12 = %f;" % self.inc_l_x)
+                if is_real_number(self.inc_m_x): geo = geo.replace('a13 = 20;', "a13 = %f;" % self.inc_m_x)
+                if is_real_number(self.inc_n_x): geo = geo.replace('a14 = 20;', "a14 = %f;" % self.inc_n_x)
+                if is_real_number(self.inc_o_x): geo = geo.replace('a15 = 20;', "a15 = %f;" % self.inc_o_x)
                 geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
                 geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
                 geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
