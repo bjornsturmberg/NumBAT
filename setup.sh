@@ -2,7 +2,7 @@
 
 function makeBAT() {
 ## install dependencies
-  apt-get install -y python3-numpy python3-dev python3-scipy python3-nose python3-pip gfortran make gmsh libatlas-dev libblas-dev liblapack-dev libsuitesparse-dev
+  apt-get install -y python3-numpy python3-dev python3-scipy python3-nose python3-pip gfortran make gmsh libatlas-base-dev libblas-dev liblapack-dev libsuitesparse-dev
   pip3 install matplotlib # safer option than apt-get'ing as will install mpl2.0 without conflicting older versions.
 ## compile Fortran routines
   cd backend/fortran/
