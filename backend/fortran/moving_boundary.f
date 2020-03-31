@@ -73,7 +73,7 @@ c     When nb_visite(j) is not zero: nb_visite(j) indicates the number of elemen
 c
 ccccccccccccccccccccccccccccccccccccc
 c
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 
 c     Initialisation
       do inod=1,npt

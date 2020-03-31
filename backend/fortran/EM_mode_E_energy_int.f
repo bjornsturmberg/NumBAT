@@ -18,23 +18,17 @@ c     Local variables
       integer*8 nnodes_0
       parameter (nnodes_0 = 6)
       integer*8 nod_el_p(nnodes_0)
-      complex*16 sol_el_1(2*nnodes_0+10), sol_el_2(2*nnodes_0)
-      complex*16 vec_1(2*nnodes_0)
       complex*16 basis_overlap(nnodes_0)
       integer*8 i, j, j1, typ_e
-      integer*8 iel, ival, inod
-      integer*8 jtest, ind_jp, j_eq
-      integer*8 itrial, ind_ip, i_eq
+      integer*8 iel, ival
+      integer*8 itrial, i_eq
       integer*8 info_curved, n_curved, debug, ui
       double precision xel(2,nnodes_0)
       double precision phi2_list(6), grad2_mat0(2,6)
       double precision grad2_mat(2,6)
-      double precision phi3_list(10), grad3_mat0(2,10)
-      double precision grad3_mat(2,10)
-      double precision vec_phi_j(2), vec_phi_i(2)
       double precision ZERO, ONE, r_tmp1
       parameter ( ZERO = 0.0D0, ONE = 1.0D0)
-      complex*16 z_tmp1, coeff_1
+      complex*16 coeff_1
       complex*16 E, Estar
 c
 c     NQUAD: The number of quadrature points used in each element.

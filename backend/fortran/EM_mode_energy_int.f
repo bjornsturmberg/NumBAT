@@ -65,7 +65,7 @@ C
       ui = 6
       speed_c = 299792458
       mu_0 = 1.2566370614d-6
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 
       debug = 0
 C

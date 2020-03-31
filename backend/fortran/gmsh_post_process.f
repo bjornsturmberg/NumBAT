@@ -46,7 +46,7 @@ C      double precision ls_abs_index(nnodes_0), abs_index
       integer*8 namelength
 c
 c  ii = sqrt(-1)
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 c
       ui = 6
       debug = 0

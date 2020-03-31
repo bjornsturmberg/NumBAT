@@ -13,7 +13,7 @@
 
 c     Local variables
       integer*8 debug, k_typ
-      integer*8 i, j, iel, inod
+      integer*8 i, iel, inod
       complex*16 rho_el, c_11, c_12, c_44
       complex*16 p_11, p_12, p_44, eta_11, eta_12, eta_44
 

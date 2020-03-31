@@ -52,7 +52,7 @@ c
 
 c
 c  ii = sqrt(-1)
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 c
       debug = 0
 c

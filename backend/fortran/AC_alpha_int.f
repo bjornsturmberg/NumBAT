@@ -65,7 +65,7 @@ C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 C
       if ( nnodes .ne. 6 ) then
         write(ui,*) "AC_alpha_int: problem nnodes = ", nnodes

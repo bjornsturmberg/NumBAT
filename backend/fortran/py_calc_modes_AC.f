@@ -138,7 +138,7 @@ C       !ui = Unite dImpression
 C      nnodes = 6 ! Number of nodes per element
       pi = 3.141592653589793d0
 c     ii = sqrt(-1)
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 
 C       nvect = 2*nval + nval/2 +3
       nvect = 3*nval + 3
