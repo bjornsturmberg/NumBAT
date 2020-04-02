@@ -14,6 +14,7 @@ These files can be edited using your choice of text editor (for instance running
 To start a simulation open a terminal and change into the directory containing the ``simo.py`` file.
 
 To start we run an example simulation from the tutorials directory. To move to this directory in the terminal enter::
+
     $ cd <path to installation>/NumBAT/tutorials
 
 To run this script execute::
@@ -38,11 +39,6 @@ This will execute the simo.py script and then return you into an interactive pyt
     >>> help(objects.Struct)
 
 where we have accessed the docstring of the Struct class from ``objects.py``.
-
-
-Visualising Fields
-----------------------
-
 
 
 Script Structure
