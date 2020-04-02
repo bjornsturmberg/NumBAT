@@ -90,6 +90,7 @@ modifying the properties to suit. The Si_test_anisotropic file contains all the 
 that NumBAT is setup to read. We ask that stable parameters (particularly those used
 for published results) be added to the NumBAT repository using the same naming convention.
 
+
 Waveguide Geometries
 ----------------------
 
@@ -302,7 +303,7 @@ calculations.
 
 Elements to note:
   #. Both electric and magnetic fields can be selected using ``EM_E`` or ``EM_H`` as the value of ``EM_AC`` in 
-       ``plotting.mode_fields``.
+       ``plotting.mode_fields``. These fields are stored in a folder ``tut_02-fields`` within the tutorial folder. 
   #. ``np.savez`` and ``np.load`` allow storage of arbitrary data between simulations.
 
 .. literalinclude:: ../../tutorials/simo-tut_02-gain_spectra-npsave.py
