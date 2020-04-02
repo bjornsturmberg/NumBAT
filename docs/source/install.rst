@@ -8,7 +8,11 @@ The source code for NumBAT is hosted `here on Github <https://github.com/bjornst
 NumBAT has been developed on Ubuntu 16.04 with the following package versions: Python 3.5.3, Numpy 1.11.0, Suitesparse 4.4.6, and Gmsh 2.10.1.
 It has also been successfully installed by users on Debian, RedHat and on Windows 10 (installing Ubuntu after enabling the Windows Subystem for Linux - steps 3 here https://msdn.microsoft.com/en-au/commandline/wsl/install_guide) and with different versions of packages, but these installations have not been as thoroughly documented so may require user testing.
 
-In general, you can simply run the setup script ::
+In general, you can simply download the git repository and run the setup script ::
+
+    $ git clone https://github.com/bjornsturmberg/NumBAT.git
+
+    $ cd NumBAT/
 
     $ ./setup.sh
 
@@ -16,7 +20,6 @@ or, depending on your system configuration as ::
 
     $ sudo ./setup.sh
 
-from the ``NumBAT/`` directory.
 
 Before doing so you may wish to update your system ::
 

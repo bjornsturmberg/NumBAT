@@ -7,24 +7,42 @@ Simulations with NumBAT are generally carried out using a python script file.
 This file is kept in its own directory which is placed in the NumBAT directory.
 All results of the simulation are automatically created within this directory. This directory then serves as a complete record of the calculation. Often, we will also save the simulation objects within this folder for future inspection, manipulation, plotting, etc.
 
-Traditionally the name of the python script file begins with simo\-. This is convenient for setting terminal alias' for running the script.
 Throughout the tutorial the script file will be called simo.py.
 
+These files can be edited using your choice of text editor (for instance running the following in the terminal ``$ nano simo.py``) or an IDE (for instance pycharm) which allow you to run and debug code within the IDE.
+
 To start a simulation open a terminal and change into the directory containing the ``simo.py`` file.
-To run this script::
+
+To start we run an example simulation from the tutorials directory. To move to this directory in the terminal enter::
+    $ cd <path to installation>/NumBAT/tutorials
+
+To run this script execute::
 
     $ python3 simo.py
+
+To save the results from the simulation that are displayed upon execution (the print statements in simo.py) use::
+
+    $ python3 ./simo.py | tee log-simo.log
+
+This may require you to update the permissions for the simo.py file to make it executable. This is done in the terminal as::
+
+    $ chmod +x simo.py
 
 To have direct access to the simulation objects upon the completion of the script use::
 
     $ python3 -i simo.py
 
-This will return you into an interactive python session in which all simulation objects are accessible. In this session you can access the docstrings of objects, classes and methods. For example::
+This will execute the simo.py script and then return you into an interactive python session within the terminal. This terminal session provides the user experience of an ipython type shell where the python environment and all the simulation objects are as in the simo.py script. In this session you can access the docstrings of objects, classes and methods. For example::
 
     >>> from pydoc import help
     >>> help(objects.Struct)
 
 where we have accessed the docstring of the Struct class from ``objects.py``.
+
+
+Visualising Fields
+----------------------
+
 
 
 Script Structure

@@ -144,11 +144,11 @@ SBS_gain_PE_py, alpha_py, SBS_gain_PE_comsol, alpha_comsol = integration.gain_py
 # Mask negligible gain values to improve clarity of print out.
 threshold = -1e-3
 masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:comsol_ivals], 0, threshold)
-print("\n\nSBS_gain PE NumBAT default (Fortran)\n", masked_PE)
+print("\n\nSBS_gain [1/(Wm)] PE NumBAT default (Fortran)\n", masked_PE)
 masked = np.ma.masked_inside(SBS_gain_PE_py[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
-print("SBS_gain python integration routines \n", masked)
+print("SBS_gain [1/(Wm)] python integration routines \n", masked)
 masked = np.ma.masked_inside(SBS_gain_PE_comsol[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
-print("SBS_gain from loaded Comsol data \n", masked)
+print("SBS_gain [1/(Wm)] from loaded Comsol data \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz

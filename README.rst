@@ -28,13 +28,12 @@ We also provide a `docker image <https://hub.docker.com/r/morblockdock/numbat>`_
 
 Installation is as simple as ::
 
-    $ git clone https://github.com/bjornsturmberg/NumBAT.git 
+    $ git clone https://github.com/bjornsturmberg/NumBAT.git
 
-Followed by ::
+    $ cd NumBAT/
 
     $ sudo ./setup.sh
 
-from the NumBAT/ directory.
 
 For optimal results ::
 
