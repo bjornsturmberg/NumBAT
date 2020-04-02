@@ -51,9 +51,44 @@ structure:
   - solving electromagnetic and acoustic modes 
   - calculating gain and other derived quantities
 
-The following section provides some information about the pre-defined range of waveguide
-structures and the key parameters controlling finite-element meshing.
+The following section provides some information about specifying material properties and waveguide
+structures, as well as the key parameters for controlling the finite-element meshing.
 Information on how to add new structures to NumBAT is provided in :ref:`sec-newmesh-label`.
+
+
+Materials
+----------------------
+
+In order to calculate the modes of a structure we must specify
+the acoustic and optical properties of all constituent materials.
+
+In NumBAT, this data is read in from json files, which are stored in /NumBAT/backend/material_data
+
+These files not only provide the numerical values for optical and acoustic variables, but
+record how these variables have been arrived at. Often they are taken from the literature.
+
+The intention of this arrangement is to create a library of materials that can we hope can form
+a standard amongst the research community. 
+They also allow users to check the sensitivity of their results on particular parameters for 
+a given material.
+
+At present, the material library contains:
+- Vacuum
+- As2S3_2016_Smith
+- As2S3_2017_Morrison
+- GaAs_2016_Smith
+- Si_2013_Laude
+- Si_2015_Van_Laer
+- Si_2016_Smith
+- SiO2_2013_Laude
+- SiO2_2015_Van_Laer
+- SiO2_2016_Smith
+- Si_test_anisotropic
+
+Materials can easily be added to this by copying any of these files as a template and 
+modifying the properties to suit. The Si_test_anisotropic file contains all the variables
+that NumBAT is setup to read. We ask that stable parameters (particularly those used
+for published results) be added to the NumBAT repository using the same naming convention.
 
 Waveguide Geometries
 ----------------------
