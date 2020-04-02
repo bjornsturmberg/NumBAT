@@ -73,17 +73,17 @@ They also allow users to check the sensitivity of their results on particular pa
 a given material.
 
 At present, the material library contains:
-- Vacuum
-- As2S3_2016_Smith
-- As2S3_2017_Morrison
-- GaAs_2016_Smith
-- Si_2013_Laude
-- Si_2015_Van_Laer
-- Si_2016_Smith
-- SiO2_2013_Laude
-- SiO2_2015_Van_Laer
-- SiO2_2016_Smith
-- Si_test_anisotropic
+  - Vacuum
+  - As2S3_2016_Smith
+  - As2S3_2017_Morrison
+  - GaAs_2016_Smith
+  - Si_2013_Laude
+  - Si_2015_Van_Laer
+  - Si_2016_Smith
+  - SiO2_2013_Laude
+  - SiO2_2015_Van_Laer
+  - SiO2_2016_Smith
+  - Si_test_anisotropic
 
 Materials can easily be added to this by copying any of these files as a template and 
 modifying the properties to suit. The Si_test_anisotropic file contains all the variables
