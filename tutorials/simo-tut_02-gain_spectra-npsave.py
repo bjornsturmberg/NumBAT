@@ -79,11 +79,11 @@ print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
 # Only plot fields of fundamental (ival = 0) mode.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
-                         ylim_max=0.4, ivals=[0], contours=True, EM_AC='EM_E', 
+                         ylim_max=0.4, ivals=[EM_ival_pump], contours=True, EM_AC='EM_E', 
                          pdf_png='png', prefix_str=prefix_str)
 # Plot the H fields of the EM modes - specified with EM_AC='EM_H'.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
-                         ylim_max=0.4, ivals=[0], EM_AC='EM_H', 
+                         ylim_max=0.4, ivals=[EM_ival_pump], EM_AC='EM_H', 
                          pdf_png='png', prefix_str=prefix_str)
 
 # Calculate the EM effective index of the waveguide.

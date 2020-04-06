@@ -166,10 +166,10 @@ n_eff = wguide.material_a.n-0.1
 
 # Calculate Electromagnetic Modes
 print("starting EM pump modes")
-#sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff, debug=True)
+sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff, debug=True)
 #np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
-npzfile = np.load('wguide_data.npz', allow_pickle=True)
-sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+# npzfile = np.load('wguide_data.npz', allow_pickle=True)
+# sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
 print("starting EM Stokes modes")
 sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
@@ -178,17 +178,19 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 print("starting EM field plotting ")
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4 , xlim_max=0.4 , ivals=[0,1], 
-                         ylim_min=0.435 , ylim_max=0.435 , EM_AC='EM_E', num_ticks=3,
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
+                         ivals=[EM_ival_pump,EM_ival_Stokes], 
+                         ylim_min=0.435, ylim_max=0.435, EM_AC='EM_E', num_ticks=3,
                          prefix_str=prefix_str, pdf_png='png', ticks=True,
-                          decorator=emdecorate, quiver_steps=20, 
-                          comps=('Ex','Ey', 'Ez','Eabs','Et'), n_points=2000, colorbar=True)
+                         decorator=emdecorate, quiver_steps=20, 
+                         comps=('Ex','Ey', 'Ez','Eabs','Et'), n_points=2000, colorbar=True)
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4 , xlim_max=0.4 , ivals=[0,1], 
-                         ylim_min=0.435 , ylim_max=0.435 , EM_AC='EM_H', num_ticks=3,
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
+                         ivals=[EM_ival_pump,EM_ival_Stokes], 
+                         ylim_min=0.435, ylim_max=0.435, EM_AC='EM_H', num_ticks=3,
                          prefix_str=prefix_str, pdf_png='png', ticks=True,
-                          decorator=emdecorate, quiver_steps=20, 
-                          comps=('Hx','Hy', 'Hz','Habs','Ht'), n_points=2000, colorbar=True)
+                         decorator=emdecorate, quiver_steps=20, 
+                         comps=('Hx','Hy', 'Hz','Habs','Ht'), n_points=2000, colorbar=True)
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -212,10 +214,13 @@ sim_AC = npzfile['sim_AC'].tolist()
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
+selected_AC_modes = [7, 13, 23]
+print("AC modes selected for field plotting", selected_AC_modes)
 print("plotting acoustic modes")
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, ivals=(7, 13, 23,), num_ticks=3, 
-     xlim_min=-.05, xlim_max=-0.05, ylim_min=-.1, ylim_max=-0.1, quiver_steps=20,
-     pdf_png='png',ticks=True, comps=('ux','ut','uz','uabs'), decorator=acdecorate, colorbar=True)
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, ivals=selected_AC_modes,  
+                         num_ticks=3, xlim_min=-.05, xlim_max=-0.05, ylim_min=-.1, ylim_max=-0.1, 
+                         quiver_steps=20, pdf_png='png',ticks=True, comps=('ux','ut','uz','uabs'),
+                         decorator=acdecorate, colorbar=True)
 
 
 set_q_factor = 460.

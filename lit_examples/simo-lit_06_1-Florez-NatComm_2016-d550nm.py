@@ -97,7 +97,7 @@ if doem:
     sim_EM_pump = npzfile['sim_EM_pump'].tolist()
   sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
   
-  plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ivals=[0],
+  plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ivals=[EM_ival_pump],
                            ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', 
                            prefix_str=prefix_str, pdf_png='png', ticks=True,
                            decorator=emdecorate, quiver_steps=20)

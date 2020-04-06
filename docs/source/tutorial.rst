@@ -159,7 +159,7 @@ Choosing appropriate values of ``lc_bkg``, ``lc2``, ``lc3`` is crucial NumBAT to
     NumBAT/backend/fortran/msh$ gmsh <msh_name>.msh
 
 Users on WSL will need to first run an X listener (such as XMING) in Windows in order for the "plt_mesh=True" feature to work.
-Onse the X listener is running, execute the following in the terminal::
+Once the X listener is running, execute the following in the terminal::
 
     $ sudo apt-get install x11-apps
     $ export DISPLAY=:0
