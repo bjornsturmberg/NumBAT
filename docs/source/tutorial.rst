@@ -158,6 +158,14 @@ Choosing appropriate values of ``lc_bkg``, ``lc2``, ``lc3`` is crucial NumBAT to
     
     NumBAT/backend/fortran/msh$ gmsh <msh_name>.msh
 
+Users on WSL will need to first run an X listener (such as XMING) in Windows in order for the "plt_mesh=True" feature to work.
+Onse the X listener is running, execute the following in the terminal::
+
+    $ sudo apt-get install x11-apps
+    $ export DISPLAY=:0
+    $ xclock
+
+where the last command is simply to check the setup. Once this is confirmed to be operating smoothly, the "plt_mesh=True" command will then run as anticipated and generate two png files (one for the geometry and one for the mesh) in NumBAT/backend/fortran/msh/. Note the X windows that open must be manually closed for the calculation to continue, and after unexpected restarts the X window may no longer display output but the png files will contain the necessary features.
 
 In the remainder of this chapter we go through a number of example ``simo.py`` files. But before we do, another quick tip about running simulations within screen sessions, which allow you to disconnect from servers leaving them to continue your processes.
 
