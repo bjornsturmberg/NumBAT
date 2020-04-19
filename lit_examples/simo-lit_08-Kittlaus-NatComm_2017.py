@@ -103,21 +103,22 @@ lc_refine_3 = 50    # edge of coat
 lc_refine_4 = 20    # edge of slab_b
 lc_refine_5 = 4     # edge of coat2
 
-##working set
-lc_bkg = .5  # background
-lc_refine_1 = 1000  # edge of rib
-lc_refine_2 = 400   # edge of slab_a 
-lc_refine_3 = 10    # edge of coat
-lc_refine_4 = 5   # edge of slab_b
-lc_refine_5 = 1   # edge of coat2
 
-#scaled working set: doesn't work
-lc_bkg = 1  # background
-lc_refine_1 = 2000  # edge of rib
-lc_refine_2 = 600   # edge of slab_a 
-lc_refine_3 = 10    # edge of coat
-lc_refine_4 = 4   # edge of slab_b
-lc_refine_5 = 1  # edge of coat2
+# ##working set
+# lc_bkg = .5  # background
+# lc_refine_1 = 1000  # edge of rib
+# lc_refine_2 = 400   # edge of slab_a 
+# lc_refine_3 = 10    # edge of coat
+# lc_refine_4 = 5   # edge of slab_b
+# lc_refine_5 = 1   # edge of coat2
+
+# #scaled working set: doesn't work
+# lc_bkg = 1  # background
+# lc_refine_1 = 2000  # edge of rib
+# lc_refine_2 = 600   # edge of slab_a 
+# lc_refine_3 = 10    # edge of coat
+# lc_refine_4 = 4   # edge of slab_b
+# lc_refine_5 = 1  # edge of coat2
 
 ##scaled working set: doesn't work
 #lc_bkg = .1  # background
