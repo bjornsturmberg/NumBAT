@@ -44,10 +44,10 @@ We next define the peak of the rib, which involves a width and a height, ::
     riby = 30;
     rx = ribx/d_in_nm;
     ry = riby/d_in_nm;
-    Point(9) = {d/2-rx/2, -h+s1+s2, 0, lc2};
-    Point(10) = {d/2+rx/2, -h+s1+s2, 0, lc2};
-    Point(11) = {d/2-rx/2, -h+s1+s2+ry, 0, lc2};
-    Point(12) = {d/2+rx/2, -h+s1+s2+ry, 0, lc2};
+    Point(9) = {d/2-rx/2, -h+s1+s2, 0, lc_refine_1};
+    Point(10) = {d/2+rx/2, -h+s1+s2, 0, lc_refine_1};
+    Point(11) = {d/2-rx/2, -h+s1+s2+ry, 0, lc_refine_1};
+    Point(12) = {d/2+rx/2, -h+s1+s2+ry, 0, lc_refine_1};
 
 Lastly we coat the whole structure with a conformal layer. ::
 
@@ -118,7 +118,7 @@ The first of these is ::
     py_calc_modes.f: n_conv != nval :
 
 Long story short, this indicates that the FEM mesh is too coarse for solutions for higher order Bloch modes (Eigenvaules) to converge. 
-This error is easily fixed by increasing the mesh resolution. Decrease 'lc_bkg' and/or increase 'lc2' etc.
+This error is easily fixed by increasing the mesh resolution. Decrease 'lc_bkg' and/or increase 'lc_refine_1' etc.
 
 
 The second error is :: 
@@ -128,4 +128,4 @@ The second error is ::
     Aborting...
 
 This is the opposite problem, when the mesh is so fine that the simulation is overloading the memory of the machine. More accurately the memory depends on the number of Eigenvalues being calculated as well as the number of FEM mesh points.
-The best solution to this is to increase 'lc_bkg' and/or decrease 'lc2' etc.
+The best solution to this is to increase 'lc_bkg' and/or decrease 'lc_refine_1' etc.

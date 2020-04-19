@@ -20,9 +20,9 @@ coat_w = coatx/d_in_nm;
 coat_h = coaty/d_in_nm;
 
 lc = 0; // background and unitcell edge
-lc2 = lc/1; // rib
-lc3 = lc/1; // slab
-lc4 = lc/1; // coat
+lc_refine_1 = lc/1; // rib
+lc_refine_2 = lc/1; // slab
+lc_refine_3 = lc/1; // coat
 
 hy = dy/2 + (slab_h/2) + radius1y; // 
 hx = 0.;
@@ -34,24 +34,24 @@ Point(3) = {-hx+d, -dy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
 // Slab
-Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc3};
-Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc3};
-Point(13) = {d/2-slab_w/2, -hy, 0, lc3};
-Point(14) = {d/2+slab_w/2, -hy, 0, lc3};
+Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc_refine_2};
+Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc_refine_2};
+Point(13) = {d/2-slab_w/2, -hy, 0, lc_refine_2};
+Point(14) = {d/2+slab_w/2, -hy, 0, lc_refine_2};
 
 // Rib
-Point(7) = {-hx+d/2-radius1, -hy+slab_h, 0, lc2};
-Point(8) = {-hx+d/2+radius1, -hy+slab_h, 0, lc2};
-Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h, 0, lc2};
-Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h, 0, lc2};
+Point(7) = {-hx+d/2-radius1, -hy+slab_h, 0, lc_refine_1};
+Point(8) = {-hx+d/2+radius1, -hy+slab_h, 0, lc_refine_1};
+Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h, 0, lc_refine_1};
+Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h, 0, lc_refine_1};
 
 // Coat
-Point(15) = {d/2-slab_w/2, -hy+slab_h+coat_h, 0, lc4};
-Point(16) = {d/2+slab_w/2, -hy+slab_h+coat_h, 0, lc4};
-Point(17) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h, 0, lc4};
-Point(18) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h, 0, lc4};
-Point(19) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc4};
-Point(20) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc4};
+Point(15) = {d/2-slab_w/2, -hy+slab_h+coat_h, 0, lc_refine_3};
+Point(16) = {d/2+slab_w/2, -hy+slab_h+coat_h, 0, lc_refine_3};
+Point(17) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h, 0, lc_refine_3};
+Point(18) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h, 0, lc_refine_3};
+Point(19) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc_refine_3};
+Point(20) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc_refine_3};
 
 Line(1) = {1, 2};
 Line(2) = {2, 3};

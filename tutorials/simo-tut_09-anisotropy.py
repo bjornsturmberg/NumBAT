@@ -39,7 +39,7 @@ AC_ival = 'All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.Vacuum,
                         material_a=materials.Si_test_anisotropic,
-                        lc_bkg=1, lc2=1000.0, lc3=5.0)
+                        lc_bkg=1, lc_refine_1=1000.0, lc_refine_2=5.0)
 
 
 # Expected effective index of fundamental guided mode.

@@ -11,8 +11,8 @@ radius1 = (a1/(2*d_in_nm))*d;
 radius1y = (a1y/(2*d_in_nm))*d;
 rect = 1;
 lc = 0; // 0.501 0.201 0.0701;
-lc2 = lc/1; // on cylinder surfaces
-lc3 = lc/1; // cylinder1 centres
+lc_refine_1 = lc/1; // on cylinder surfaces
+lc_refine_2 = lc/1; // cylinder1 centres
 
 hy = dy; // Thickness: square profile => hy=d
 hx = 0.;
@@ -24,11 +24,11 @@ Point(3) = {-hx+d, -hy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
 // Vertices
-Point(5) = {-hx+d/2, -hy/2, 0, lc3};
-Point(6) = {-hx+d/2, -hy/2+radius1y, 0, lc2};
-Point(7) = {-hx+d/2-radius1, -hy/2, 0, lc2};
-Point(8) = {-hx+d/2, -hy/2-radius1y, 0, lc2};
-Point(9) = {-hx+d/2+radius1, -hy/2, 0, lc2};
+Point(5) = {-hx+d/2, -hy/2, 0, lc_refine_2};
+Point(6) = {-hx+d/2, -hy/2+radius1y, 0, lc_refine_1};
+Point(7) = {-hx+d/2-radius1, -hy/2, 0, lc_refine_1};
+Point(8) = {-hx+d/2, -hy/2-radius1y, 0, lc_refine_1};
+Point(9) = {-hx+d/2+radius1, -hy/2, 0, lc_refine_1};
 
 Point(10) = {-hx+d/2, 0, 0, lc};
 Point(11) = {0,-hy/2, 0, lc};
@@ -85,10 +85,10 @@ If(rect == 0)
 EndIf
 
 If(rect == 1)
-    Point(150) = {-hx+d/2+radius1, -hy/2+radius1y, 0,lc2};
-    Point(151) = {-hx+d/2-radius1, -hy/2+radius1y, 0,lc2};
-    Point(152) = {-hx+d/2+radius1, -hy/2-radius1y, 0,lc2};
-    Point(153) = {-hx+d/2-radius1, -hy/2-radius1y, 0,lc2};
+    Point(150) = {-hx+d/2+radius1, -hy/2+radius1y, 0,lc_refine_1};
+    Point(151) = {-hx+d/2-radius1, -hy/2+radius1y, 0,lc_refine_1};
+    Point(152) = {-hx+d/2+radius1, -hy/2-radius1y, 0,lc_refine_1};
+    Point(153) = {-hx+d/2-radius1, -hy/2-radius1y, 0,lc_refine_1};
 
     Line(17) = {151, 6};
     Line(18) = {6, 150};

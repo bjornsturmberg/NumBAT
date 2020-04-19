@@ -2,8 +2,8 @@
 
 // Meshing parameters
 lc = 0; // base level meshing parameter
-lc2 = lc/1; // mesh refinement parameters
-lc3 = lc/1; // mesh refinement parameters
+lc_refine_1 = lc/1; // mesh refinement parameters
+lc_refine_2 = lc/1; // mesh refinement parameters
 
 // Unit cell
 d_in_nm = 1000;

@@ -19,8 +19,8 @@ yoff = -5;
 yoffset = yoff/d_in_nm;
 rect = 1;
 lc = 0; // 0.501 0.201 0.0701;
-lc2 = lc/1; // on cylinder surfaces
-lc3 = lc/1; // cylinder centres
+lc_refine_1 = lc/1; // on cylinder surfaces
+lc_refine_2 = lc/1; // cylinder centres
 
 hy = dy; // Thickness: square profile => hy=d
 hx = 0.;
@@ -32,34 +32,34 @@ Point(3) = {-hx+d, -hy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
 // Vertices
-Point(5) = {-radius1-b-hx+d/2, -hy/2, 0, lc3};
-Point(6) = {-radius1-b-hx+d/2, -hy/2+radius1y, 0, lc2};
-Point(7) = {-radius1-b-hx+d/2-radius1, -hy/2, 0, lc2};
-Point(8) = {-radius1-b-hx+d/2, -hy/2-radius1y, 0, lc2};
-Point(9) = {-radius1-b-hx+d/2+radius1, -hy/2, 0, lc2};
+Point(5) = {-radius1-b-hx+d/2, -hy/2, 0, lc_refine_2};
+Point(6) = {-radius1-b-hx+d/2, -hy/2+radius1y, 0, lc_refine_1};
+Point(7) = {-radius1-b-hx+d/2-radius1, -hy/2, 0, lc_refine_1};
+Point(8) = {-radius1-b-hx+d/2, -hy/2-radius1y, 0, lc_refine_1};
+Point(9) = {-radius1-b-hx+d/2+radius1, -hy/2, 0, lc_refine_1};
 
-Point(10) = {-radius1-b-hx+d/2, 0, 0, lc2};
+Point(10) = {-radius1-b-hx+d/2, 0, 0, lc_refine_1};
 Point(11) = {0,-hy/2, 0, lc};
-Point(12) = {-radius1-b-hx+d/2, -hy, 0, lc2};
+Point(12) = {-radius1-b-hx+d/2, -hy, 0, lc_refine_1};
 Point(13) = {d, -hy/2+yoffset, 0, lc};
 
-Point(14) = {-hx+d/2, -hy/2, 0, lc2};
-Point(15) = {-hx+d/2, 0, 0, lc2};
-Point(16) = {-hx+d/2, -hy, 0, lc2};
+Point(14) = {-hx+d/2, -hy/2, 0, lc_refine_1};
+Point(15) = {-hx+d/2, 0, 0, lc_refine_1};
+Point(16) = {-hx+d/2, -hy, 0, lc_refine_1};
 If(yoffset < 0)
-    Point(17) = {-hx+d/2, -hy/2+yoffset, 0, lc2};
+    Point(17) = {-hx+d/2, -hy/2+yoffset, 0, lc_refine_1};
 EndIf
 If(yoffset > 0)
-    Point(17) = {-hx+d/2, -hy/2+yoffset, 0, lc2};
+    Point(17) = {-hx+d/2, -hy/2+yoffset, 0, lc_refine_1};
 EndIf
 
-Point(18) = {radius2+b-hx+d/2, -hy/2+yoffset, 0, lc3};
-Point(19) = {radius2+b-hx+d/2, -hy/2+radius2y+yoffset, 0, lc2};
-Point(20) = {radius2+b-hx+d/2-radius2, -hy/2+yoffset, 0, lc2};
-Point(21) = {radius2+b-hx+d/2, -hy/2-radius2y+yoffset, 0, lc2};
-Point(22) = {radius2+b-hx+d/2+radius2, -hy/2+yoffset, 0, lc2};
-Point(23) = {radius2+b-hx+d/2, 0, 0, lc2};
-Point(24) = {radius2+b-hx+d/2, -hy, 0, lc2};
+Point(18) = {radius2+b-hx+d/2, -hy/2+yoffset, 0, lc_refine_2};
+Point(19) = {radius2+b-hx+d/2, -hy/2+radius2y+yoffset, 0, lc_refine_1};
+Point(20) = {radius2+b-hx+d/2-radius2, -hy/2+yoffset, 0, lc_refine_1};
+Point(21) = {radius2+b-hx+d/2, -hy/2-radius2y+yoffset, 0, lc_refine_1};
+Point(22) = {radius2+b-hx+d/2+radius2, -hy/2+yoffset, 0, lc_refine_1};
+Point(23) = {radius2+b-hx+d/2, 0, 0, lc_refine_1};
+Point(24) = {radius2+b-hx+d/2, -hy, 0, lc_refine_1};
 
 Line(1) = {1,10};
 Line(2) = {10,15};
@@ -184,15 +184,15 @@ If(rect == 0)
 EndIf
 
 If(rect == 1)
-    Point(150) = {-radius1-b-hx+d/2+radius1, -hy/2+radius1y, 0,lc3};
-    Point(151) = {-radius1-b-hx+d/2-radius1, -hy/2+radius1y, 0,lc3};
-    Point(152) = {-radius1-b-hx+d/2+radius1, -hy/2-radius1y, 0,lc3};
-    Point(153) = {-radius1-b-hx+d/2-radius1, -hy/2-radius1y, 0,lc3};
+    Point(150) = {-radius1-b-hx+d/2+radius1, -hy/2+radius1y, 0,lc_refine_2};
+    Point(151) = {-radius1-b-hx+d/2-radius1, -hy/2+radius1y, 0,lc_refine_2};
+    Point(152) = {-radius1-b-hx+d/2+radius1, -hy/2-radius1y, 0,lc_refine_2};
+    Point(153) = {-radius1-b-hx+d/2-radius1, -hy/2-radius1y, 0,lc_refine_2};
 
-    Point(154) = {radius2+b-hx+d/2+radius2, -hy/2+radius2y+yoffset, 0,lc3};
-    Point(155) = {radius2+b-hx+d/2-radius2, -hy/2+radius2y+yoffset, 0,lc3};
-    Point(156) = {radius2+b-hx+d/2+radius2, -hy/2-radius2y+yoffset, 0,lc3};
-    Point(157) = {radius2+b-hx+d/2-radius2, -hy/2-radius2y+yoffset, 0,lc3};
+    Point(154) = {radius2+b-hx+d/2+radius2, -hy/2+radius2y+yoffset, 0,lc_refine_2};
+    Point(155) = {radius2+b-hx+d/2-radius2, -hy/2+radius2y+yoffset, 0,lc_refine_2};
+    Point(156) = {radius2+b-hx+d/2+radius2, -hy/2-radius2y+yoffset, 0,lc_refine_2};
+    Point(157) = {radius2+b-hx+d/2-radius2, -hy/2-radius2y+yoffset, 0,lc_refine_2};
 
     Line(17) = {151, 6};
     Line(18) = {6, 150};

@@ -48,13 +48,13 @@ time_list = []
 for i_lc, lc_ref in enumerate(lc_list):
     start = time.time()
     print("\n Running simulation", i_lc+1, "/", nu_lcs)
-    lc3 = lc_ref/2
+    lc_refine_2 = lc_ref/2
     lc_bkg = lc_bkg_list[i_lc]
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
                             material_bkg=materials.Vacuum,
                             material_a=materials.Si_2016_Smith,
-                            lc_bkg=lc_bkg, lc2=lc_ref, lc3=lc3, force_mesh=True)
+                            lc_bkg=lc_bkg, lc_refine_1=lc_ref, lc_refine_2=lc_refine_2, force_mesh=True)
 
     # Expected effective index of fundamental guided mode.
     n_eff = wguide.material_a.n-0.1

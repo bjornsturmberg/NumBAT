@@ -48,7 +48,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_a=materials.As2S3_2017_Morrison, # slot
                         material_b=materials.SiO2_2013_Laude,     # slab
                         material_c=materials.Si_2016_Smith,       # walls of slot
-                        lc_bkg=1, lc2=800.0, lc3=400.0)
+                        lc_bkg=1, lc_refine_1=800.0, lc_refine_2=400.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1

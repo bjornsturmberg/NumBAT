@@ -97,35 +97,35 @@ coat2_y = 200
 
 #original old gmsh set that works
 lc_bkg = 4  # background
-lc2 = 8000  # edge of rib
-lc3 = 3000   # edge of slab_a 
-lc4 = 50    # edge of coat
-lc5 = 20    # edge of slab_b
-lc6 = 4     # edge of coat2
+lc_refine_1 = 8000  # edge of rib
+lc_refine_2 = 3000   # edge of slab_a 
+lc_refine_3 = 50    # edge of coat
+lc_refine_4 = 20    # edge of slab_b
+lc_refine_5 = 4     # edge of coat2
 
 ##working set
 lc_bkg = .5  # background
-lc2 = 1000  # edge of rib
-lc3 = 400   # edge of slab_a 
-lc4 = 10    # edge of coat
-lc5 = 5   # edge of slab_b
-lc6 = 1   # edge of coat2
+lc_refine_1 = 1000  # edge of rib
+lc_refine_2 = 400   # edge of slab_a 
+lc_refine_3 = 10    # edge of coat
+lc_refine_4 = 5   # edge of slab_b
+lc_refine_5 = 1   # edge of coat2
 
 #scaled working set: doesn't work
 lc_bkg = 1  # background
-lc2 = 2000  # edge of rib
-lc3 = 600   # edge of slab_a 
-lc4 = 10    # edge of coat
-lc5 = 4   # edge of slab_b
-lc6 = 1  # edge of coat2
+lc_refine_1 = 2000  # edge of rib
+lc_refine_2 = 600   # edge of slab_a 
+lc_refine_3 = 10    # edge of coat
+lc_refine_4 = 4   # edge of slab_b
+lc_refine_5 = 1  # edge of coat2
 
 ##scaled working set: doesn't work
 #lc_bkg = .1  # background
-#lc2 = 200  # edge of rib
-#lc3 = 75   # edge of slab_a 
-#lc4 = 50    # edge of coat
+#lc_refine_1 = 200  # edge of rib
+#lc_refine_2 = 75   # edge of slab_a 
+#lc_refine_3 = 50    # edge of coat
 #c5  = 50  # edge of slab_b
-#lc6 = 50  # edge of coat2
+#lc_refine_5 = 50  # edge of coat2
 
 
 
@@ -159,8 +159,8 @@ wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_b=Si_110, material_c=materials.Vacuum,
                         material_d=materials.Vacuum, material_e=materials.Vacuum,
                         symmetry_flag=False,
-                        lc_bkg=lc_bkg, lc2=lc2, lc3=lc3,
-                        lc4=lc4, lc5=lc5, lc6=lc6)
+                        lc_bkg=lc_bkg, lc_refine_1=lc_refine_1, lc_refine_2=lc_refine_2,
+                        lc_refine_3=lc_refine_3, lc_refine_4=lc_refine_4, lc_refine_5=lc_refine_5)
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
@@ -206,10 +206,10 @@ shift_Hz = 2e9
 
 # Calculate Acoustic Modes
 print("starting acoustic modes")
-#sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz, debug=True)
-#np.savez('wguide_data_AC', sim_AC=sim_AC)
-npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
-sim_AC = npzfile['sim_AC'].tolist()
+sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz, debug=True)
+# np.savez('wguide_data_AC', sim_AC=sim_AC)
+# npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
+# sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))

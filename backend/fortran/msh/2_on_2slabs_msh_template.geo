@@ -39,10 +39,10 @@ If(slab2_w == 1)
 EndIf
 
 lc = 0; // 0.501 0.201 0.0701;
-lc2 = lc/1; // on cylinder surfaces
-lc3 = lc/1; // cylinder1 centres
-lc4 = lc/1; // centres of top and bottom
-lc5 = lc/1; // slab
+lc_refine_1 = lc/1; // on cylinder surfaces
+lc_refine_2 = lc/1; // cylinder1 centres
+lc_refine_3 = lc/1; // centres of top and bottom
+lc_refine_4 = lc/1; // slab
 
 hy = dy; // Thickness: square profile => hy=d
 hx = 0.;
@@ -54,28 +54,28 @@ Point(3) = {-hx+d, -hy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
 // Slab
-Point(252) = {0, -hy+slab_h+slab2_h, 0, lc5};
-Point(253) = {d, -hy+slab_h+slab2_h, 0, lc5};
-Point(350) = {0, -hy+slab2_h, 0, lc5};
-Point(351) = {d, -hy+slab2_h, 0, lc5};
+Point(252) = {0, -hy+slab_h+slab2_h, 0, lc_refine_4};
+Point(253) = {d, -hy+slab_h+slab2_h, 0, lc_refine_4};
+Point(350) = {0, -hy+slab2_h, 0, lc_refine_4};
+Point(351) = {d, -hy+slab2_h, 0, lc_refine_4};
 
 // Inclusion
-Point(5) = {-radius1-b-hx+d/2, -hy+slab_h+slab2_h+radius1y, 0, lc3};
-Point(6) = {-radius1-b-hx+d/2, -hy+slab_h+slab2_h+2*radius1y, 0, lc2};
-Point(7) = {-radius1-b-hx+d/2-radius1, -hy+slab_h+slab2_h+radius1y, 0, lc2};
-Point(8) = {-radius1-b-hx+d/2, -hy+slab_h+slab2_h, 0, lc2};
-Point(9) = {-radius1-b-hx+d/2+radius1, -hy+slab_h+slab2_h+radius1y, 0, lc2};
+Point(5) = {-radius1-b-hx+d/2, -hy+slab_h+slab2_h+radius1y, 0, lc_refine_2};
+Point(6) = {-radius1-b-hx+d/2, -hy+slab_h+slab2_h+2*radius1y, 0, lc_refine_1};
+Point(7) = {-radius1-b-hx+d/2-radius1, -hy+slab_h+slab2_h+radius1y, 0, lc_refine_1};
+Point(8) = {-radius1-b-hx+d/2, -hy+slab_h+slab2_h, 0, lc_refine_1};
+Point(9) = {-radius1-b-hx+d/2+radius1, -hy+slab_h+slab2_h+radius1y, 0, lc_refine_1};
 
-Point(10) = {-2*radius1-b-hx+d/2, 0, 0, lc4};
-Point(11) = {-b-hx+d/2, 0, 0, lc4};
-Point(12) = {b-hx+d/2, 0, 0, lc4};
-Point(13) = {2*radius2+b-hx+d/2, 0, 0, lc4};
+Point(10) = {-2*radius1-b-hx+d/2, 0, 0, lc_refine_3};
+Point(11) = {-b-hx+d/2, 0, 0, lc_refine_3};
+Point(12) = {b-hx+d/2, 0, 0, lc_refine_3};
+Point(13) = {2*radius2+b-hx+d/2, 0, 0, lc_refine_3};
 
-Point(18) = {radius2+b-hx+d/2, -hy+slab_h+slab2_h+radius2y, 0, lc3};
-Point(19) = {radius2+b-hx+d/2, -hy+slab_h+slab2_h+2*radius2y, 0, lc2};
-Point(20) = {radius2+b-hx+d/2-radius2, -hy+slab_h+slab2_h+radius2y, 0, lc2};
-Point(21) = {radius2+b-hx+d/2, -hy+slab_h+slab2_h, 0, lc2};
-Point(22) = {radius2+b-hx+d/2+radius2, -hy+slab_h+slab2_h+radius2y, 0, lc2};
+Point(18) = {radius2+b-hx+d/2, -hy+slab_h+slab2_h+radius2y, 0, lc_refine_2};
+Point(19) = {radius2+b-hx+d/2, -hy+slab_h+slab2_h+2*radius2y, 0, lc_refine_1};
+Point(20) = {radius2+b-hx+d/2-radius2, -hy+slab_h+slab2_h+radius2y, 0, lc_refine_1};
+Point(21) = {radius2+b-hx+d/2, -hy+slab_h+slab2_h, 0, lc_refine_1};
+Point(22) = {radius2+b-hx+d/2+radius2, -hy+slab_h+slab2_h+radius2y, 0, lc_refine_1};
 
 Line(1) = {1, 10};
 Line(2) = {10, 11};
@@ -167,15 +167,15 @@ EndIf
 
 
 If(rect == 1)
-    Point(150) = {-radius1-b-hx+d/2+radius1, -hy+slab_h+slab2_h+2*radius1y, 0,lc3};
-    Point(151) = {-radius1-b-hx+d/2-radius1, -hy+slab_h+slab2_h+2*radius1y, 0,lc3};
-    Point(152) = {-radius1-b-hx+d/2+radius1, -hy+slab_h+slab2_h, 0,lc3};
-    Point(153) = {-radius1-b-hx+d/2-radius1, -hy+slab_h+slab2_h, 0,lc3};
+    Point(150) = {-radius1-b-hx+d/2+radius1, -hy+slab_h+slab2_h+2*radius1y, 0,lc_refine_2};
+    Point(151) = {-radius1-b-hx+d/2-radius1, -hy+slab_h+slab2_h+2*radius1y, 0,lc_refine_2};
+    Point(152) = {-radius1-b-hx+d/2+radius1, -hy+slab_h+slab2_h, 0,lc_refine_2};
+    Point(153) = {-radius1-b-hx+d/2-radius1, -hy+slab_h+slab2_h, 0,lc_refine_2};
 
-    Point(154) = {radius2+b-hx+d/2+radius2, -hy+slab_h+slab2_h+2*radius2y, 0,lc3};
-    Point(155) = {radius2+b-hx+d/2-radius2, -hy+slab_h+slab2_h+2*radius2y, 0,lc3};
-    Point(156) = {radius2+b-hx+d/2+radius2, -hy+slab_h+slab2_h, 0,lc3};
-    Point(157) = {radius2+b-hx+d/2-radius2, -hy+slab_h+slab2_h, 0,lc3};
+    Point(154) = {radius2+b-hx+d/2+radius2, -hy+slab_h+slab2_h+2*radius2y, 0,lc_refine_2};
+    Point(155) = {radius2+b-hx+d/2-radius2, -hy+slab_h+slab2_h+2*radius2y, 0,lc_refine_2};
+    Point(156) = {radius2+b-hx+d/2+radius2, -hy+slab_h+slab2_h, 0,lc_refine_2};
+    Point(157) = {radius2+b-hx+d/2-radius2, -hy+slab_h+slab2_h, 0,lc_refine_2};
 
     Line(48) = {10, 151};
     Line(26) = {151, 6};
