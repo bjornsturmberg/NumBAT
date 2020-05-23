@@ -80,8 +80,8 @@ for width in waveguide_widths:
 
     wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,
                             inc_a_y,inc_shape,
-                            material_bkg=materials.Vacuum,
-                            material_a=materials.Si_2016_Smith,
+                            material_bkg=materials.materials_dict["Vacuum"],
+                            material_a=materials.materials_dict["Si_2016_Smith"],
                             lc_bkg=1, lc_refine_1=600.0, lc_refine_2=300.0)
     geo_objects_list.append(wguide)
 

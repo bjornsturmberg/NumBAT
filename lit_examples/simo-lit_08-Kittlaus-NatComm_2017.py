@@ -145,8 +145,8 @@ EM_ival_Stokes = 1 # INTERMODE SBS TE0 to TE1
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
-# Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
-Si_110 = copy.deepcopy(materials.Si_2016_Smith)
+# Si_110 = copy.deepcopy(materials.materials_dict["Si_2015_Van_Laer"])
+Si_110 = copy.deepcopy(materials.materials_dict["Si_2016_Smith"])
 Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 
 prefix_str = 'fig16-'
@@ -155,10 +155,10 @@ prefix_str = 'fig16-'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y, slab_b_y=slab_b_y, 
                         coat_x=coat_x, coat_y=coat_y, coat2_x=coat2_x, coat2_y=coat2_y,
-                        material_bkg=materials.Vacuum,
+                        material_bkg=materials.materials_dict["Vacuum"],
                         material_a=Si_110, #plt_mesh=True,
-                        material_b=Si_110, material_c=materials.Vacuum,
-                        material_d=materials.Vacuum, material_e=materials.Vacuum,
+                        material_b=Si_110, material_c=materials.materials_dict["Vacuum"],
+                        material_d=materials.materials_dict["Vacuum"], material_e=materials.materials_dict["Vacuum"],
                         symmetry_flag=False,
                         lc_bkg=lc_bkg, lc_refine_1=lc_refine_1, lc_refine_2=lc_refine_2,
                         lc_refine_3=lc_refine_3, lc_refine_4=lc_refine_4, lc_refine_5=lc_refine_5)

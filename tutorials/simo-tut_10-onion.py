@@ -42,9 +42,9 @@ prefix_str = 'tut_10-'
 wguide = objects.Struct(unitcell_x,inc_a_x,inc_shape=inc_shape,
                         inc_b_x=inc_b_x,
                         unitcell_y=unitcell_y,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_2016_Smith,
-                        material_b=materials.SiO2_2016_Smith,
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_2016_Smith"],
+                        material_b=materials.materials_dict["SiO2_2016_Smith"],
                         lc_bkg=1, lc_refine_1=100.0, lc_refine_2=5.0, plt_mesh=False)
 
 

@@ -47,8 +47,8 @@ prefix_str = 'tut_02-'
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_2016_Smith,
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_2016_Smith"],
                         lc_bkg=1, lc_refine_1=600.0, lc_refine_2=300.0)
 
 
@@ -76,8 +76,14 @@ np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 
 # Plot the E fields of the EM modes fields - specified with EM_AC='EM_E'.
-# Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
-# Only plot fields of fundamental (ival = 0) mode.
+# Zoom in on the central region (of big unitcell) with xlim_, ylim_ args,
+# which specify the fraction of the axis to remove from the plot.
+# For instance xlim_min=0.4 will remove 40% of the x axis from the left outer edge
+# to the center. xlim_max=0.4 will remove 40% from the right outer edge towards the center.
+# This leaves just the inner 20% of the unit cell displayed in the plot.
+# The ylim variables perform the equivalent actions on the y axis.
+
+# Let's plot fields for only the fundamental (ival = 0) mode.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
                          ylim_max=0.4, ivals=[EM_ival_pump], contours=True, EM_AC='EM_E', 
                          pdf_png='png', prefix_str=prefix_str)

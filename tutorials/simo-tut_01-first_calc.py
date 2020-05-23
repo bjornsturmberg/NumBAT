@@ -55,8 +55,8 @@ AC_ival = 'All'
 # Note use of rough mesh for demonstration purposes, and use plt_mesh=True
 # to save the geometry and mesh as png files in backend/fortran/msh/
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_2016_Smith,
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_2016_Smith"],
                         lc_bkg=1, # in vacuum background
                         lc_refine_1=600.0, # on cylinder surfaces
                         lc_refine_2=300.0, # on cylinder center

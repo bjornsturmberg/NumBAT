@@ -37,8 +37,8 @@ AC_ival = 'All'
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_test_anisotropic,
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_test_anisotropic"],
                         lc_bkg=1, lc_refine_1=1000.0, lc_refine_2=5.0)
 
 

@@ -52,8 +52,8 @@ EM_ival_Stokes = 0
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
-# Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
-Si_110 = copy.deepcopy(materials.Si_2016_Smith)
+# Si_110 = copy.deepcopy(materials.materials_dict["Si_2015_Van_Laer"])
+Si_110 = copy.deepcopy(materials.materials_dict["Si_2016_Smith"])
 Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 
 prefix_str = 'lit_07-'
@@ -62,7 +62,7 @@ prefix_str = 'lit_07-'
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
-                        material_bkg=materials.Vacuum,
+                        material_bkg=materials.materials_dict["Vacuum"],
                         material_a=Si_110,
                         material_b=Si_110, symmetry_flag=False,
                         lc_bkg=1, lc_refine_1=2000.0, lc_refine_2=1000.0)

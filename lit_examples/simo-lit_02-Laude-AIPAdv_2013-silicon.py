@@ -47,8 +47,8 @@ prefix_str = 'lit_02-'
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_2013_Laude,
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_2013_Laude"],
                         lc_bkg=1, lc_refine_1=400.0, lc_refine_2=50.0)
 
 # Expected effective index of fundamental guided mode.

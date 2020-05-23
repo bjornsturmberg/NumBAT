@@ -399,19 +399,7 @@ def isotropic_stiffness(E, v):
 
     return c_11, c_12, c_44
 
-
-Vacuum = Material("Vacuum")
-
-Si_2016_Smith = Material("Si_2016_Smith")
-Si_2015_Van_Laer = Material("Si_2015_Van_Laer")
-Si_2013_Laude = Material("Si_2013_Laude")
-Si_test_anisotropic = Material("Si_test_anisotropic")
-
-SiO2_2016_Smith = Material("SiO2_2016_Smith")
-SiO2_2015_Van_Laer = Material("SiO2_2015_Van_Laer")
-SiO2_2013_Laude = Material("SiO2_2013_Laude")
-
-As2S3_2017_Morrison = Material("As2S3_2017_Morrison")
-As2S3_2016_Smith = Material("As2S3_2016_Smith")
-
-GaAs_2016_Smith = Material("GaAs_2016_Smith")
+materials_dict = {}
+for file in os.listdir(data_location):
+    if file.endswith(".json"):
+        materials_dict[file[:-5]] = Material(file[:-5])

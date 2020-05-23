@@ -62,10 +62,10 @@ prefix_str = 'lit_09-'
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y, coat_x=coat_x, coat_y=coat_y,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.As2S3_2017_Morrison, # waveguide
-                        material_b=materials.SiO2_2016_Smith,     # slab
-                        material_c=materials.SiO2_2016_Smith,     # coating
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["As2S3_2017_Morrison"], # waveguide
+                        material_b=materials.materials_dict["SiO2_2016_Smith"],     # slab
+                        material_c=materials.materials_dict["SiO2_2016_Smith"],     # coating
                         lc_bkg=1, lc_refine_1=800.0, lc_refine_2=400.0)
 
 # Expected effective index of fundamental guided mode.
