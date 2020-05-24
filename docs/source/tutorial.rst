@@ -81,6 +81,8 @@ At present, the material library contains:
   - SiO2_2016_Smith
   - Si_test_anisotropic
 
+All available materials are loaded into NumBAT into the materials.materials_dict dictionary, 
+whose keys are the json file names. 
 Materials can easily be added to this by copying any of these files as a template and 
 modifying the properties to suit. The Si_test_anisotropic file contains all the variables
 that NumBAT is setup to read. We ask that stable parameters (particularly those used
