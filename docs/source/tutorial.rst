@@ -370,7 +370,7 @@ Investigating Dispersion and np.save/np.load
 .. figure:: ../../tutorials/tut_03_1-dispersion_npload_symmetrised.png
    :scale: 70 %
    
-   Acoustic dispersion diagram with modes categorised by symmetry.
+   Acoustic dispersion diagram with modes categorised by symmetry as in Table 1 of "Formal selection rules for Brillouin scattering in integrated waveguides and structured fibers" by C. Wolff, M. J. Steel, and C. G. Poulton ``https://doi.org/10.1364/OE.22.032489``
 
 .. raw:: latex
 
