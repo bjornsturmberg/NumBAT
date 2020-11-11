@@ -1,5 +1,5 @@
 """
-    test_case_0_rect_silicon.py is a simulation example for NumBAT.
+    test_case_1_rect_silicon.py is a simulation example for NumBAT.
 
     Copyright (C) 2015  Bjorn Sturmberg, Kokou Dossou.
 
@@ -19,7 +19,7 @@
 
 """
 Test simulation of a simple rectangular waveguide made of silicon.
-Unlike test_case_1 this simulation uses a FEM mesh provided in the repository. 
+Unlike test_case_0 this simulation creates a new FEM mesh using gmsh.
 In all other ways the two simulations are idential so if there are
 errors or discrepancies these almost certainly stem from gmsh!
 These tests were calculated using gmsh 3.0.6. Check your version.
@@ -43,7 +43,7 @@ from numpy.testing import assert_equal
 
 start = time.time()
 
-casefile_name = 'case_0'
+casefile_name = 'case_1'
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550 # Wavelength of EM wave in vacuum.
@@ -74,8 +74,7 @@ AC_ival='All'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         material_bkg=materials.materials_dict["Vacuum"],
                         material_a=materials.materials_dict["Si_2016_Smith"],
-                        lc_bkg=1, lc_refine_1=1000.0, lc_refine_2=400.0,
-                        make_mesh_now = False, mesh_file='../backend/fortran/msh/4testing.mail')
+                        lc_bkg=1, lc_refine_1=1000.0, lc_refine_2=400.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
