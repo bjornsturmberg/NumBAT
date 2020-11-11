@@ -706,7 +706,7 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=501, quiver_steps=50,
             suffix_str  (str): Add a string to end of file name.
     """
 
-    if EM_AC is not 'EM_E' and EM_AC is not 'EM_H' and EM_AC is not 'AC':
+    if EM_AC != 'EM_E' and EM_AC != 'EM_H' and EM_AC != 'AC':
         raise ValueError("EM_AC must be either 'AC', 'EM_E' or 'EM_H'.")
 
     # Calculate the magnetic field from the electric field
