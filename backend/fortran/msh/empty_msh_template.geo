@@ -1,5 +1,8 @@
 // Template mesh geometry file from which to build future template mesh.
 
+// Force Gmsh to use legacy msh file format v2
+Mesh.MshFileVersion = 2.2;
+
 // Meshing parameters
 lc = 0; // base level meshing parameter
 lc_refine_1 = lc/1; // mesh refinement parameters
