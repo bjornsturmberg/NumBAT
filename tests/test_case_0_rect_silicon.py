@@ -96,7 +96,7 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration
     sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Mask negligible gain values to improve clarity of print out.
-threshold = 1e-1
+threshold = 1e-9
 threshold_indices = abs(SBS_gain_PE) < threshold
 SBS_gain_PE[threshold_indices] = 0
 threshold_indices = abs(SBS_gain_MB) < threshold
@@ -125,6 +125,6 @@ def test_list_matches_saved(casefile_name = casefile_name):
     for case, rcase in zip(test_list1, ref['test_list1']):
         yield assert_ac, case, rcase, rtol, atol
     rtol = np.inf
-    atol = 1e2
+    atol = 1e0
     for case, rcase in zip(test_list2, ref['test_list2']):
         yield assert_ac, case, rcase, rtol, atol
