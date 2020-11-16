@@ -95,7 +95,7 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration
     sim_EM_pump, sim_EM_Stokes, sim_AC_wguide, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Mask negligible gain values to improve clarity of print out.
-threshold = 1e-3
+threshold = 1e-1
 threshold_indices = abs(SBS_gain_PE) < threshold
 SBS_gain_PE[threshold_indices] = 0
 threshold_indices = abs(SBS_gain_MB) < threshold
