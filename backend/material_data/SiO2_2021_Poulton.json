@@ -1,0 +1,20 @@
+{
+ "file_name": "SiO2_2021_Poulton",  // Name of this file, will be used as identifier
+ "chemical": "SiO2",  // Chemical composition
+ "author": "Poulton",  // Author of data
+ "date": "2021",  // Year of data publication/creation
+ "institution": "xxx. of xxxx",  // Source institution
+ "doi": "dx.doi.org/xx.xxxx/xx.xx.xxxxxx",  // doi or, failing that, the http address
+ "Re_n": 1.45,  // Real part of refractive index []
+ "Im_n": 0.0,  // Imaginary part of refractive index []
+ "s": 2200,  // Density [kg/m3]
+ "c_11": 78.5e9,  // Stiffness tensor component [Pa]
+ "c_12": 16.1e9,  // Stiffness tensor component [Pa]
+ "c_44": 31.2e9,  // Stiffness tensor component [Pa]
+ "p_11": 0.121,  // Photoelastic tensor component []
+ "p_12": 0.271,  // Photoelastic tensor component []
+ "p_44": -0.075,  // Photoelastic tensor component []
+ "eta_11": 1.6e-3,  // Acoustic loss tensor component [Pa s]
+ "eta_12": 1.29e-3,  // Acoustic loss tensor component [Pa s]
+ "eta_44": 0.16e-3  // Acoustic loss tensor component [Pa s]
+}
