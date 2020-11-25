@@ -531,27 +531,20 @@ Multilayered 'Onion'
 
 
 
-
-
-
-
-
 .. _sec-literature-label:
 
 JOSA B Tutorial
 ---------------------
 
-Having become somewhat familiar with NumBAT, we now set out to replicate a number of examples 
-
-This example is based on the calculation of backward SBS
-in a small rectangular silica waveguide described in V. Laude and J.-C. Beugnot, 
-`Generation of phonons from electrostriction in small-core optical waveguides 
-<http://dx.doi.org/10.1063/1.4801936>`_, *AIP Advances* **3**, 042109 (2013).
-
-Observe the use of a material named ``materials.materials_dict["SiO2_2013_Laude"]`` 
-specifically modelled on the parameters in this paper.
-This technique allows users to easily compare exactly to other authors
-without changing their preferred material values for their own samples and experiments.
+Mike Smith et al. have used NumBAT throughout their SBS tutorial paper,
+published in JOSA B.
+.. (see
+..  V. Laude and J.-C. Beugnot, 
+.. `Generation of phonons from electrostriction in small-core optical waveguides 
+.. <http://dx.doi.org/10.1063/1.4801936>`_, *JOSA B* **3**, 042109 (2021).
+.. )
+This tutorial works through backward, forward, and intermodal forward SBS.
+The simulation scripts and resultant mode fields are shown below.
 
 
 BSBS - Circular Waveguide - Silica
@@ -656,32 +649,32 @@ FSBS - Circular Waveguide - Silica
     :lines: 0-
 
 
-.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2/EM_E_field_1.png
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/EM_E_field_1.png
    :scale: 50 %
 
    Fundamental optical mode fields.
 
-.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2/EM_E_field_1_Eabs.png
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/EM_E_field_1_Eabs.png
    :scale: 50 %
 
    Fundamental optical mode fields.
 
-.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2/EM_E_field_1_Et.png
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/EM_E_field_1_Et.png
    :scale: 50 %
 
    Fundamental optical mode fields.
 
-.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2/AC_field_7.png
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/AC_field_7.png
    :scale: 50 %
 
    Fundamental acoustic mode fields.
 
-.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2/AC_field_7_uabs.png
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/AC_field_7_uabs.png
    :scale: 50 %
 
    Fundamental acoustic mode fields.
 
-.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2/AC_field_7_ut.png
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/AC_field_7_ut.png
    :scale: 50 %
 
    Fundamental acoustic mode fields.
@@ -850,6 +843,10 @@ IFSBS - Rectangular Waveguide - Silicon
 .. raw:: latex
 
     \clearpage
+
+
+
+
 
 
 
