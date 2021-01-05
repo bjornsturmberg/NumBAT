@@ -70,7 +70,7 @@ Runs the `simo-tut_01-first_calc.py` script directly from the local commandline
 Finally, one can access a `jupyterlab` instance and run NumBAT in interactive jupyter notebooks from docker with the following:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-docker run -v $(pwd)/NumBAT/:/home/NumBAT/ -itp 8888:8888 morblockdock/numbat
+docker run -v $(pwd)/NumBAT-local/:/home/NumBAT/ -itp 8888:8888 morblockdock/numbat
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This will spawn an address to be used in a browser as per a typical jupyter instance. The terminal in `jupyterlab` can also be used to run the python scripts directly. Note that on recent versions of WSL the standard ip of `127.0.0.1` in the jupyter address may need to be replaced with `[::1]` due to [ipv6](https://github.com/microsoft/WSL/issues/4983) related issues. Also, don't forget to enable the dark mode jupyterlab theme found in the settings.
