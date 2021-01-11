@@ -71,14 +71,14 @@ AC_ival = 'All'
 prefix_str = 'fig6-'
 
 # Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
-Si_110 = copy.deepcopy(materials.Si_2016_Smith)
-# Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
+Si_110 = copy.deepcopy(materials.materials_dict["Si_2016_Smith"])
+# Si_110 = copy.deepcopy(materials.materials_dict["Si_2015_Van_Laer"])
 Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
+                        material_bkg=materials.materials_dict["Vacuum"],
                         material_a=Si_110, symmetry_flag=False,
-                        lc_bkg=.25, lc2=200.0, lc3=200.0)
+                        lc_bkg=.25, lc_refine_1=200.0, lc_refine_2=200.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -102,10 +102,10 @@ if doem:
   #npzfile = np.load(prefix_str+'wguide_data2.npz', allow_pickle=True)
   #sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
   
-  plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.43, xlim_max=0.43, ivals=[0], 
-                           ylim_min=0.43, ylim_max=0.43, EM_AC='EM_E', n_points=2000, quiver_steps=10,
-                           prefix_str=prefix_str, pdf_png='png', ticks=True, 
-        comps=('Ex', 'Eabs', 'Et'), decorator=emdecorate)
+  plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.43, xlim_max=0.43, ivals=[EM_ival_pump], 
+                           ylim_min=0.43, ylim_max=0.43, EM_AC='EM_E', 
+                           n_points=2000, quiver_steps=10, prefix_str=prefix_str, pdf_png='png', 
+                           ticks=True, comps=('Ex', 'Eabs', 'Et'), decorator=emdecorate)
   
   # Print the wavevectors of EM modes.
   print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -130,16 +130,17 @@ if doac:
   print('Freq of AC modes (GHz) \n', np.round((sim_AC.Eig_values)*1e-9, 4))
   #print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
   
-  plotting.plt_mode_fields(sim_AC, ivals=(7,), EM_AC='AC', prefix_str=prefix_str, pdf_png='png', comps=('ux','uy','ut','uabs'), ticks=True,
- xlim_min=-0.05, ylim_min=-.05, xlim_max=-0.05, ylim_max=-.05) 
+  plotting.plt_mode_fields(sim_AC, ivals=(7,), EM_AC='AC', prefix_str=prefix_str, 
+                           pdf_png='png', comps=('ux','uy','ut','uabs'), ticks=True,
+                           xlim_min=-0.05, ylim_min=-.05, xlim_max=-0.05, ylim_max=-.05) 
   
 set_q_factor = 306
 
 # Calculate interaction integrals and SBS gain for PE and MB effects combined, 
 # as well as just for PE, and just for MB.
 SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
-    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
-    EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
+    sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC, EM_ival_pump=EM_ival_pump, 
+    EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_q_factor)
 
 # Mask negligible gain values to improve clarity of print out.
 threshold = 1e-3
@@ -147,9 +148,10 @@ masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:], 0, t
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 
-print("\n SBS_gain PE contribution \n", masked_PE)
-print("SBS_gain MB contribution \n", masked_MB)
-print("SBS_gain total \n", masked)
+print("\n Displaying results with negligible components masked out")
+print("SBS_gain [1/(Wm)] PE contribution \n", masked_PE)
+print("SBS_gain [1/(Wm)] MB contribution \n", masked_MB)
+print("SBS_gain [1/(Wm)] total \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = 9.1 # GHz

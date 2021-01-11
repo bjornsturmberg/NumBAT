@@ -62,11 +62,11 @@ prefix_str = 'lit_09-'
 # Note use of rough mesh for demonstration purposes.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y, coat_x=coat_x, coat_y=coat_y,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.As2S3_2017_Morrison, # waveguide
-                        material_b=materials.SiO2_2016_Smith,     # slab
-                        material_c=materials.SiO2_2016_Smith,     # coating
-                        lc_bkg=1, lc2=800.0, lc3=400.0)
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["As2S3_2017_Morrison"], # waveguide
+                        material_b=materials.materials_dict["SiO2_2016_Smith"],     # slab
+                        material_c=materials.materials_dict["SiO2_2016_Smith"],     # coating
+                        lc_bkg=1, lc_refine_1=800.0, lc_refine_2=400.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -77,7 +77,7 @@ sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
 # npzfile = np.load('wguide_data.npz')
 # sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ivals=[0], 
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ivals=[EM_ival_pump], 
                          ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', num_ticks=3,
                          prefix_str=prefix_str, pdf_png='png')
 
@@ -120,18 +120,16 @@ set_Q_factor = 190 # set the mechanic Q manually
 SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration.gain_and_qs(
     sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival, fixed_Q=set_Q_factor)
-# Print the Backward SBS gain of the AC modes.
-print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:])
-print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:])
-print("SBS_gain total \n", SBS_gain[EM_ival_pump,EM_ival_Stokes,:])
 # Mask negligible gain values to improve clarity of print out.
 threshold = -1e-3
 masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
-print("\n SBS_gain PE contribution \n", masked_PE)
-print("SBS_gain MB contribution \n", masked_MB)
-print("SBS_gain total \n", masked)
+# Print the Backward SBS gain of the AC modes.
+print("\n Displaying results with negligible components masked out")
+print("SBS_gain [1/(Wm)] PE contribution \n", masked_PE)
+print("SBS_gain [1/(Wm)] MB contribution \n", masked_MB)
+print("SBS_gain [1/(Wm)] total \n", masked)
 
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.

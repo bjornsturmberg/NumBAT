@@ -47,9 +47,9 @@ prefix_str = 'tut_02-'
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_2016_Smith,
-                        lc_bkg=1, lc2=600.0, lc3=300.0)
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_2016_Smith"],
+                        lc_bkg=1, lc_refine_1=600.0, lc_refine_2=300.0)
 
 
 # Expected effective index of fundamental guided mode.
@@ -76,14 +76,20 @@ np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 
 # Plot the E fields of the EM modes fields - specified with EM_AC='EM_E'.
-# Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
-# Only plot fields of fundamental (ival = 0) mode.
+# Zoom in on the central region (of big unitcell) with xlim_, ylim_ args,
+# which specify the fraction of the axis to remove from the plot.
+# For instance xlim_min=0.4 will remove 40% of the x axis from the left outer edge
+# to the center. xlim_max=0.4 will remove 40% from the right outer edge towards the center.
+# This leaves just the inner 20% of the unit cell displayed in the plot.
+# The ylim variables perform the equivalent actions on the y axis.
+
+# Let's plot fields for only the fundamental (ival = 0) mode.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
-                         ylim_max=0.4, ivals=[0], contours=True, EM_AC='EM_E', 
+                         ylim_max=0.4, ivals=[EM_ival_pump], contours=True, EM_AC='EM_E', 
                          pdf_png='png', prefix_str=prefix_str)
 # Plot the H fields of the EM modes - specified with EM_AC='EM_H'.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, ylim_min=0.4,
-                         ylim_max=0.4, ivals=[0], EM_AC='EM_H', 
+                         ylim_max=0.4, ivals=[EM_ival_pump], EM_AC='EM_H', 
                          pdf_png='png', prefix_str=prefix_str)
 
 # Calculate the EM effective index of the waveguide.
@@ -141,14 +147,15 @@ SBS_gain_PE_py, alpha_py, SBS_gain_PE_comsol, alpha_comsol = integration.gain_py
     comsol_ivals=comsol_ivals)
 
 # Print the PE contribution to gain SBS gain of the AC modes.
+print("\n Displaying results with negligible components masked out")
 # Mask negligible gain values to improve clarity of print out.
 threshold = -1e-3
 masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:comsol_ivals], 0, threshold)
-print("\n\nSBS_gain PE NumBAT default (Fortran)\n", masked_PE)
+print("SBS_gain [1/(Wm)] PE NumBAT default (Fortran)\n", masked_PE)
 masked = np.ma.masked_inside(SBS_gain_PE_py[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
-print("SBS_gain python integration routines \n", masked)
+print("SBS_gain [1/(Wm)] python integration routines \n", masked)
 masked = np.ma.masked_inside(SBS_gain_PE_comsol[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
-print("SBS_gain from loaded Comsol data \n", masked)
+print("SBS_gain [1/(Wm)] from loaded Comsol data \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = np.real(sim_AC.Eig_values[0])*1e-9 - 2  # GHz

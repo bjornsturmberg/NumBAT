@@ -52,7 +52,7 @@ C
 CCCCCCCCCCCCCCCCCCCCC Start Program CCCCCCCCCCCCCCCCCCCCCCCC
 C
       ui = 6
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 C
       if ( nnodes_P2 .ne. 6 ) then
         write(ui,*) "EM_mode_en_int_v2: problem nnodes = ", nnodes_P2

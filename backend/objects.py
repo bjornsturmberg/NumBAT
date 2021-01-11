@@ -122,11 +122,11 @@ class Struct(object):
             lc_bkg  (float): Length constant of meshing of background medium
                 (smaller = finer mesh)
 
-            lc2  (float): factor by which lc_bkg will be reduced on inclusion
-                surfaces; lc_surface = lc_bkg / lc2. Larger lc2 = finer mesh.
+            lc_refine_1  (float): factor by which lc_bkg will be reduced on inclusion
+                surfaces; lc_surface = lc_bkg / lc_refine_1. Larger lc_refine_1 = finer mesh.
 
-            lc3-6'  (float): factor by which lc_bkg will be reduced on chosen
-                surfaces; lc_surface = lc_bkg / lc3. see relevant .geo files.
+            lc_refine_2-6'  (float): factor by which lc_bkg will be reduced on chosen
+                surfaces; lc_surface = lc_bkg / lc_refine_2. see relevant .geo files.
 
             plotting_fields  (bool): Unless set to true field data deleted.
                 Also plots modes (ie. FEM solutions) in gmsh format.
@@ -152,20 +152,20 @@ class Struct(object):
                  inc_c_x=None, inc_d_x=None, inc_e_x=None, inc_f_x=None,
                  inc_g_x=None, inc_h_x=None, inc_i_x=None, inc_j_x=None,
                  inc_k_x=None, inc_l_x=None, inc_m_x=None, inc_n_x=None,
-                 inc_o_x=None, material_bkg=materials.Vacuum,
-                 material_a=materials.Vacuum, material_b=materials.Vacuum, 
-                 material_c=materials.Vacuum, material_d=materials.Vacuum, 
-                 material_e=materials.Vacuum, material_f=materials.Vacuum, 
-                 material_g=materials.Vacuum, material_h=materials.Vacuum, 
-                 material_i=materials.Vacuum, material_j=materials.Vacuum, 
-                 material_k=materials.Vacuum, material_l=materials.Vacuum, 
-                 material_m=materials.Vacuum, material_n=materials.Vacuum, 
-                 material_o=materials.Vacuum, material_p=materials.Vacuum, 
-                 material_q=materials.Vacuum, material_r=materials.Vacuum, 
+                 inc_o_x=None, material_bkg=materials.materials_dict["Vacuum"],
+                 material_a=materials.materials_dict["Vacuum"], material_b=materials.materials_dict["Vacuum"], 
+                 material_c=materials.materials_dict["Vacuum"], material_d=materials.materials_dict["Vacuum"], 
+                 material_e=materials.materials_dict["Vacuum"], material_f=materials.materials_dict["Vacuum"], 
+                 material_g=materials.materials_dict["Vacuum"], material_h=materials.materials_dict["Vacuum"], 
+                 material_i=materials.materials_dict["Vacuum"], material_j=materials.materials_dict["Vacuum"], 
+                 material_k=materials.materials_dict["Vacuum"], material_l=materials.materials_dict["Vacuum"], 
+                 material_m=materials.materials_dict["Vacuum"], material_n=materials.materials_dict["Vacuum"], 
+                 material_o=materials.materials_dict["Vacuum"], material_p=materials.materials_dict["Vacuum"], 
+                 material_q=materials.materials_dict["Vacuum"], material_r=materials.materials_dict["Vacuum"], 
                  loss=True, symmetry_flag=True,
                  make_mesh_now=True, force_mesh=True,
                  mesh_file='NEED_FILE.mail', check_mesh=False, plt_mesh=False,
-                 lc_bkg=0.09, lc2=1.0, lc3=1.0, lc4=1.0, lc5=1.0, lc6=1.0,
+                 lc_bkg=0.09, lc_refine_1=1.0, lc_refine_2=1.0, lc_refine_3=1.0, lc_refine_4=1.0, lc_refine_5=1.0,
                  plotting_fields=False, plot_real=1, plot_imag=0, plot_abs=0,
                  plot_field_conc=False):
         # Structures geometric shapes
@@ -255,11 +255,11 @@ class Struct(object):
         self.check_mesh = check_mesh
         self.plt_mesh = plt_mesh
         self.lc = lc_bkg
-        self.lc2 = lc2
-        self.lc3 = lc3
-        self.lc4 = lc4
-        self.lc5 = lc5
-        self.lc6 = lc6
+        self.lc_refine_1 = lc_refine_1
+        self.lc_refine_2 = lc_refine_2
+        self.lc_refine_3 = lc_refine_3
+        self.lc_refine_4 = lc_refine_4
+        self.lc_refine_5 = lc_refine_5
         self.force_mesh = force_mesh
         if make_mesh_now is True:
             self.make_mesh()
@@ -666,25 +666,25 @@ class Struct(object):
                 geo = geo.replace('a1y = 10;', "a1y = %f;" % self.inc_a_y)
                 if self.inc_shape == 'circular': geo = geo.replace('rect = 1;', "rect = 0;")
                 geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                geo = geo.replace('lc_refine_1 = lc/1;', "lc_refine_1 = lc/%f;" % self.lc_refine_1)
+                geo = geo.replace('lc_refine_2 = lc/1;', "lc_refine_2 = lc/%f;" % self.lc_refine_2)
                 if msh_template == '2' or msh_template == '2_on_s' or msh_template == '2_on_2s':
                     geo = geo.replace('a2 = 10;', "a2 = %f;" % self.inc_b_x)
                     geo = geo.replace('a2y = 20;', "a2y = %f;" % self.inc_b_y)
                     geo = geo.replace('sep = 10;', "sep = %f;" % self.two_inc_sep)
-                    # geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
+                    # geo = geo.replace('lc_refine_3 = lc/1;', "lc_refine_3 = lc/%f;" % self.lc_refine_3)
                 if msh_template == '2':
                     geo = geo.replace('yoff = -5;', "yoff = %f;" % self.incs_y_offset)
                 if msh_template == '1_on_slab' or msh_template == '1_on_2slabs' or msh_template == '1_on_slab' or msh_template == '2_on_2slabs':
                     geo = geo.replace('slab_width = d_in_nm;', "slab_width = %f;" % self.slab_a_x)
                     geo = geo.replace('slab_height = 10;', "slab_height = %f;" % self.slab_a_y)
-                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
-                    geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
+                    geo = geo.replace('lc_refine_3 = lc/1;', "lc_refine_3 = lc/%f;" % self.lc_refine_3)
+                    geo = geo.replace('lc_refine_4 = lc/1;', "lc_refine_4 = lc/%f;" % self.lc_refine_4)
                 if msh_template == '1_on_2slabs' or msh_template == '2_on_2slabs':
                     geo = geo.replace('slab2_width = d_in_nm;', "slab2_width = %f;" % self.slab_b_x)
                     geo = geo.replace('slab2_height = 5;', "slab2_height = %f;" % self.slab_b_y)
-                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
-                    geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
+                    geo = geo.replace('lc_refine_3 = lc/1;', "lc_refine_3 = lc/%f;" % self.lc_refine_3)
+                    geo = geo.replace('lc_refine_4 = lc/1;', "lc_refine_4 = lc/%f;" % self.lc_refine_4)
 
         elif self.inc_shape in ['slot', 'slot_coated']:
             if self.coat_y is not None:
@@ -710,8 +710,8 @@ class Struct(object):
                     geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
                     geo = geo.replace('c1y = 10;', "c1y = %f;" % self.coat_y)
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc_refine_1 = lc/1;', "lc_refine_1 = lc/%f;" % self.lc_refine_1)
+                    geo = geo.replace('lc_refine_2 = lc/1;', "lc_refine_2 = lc/%f;" % self.lc_refine_2)
 
 
                 msh_name = 'slot_c_%(d)s_%(dy)s_%(a)s_%(b)s_%(c)s_%(cc)s_%(ccc)s' % {
@@ -743,9 +743,9 @@ class Struct(object):
                     geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
                     geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
+                    geo = geo.replace('lc_refine_1 = lc/1;', "lc_refine_1 = lc/%f;" % self.lc_refine_1)
+                    geo = geo.replace('lc_refine_2 = lc/1;', "lc_refine_2 = lc/%f;" % self.lc_refine_2)
+                    geo = geo.replace('lc_refine_3 = lc/1;', "lc_refine_3 = lc/%f;" % self.lc_refine_3)
 
         elif self.inc_shape in ['rib']:
                 msh_template = 'rib'
@@ -766,8 +766,8 @@ class Struct(object):
                     geo = geo.replace('slabx = 80;', "slabx = %f;" % self.slab_a_x)
                     geo = geo.replace('slaby = 10;', "slaby = %f;" % self.slab_a_y)
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc_refine_1 = lc/1;', "lc_refine_1 = lc/%f;" % self.lc_refine_1)
+                    geo = geo.replace('lc_refine_2 = lc/1;', "lc_refine_2 = lc/%f;" % self.lc_refine_2)
 
         elif self.inc_shape in ['rib_coated']:
                 msh_template = 'rib_coated'
@@ -792,9 +792,9 @@ class Struct(object):
                     geo = geo.replace('coatx = 2;', "coatx = %f;" % self.coat_x)
                     geo = geo.replace('coaty = 2;', "coaty = %f;" % self.coat_y)
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
+                    geo = geo.replace('lc_refine_1 = lc/1;', "lc_refine_1 = lc/%f;" % self.lc_refine_1)
+                    geo = geo.replace('lc_refine_2 = lc/1;', "lc_refine_2 = lc/%f;" % self.lc_refine_2)
+                    geo = geo.replace('lc_refine_3 = lc/1;', "lc_refine_3 = lc/%f;" % self.lc_refine_3)
 
         elif self.inc_shape in ['rib_double_coated']:
                 msh_template = 'rib_double_coated'
@@ -825,11 +825,11 @@ class Struct(object):
                     geo = geo.replace('coat2x = 4;', "coat2x = %f;" % self.coat2_x)
                     geo = geo.replace('coat2y = 4;', "coat2y = %f;" % self.coat2_y)
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
-                    geo = geo.replace('lc4 = lc/1;', "lc4 = lc/%f;" % self.lc4)
-                    geo = geo.replace('lc5 = lc/1;', "lc5 = lc/%f;" % self.lc5)
-                    geo = geo.replace('lc6 = lc/1;', "lc6 = lc/%f;" % self.lc6)
+                    geo = geo.replace('lc_refine_1 = lc/1;', "lc_refine_1 = lc/%f;" % self.lc_refine_1)
+                    geo = geo.replace('lc_refine_2 = lc/1;', "lc_refine_2 = lc/%f;" % self.lc_refine_2)
+                    geo = geo.replace('lc_refine_3 = lc/1;', "lc_refine_3 = lc/%f;" % self.lc_refine_3)
+                    geo = geo.replace('lc_refine_4 = lc/1;', "lc_refine_4 = lc/%f;" % self.lc_refine_4)
+                    geo = geo.replace('lc_refine_5 = lc/1;', "lc_refine_5 = lc/%f;" % self.lc_refine_5)
 
         elif self.inc_shape in ['pedestal']:
                 msh_template = 'pedestal'
@@ -854,8 +854,8 @@ class Struct(object):
                     geo = geo.replace('px = 2;', "px = %f;" % self.pillar_x)
                     geo = geo.replace('py = 5;', "py = %f;" % self.pillar_y)
                     geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                    geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                    geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                    geo = geo.replace('lc_refine_1 = lc/1;', "lc_refine_1 = lc/%f;" % self.lc_refine_1)
+                    geo = geo.replace('lc_refine_2 = lc/1;', "lc_refine_2 = lc/%f;" % self.lc_refine_2)
 
         elif self.inc_shape in ['onion', 'onion2', 'onion3']:
             #msh_template = 'onion'
@@ -900,8 +900,8 @@ class Struct(object):
                 if is_real_number(self.inc_n_x): geo = geo.replace('a14 = 20;', "a14 = %f;" % self.inc_n_x)
                 if is_real_number(self.inc_o_x): geo = geo.replace('a15 = 20;', "a15 = %f;" % self.inc_o_x)
                 geo = geo.replace('lc = 0;', "lc = %f;" % self.lc)
-                geo = geo.replace('lc2 = lc/1;', "lc2 = lc/%f;" % self.lc2)
-                geo = geo.replace('lc3 = lc/1;', "lc3 = lc/%f;" % self.lc3)
+                geo = geo.replace('lc_refine_1 = lc/1;', "lc_refine_1 = lc/%f;" % self.lc_refine_1)
+                geo = geo.replace('lc_refine_2 = lc/1;', "lc_refine_2 = lc/%f;" % self.lc_refine_2)
 
         else:
             raise NotImplementedError("\n Selected inc_shape = '%s' \n " \

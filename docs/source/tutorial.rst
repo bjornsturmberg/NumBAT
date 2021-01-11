@@ -7,19 +7,33 @@ Simulations with NumBAT are generally carried out using a python script file.
 This file is kept in its own directory which is placed in the NumBAT directory.
 All results of the simulation are automatically created within this directory. This directory then serves as a complete record of the calculation. Often, we will also save the simulation objects within this folder for future inspection, manipulation, plotting, etc.
 
-Traditionally the name of the python script file begins with simo\-. This is convenient for setting terminal alias' for running the script.
 Throughout the tutorial the script file will be called simo.py.
 
+These files can be edited using your choice of text editor (for instance running the following in the terminal ``$ nano simo.py``) or an IDE (for instance pycharm) which allow you to run and debug code within the IDE.
+
 To start a simulation open a terminal and change into the directory containing the ``simo.py`` file.
-To run this script::
+
+To start we run an example simulation from the tutorials directory. To move to this directory in the terminal enter::
+
+    $ cd <path to installation>/NumBAT/tutorials
+
+To run this script execute::
 
     $ python3 simo.py
+
+To save the results from the simulation that are displayed upon execution (the print statements in simo.py) use::
+
+    $ python3 ./simo.py | tee log-simo.log
+
+This may require you to update the permissions for the simo.py file to make it executable. This is done in the terminal as::
+
+    $ chmod +x simo.py
 
 To have direct access to the simulation objects upon the completion of the script use::
 
     $ python3 -i simo.py
 
-This will return you into an interactive python session in which all simulation objects are accessible. In this session you can access the docstrings of objects, classes and methods. For example::
+This will execute the simo.py script and then return you into an interactive python session within the terminal. This terminal session provides the user experience of an ipython type shell where the python environment and all the simulation objects are as in the simo.py script. In this session you can access the docstrings of objects, classes and methods. For example::
 
     >>> from pydoc import help
     >>> help(objects.Struct)
@@ -37,9 +51,43 @@ structure:
   - solving electromagnetic and acoustic modes 
   - calculating gain and other derived quantities
 
-The following section provides some information about the pre-defined range of waveguide
-structures and the key parameters controlling finite-element meshing.
+The following section provides some information about specifying material properties and waveguide
+structures, as well as the key parameters for controlling the finite-element meshing.
 Information on how to add new structures to NumBAT is provided in :ref:`sec-newmesh-label`.
+
+
+Materials
+----------------------
+
+In order to calculate the modes of a structure we must specify the acoustic and optical properties of all constituent materials.
+
+In NumBAT, this data is read in from json files, which are stored in /NumBAT/backend/material_data
+
+These files not only provide the numerical values for optical and acoustic variables, but record how these variables have been arrived at. Often they are taken from the literature.
+
+The intention of this arrangement is to create a library of materials that can we hope can form a standard amongst the research community. 
+They also allow users to check the sensitivity of their results on particular parameters for a given material.
+
+At present, the material library contains:
+  - Vacuum
+  - As2S3_2016_Smith
+  - As2S3_2017_Morrison
+  - GaAs_2016_Smith
+  - Si_2013_Laude
+  - Si_2015_Van_Laer
+  - Si_2016_Smith
+  - SiO2_2013_Laude
+  - SiO2_2015_Van_Laer
+  - SiO2_2016_Smith
+  - Si_test_anisotropic
+
+All available materials are loaded into NumBAT into the materials.materials_dict dictionary, 
+whose keys are the json file names. 
+Materials can easily be added to this by copying any of these files as a template and 
+modifying the properties to suit. The Si_test_anisotropic file contains all the variables
+that NumBAT is setup to read. We ask that stable parameters (particularly those used
+for published results) be added to the NumBAT git repository using the same naming convention.
+
 
 Waveguide Geometries
 ----------------------
@@ -102,12 +150,22 @@ as a series of ``.png`` file.
 
 
 
-The parameters ``lc_bkg``, ``lc2``, ``lc3``  to be encountered below set the fineness of the FEM mesh. ``lc_bkg`` sets the reference background mesh size, larger ``lc_bkg`` = larger (more coarse) mesh. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be ``lc_bkg`` mesh elements along the horizontal outside edge; in other words the outside edge is divided into ``lc_bkg`` elements. At the interface between materials the mesh is refined to be ``lc_bkg/lc2``, therefore larger ``lc2`` = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh is typically also refined at the centers of important regions, such as in the center of a waveguide, which is done with ``lc3``, which analogously to ``lc2``, refines the mesh size at these points as ``lc_bkg/lc3``. For definition of lc3+ parameters see the particular .geo file.
+The parameters ``lc_bkg``, ``lc_refine_1``, ``lc_refine_2``  to be encountered below set the fineness of the FEM mesh. ``lc_bkg`` sets the reference background mesh size, larger ``lc_bkg`` = larger (more coarse) mesh. In NumBAT it is also possible to refine the mesh near interfaces and near select points in the domain, as highlighted in the figures above. This is done using the ``lc_refine_`` commands, which we now discuss. At the interface between materials the mesh is refined to be ``lc_bkg/lc_refine_1``, therefore larger ``lc_refine_1`` = finer mesh at these interfaces. The meshing program automatically adjusts the mesh size to smoothly transition from a point that has one mesh parameter to points that have other meshing parameters. The mesh is typically also refined at the centers of important regions, such as in the center of a waveguide, which is done with ``lc_refine_2``, which analogously to ``lc_refine_1``, refines the mesh size at these points as ``lc_bkg/lc_refine_2``. For definition of ``lc_refine_3+`` parameters see the particular .geo file.
 
-Choosing appropriate values of ``lc_bkg``, ``lc2``, ``lc3`` is crucial NumBAT to give accurate results. The values depend strongly on the type of structure being studied, and so it is recommended to carry out a convergence test before delving into new structures (see Tutorial 5) starting from similar parameters as used in the tutoarial simulations. You can also visually check the resolution of your mesh by setting ``plt_mesh=True`` or ``check_mesh=True`` when you define your ``objects.Struct`` - the first saves a png of the mesh the second opens mesh in gmsh - (see Tutorial 1), or by running the following command ::
+Choosing appropriate values of ``lc_bkg``, ``lc_refine_1``, ``lc_refine_2`` is crucial NumBAT to give accurate results. The values depend strongly on the type of structure being studied, and so it is recommended to carry out a convergence test before delving into new structures (see Tutorial 5) starting from similar parameters as used in the tutorial simulations. In NumBAT the x-dimension of the unit cell is traditionally normalised to unity, in which case there will be ``lc_bkg`` mesh elements along the horizontal outside edge; in other words the outside edge is divided into ``lc_bkg`` elements. 
+
+You can also visually check the resolution of your mesh by setting ``plt_mesh=True`` or ``check_mesh=True`` when you define your ``objects.Struct`` - the first saves a png of the mesh (in NumBAT/backend/fortran/msh/) the second opens mesh in gmsh - (see Tutorial 1). The NumBAT generated .msh file is stored in NumBAT/backend/fortran/msh/ which can be viewed by running the following command ::
     
     NumBAT/backend/fortran/msh$ gmsh <msh_name>.msh
 
+Users on WSL will need to first run an X listener (such as XMING) in Windows in order for the "plt_mesh=True" feature to work.
+Once the X listener is running, execute the following in the terminal::
+
+    $ sudo apt-get install x11-apps
+    $ export DISPLAY=:0
+    $ xclock
+
+where the last command is simply to check the setup. Once this is confirmed to be operating smoothly, the "plt_mesh=True" command will then run as anticipated and generate two png files (one for the geometry and one for the mesh) in NumBAT/backend/fortran/msh/. Note the X windows that open must be manually closed for the calculation to continue, and after unexpected restarts the X window may no longer display output but the png files will contain the necessary features.
 
 In the remainder of this chapter we go through a number of example ``simo.py`` files. But before we do, another quick tip about running simulations within screen sessions, which allow you to disconnect from servers leaving them to continue your processes.
 
@@ -253,7 +311,7 @@ calculations.
 
 Elements to note:
   #. Both electric and magnetic fields can be selected using ``EM_E`` or ``EM_H`` as the value of ``EM_AC`` in 
-       ``plotting.mode_fields``.
+       ``plotting.mode_fields``. These fields are stored in a folder ``tut_02-fields`` within the tutorial folder. 
   #. ``np.savez`` and ``np.load`` allow storage of arbitrary data between simulations.
 
 .. literalinclude:: ../../tutorials/simo-tut_02-gain_spectra-npsave.py
@@ -314,7 +372,7 @@ Investigating Dispersion and np.save/np.load
 .. figure:: ../../tutorials/tut_03_1-dispersion_npload_symmetrised.png
    :scale: 70 %
    
-   Acoustic dispersion diagram with modes categorised by symmetry.
+   Acoustic dispersion diagram with modes categorised by symmetry as in Table 1 of "Formal selection rules for Brillouin scattering in integrated waveguides and structured fibers" by C. Wolff, M. J. Steel, and C. G. Poulton ``https://doi.org/10.1364/OE.22.032489``
 
 .. raw:: latex
 
@@ -472,6 +530,326 @@ Multilayered 'Onion'
 
 
 
+
+.. _sec-literature-label:
+
+JOSA B Tutorial
+---------------------
+
+Mike Smith et al. have used NumBAT throughout their SBS tutorial paper,
+published in JOSA B.
+.. (see
+..  V. Laude and J.-C. Beugnot, 
+.. `Generation of phonons from electrostriction in small-core optical waveguides 
+.. <http://dx.doi.org/10.1063/1.4801936>`_, *JOSA B* **3**, 042109 (2021).
+.. )
+This tutorial works through backward, forward, and intermodal forward SBS.
+The simulation scripts and resultant mode fields are shown below.
+
+
+BSBS - Circular Waveguide - Silica
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../JOSAB_tutorial/simo-josab-BSBS-1umcylwg-SiO2.py
+    :lines: 0-
+
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-1umSiO2fields/EM_E_field_1.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-1umSiO2fields/EM_E_field_1_Eabs.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-1umSiO2fields/EM_E_field_1_Et.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-1umSiO2fields/AC_field_28.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-1umSiO2fields/AC_field_28_uabs.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-1umSiO2fields/AC_field_28_ut.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. raw:: latex
+
+    \clearpage
+
+
+BSBS - Rectangular Waveguide - Silicon
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../JOSAB_tutorial/simo-josab-BSBS-450x200nmrectwg-Si.py
+    :lines: 0-
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-450x200nmSifields/EM_E_field_0.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-450x200nmSifields/EM_E_field_0_Eabs.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-450x200nmSifields/EM_E_field_0_Et.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-450x200nmSifields/AC_field_6.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-450x200nmSifields/AC_field_6_uabs.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/bsbs-josab-450x200nmSifields/AC_field_6_ut.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+
+Let's also calculate the acoustic dispersion relation for this structure.
+
+.. literalinclude:: ../../JOSAB_tutorial/simo-josab-BSBS-acbands-450x200nmrectwg-Si.py
+    :lines: 0-
+
+.. figure:: ../../JOSAB_tutorial/dispersioncurves_classified.png
+   :scale: 50 %
+   
+   Acoustic dispersion diagram with modes categorised by symmetry as in Table 1 of "Formal selection rules for Brillouin scattering in integrated waveguides and structured fibers" by C. Wolff, M. J. Steel, and C. G. Poulton ``https://doi.org/10.1364/OE.22.032489``
+
+.. raw:: latex
+
+    \clearpage
+
+
+
+FSBS - Circular Waveguide - Silica
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../JOSAB_tutorial/simo-josab-FSBS-1umcylwg-SiO2.py
+    :lines: 0-
+
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/EM_E_field_1.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/EM_E_field_1_Eabs.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/EM_E_field_1_Et.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/AC_field_7.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/AC_field_7_uabs.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-1umSiO2fields/AC_field_7_ut.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. raw:: latex
+
+    \clearpage
+
+
+
+FSBS - Rectangular Waveguide - Silicon
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../JOSAB_tutorial/simo-josab-FSBS-450x200nmrectwg-Si.py
+    :lines: 0-
+
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-450x200nmSifields/EM_E_field_0.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-450x200nmSifields/EM_E_field_0_Eabs.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-450x200nmSifields/EM_E_field_0_Et.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-450x200nmSifields/AC_field_6.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-450x200nmSifields/AC_field_6_uabs.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/fsbs-josab-450x200nmSifields/AC_field_6_ut.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. raw:: latex
+
+    \clearpage
+
+
+
+IFSBS - Circular Waveguide - Silica
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../JOSAB_tutorial/simo-josab-IFSBS-1umcylwg-SiO2.py
+    :lines: 0-
+
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/EM_E_field_0.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/EM_E_field_0_Eabs.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/EM_E_field_0_Et.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/EM_E_field_1.png
+   :scale: 50 %
+
+   Second order optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/EM_E_field_1_Eabs.png
+   :scale: 50 %
+
+   Second order optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/EM_E_field_1_Et.png
+   :scale: 50 %
+
+   Second order optical mode fields.
+
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/AC_field_6.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/AC_field_6_uabs.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-1umSiO2fields/AC_field_6_ut.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. raw:: latex
+
+    \clearpage
+
+
+
+IFSBS - Rectangular Waveguide - Silicon
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+.. literalinclude:: ../../JOSAB_tutorial/simo-josab-IFSBS-450x200nmrectwg-Si.py
+    :lines: 0-
+
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/EM_E_field_0.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/EM_E_field_0_Eabs.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/EM_E_field_0_Et.png
+   :scale: 50 %
+
+   Fundamental optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/EM_E_field_0.png
+   :scale: 50 %
+
+   Second order optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/EM_E_field_0_Eabs.png
+   :scale: 50 %
+
+   Second order optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/EM_E_field_0_Et.png
+   :scale: 50 %
+
+   Second order optical mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/AC_field_2.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/AC_field_2_uabs.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. figure:: ../../JOSAB_tutorial/ifsbs-josab-450x200nmSifields/AC_field_2_ut.png
+   :scale: 50 %
+
+   Fundamental acoustic mode fields.
+
+.. raw:: latex
+
+    \clearpage
+
+
+
+
+
+
+
 .. _sec-literature-label:
 
 Literature Examples
@@ -491,7 +869,7 @@ in a small rectangular silica waveguide described in V. Laude and J.-C. Beugnot,
 `Generation of phonons from electrostriction in small-core optical waveguides 
 <http://dx.doi.org/10.1063/1.4801936>`_, *AIP Advances* **3**, 042109 (2013).
 
-Observe the use of a material named ``materials.SiO2_2013_Laude`` 
+Observe the use of a material named ``materials.materials_dict["SiO2_2013_Laude"]`` 
 specifically modelled on the parameters in this paper.
 This technique allows users to easily compare exactly to other authors
 without changing their preferred material values for their own samples and experiments.

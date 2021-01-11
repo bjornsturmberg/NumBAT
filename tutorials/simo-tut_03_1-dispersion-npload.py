@@ -38,9 +38,9 @@ EM_ival_Stokes = 0
 AC_ival = 'All'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_2016_Smith,
-                        lc_bkg=1, lc2=600.0, lc3=300.0)
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_2016_Smith"],
+                        lc_bkg=1, lc_refine_1=600.0, lc_refine_2=300.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -76,16 +76,16 @@ for i_ac, q_ac in enumerate(np.linspace(0.0,k_AC,nu_ks)):
         if sym_list[i][0] == 1 and sym_list[i][1] == 1 and sym_list[i][2] == 1:
             sym_A, = plt.plot(np.real(q_ac/k_AC), Om, 'or')
         if sym_list[i][0] == -1 and sym_list[i][1] == 1 and sym_list[i][2] == -1:
-            sym_B, = plt.plot(np.real(q_ac/k_AC), Om, 'vc')
+            sym_B1, = plt.plot(np.real(q_ac/k_AC), Om, 'vc')
         if sym_list[i][0] == 1 and sym_list[i][1] == -1 and sym_list[i][2] == -1:
-            sym_C, = plt.plot(np.real(q_ac/k_AC), Om, 'sb')
+            sym_B2, = plt.plot(np.real(q_ac/k_AC), Om, 'sb')
         if sym_list[i][0] == -1 and sym_list[i][1] == -1 and sym_list[i][2] == 1:
-            sym_D, = plt.plot(np.real(q_ac/k_AC), Om, '^g')
+            sym_B3, = plt.plot(np.real(q_ac/k_AC), Om, '^g')
 
     print("Wavevector loop", i_ac+1, "/", nu_ks)
 ax.set_ylim(0,25)
 ax.set_xlim(0,1)
-plt.legend([sym_A, sym_B, sym_C, sym_D],['E',r'C$_2$',r'$\sigma_y$',r'$\sigma_x$'], loc='lower right')
+plt.legend([sym_A, sym_B1, sym_B2, sym_B3],['A',r'B$_1$',r'B$_2$',r'B$_3$'], loc='lower right')
 plt.xlabel(r'Axial wavevector (normalised)')
 plt.ylabel(r'Frequency (GHz)')
 plt.savefig('tut_03_1-dispersion_npload_symmetrised.pdf', bbox_inches='tight')

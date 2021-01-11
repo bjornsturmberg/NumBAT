@@ -1,0 +1,20 @@
+{
+ "file_name": "As2S3_2021_Poulton",  // Name of this file, will be used as identifier
+ "chemical": "As2S3",  // Chemical composition
+ "author": "Poulton",  // Author of data
+ "date": "2021",  // Year of data publication/creation
+ "institution": "xxx. of xxxx",  // Source institution
+ "doi": "dx.doi.org/xx.xxxx/xx.xx.xxxxxx",  // doi or, failing that, the http address
+ "Re_n": 2.45,  // Real part of refractive index []
+ "Im_n": 0.0,  // Imaginary part of refractive index []
+ "s": 3200,  // Density [kg/m3]
+ "c_11": 18.9e9,  // Stiffness tensor component [Pa]
+ "c_12": 6e9,  // Stiffness tensor component [Pa]
+ "c_44": 6.4e9,  // Stiffness tensor component [Pa]
+ "p_11": 0.25,  // Photoelastic tensor component []
+ "p_12": 0.24,  // Photoelastic tensor component []
+ "p_44": 0.005,  // Photoelastic tensor component []
+ "eta_11": 1.8e-3,  // Acoustic loss tensor component [Pa s]
+ "eta_12": 1.45e-3,  // Acoustic loss tensor component [Pa s]
+ "eta_44": 0.18e-3  // Acoustic loss tensor component [Pa s]
+}

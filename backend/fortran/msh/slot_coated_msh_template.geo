@@ -1,5 +1,8 @@
 // Template mesh geometry file for a slot waveguide.
 
+// Force Gmsh to use legacy msh file format v2
+Mesh.MshFileVersion = 2.2;
+
 d = 1; // grating period
 d_in_nm = 100;
 dy_in_nm = 50;
@@ -21,9 +24,9 @@ c1y = 10;
 cov1y = (c1y/(2*d_in_nm))*d;
 
 lc = 0; // background and unitcell edge
-lc2 = lc/1; // rib
-lc3 = lc/1; // slab
-lc4 = lc/1; // coating
+lc_refine_1 = lc/1; // rib
+lc_refine_2 = lc/1; // slab
+lc_refine_3 = lc/1; // coating
 
 hy = dy/2 + (slab_h/2) + radius1y; // 
 hx = 0.;
@@ -35,28 +38,28 @@ Point(3) = {-hx+d, -dy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
 // Slab
-Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc3};
-Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc3};
-Point(13) = {d/2-slab_w/2, -hy, 0, lc3};
-Point(14) = {d/2+slab_w/2, -hy, 0, lc3};
+Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc_refine_2};
+Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc_refine_2};
+Point(13) = {d/2-slab_w/2, -hy, 0, lc_refine_2};
+Point(14) = {d/2+slab_w/2, -hy, 0, lc_refine_2};
 
 // Slot centre
-Point(7) = {-hx+d/2-radius1, -hy+slab_h, 0, lc2};
-Point(8) = {-hx+d/2+radius1, -hy+slab_h, 0, lc2};
-Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h, 0, lc2};
-Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h, 0, lc2};
+Point(7) = {-hx+d/2-radius1, -hy+slab_h, 0, lc_refine_1};
+Point(8) = {-hx+d/2+radius1, -hy+slab_h, 0, lc_refine_1};
+Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h, 0, lc_refine_1};
+Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h, 0, lc_refine_1};
 
 // Slot left wall
-Point(20) = {-hx+d/2-radius1-radius2, -hy+slab_h, 0, lc2};
-Point(21) = {-hx+d/2+radius1+radius2, -hy+slab_h, 0, lc2};
-Point(22) = {-hx+d/2-radius1-radius2, -hy+2*radius1y+slab_h, 0, lc2};
-Point(23) = {-hx+d/2+radius1+radius2, -hy+2*radius1y+slab_h, 0, lc2};
+Point(20) = {-hx+d/2-radius1-radius2, -hy+slab_h, 0, lc_refine_1};
+Point(21) = {-hx+d/2+radius1+radius2, -hy+slab_h, 0, lc_refine_1};
+Point(22) = {-hx+d/2-radius1-radius2, -hy+2*radius1y+slab_h, 0, lc_refine_1};
+Point(23) = {-hx+d/2+radius1+radius2, -hy+2*radius1y+slab_h, 0, lc_refine_1};
 
 // Coating
-Point(30) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h+cov1y, 0, lc4};
-Point(31) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h+cov1y, 0, lc4};
-Point(32) = {-hx+d/2-radius1-radius2, -hy+2*radius1y+slab_h+cov1y, 0, lc4};
-Point(33) = {-hx+d/2+radius1+radius2, -hy+2*radius1y+slab_h+cov1y, 0, lc4};
+Point(30) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h+cov1y, 0, lc_refine_3};
+Point(31) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h+cov1y, 0, lc_refine_3};
+Point(32) = {-hx+d/2-radius1-radius2, -hy+2*radius1y+slab_h+cov1y, 0, lc_refine_3};
+Point(33) = {-hx+d/2+radius1+radius2, -hy+2*radius1y+slab_h+cov1y, 0, lc_refine_3};
 
 Point(11) = {0, -hy+slab_h, 0, lc};
 Point(12) = {d, -hy+slab_h, 0, lc};

@@ -5,10 +5,14 @@ Installation
 
 The source code for NumBAT is hosted `here on Github <https://github.com/bjornsturmberg/NumBAT>`_. Please download the latest release from here.
 
-NumBAT has been developed on Ubuntu 16.04 with the following package versions: Python 3.5.3, Numpy 1.11.0, Suitesparse 4.4.6, and Gmsh 2.10.1.
+NumBAT has been developed on Ubuntu 18.04 with the following package versions: Python 3.6.9, Numpy 1.19.4, Suitesparse 4.4.6, and Gmsh 3.0.6. The integration with Gmsh has a history of version dependence - the first test script runs independently of Gmsh, so if this passes and the second script fails, look into Gmsh version issues.
 It has also been successfully installed by users on Debian, RedHat and on Windows 10 (installing Ubuntu after enabling the Windows Subystem for Linux - steps 3 here https://msdn.microsoft.com/en-au/commandline/wsl/install_guide) and with different versions of packages, but these installations have not been as thoroughly documented so may require user testing.
 
-In general, you can simply run the setup script ::
+In general, you can simply download the git repository and run the setup script ::
+
+    $ git clone https://github.com/bjornsturmberg/NumBAT.git
+
+    $ cd NumBAT/
 
     $ ./setup.sh
 
@@ -16,7 +20,6 @@ or, depending on your system configuration as ::
 
     $ sudo ./setup.sh
 
-from the ``NumBAT/`` directory.
 
 Before doing so you may wish to update your system ::
 

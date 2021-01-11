@@ -1,0 +1,20 @@
+{
+ "file_name": "GaAs_2021_Poulton",  // Name of this file, will be used as identifier
+ "chemical": "GaAs [100]",  // Chemical composition
+ "author": "Poulton",  // Author of data
+ "date": "2021",  // Year of data publication/creation
+ "institution": "xxx. of xxxx",  // Source institution
+ "doi": "dx.doi.org/xx.xxxx/xx.xx.xxxxxx",  // doi or, failing that, the http address
+ "Re_n": 3.3701928728190023,  // Real part of refractive index []
+ "Im_n": 0.0,  // Imaginary part of refractive index []
+ "s": 5317,  // Density [kg/m3]
+ "c_11": 118.8e9,  // Stiffness tensor component [Pa]
+ "c_12": 53.7e9,  // Stiffness tensor component [Pa]
+ "c_44": 59.4e9,  // Stiffness tensor component [Pa]
+ "p_11": -0.165,  // Photoelastic tensor component []
+ "p_12": -0.14,  // Photoelastic tensor component []
+ "p_44": -0.072,  // Photoelastic tensor component []
+ "eta_11": 7.49e-3,  // Acoustic loss tensor component [Pa s]
+ "eta_12": 6.57e-3,  // Acoustic loss tensor component [Pa s]
+ "eta_44": 0.72e-3  // Acoustic loss tensor component [Pa s]
+}

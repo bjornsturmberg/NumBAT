@@ -23,18 +23,17 @@ NumBAT has been developed on Ubuntu 18.04 with the following package versions: P
 
 It has also been successfully installed by users on Debian, RedHat and on Windows 10 (installing Ubuntu after enabling the Windows Subystem for Linux) and with different versions of packages, but these installations have not been as thoroughly documented so may require user testing.
 
-We also provide a `docker image <https://hub.docker.com/r/morblockdock/numbat>`_ that allows for easy cross platform operation. Information on how to use the docker image is contained in docker_notes.md file.
+We also provide a `docker image <https://hub.docker.com/r/morblockdock/numbat>`_ that allows for easy cross platform operation, although docker requires WSL2. Information on how to use the docker image is contained in docker_notes.md file. In our experience, a standard windows install using WSL1 and the github source code (which is essentially already "containerized") is preferable to using docker.
 
 
 Installation is as simple as ::
 
-    $ git clone https://github.com/bjornsturmberg/NumBAT.git 
+    $ git clone https://github.com/bjornsturmberg/NumBAT.git
 
-Followed by ::
+    $ cd NumBAT/
 
     $ sudo ./setup.sh
 
-from the NumBAT/ directory.
 
 For optimal results ::
 

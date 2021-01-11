@@ -76,9 +76,9 @@ prefix_str = 'fig10-'
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.SiO2_2013_Laude,
-                        lc_bkg=.25, lc2=170.0, lc3=85.0)
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["SiO2_2013_Laude"],
+                        lc_bkg=.25, lc_refine_1=170.0, lc_refine_2=85.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = 1.4
@@ -97,7 +97,7 @@ if doem:
     sim_EM_pump = npzfile['sim_EM_pump'].tolist()
   sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
   
-  plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ivals=[0],
+  plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ivals=[EM_ival_pump],
                            ylim_min=0.3, ylim_max=0.3, EM_AC='EM_E', 
                            prefix_str=prefix_str, pdf_png='png', ticks=True,
                            decorator=emdecorate, quiver_steps=20)

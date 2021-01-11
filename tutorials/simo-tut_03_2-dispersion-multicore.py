@@ -42,9 +42,9 @@ prefix_str = 'tut_03_2-'
 
 # Note that this mesh is quite fine, may not be required if purely using dispersive sims
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_2016_Smith,
-                        lc_bkg=1, lc2=600.0, lc3=300.0)
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_2016_Smith"],
+                        lc_bkg=1, lc_refine_1=600.0, lc_refine_2=300.0)
 
 # Estimated effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1

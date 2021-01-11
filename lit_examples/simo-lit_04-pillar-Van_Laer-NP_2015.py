@@ -47,18 +47,18 @@ AC_ival = 'All'
 prefix_str = 'lit_04-pillar-'
 
 # Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
-Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
+Si_110 = copy.deepcopy(materials.materials_dict["Si_2015_Van_Laer"])
 Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y,
                         pillar_x=pillar_x, pillar_y=pillar_y,
-                        material_bkg=materials.Vacuum,            # background
+                        material_bkg=materials.materials_dict["Vacuum"],            # background
                         material_a=Si_110,                        # rib
-                        material_b=materials.SiO2_2015_Van_Laer,  # slab
-                        material_c=materials.SiO2_2015_Van_Laer,  # pillar
-                        lc_bkg=1, lc2=800.0, lc3=500.0)
+                        material_b=materials.materials_dict["SiO2_2015_Van_Laer"],  # slab
+                        material_c=materials.materials_dict["SiO2_2015_Van_Laer"],  # pillar
+                        lc_bkg=1, lc_refine_1=800.0, lc_refine_2=500.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -67,7 +67,7 @@ n_eff = wguide.material_a.n-0.1
 sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
 sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 
-plotting.plt_mode_fields(sim_EM_pump, ivals=[0],
+plotting.plt_mode_fields(sim_EM_pump, ivals=[EM_ival_pump],
                          xlim_min=0.4, xlim_max=0.4, ylim_min=0.4, ylim_max=0.2, 
                          EM_AC='EM_E', prefix_str=prefix_str, pdf_png='png')
 

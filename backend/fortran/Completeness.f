@@ -1,8 +1,8 @@
-C	  Carry out matrix multiplication for Completeness Check
+C    Carry out matrix multiplication for Completeness Check
 C
       subroutine Completeness (nval, neq_PW, 
      *       K_overlap_mat, overlap_J)
-C		 
+C
       implicit none 
 C
       integer*8 nval, neq_PW

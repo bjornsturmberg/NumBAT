@@ -159,7 +159,7 @@ C      write(*,*) "real_max = ", real_max
 C      write(*,*) "int_max = ", int_max
 
 c     ii = sqrt(-1)
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 
 C     Old inputs now internal to here and commented out by default.
 C      mesh_format = 1

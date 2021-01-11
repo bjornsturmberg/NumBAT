@@ -1,5 +1,8 @@
 // Template mesh geometry file for a rib waveguide.
 
+// Force Gmsh to use legacy msh file format v2
+Mesh.MshFileVersion = 2.2;
+
 d = 1; // grating period
 d_in_nm = 100;
 dy_in_nm = 50;
@@ -28,11 +31,11 @@ coat2_w = coat2x/d_in_nm;
 coat2_h = coat2y/d_in_nm;
 
 lc = 0; // background and unitcell edge
-lc2 = lc/1; // rib
-lc3 = lc/1; // slab
-lc4 = lc/1; // coat
-lc5 = lc/1; // slab2
-lc6 = lc/1; // coat2
+lc_refine_1 = lc/1; // rib
+lc_refine_2 = lc/1; // slab
+lc_refine_3 = lc/1; // coat
+lc_refine_4 = lc/1; // slab2
+lc_refine_5 = lc/1; // coat2
 
 hy = dy/2 + (slab_h/2) + radius1y; // 
 hx = 0.;
@@ -44,36 +47,36 @@ Point(3) = {-hx+d, -dy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
 // Slab
-Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc3};
-Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc3};
-Point(13) = {d/2-slab_w/2, -hy, 0, lc3};
-Point(14) = {d/2+slab_w/2, -hy, 0, lc3};
+Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc_refine_2};
+Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc_refine_2};
+Point(13) = {d/2-slab_w/2, -hy, 0, lc_refine_2};
+Point(14) = {d/2+slab_w/2, -hy, 0, lc_refine_2};
 
 // Slab2
-Point(27) = {d/2-slab_w/2, -hy-slab2_h, 0, lc5};
-Point(28) = {d/2+slab_w/2, -hy-slab2_h, 0, lc5};
+Point(27) = {d/2-slab_w/2, -hy-slab2_h, 0, lc_refine_4};
+Point(28) = {d/2+slab_w/2, -hy-slab2_h, 0, lc_refine_4};
 
 // Rib
-Point(7) = {-hx+d/2-radius1, -hy+slab_h, 0, lc2};
-Point(8) = {-hx+d/2+radius1, -hy+slab_h, 0, lc2};
-Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h, 0, lc2};
-Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h, 0, lc2};
+Point(7) = {-hx+d/2-radius1, -hy+slab_h, 0, lc_refine_1};
+Point(8) = {-hx+d/2+radius1, -hy+slab_h, 0, lc_refine_1};
+Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h, 0, lc_refine_1};
+Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h, 0, lc_refine_1};
 
 // Coat
-Point(15) = {d/2-slab_w/2, -hy+slab_h+coat_h, 0, lc4};
-Point(16) = {d/2+slab_w/2, -hy+slab_h+coat_h, 0, lc4};
-Point(17) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h, 0, lc4};
-Point(18) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h, 0, lc4};
-Point(19) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc4};
-Point(20) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc4};
+Point(15) = {d/2-slab_w/2, -hy+slab_h+coat_h, 0, lc_refine_3};
+Point(16) = {d/2+slab_w/2, -hy+slab_h+coat_h, 0, lc_refine_3};
+Point(17) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h, 0, lc_refine_3};
+Point(18) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h, 0, lc_refine_3};
+Point(19) = {d/2-(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc_refine_3};
+Point(20) = {d/2+(radius1+coat_w), -hy+slab_h+coat_h+2*radius1y, 0, lc_refine_3};
 
 // Coat2
-Point(21) = {d/2-slab_w/2, -hy+slab_h+coat_h+coat2_h, 0, lc6};
-Point(22) = {d/2+slab_w/2, -hy+slab_h+coat_h+coat2_h, 0, lc6};
-Point(23) = {d/2-(radius1+coat_w+coat2_w), -hy+slab_h+coat_h+coat2_h, 0, lc6};
-Point(24) = {d/2+(radius1+coat_w+coat2_w), -hy+slab_h+coat_h+coat2_h, 0, lc6};
-Point(25) = {d/2-(radius1+coat_w+coat2_w), -hy+slab_h+coat_h+coat2_h+2*radius1y, 0, lc6};
-Point(26) = {d/2+(radius1+coat_w+coat2_w), -hy+slab_h+coat_h+coat2_h+2*radius1y, 0, lc6};
+Point(21) = {d/2-slab_w/2, -hy+slab_h+coat_h+coat2_h, 0, lc_refine_5};
+Point(22) = {d/2+slab_w/2, -hy+slab_h+coat_h+coat2_h, 0, lc_refine_5};
+Point(23) = {d/2-(radius1+coat_w+coat2_w), -hy+slab_h+coat_h+coat2_h, 0, lc_refine_5};
+Point(24) = {d/2+(radius1+coat_w+coat2_w), -hy+slab_h+coat_h+coat2_h, 0, lc_refine_5};
+Point(25) = {d/2-(radius1+coat_w+coat2_w), -hy+slab_h+coat_h+coat2_h+2*radius1y, 0, lc_refine_5};
+Point(26) = {d/2+(radius1+coat_w+coat2_w), -hy+slab_h+coat_h+coat2_h+2*radius1y, 0, lc_refine_5};
 
 Line(1) = {1, 2};
 Line(2) = {2, 3};

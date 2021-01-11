@@ -138,7 +138,7 @@ C       !ui = Unite dImpression
 C      nnodes = 6 ! Number of nodes per element
       pi = 3.141592653589793d0
 c     ii = sqrt(-1)
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 
 C       nvect = 2*nval + nval/2 +3
       nvect = 3*nval + 3
@@ -408,7 +408,7 @@ C       write(ui,*)
 C       if (debug .eq. 1) then
 C         write(ui,*) "py_calc_modes_AC: call to asmbly"
 C       endif
-      write(ui,*) "AC FEM, assmbling linear system"
+      write(ui,*) "AC FEM, assembling linear system"
       call cpu_time(time1)
 C     Assemble the coefficient matrix K and M of the finite element equations
       call asmbly_AC (i_base, nel, npt, neq, nnodes,

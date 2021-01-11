@@ -1,6 +1,9 @@
 // Template mesh geometry file for a single inclusion on a slab.
 // Inclusion can be circular/elliptical (default), or square/rectangular.
 
+// Force Gmsh to use legacy msh file format v2
+Mesh.MshFileVersion = 2.2;
+
 d = 1; // grating period
 d_in_nm = 100;
 dy_in_nm = 50;
@@ -22,10 +25,10 @@ If(slab_w == 1)
 EndIf
 
 lc = 0; // 0.501 0.201 0.0701;
-lc2 = lc/1; // on cylinder surfaces
-lc3 = lc/1; // cylinder1 centres
-lc4 = lc/1; // centres of top and bottom
-lc5 = lc/1; // slab
+lc_refine_1 = lc/1; // on cylinder surfaces
+lc_refine_2 = lc/1; // cylinder1 centres
+lc_refine_3 = lc/1; // centres of top and bottom
+lc_refine_4 = lc/1; // slab
 
 hy = dy/2 + (slab_h/2) + radius1y; // 
 hx = 0.;
@@ -42,11 +45,11 @@ Point(250) = {d/2-slab_w/2, -hy+slab_h, 0, lc};
 Point(251) = {d/2+slab_w/2, -hy+slab_h, 0, lc};
 
 // Inclusion
-Point(5) = {-hx+d/2, -hy+radius1y+slab_h, 0, lc3};
-Point(6) = {-hx+d/2, -hy+2*radius1y+slab_h, 0, lc2};
-Point(7) = {-hx+d/2-radius1, -hy+radius1y+slab_h, 0, lc2};
-Point(8) = {-hx+d/2, -hy+slab_h, 0, lc2};
-Point(9) = {-hx+d/2+radius1, -hy+radius1y+slab_h, 0, lc2};
+Point(5) = {-hx+d/2, -hy+radius1y+slab_h, 0, lc_refine_2};
+Point(6) = {-hx+d/2, -hy+2*radius1y+slab_h, 0, lc_refine_1};
+Point(7) = {-hx+d/2-radius1, -hy+radius1y+slab_h, 0, lc_refine_1};
+Point(8) = {-hx+d/2, -hy+slab_h, 0, lc_refine_1};
+Point(9) = {-hx+d/2+radius1, -hy+radius1y+slab_h, 0, lc_refine_1};
 
 Point(10) = {-hx+d/2, 0, 0, lc};
 Point(12) = {-hx+d/2, -hy, 0, lc};
@@ -66,8 +69,8 @@ Line(16) = {8,12};
 
 
 If(slab_w_full == 0)
-    Point(252) = {d/2-slab_w/2, -hy, 0, lc5};
-    Point(253) = {d/2+slab_w/2, -hy, 0, lc5};
+    Point(252) = {d/2-slab_w/2, -hy, 0, lc_refine_4};
+    Point(253) = {d/2+slab_w/2, -hy, 0, lc_refine_4};
     Line(3) = {2,252};
     Line(4) = {253,3};
 EndIf
@@ -172,10 +175,10 @@ EndIf
 
 
 If(rect == 1)
-    Point(150) = {-hx+d/2+radius1, -hy+slab_h+2*radius1y, 0,lc2};
-    Point(151) = {-hx+d/2-radius1, -hy+slab_h+2*radius1y, 0,lc2};
-    Point(152) = {-hx+d/2+radius1, -hy+slab_h, 0,lc2};
-    Point(153) = {-hx+d/2-radius1, -hy+slab_h, 0,lc2};
+    Point(150) = {-hx+d/2+radius1, -hy+slab_h+2*radius1y, 0,lc_refine_1};
+    Point(151) = {-hx+d/2-radius1, -hy+slab_h+2*radius1y, 0,lc_refine_1};
+    Point(152) = {-hx+d/2+radius1, -hy+slab_h, 0,lc_refine_1};
+    Point(153) = {-hx+d/2-radius1, -hy+slab_h, 0,lc_refine_1};
 
     If(slab_w > 2*radius1)
         If(slab_w_full == 1)

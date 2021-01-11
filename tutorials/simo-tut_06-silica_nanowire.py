@@ -43,9 +43,9 @@ AC_ival = 'All'
 prefix_str = 'tut_06-'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.SiO2_2016_Smith,
-                        lc_bkg=1, lc2=600.0, lc3=200.0)
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["SiO2_2016_Smith"],
+                        lc_bkg=1, lc_refine_1=600.0, lc_refine_2=200.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = 1.4

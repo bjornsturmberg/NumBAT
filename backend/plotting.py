@@ -22,7 +22,6 @@ import sys
 import numpy as np
 from scipy import sqrt
 import subprocess
-from matplotlib.mlab import griddata
 from scipy import interpolate
 import matplotlib
 matplotlib.use('pdf')
@@ -228,7 +227,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
         elif pdf_png=='pdf':
             plt.savefig('%(pre)sgain_spectra-mode_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
-        plt.close()
+        # plt.close()
 
 
     interp_values = np.zeros(num_interp_pts)
@@ -268,7 +267,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
         elif pdf_png=='pdf':
             plt.savefig('%(pre)sgain_spectra-MB_PE_comps%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
-    plt.close()
+    # plt.close()
 
     if save_txt:
         save_array = (interp_grid, interp_values)
@@ -301,7 +300,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             plt.savefig('%(pre)sgain_spectra-dB%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
         elif pdf_png=='pdf':
             plt.savefig('%(pre)sgain_spectra-dB%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
-        plt.close()
+        # plt.close()
 
         if save_txt:
             save_array = (interp_grid, 10*np.log10(np.exp(abs(interp_values)*dB_const)))
@@ -325,7 +324,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
             plt.savefig('%(pre)sgain_spectra-MB_PE_comps-logy%(add)s.png' % {'pre' : prefix_str, 'add' : suffix_str})
         elif pdf_png=='pdf':
             plt.savefig('%(pre)sgain_spectra-MB_PE_comps-logy%(add)s.pdf' % {'pre' : prefix_str, 'add' : suffix_str})
-        plt.close()
+        # plt.close()
 
     return return_interp_values
 
@@ -534,7 +533,7 @@ def plot_all_components(v_x, v_y, v_x_q, v_y_q, v_XX, v_YY, v_plots, vq_plots, v
   figfile=plot_filename(plps, ival)
   save_figure(plt, figfile)
 
-  plt.close()
+  # plt.close()
 
 
   if plps['EM_AC']=='AC' and plps['stress_fields']:
@@ -638,7 +637,7 @@ def plot_all_components(v_x, v_y, v_x_q, v_y_q, v_XX, v_YY, v_plots, vq_plots, v
      elif pdf_png=='pdf':
          plt.savefig('%(pre)sfields/%(s)s_S_field_%(i)i%(add)s.pdf' %
              {'pre' : prefix_str, 's' : EM_AC, 'i' : ival, 'add' : suffix_str}, bbox_inches='tight')
-     plt.close()
+     # plt.close()
 
 
 def save_figure(plt, figfile):
@@ -662,7 +661,7 @@ def plot_component(v_x, v_y, v_XX, v_YY, plot, label, plps, sim_wguide, ival, co
 
   figfile=plot_filename(plps, ival, comp)
   save_figure(plt, figfile)
-  plt.close()
+  # plt.close()
 
 
 #### Standard plotting of spectra #############################################
@@ -707,7 +706,7 @@ def plt_mode_fields(sim_wguide, ivals=None, n_points=501, quiver_steps=50,
             suffix_str  (str): Add a string to end of file name.
     """
 
-    if EM_AC is not 'EM_E' and EM_AC is not 'EM_H' and EM_AC is not 'AC':
+    if EM_AC != 'EM_E' and EM_AC != 'EM_H' and EM_AC != 'AC':
         raise ValueError("EM_AC must be either 'AC', 'EM_E' or 'EM_H'.")
 
     # Calculate the magnetic field from the electric field
@@ -907,7 +906,7 @@ def plot_msh(x_arr, prefix_str='', suffix_str=''):
     ax.set_aspect('equal')
     plt.savefig('%(pre)smsh_%(add)s.pdf' %
         {'pre' : prefix_str, 'add' : suffix_str}, bbox_inches='tight')
-    plt.close()
+    # plt.close()
 
 
 
@@ -924,4 +923,4 @@ def plot_msh(x_arr, prefix_str='', suffix_str=''):
 #     plt.plot(x, y, 'o')
 #     plt.text(x+0.001, y+0.001, str(i))
 # plt.savefig('triangle_%i.png' %el)
-# plt.close()
+plt.close()

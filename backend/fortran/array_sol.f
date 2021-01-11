@@ -66,7 +66,7 @@ c
       complex*16 ii, z_tmp1, z_tmp2, z_sol_max
 c
 c  ii = sqrt(-1)
-      ii = cmplx(0.0d0, 1.0d0)
+      ii = cmplx(0.0d0, 1.0d0, 8)
 c
       debug = 0
 c

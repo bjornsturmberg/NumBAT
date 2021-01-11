@@ -43,13 +43,13 @@ AC_ival = 'All'
 prefix_str = 'lit_05-'
 
 # Rotate crystal axis of Si from <100> to <110>, starting with same Si_2016_Smith data.
-Si_110 = copy.deepcopy(materials.Si_2016_Smith)
+Si_110 = copy.deepcopy(materials.materials_dict["Si_2016_Smith"])
 Si_110.rotate_axis(np.pi/4,'y-axis', save_rotated_tensors=True)
 # Use all specified parameters to create a waveguide object.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
+                        material_bkg=materials.materials_dict["Vacuum"],
                         material_a=Si_110, symmetry_flag=False,
-                        lc_bkg=1, lc2=1200.0, lc3=800.0)
+                        lc_bkg=1, lc_refine_1=1200.0, lc_refine_2=800.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
@@ -65,9 +65,9 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 # npzfile = np.load('wguide_data2.npz')
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.45, xlim_max=0.45, ivals=[0], 
-                         ylim_min=0.45, ylim_max=0.45, EM_AC='EM_E', 
-                         n_points=1500, 
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.45, xlim_max=0.45, 
+                         ivals=[EM_ival_pump], ylim_min=0.45, ylim_max=0.45, 
+                         EM_AC='EM_E', n_points=1500, 
                          prefix_str=prefix_str, pdf_png='png')
 
 # Print the wavevectors of EM modes.
@@ -105,9 +105,10 @@ masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:], 0, t
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 
-print("\n SBS_gain PE contribution \n", masked_PE)
-print("SBS_gain MB contribution \n", masked_MB)
-print("SBS_gain total \n", masked)
+print("\n Displaying results with negligible components masked out")
+print("SBS_gain [1/(Wm)] PE contribution \n", masked_PE)
+print("SBS_gain [1/(Wm)] MB contribution \n", masked_MB)
+print("SBS_gain [1/(Wm)] total \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = 9.1 # GHz

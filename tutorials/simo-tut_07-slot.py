@@ -44,11 +44,11 @@ prefix_str = 'tut_07-'
 
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y, inc_b_x=inc_b_x,
-                        material_bkg=materials.Vacuum,            # background
-                        material_a=materials.As2S3_2017_Morrison, # slot
-                        material_b=materials.SiO2_2013_Laude,     # slab
-                        material_c=materials.Si_2016_Smith,       # walls of slot
-                        lc_bkg=1, lc2=800.0, lc3=400.0)
+                        material_bkg=materials.materials_dict["Vacuum"],            # background
+                        material_a=materials.materials_dict["As2S3_2017_Morrison"], # slot
+                        material_b=materials.materials_dict["SiO2_2013_Laude"],     # slab
+                        material_c=materials.materials_dict["Si_2016_Smith"],       # walls of slot
+                        lc_bkg=1, lc_refine_1=800.0, lc_refine_2=400.0)
 
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1

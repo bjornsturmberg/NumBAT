@@ -1,5 +1,8 @@
 // Template mesh geometry file for a rib waveguide.
 
+// Force Gmsh to use legacy msh file format v2
+Mesh.MshFileVersion = 2.2;
+
 d = 1; // grating period
 d_in_nm = 100;
 dy_in_nm = 50;
@@ -20,8 +23,8 @@ p_w = px/d_in_nm;
 p_h = py/d_in_nm;
 
 lc = 0; // background and unitcell edge
-lc2 = lc/1; // rib
-lc3 = lc/1; // slab
+lc_refine_1 = lc/1; // rib
+lc_refine_2 = lc/1; // slab
 
 hy = dy/2 + (slab_h/2) + radius1y; // 
 hx = 0.;
@@ -33,23 +36,23 @@ Point(3) = {-hx+d, -dy, 0, lc};
 Point(4) = {d, 0, 0,lc};
 
 // Slab
-Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc3};
-Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc3};
-Point(13) = {d/2-slab_w/2, -hy, 0, lc3};
-Point(14) = {d/2+slab_w/2, -hy, 0, lc3};
+Point(5) = {d/2-slab_w/2, -hy+slab_h, 0, lc_refine_2};
+Point(6) = {d/2+slab_w/2, -hy+slab_h, 0, lc_refine_2};
+Point(13) = {d/2-slab_w/2, -hy, 0, lc_refine_2};
+Point(14) = {d/2+slab_w/2, -hy, 0, lc_refine_2};
 
 // Rib
-Point(7) = {-hx+d/2-radius1, -hy+slab_h+p_h, 0, lc2};
-Point(8) = {-hx+d/2+radius1, -hy+slab_h+p_h, 0, lc2};
-Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h+p_h, 0, lc2};
-Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h+p_h, 0, lc2};
+Point(7) = {-hx+d/2-radius1, -hy+slab_h+p_h, 0, lc_refine_1};
+Point(8) = {-hx+d/2+radius1, -hy+slab_h+p_h, 0, lc_refine_1};
+Point(9) = {-hx+d/2-radius1, -hy+2*radius1y+slab_h+p_h, 0, lc_refine_1};
+Point(10) = {-hx+d/2+radius1, -hy+2*radius1y+slab_h+p_h, 0, lc_refine_1};
 
-Point(19) = {-hx+d/2-p_w, -hy+slab_h, 0, lc3};
-Point(20) = {-hx+d/2+p_w, -hy+slab_h, 0, lc3};
-Point(21) = {-hx+d/2-p_w, -hy+slab_h+p_h, 0, lc2};
-Point(22) = {-hx+d/2+p_w, -hy+slab_h+p_h, 0, lc2};
-Point(23) = {-hx+d/2-radius1, -hy+slab_h, 0, lc2};
-Point(24) = {-hx+d/2+radius1, -hy+slab_h, 0, lc2};
+Point(19) = {-hx+d/2-p_w, -hy+slab_h, 0, lc_refine_2};
+Point(20) = {-hx+d/2+p_w, -hy+slab_h, 0, lc_refine_2};
+Point(21) = {-hx+d/2-p_w, -hy+slab_h+p_h, 0, lc_refine_1};
+Point(22) = {-hx+d/2+p_w, -hy+slab_h+p_h, 0, lc_refine_1};
+Point(23) = {-hx+d/2-radius1, -hy+slab_h, 0, lc_refine_1};
+Point(24) = {-hx+d/2+radius1, -hy+slab_h, 0, lc_refine_1};
 
 Point(11) = {0, -hy+slab_h, 0, lc};
 Point(12) = {d, -hy+slab_h, 0, lc};

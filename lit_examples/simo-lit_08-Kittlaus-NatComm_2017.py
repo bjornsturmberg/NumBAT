@@ -97,35 +97,36 @@ coat2_y = 200
 
 #original old gmsh set that works
 lc_bkg = 4  # background
-lc2 = 8000  # edge of rib
-lc3 = 3000   # edge of slab_a 
-lc4 = 50    # edge of coat
-lc5 = 20    # edge of slab_b
-lc6 = 4     # edge of coat2
+lc_refine_1 = 8000  # edge of rib
+lc_refine_2 = 3000   # edge of slab_a 
+lc_refine_3 = 50    # edge of coat
+lc_refine_4 = 20    # edge of slab_b
+lc_refine_5 = 4     # edge of coat2
 
-##working set
-lc_bkg = .5  # background
-lc2 = 1000  # edge of rib
-lc3 = 400   # edge of slab_a 
-lc4 = 10    # edge of coat
-lc5 = 5   # edge of slab_b
-lc6 = 1   # edge of coat2
 
-#scaled working set: doesn't work
-lc_bkg = 1  # background
-lc2 = 2000  # edge of rib
-lc3 = 600   # edge of slab_a 
-lc4 = 10    # edge of coat
-lc5 = 4   # edge of slab_b
-lc6 = 1  # edge of coat2
+# ##working set
+# lc_bkg = .5  # background
+# lc_refine_1 = 1000  # edge of rib
+# lc_refine_2 = 400   # edge of slab_a 
+# lc_refine_3 = 10    # edge of coat
+# lc_refine_4 = 5   # edge of slab_b
+# lc_refine_5 = 1   # edge of coat2
+
+# #scaled working set: doesn't work
+# lc_bkg = 1  # background
+# lc_refine_1 = 2000  # edge of rib
+# lc_refine_2 = 600   # edge of slab_a 
+# lc_refine_3 = 10    # edge of coat
+# lc_refine_4 = 4   # edge of slab_b
+# lc_refine_5 = 1  # edge of coat2
 
 ##scaled working set: doesn't work
 #lc_bkg = .1  # background
-#lc2 = 200  # edge of rib
-#lc3 = 75   # edge of slab_a 
-#lc4 = 50    # edge of coat
+#lc_refine_1 = 200  # edge of rib
+#lc_refine_2 = 75   # edge of slab_a 
+#lc_refine_3 = 50    # edge of coat
 #c5  = 50  # edge of slab_b
-#lc6 = 50  # edge of coat2
+#lc_refine_5 = 50  # edge of coat2
 
 
 
@@ -144,8 +145,8 @@ EM_ival_Stokes = 1 # INTERMODE SBS TE0 to TE1
 # The AC mode(s) for which to calculate interaction with EM modes.
 AC_ival = 'All'
 
-# Si_110 = copy.deepcopy(materials.Si_2015_Van_Laer)
-Si_110 = copy.deepcopy(materials.Si_2016_Smith)
+# Si_110 = copy.deepcopy(materials.materials_dict["Si_2015_Van_Laer"])
+Si_110 = copy.deepcopy(materials.materials_dict["Si_2016_Smith"])
 Si_110.rotate_axis(np.pi/4,'z-axis', save_rotated_tensors=True)
 
 prefix_str = 'fig16-'
@@ -154,22 +155,22 @@ prefix_str = 'fig16-'
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
                         slab_a_x=slab_a_x, slab_a_y=slab_a_y, slab_b_y=slab_b_y, 
                         coat_x=coat_x, coat_y=coat_y, coat2_x=coat2_x, coat2_y=coat2_y,
-                        material_bkg=materials.Vacuum,
+                        material_bkg=materials.materials_dict["Vacuum"],
                         material_a=Si_110, #plt_mesh=True,
-                        material_b=Si_110, material_c=materials.Vacuum,
-                        material_d=materials.Vacuum, material_e=materials.Vacuum,
+                        material_b=Si_110, material_c=materials.materials_dict["Vacuum"],
+                        material_d=materials.materials_dict["Vacuum"], material_e=materials.materials_dict["Vacuum"],
                         symmetry_flag=False,
-                        lc_bkg=lc_bkg, lc2=lc2, lc3=lc3,
-                        lc4=lc4, lc5=lc5, lc6=lc6)
+                        lc_bkg=lc_bkg, lc_refine_1=lc_refine_1, lc_refine_2=lc_refine_2,
+                        lc_refine_3=lc_refine_3, lc_refine_4=lc_refine_4, lc_refine_5=lc_refine_5)
 # Expected effective index of fundamental guided mode.
 n_eff = wguide.material_a.n-0.1
 
 # Calculate Electromagnetic Modes
 print("starting EM pump modes")
-#sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff, debug=True)
+sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff=n_eff, debug=True)
 #np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
-npzfile = np.load('wguide_data.npz', allow_pickle=True)
-sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+# npzfile = np.load('wguide_data.npz', allow_pickle=True)
+# sim_EM_pump = npzfile['sim_EM_pump'].tolist()
 
 print("starting EM Stokes modes")
 sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
@@ -178,17 +179,19 @@ sim_EM_Stokes = mode_calcs.fwd_Stokes_modes(sim_EM_pump)
 # sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
 
 print("starting EM field plotting ")
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4 , xlim_max=0.4 , ivals=[0,1], 
-                         ylim_min=0.435 , ylim_max=0.435 , EM_AC='EM_E', num_ticks=3,
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
+                         ivals=[EM_ival_pump,EM_ival_Stokes], 
+                         ylim_min=0.435, ylim_max=0.435, EM_AC='EM_E', num_ticks=3,
                          prefix_str=prefix_str, pdf_png='png', ticks=True,
-                          decorator=emdecorate, quiver_steps=20, 
-                          comps=('Ex','Ey', 'Ez','Eabs','Et'), n_points=2000, colorbar=True)
+                         decorator=emdecorate, quiver_steps=20, 
+                         comps=('Ex','Ey', 'Ez','Eabs','Et'), n_points=2000, colorbar=True)
 
-plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4 , xlim_max=0.4 , ivals=[0,1], 
-                         ylim_min=0.435 , ylim_max=0.435 , EM_AC='EM_H', num_ticks=3,
+plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.4, xlim_max=0.4, 
+                         ivals=[EM_ival_pump,EM_ival_Stokes], 
+                         ylim_min=0.435, ylim_max=0.435, EM_AC='EM_H', num_ticks=3,
                          prefix_str=prefix_str, pdf_png='png', ticks=True,
-                          decorator=emdecorate, quiver_steps=20, 
-                          comps=('Hx','Hy', 'Hz','Habs','Ht'), n_points=2000, colorbar=True)
+                         decorator=emdecorate, quiver_steps=20, 
+                         comps=('Hx','Hy', 'Hz','Habs','Ht'), n_points=2000, colorbar=True)
 
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
@@ -204,18 +207,21 @@ shift_Hz = 2e9
 
 # Calculate Acoustic Modes
 print("starting acoustic modes")
-#sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz, debug=True)
-#np.savez('wguide_data_AC', sim_AC=sim_AC)
-npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
-sim_AC = npzfile['sim_AC'].tolist()
+sim_AC = wguide.calc_AC_modes(num_modes_AC, k_AC, EM_sim=sim_EM_pump, shift_Hz=shift_Hz, debug=True)
+# np.savez('wguide_data_AC', sim_AC=sim_AC)
+# npzfile = np.load('wguide_data_AC.npz', allow_pickle=True)
+# sim_AC = npzfile['sim_AC'].tolist()
 
 # Print the frequencies of AC modes.
 print('Freq of AC modes (GHz) \n', np.round(np.real(sim_AC.Eig_values)*1e-9, 4))
 
+selected_AC_modes = [7, 13, 23]
+print("AC modes selected for field plotting", selected_AC_modes)
 print("plotting acoustic modes")
-plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, ivals=(7, 13, 23,), num_ticks=3, 
-     xlim_min=-.05, xlim_max=-0.05, ylim_min=-.1, ylim_max=-0.1, quiver_steps=20,
-     pdf_png='png',ticks=True, comps=('ux','ut','uz','uabs'), decorator=acdecorate, colorbar=True)
+plotting.plt_mode_fields(sim_AC, EM_AC='AC', prefix_str=prefix_str, ivals=selected_AC_modes,  
+                         num_ticks=3, xlim_min=-.05, xlim_max=-0.05, ylim_min=-.1, ylim_max=-0.1, 
+                         quiver_steps=20, pdf_png='png',ticks=True, comps=('ux','ut','uz','uabs'),
+                         decorator=acdecorate, colorbar=True)
 
 
 set_q_factor = 460.
@@ -232,9 +238,10 @@ masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:], 0, t
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 
-print("\n SBS_gain PE contribution \n", masked_PE)
-print("SBS_gain MB contribution \n", masked_MB)
-print("SBS_gain total \n", masked)
+print("\n Displaying results with negligible components masked out")
+print("SBS_gain [1/(Wm)] PE contribution \n", masked_PE)
+print("SBS_gain [1/(Wm)] MB contribution \n", masked_MB)
+print("SBS_gain [1/(Wm)] total \n", masked)
 
 # Construct the SBS gain spectrum, built from Lorentzian peaks of the individual modes.
 freq_min = 0.5  # GHz

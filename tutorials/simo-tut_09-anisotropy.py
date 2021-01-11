@@ -37,9 +37,9 @@ AC_ival = 'All'
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,unitcell_y,inc_a_y,inc_shape,
-                        material_bkg=materials.Vacuum,
-                        material_a=materials.Si_test_anisotropic,
-                        lc_bkg=1, lc2=1000.0, lc3=5.0)
+                        material_bkg=materials.materials_dict["Vacuum"],
+                        material_a=materials.materials_dict["Si_test_anisotropic"],
+                        lc_bkg=1, lc_refine_1=1000.0, lc_refine_2=5.0)
 
 
 # Expected effective index of fundamental guided mode.
@@ -75,17 +75,18 @@ SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, Q_factors, alpha = integration
     sim_EM_pump, sim_EM_Stokes, sim_AC, k_AC,
     EM_ival_pump=EM_ival_pump, EM_ival_Stokes=EM_ival_Stokes, AC_ival=AC_ival)
 # Print the Backward SBS gain of the AC modes.
-print("\n SBS_gain PE contribution \n", SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:])
-print("SBS_gain MB contribution \n", SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:])
-print("SBS_gain total \n", SBS_gain[EM_ival_pump,EM_ival_Stokes,:])
+print("\n SBS_gain [1/(Wm)] PE contribution \n", SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:])
+print("SBS_gain [1/(Wm)] MB contribution \n", SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:])
+print("SBS_gain [1/(Wm)] total \n", SBS_gain[EM_ival_pump,EM_ival_Stokes,:])
 # Mask negligible gain values to improve clarity of print out.
 threshold = -1e-3
 masked_PE = np.ma.masked_inside(SBS_gain_PE[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 masked_MB = np.ma.masked_inside(SBS_gain_MB[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
 masked = np.ma.masked_inside(SBS_gain[EM_ival_pump,EM_ival_Stokes,:], 0, threshold)
-print("\n SBS_gain PE contribution \n", masked_PE)
-print("SBS_gain MB contribution \n", masked_MB)
-print("SBS_gain total \n", masked)
+print("\n Displaying results with negligible components masked out")
+print("SBS_gain [1/(Wm)] PE contribution \n", masked_PE)
+print("SBS_gain [1/(Wm)] MB contribution \n", masked_MB)
+print("SBS_gain [1/(Wm)] total \n", masked)
 
 end = time.time()
 print("\n Simulation time (sec.)", (end - start))
