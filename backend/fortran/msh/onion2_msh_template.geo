@@ -15,8 +15,8 @@ rad1 = (a1/(2*d_in_nm))*d;
 rad2 = ((a1+a2)/(2*d_in_nm))*d;
 rad3 = ((a1+a2+a3)/(2*d_in_nm))*d;
 lc = 0; // 0.501 0.211 0.0701;
-lc2 = lc/1; // on cylinder surfaces
-lc3 = lc/1; // cylinder1 centres
+lc_refine_1 = lc/1; // on cylinder surfaces
+lc_refine_2 = lc/1; // cylinder1 centres
 
 hy = dy; // Thickness: square profile => hy=d
 hx = 0.;
@@ -35,23 +35,23 @@ Point(8) = {-hx+d/2, -hy, 0, lc};     //S
 Point(9) = {d, -hy/2, 0, lc};         //E 
 
 // Circle 1 vertices
-Point(10) = {-hx+d/2, -hy/2, 0, lc3};        //Center
-Point(11) = {-hx+d/2, -hy/2+rad1, 0, lc2};   //N
-Point(12) = {-hx+d/2-rad1, -hy/2, 0, lc2};   //W
-Point(13) = {-hx+d/2, -hy/2-rad1, 0, lc2};   //S
-Point(14) = {-hx+d/2+rad1, -hy/2, 0, lc2};   //E
+Point(10) = {-hx+d/2, -hy/2, 0, lc_refine_2};        //Center
+Point(11) = {-hx+d/2, -hy/2+rad1, 0, lc_refine_2};   //N
+Point(12) = {-hx+d/2-rad1, -hy/2, 0, lc_refine_2};   //W
+Point(13) = {-hx+d/2, -hy/2-rad1, 0, lc_refine_2};   //S
+Point(14) = {-hx+d/2+rad1, -hy/2, 0, lc_refine_2};   //E
 
 //Circle 2 vertices
-Point(21) = {-hx+d/2, -hy/2+rad2, 0, lc2};  //N
-Point(22) = {-hx+d/2-rad2, -hy/2, 0, lc2};  //W  
-Point(23) = {-hx+d/2, -hy/2-rad2, 0, lc2};  //S
-Point(24) = {-hx+d/2+rad2, -hy/2, 0, lc2};  //E
+Point(21) = {-hx+d/2, -hy/2+rad2, 0, lc_refine_1};  //N
+Point(22) = {-hx+d/2-rad2, -hy/2, 0, lc_refine_1};  //W  
+Point(23) = {-hx+d/2, -hy/2-rad2, 0, lc_refine_1};  //S
+Point(24) = {-hx+d/2+rad2, -hy/2, 0, lc_refine_1};  //E
 
 ////Circle 3 vertices
-//Point(31) = {-hx+d/2, -hy/2+rad3, 0, lc2};  //N
-//Point(32) = {-hx+d/2-rad3, -hy/2, 0, lc2};  //W  
-//Point(33) = {-hx+d/2, -hy/2-rad3, 0, lc2};  //S
-//Point(34) = {-hx+d/2+rad3, -hy/2, 0, lc2};  //E
+//Point(31) = {-hx+d/2, -hy/2+rad3, 0, lc_refine_1};  //N
+//Point(32) = {-hx+d/2-rad3, -hy/2, 0, lc_refine_1};  //W  
+//Point(33) = {-hx+d/2, -hy/2-rad3, 0, lc_refine_1};  //S
+//Point(34) = {-hx+d/2+rad3, -hy/2, 0, lc_refine_1};  //E
 
 
 // Outer Box
