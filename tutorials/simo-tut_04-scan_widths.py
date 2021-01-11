@@ -86,17 +86,17 @@ for width in waveguide_widths:
     geo_objects_list.append(wguide)
 
 
-new_calcs=True
+new_calcs=True # fixme
 if new_calcs:
   # Run widths in parallel across num_cores CPUs using multiprocessing package.
   pool = Pool(num_cores)
   
   # Note pool.map() doesn't pass errors back from fortran routines very well.
   # It's good practise to run the extrema of your simulation range through map()
-  # before launcing full multicore simulation.
+  # before launching full multicore simulation.
 
-  width_objs = pool.map(modes_n_gain, geo_objects_list)
-  np.savez('Simo_results', width_objs=width_objs)
+  width_objs = pool.map(modes_n_gain, geo_objects_list) 
+  np.savez('Simo_results', width_objs=width_objs)  # This generates a warning abut ragged nested sequences. Is there an option to pool.map that would clean this up?
   
 else:
   npzfile = np.load('Simo_results.npz', allow_pickle=True)

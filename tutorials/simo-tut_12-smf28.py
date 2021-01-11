@@ -46,7 +46,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,inc_shape=inc_shape,
                         material_bkg=materials.materials_dict["Vacuum"],
                         material_a=materials.materials_dict["SiO2GeO2_smf28"],
                         material_b=materials.materials_dict["SiO2_smf28"],
-                        lc_bkg=.5, lc_refine_1=10.0, lc_refine_2=200, plt_mesh=True)
+                        lc_bkg=.5, lc_refine_1=4, lc_refine_2=100, plt_mesh=True)
 
 
 # Expected effective index of fundamental guided mode.
