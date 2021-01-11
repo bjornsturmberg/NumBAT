@@ -178,7 +178,7 @@ def gain_spectra(sim_AC, SBS_gain, SBS_gain_PE, SBS_gain_MB, linewidth_Hz, k_AC,
 
             suffix_str  (str): String to be appended to end of file name.
     """
-    tune_steps = 5e4
+    tune_steps = 50000
     tune_range = 10 # GHz
     # Construct an odd range of freqs guaranteed to include central resonance frequency.
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
