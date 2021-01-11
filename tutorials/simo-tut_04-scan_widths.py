@@ -130,7 +130,7 @@ for i_w, width_obj in enumerate(width_objs):
         prefix_str=prefix_str, suffix_str='_scan%i' % i_w)
 
     # Repeat calc to collect data for waterfall plot.
-    tune_steps = 5e4
+    tune_steps = 50000
     tune_range = 10 # GHz
     detuning_range = np.append(np.linspace(-1*tune_range, 0, tune_steps),
                        np.linspace(0, tune_range, tune_steps)[1:])*1e9 # GHz
