@@ -25,3 +25,12 @@ lit08:
 	$(PYTHON) simo-lit_08-Kittlaus-NatComm_2017.py
 lit09: 
 	$(PYTHON) simo-lit_09-Morrison-Optica_2017.py
+
+clean:
+	-rm -rf lit_01-fields
+	-rm -rf lit_02-fields
+	-rm -rf lit_04-pillar-fields
+	-rm -rf lit_05-no-pillar-fields
+	-rm -rf lit_06_1-fields
+	-rm -rf lit_07-fields
+	-rm -rf lit_08-fields
