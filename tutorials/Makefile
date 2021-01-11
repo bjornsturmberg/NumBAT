@@ -1,7 +1,7 @@
 
 PYTHON=python3
 
-all: tut01 tut02 tut03a tut03b tut04 tut05 tut06 tut06 tut07 tut08 tut09 tut10
+all: tut01 tut02 tut03a tut03b tut04 tut05 tut06 tut06 tut07 tut08 tut09 tut10 tut11a tut11b tut12
 
 tut01: 
 	$(PYTHON) simo-tut_01-first_calc.py 
@@ -25,3 +25,12 @@ tut09:
 	$(PYTHON) simo-tut_09-anisotropy.py
 tut10: 
 	$(PYTHON) simo-tut_10-onion.py
+
+tut11a: 
+	$(PYTHON) simo-tut_11a-onion2.py
+tut11b: 
+	$(PYTHON) simo-tut_11b-onion3.py
+
+tut12: 
+	$(PYTHON) simo-tut_12-smf28.py
+
