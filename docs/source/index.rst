@@ -32,7 +32,16 @@ Installation
     install
 
 ====================================
-Basic Usage and Tutorials
+Basic Usage 
+====================================
+
+.. toctree::
+    :maxdepth: 4
+
+    usage
+
+====================================
+Examples and Tutorials
 ====================================
 
 .. toctree::
