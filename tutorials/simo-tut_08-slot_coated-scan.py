@@ -113,13 +113,13 @@ pool = Pool(num_cores)
 pooled_mode_freqs = pool.map(ac_mode_freqs, coat_y_list)
 # Note pool.map() doesn't pass errors back from fortran routines very well.
 # It's good practise to run the extrema of your simulation range through map()
-# before launcing full multicore simulation.
+# before launching full multicore simulation.
 
 # We will pack the above values into a single array for plotting purposes, initialise first
 freq_arr = np.empty((nu_coats, num_modes_AC))
 for i_w, sim_freqs in enumerate(pooled_mode_freqs):
     # Set the value to the values in the frequency array
-    freq_arr[i_w] = sim_freqs
+    freq_arr[i_w] = np.real(sim_freqs)
 
 # Also plot a figure for reference
 plot_range = num_modes_AC

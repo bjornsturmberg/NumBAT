@@ -17,17 +17,18 @@ import mode_calcs
 import integration
 import plotting
 from fortran import NumBAT
+from math import *
 
 
 start = time.time()
 
 # Geometric Parameters - all in nm.
 wl_nm = 1550
-unitcell_x = 3.5*wl_nm
+unitcell_x = 200*wl_nm
 unitcell_y = unitcell_x
-inc_a_x = 800
-inc_b_x = 500
-inc_shape = 'onion'
+inc_a_x = 2*4070
+inc_b_x = 2*127000
+inc_shape = 'onion2'
 
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
@@ -36,36 +37,71 @@ EM_ival_pump = 0
 EM_ival_Stokes = 0
 AC_ival = 'All'
 
-prefix_str = 'tut_10-'
+prefix_str = 'tut_12a-'
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,inc_shape=inc_shape,
                         inc_b_x=inc_b_x,
                         unitcell_y=unitcell_y,
                         material_bkg=materials.materials_dict["Vacuum"],
-                        material_a=materials.materials_dict["Si_2016_Smith"],
-                        material_b=materials.materials_dict["SiO2_2016_Smith"],
-                        lc_bkg=1, lc_refine_1=100.0, lc_refine_2=5.0, plt_mesh=True)
+                        material_a=materials.materials_dict["SiO2GeO2_smf28"],
+                        material_b=materials.materials_dict["SiO2_smf28"],
+                        lc_bkg=.5, lc_refine_1=4, lc_refine_2=100, plt_mesh=True)
 
 
 # Expected effective index of fundamental guided mode.
-n_eff = wguide.material_a.n-0.1
+n_eff = wguide.material_a.n-0.001
 
 new_calcs=True
 
-# Calculate Electromagnetic modes.
-if new_calcs:
-  sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, wl_nm, n_eff)
-  np.savez('wguide_data', sim_EM_pump=sim_EM_pump)
+micron=1e-6
+lam_hi=1.65
+lam_lo=1.45
+klo=2*pi/(lam_hi)
+khi=2*pi/(lam_lo)
+ksteps=2
+kvec=np.linspace(klo, khi, ksteps)
 
-  sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
-  np.savez('wguide_data2', sim_EM_Stokes=sim_EM_Stokes)
-else:
-  npzfile = np.load('wguide_data.npz', allow_pickle=True)
-  sim_EM_pump = npzfile['sim_EM_pump'].tolist()
-  npzfile = np.load('wguide_data2.npz', allow_pickle=True)
-  sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
+kzmat=np.zeros([len(kvec), num_modes_EM_pump], dtype=float)
+neffmat=np.zeros([len(kvec), num_modes_EM_pump], dtype=float)
+for ik, tk in enumerate(kvec):
 
+  t_wl_nm=2*pi/tk*1000
+  print(t_wl_nm)
+
+  # Calculate Electromagnetic modes.
+  if new_calcs:
+    sim_EM_pump = wguide.calc_EM_modes(num_modes_EM_pump, t_wl_nm, n_eff)
+    np.savez('wguide_data_{0}'.format(ik), sim_EM_pump=sim_EM_pump)
+  
+    sim_EM_Stokes = mode_calcs.bkwd_Stokes_modes(sim_EM_pump)
+    np.savez('wguide_data2_{0}'.format(ik), sim_EM_Stokes=sim_EM_Stokes)
+    kzmat[ik]= np.real(sim_EM_pump.Eig_values)
+    neffmat[ik]= kzmat[ik]/tk*micron
+    print (ik, kzmat[ik], neffmat[ik])
+    plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ylim_min=0.3,
+                         ylim_max=0.3, ivals=[0], contours=True, EM_AC='EM_E', 
+                         prefix_str=prefix_str+'{0}'.format(ik), ticks=True, quiver_steps=20, comps=['Et'])
+
+    plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ylim_min=0.3,
+                         ylim_max=0.3, ivals=[0], contours=True, EM_AC='EM_H', 
+                         prefix_str=prefix_str+'{0}'.format(ik), ticks=True, quiver_steps=20, comps=['Ht'])
+
+  else:
+    npzfile = np.load('wguide_data{0}.npz'.format(ik), allow_pickle=True)
+    sim_EM_pump = npzfile['sim_EM_pump'].tolist()
+    npzfile = np.load('wguide_data2{0}.npz'.format(ik), allow_pickle=True)
+    sim_EM_Stokes = npzfile['sim_EM_Stokes'].tolist()
+  
+#print (kvec)
+#print (kzmat)
+#print (neffmat)
+out=np.zeros([len(kvec), num_modes_EM_pump+2], dtype=float)
+out[:,0]=kvec
+out[:,1]=2*pi/kvec
+out[:,2:]=neffmat
+np.savetxt('neffdata', out)
+sys.exit(0)
 # Print the wavevectors of EM modes.
 print('k_z of EM modes \n', np.round(np.real(sim_EM_pump.Eig_values), 4))
 
@@ -77,13 +113,14 @@ print("n_eff", np.round(n_eff_sim, 4))
 # # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
 # # Only plot fields of fundamental (ival = 0) mode.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ylim_min=0.3,
-                         ylim_max=0.3, ivals=[EM_ival_pump], contours=True, EM_AC='EM_E', 
+                         ylim_max=0.3, ivals=[0], contours=True, EM_AC='EM_E', 
                          prefix_str=prefix_str, ticks=True, quiver_steps=20, comps=['Et'])
 
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ylim_min=0.3,
-                         ylim_max=0.3, ivals=[EM_ival_pump], contours=True, EM_AC='EM_H', 
+                         ylim_max=0.3, ivals=[0], contours=True, EM_AC='EM_H', 
                          prefix_str=prefix_str, ticks=True, quiver_steps=20, comps=['Ht'])
 
+sys.exit(0)
 # Acoustic wavevector
 k_AC = np.real(sim_EM_pump.Eig_values[EM_ival_pump] - sim_EM_Stokes.Eig_values[EM_ival_Stokes])
 

@@ -27,7 +27,7 @@ unitcell_x = 3.5*wl_nm
 unitcell_y = unitcell_x
 inc_a_x = 800
 inc_b_x = 500
-inc_shape = 'onion'
+inc_shape = 'onion2'
 
 num_modes_EM_pump = 20
 num_modes_EM_Stokes = num_modes_EM_pump
@@ -36,7 +36,7 @@ EM_ival_pump = 0
 EM_ival_Stokes = 0
 AC_ival = 'All'
 
-prefix_str = 'tut_10-'
+prefix_str = 'tut_11a-'
 
 # Use of a more refined mesh to produce field plots.
 wguide = objects.Struct(unitcell_x,inc_a_x,inc_shape=inc_shape,
@@ -45,7 +45,7 @@ wguide = objects.Struct(unitcell_x,inc_a_x,inc_shape=inc_shape,
                         material_bkg=materials.materials_dict["Vacuum"],
                         material_a=materials.materials_dict["Si_2016_Smith"],
                         material_b=materials.materials_dict["SiO2_2016_Smith"],
-                        lc_bkg=1, lc_refine_1=100.0, lc_refine_2=5.0, plt_mesh=True)
+                        lc_bkg=.5, lc_refine_1=50.0, lc_refine_2=2.5, plt_mesh=True)
 
 
 # Expected effective index of fundamental guided mode.
@@ -77,11 +77,11 @@ print("n_eff", np.round(n_eff_sim, 4))
 # # Zoom in on the central region (of big unitcell) with xlim_, ylim_ args.
 # # Only plot fields of fundamental (ival = 0) mode.
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ylim_min=0.3,
-                         ylim_max=0.3, ivals=[EM_ival_pump], contours=True, EM_AC='EM_E', 
+                         ylim_max=0.3, ivals=[0], contours=True, EM_AC='EM_E', 
                          prefix_str=prefix_str, ticks=True, quiver_steps=20, comps=['Et'])
 
 plotting.plt_mode_fields(sim_EM_pump, xlim_min=0.3, xlim_max=0.3, ylim_min=0.3,
-                         ylim_max=0.3, ivals=[EM_ival_pump], contours=True, EM_AC='EM_H', 
+                         ylim_max=0.3, ivals=[0], contours=True, EM_AC='EM_H', 
                          prefix_str=prefix_str, ticks=True, quiver_steps=20, comps=['Ht'])
 
 # Acoustic wavevector
